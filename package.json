@@ -57,16 +57,26 @@
     "@angular-devkit/build-angular": "^16.2.1",
     "@angular/cli": "^16.2.1",
     "@angular/compiler-cli": "^16.2.4",
+<<<<<<< HEAD
+=======
+    "@capacitor/cli": "^5.7.0",
+    "@types/jasmine": "~4.3.0",
+    "cypress": "^13.6.4",
+    "jasmine-core": "~4.5.0",
+>>>>>>> a12034f (coverage and package-lock.json deleted)
     "@types/jest": "^29.5.12",
     "@types/jwt-decode": "^2.2.1",
     "autoprefixer": "^10.4.15",
     "jest": "^29.7.0",
     "jest-preset-angular": "^14.0.3",
+<<<<<<< HEAD
 
     "@capacitor/cli": "^5.7.0",
     "@types/jasmine": "~4.3.0",
     "cypress": "^13.6.4",
     "jasmine-core": "~4.5.0",
+=======
+>>>>>>> a12034f (coverage and package-lock.json deleted)
     "postcss": "^8.4.29",
     "tailwindcss": "^3.3.3",
     "typescript": "~4.9.4"
