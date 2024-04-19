@@ -14,11 +14,16 @@ export class LoginComponent implements OnInit {
   showPopUp: boolean = false;
   popupMessageTitle: string = "";
   popupMessageBody: string = "";
-  countryCodes: { value: string; label: string }[] = [];
 
-  form: FormGroup;
-  submitted: boolean = false;
-  otpSent: boolean = false;
+  form: FormGroup = new FormGroup({
+    email: new FormControl("", [Validators.required, Validators.email]),
+    phonenumber: new FormControl("", [
+      Validators.required,
+      Validators.minLength(10),
+      Validators.maxLength(10),
+    ]),
+  });
+  submitted = false;
 
   constructor(
     private authService: AuthService,
@@ -60,53 +65,21 @@ export class LoginComponent implements OnInit {
     if (this.form.invalid) {
       return;
     }
-    const phoneNumber = this.form.value.phonenumber;
-    const selectedCountryCode = this.form.value.countryCode;
-    this.isLoaderVisible = true;
-    this.otpService.sendOtp(selectedCountryCode, phoneNumber).subscribe({
-      next: (response) => {
-        this.isLoaderVisible = false;
-        this.otpSent = true;
-        this.showPopup("Success", "OTP sent successfully.");
-        this.router.navigate(["/otpscreen", phoneNumber, selectedCountryCode]);
-      },
-      error: (error) => {
-        this.isLoaderVisible = false;
-        const errorCode = error?.error?.errorCode || "Server is down";
-        const errorDescription =
-          error?.error?.errorDescription ||
-          "Failed to send OTP. Please try again later (Internal server Error).";
-        this.showPopup(`Error (${errorCode})`, errorDescription);
-      },
-      complete: () => {
-        this.isLoaderVisible = false;
-      },
-    });
-  }
 
-  validatePhoneNumber(control: {
-    value: string;
-  }): { invalidPhoneNumber: boolean } | null {
-    const phoneNumberRegex = /^[0-9]{10}$/;
-    const isValid = phoneNumberRegex.test(control.value);
-    return isValid ? null : { invalidPhoneNumber: true };
-  }
-
-  showPopup(title: string, message: string) {
-    this.popupMessageTitle = title;
-    this.popupMessageBody = message;
-    this.showPopUp = true;
-  }
-
-  handleClosePopUp() {
-    this.showPopUp = false;
+    
+    
+    this.authService.login(this.credentials);
   }
 
   signInWithGoogle() {
     this.authService.signInWithGoogle();
   }
 
-  signup(){
-    this.router.navigate(["/register"])
+  
+
+  toggleIcon() {
+    this.icon === "ionEyeOff"
+      ? (this.icon = "ionEye")
+      : (this.icon = "ionEyeOff");
   }
 }

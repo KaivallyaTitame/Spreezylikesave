@@ -8,6 +8,7 @@ import { AppComponent } from "./app.component";
 import { LoginModule } from "./screens/login/login.module";
 import { LogoutModule } from "./screens/logout/logout.module";
 import { GlobalErrorHandlerService } from "./services/global-error-handler.service";
+<<<<<<< HEAD
 import { BusinessHomeModule } from "./screens/business-home/business-home.module";
 import { ConsumerHomeModule } from "./screens/consumer-home/consumer-home.module";
 
@@ -15,6 +16,12 @@ import { ConsumerHomeModule } from "./screens/consumer-home/consumer-home.module
   declarations: [
     AppComponent
   ],
+=======
+import { OtpComponent } from './otp/otp.component';
+
+@NgModule({
+  declarations: [AppComponent, OtpComponent],
+>>>>>>> 6e5649e (Update LoginScreen1)
   imports: [
     BrowserModule,
     AppRoutingModule,
