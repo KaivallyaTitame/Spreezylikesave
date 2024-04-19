@@ -15,8 +15,11 @@ import { LogoutModule } from "./screens/logout/logout.module";
 import { GlobalErrorHandlerService } from "./services/global-error-handler.service";
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> 586572a (Addressed Review comments)
+=======
+>>>>>>> b40fe67 (Update LoginScreen1)
 import { BusinessHomeModule } from "./screens/business-home/business-home.module";
 import { ConsumerHomeModule } from "./screens/consumer-home/consumer-home.module";
 <<<<<<< HEAD
@@ -48,9 +51,18 @@ import { ConsumerHomeModule } from "./screens/consumer-home/consumer-home.module
   declarations: [
     AppComponent
   ],
+<<<<<<< HEAD
   declarations: [
     AppComponent
   ],
+=======
+=======
+import { OtpComponent } from './otp/otp.component';
+
+@NgModule({
+  declarations: [AppComponent, OtpComponent],
+>>>>>>> 6e5649e (Update LoginScreen1)
+>>>>>>> b40fe67 (Update LoginScreen1)
   imports: [
     BrowserModule,
     AppRoutingModule,
