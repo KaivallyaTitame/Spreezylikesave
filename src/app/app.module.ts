@@ -60,20 +60,31 @@ import { ConsumerHomeModule } from "./screens/consumer-home/consumer-home.module
 import { OtpComponent } from './otp/otp.component';
 
 @NgModule({
+<<<<<<< HEAD
   declarations: [AppComponent, OtpComponent],
 >>>>>>> 6e5649e (Update LoginScreen1)
+<<<<<<< HEAD
 >>>>>>> b40fe67 (Update LoginScreen1)
+=======
+=======
+  declarations: [AppComponent],
+>>>>>>> e090634 (otpscreenui)
+>>>>>>> f8ce701 (otpscreenui)
   imports: [
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
     AngularFireModule.initializeApp(environment.firebase),
     LoginModule,
+<<<<<<< HEAD
     BusinessHomeModule,
     ConsumerHomeModule
   ],
   exports: [
     LoginComponent 
+=======
+    
+>>>>>>> e090634 (otpscreenui)
   ],
   providers: [
     {
