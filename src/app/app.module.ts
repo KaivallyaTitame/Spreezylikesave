@@ -9,6 +9,7 @@ import { LoginModule } from "./screens/login/login.module";
 import { LogoutModule } from "./screens/logout/logout.module";
 import { GlobalErrorHandlerService } from "./services/global-error-handler.service";
 <<<<<<< HEAD
+<<<<<<< HEAD
 import { BusinessHomeModule } from "./screens/business-home/business-home.module";
 import { ConsumerHomeModule } from "./screens/consumer-home/consumer-home.module";
 
@@ -18,6 +19,9 @@ import { ConsumerHomeModule } from "./screens/consumer-home/consumer-home.module
   ],
 =======
 import { OtpComponent } from './otp/otp.component';
+=======
+import { ReactiveFormsModule } from "@angular/forms";
+>>>>>>> 00d6748 (otpscreenui)
 
 @NgModule({
 <<<<<<< HEAD
@@ -33,12 +37,16 @@ import { OtpComponent } from './otp/otp.component';
     AngularFireModule.initializeApp(environment.firebase),
     LoginModule,
 <<<<<<< HEAD
+<<<<<<< HEAD
     BusinessHomeModule,
     ConsumerHomeModule
   ],
   exports: [
     LoginComponent 
 =======
+=======
+    ReactiveFormsModule
+>>>>>>> 00d6748 (otpscreenui)
     
 >>>>>>> e090634 (otpscreenui)
   ],
