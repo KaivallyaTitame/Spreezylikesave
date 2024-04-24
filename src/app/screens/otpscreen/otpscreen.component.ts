@@ -10,7 +10,7 @@ import {
 @Component({
   selector: 'app-otpscreen',
   templateUrl: './otpscreen.component.html',
-    // Ensure to include Tailwind CSS styles here if needed
+    
 })
 export class OtpscreenComponent implements OnInit, OnDestroy {
   
@@ -24,7 +24,7 @@ export class OtpscreenComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    clearInterval(this.intervalId); // Clear the interval when component is destroyed
+    clearInterval(this.intervalId); 
   }
 
   startTimer(): void {
@@ -32,10 +32,9 @@ export class OtpscreenComponent implements OnInit, OnDestroy {
       if (this.timer > 0) {
         this.timer--;
       } else {
-        clearInterval(this.intervalId); // Stop the timer when it reaches 0
-        // You can add additional actions here when the timer expires
+        clearInterval(this.intervalId); 
       }
-    }, 1000); // Update every second
+    }, 1000); 
   }
   
 }
