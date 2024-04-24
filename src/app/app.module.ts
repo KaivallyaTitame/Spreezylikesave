@@ -16,10 +16,13 @@ import { GlobalErrorHandlerService } from "./services/global-error-handler.servi
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> 586572a (Addressed Review comments)
 =======
 >>>>>>> b40fe67 (Update LoginScreen1)
+=======
+>>>>>>> 6ab50cc (otpscreenui)
 import { BusinessHomeModule } from "./screens/business-home/business-home.module";
 import { ConsumerHomeModule } from "./screens/consumer-home/consumer-home.module";
 <<<<<<< HEAD
@@ -58,6 +61,9 @@ import { ConsumerHomeModule } from "./screens/consumer-home/consumer-home.module
 =======
 =======
 import { OtpComponent } from './otp/otp.component';
+=======
+import { ReactiveFormsModule } from "@angular/forms";
+>>>>>>> 00d6748 (otpscreenui)
 
 @NgModule({
 <<<<<<< HEAD
@@ -77,12 +83,16 @@ import { OtpComponent } from './otp/otp.component';
     AngularFireModule.initializeApp(environment.firebase),
     LoginModule,
 <<<<<<< HEAD
+<<<<<<< HEAD
     BusinessHomeModule,
     ConsumerHomeModule
   ],
   exports: [
     LoginComponent 
 =======
+=======
+    ReactiveFormsModule
+>>>>>>> 00d6748 (otpscreenui)
     
 >>>>>>> e090634 (otpscreenui)
   ],
