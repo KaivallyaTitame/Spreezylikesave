@@ -8,6 +8,7 @@ import { SpreezyError, SpreezyException } from "../models/spreezyException";
 import { User } from "../models/user";
 import { AlertService } from "../shared/alert.service";
 import { CustomerService } from "./customer.service";
+import { HttpClient } from "@angular/common/http";
 
 @Injectable({
   providedIn: "root",

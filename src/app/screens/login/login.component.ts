@@ -1,8 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { OtpService } from "src/app/services/otp/otp.service";
-import { AuthService } from "src/app/services/auth/auth.service";
-import { Router } from "@angular/router";
+import { Credentials } from "src/app/models/credentials";
+import { AuthService } from "src/app/services/auth.service";
 
 @Component({
   selector: "app-login",
@@ -10,36 +9,24 @@ import { Router } from "@angular/router";
   styles: [],
 })
 export class LoginComponent {
-  showPopUp: boolean = false;
-  popupMessageTitle: string = "";
-  popupMessageBody: string = "";
-
-  form: FormGroup = new FormGroup({
-    email: new FormControl("", [Validators.required, Validators.email]),
-    phonenumber: new FormControl("", [
-      Validators.required,
-      Validators.minLength(10),
-      Validators.maxLength(10),
-    ]),
-  });
-  submitted = false;
+  credentials: Credentials = new Credentials();
+  icon: string = "ionEyeOff";
+  showPassword: boolean = false;
+  form: FormGroup;
+  submitted: boolean = false;
 
   constructor(
     private authService: AuthService,
-    private otpService: OtpService,
-    private formBuilder: FormBuilder,
-    private router: Router
+    private formBuilder: FormBuilder
   ) {
     this.form = this.formBuilder.group({
-      phonenumber: [
-        "",
-        [
-          Validators.required,
-          Validators.minLength(10),
-          Validators.maxLength(10),
-          this.validatePhoneNumber.bind(this),
-        ],
-      ],
+      email: ["", [Validators.required, Validators.email]],
+      phonenumber: ["", [
+        Validators.required,
+        Validators.minLength(10),
+        Validators.maxLength(10),
+        this.validatePhoneNumber.bind(this) // Bind the function to the current instance
+      ]],
     });
   }
 
@@ -54,9 +41,6 @@ export class LoginComponent {
     if (this.form.invalid) {
       return;
     }
-
-    
-    
     this.authService.login(this.credentials);
   }
 
@@ -64,11 +48,15 @@ export class LoginComponent {
     this.authService.signInWithGoogle();
   }
 
-  
-
   toggleIcon() {
     this.icon === "ionEyeOff"
       ? (this.icon = "ionEye")
       : (this.icon = "ionEyeOff");
+  }
+
+  validatePhoneNumber(control: { value: string }): { invalidPhoneNumber: boolean } | null {
+    const phoneNumberRegex = /^[0-9]{10}$/;
+    const isValid = phoneNumberRegex.test(control.value);
+    return isValid ? null : { invalidPhoneNumber: true };
   }
 }
