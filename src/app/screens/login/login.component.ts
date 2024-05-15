@@ -1,57 +1,33 @@
 import { Component, OnInit } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { OtpService } from "src/app/services/otp/otp.service";
+import { Credentials } from "src/app/models/credentials";
 import { AuthService } from "src/app/services/auth.service";
-import { Router } from "@angular/router";
-import { HttpClient } from "@angular/common/http";
 
 @Component({
   selector: "app-login",
   templateUrl: "./login.component.html",
   styles: [],
 })
-export class LoginComponent implements OnInit {
-  showPopUp: boolean = false;
-  popupMessageTitle: string = "";
-  popupMessageBody: string = "";
-
-  form: FormGroup = new FormGroup({
-    email: new FormControl("", [Validators.required, Validators.email]),
-    phonenumber: new FormControl("", [
-      Validators.required,
-      Validators.minLength(10),
-      Validators.maxLength(10),
-    ]),
-  });
-  submitted = false;
+export class LoginComponent {
+  credentials: Credentials = new Credentials();
+  icon: string = "ionEyeOff";
+  showPassword: boolean = false;
+  form: FormGroup;
+  submitted: boolean = false;
 
   constructor(
     private authService: AuthService,
-    private otpService: OtpService,
-    private formBuilder: FormBuilder,
-    private router: Router,
-    private http: HttpClient
+    private formBuilder: FormBuilder
   ) {
     this.form = this.formBuilder.group({
-      countryCode: ["+91", Validators.required],
-      phonenumber: [
-        "",
-        [
-          Validators.required,
-          Validators.minLength(10),
-          Validators.maxLength(10),
-          this.validatePhoneNumber.bind(this),
-        ],
-      ],
+      email: ["", [Validators.required, Validators.email]],
+      phonenumber: ["", [
+        Validators.required,
+        Validators.minLength(10),
+        Validators.maxLength(10),
+        this.validatePhoneNumber.bind(this) // Bind the function to the current instance
+      ]],
     });
-  }
-
-  ngOnInit(): void {
-    this.http
-      .get<{ value: string; label: string }[]>("assets/country-codes.json")
-      .subscribe((data) => {
-        this.countryCodes = data;
-      });
   }
 
   get formControls() {
@@ -65,9 +41,6 @@ export class LoginComponent implements OnInit {
     if (this.form.invalid) {
       return;
     }
-
-    
-    
     this.authService.login(this.credentials);
   }
 
@@ -75,11 +48,15 @@ export class LoginComponent implements OnInit {
     this.authService.signInWithGoogle();
   }
 
-  
-
   toggleIcon() {
     this.icon === "ionEyeOff"
       ? (this.icon = "ionEye")
       : (this.icon = "ionEyeOff");
+  }
+
+  validatePhoneNumber(control: { value: string }): { invalidPhoneNumber: boolean } | null {
+    const phoneNumberRegex = /^[0-9]{10}$/;
+    const isValid = phoneNumberRegex.test(control.value);
+    return isValid ? null : { invalidPhoneNumber: true };
   }
 }

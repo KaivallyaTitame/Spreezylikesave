@@ -8,11 +8,7 @@ import { SpreezyError, SpreezyException } from "../models/spreezyException";
 import { User } from "../models/user";
 import { AlertService } from "../shared/alert.service";
 import { CustomerService } from "./customer.service";
-import { HttpClient, HttpHeaders } from "@angular/common/http";
-import { JwtDecoderService } from "./jwtDecoder/jwt-decoder.service";
-import { API_CONFIG } from "../api-config";
-import { Observable } from "rxjs";
-import { VerifyOtpResponse } from "../models/verifyOtpResponse";
+import { HttpClient } from "@angular/common/http";
 
 @Injectable({
   providedIn: "root",
