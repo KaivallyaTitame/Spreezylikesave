@@ -34,13 +34,13 @@ export class LoginComponent {
     return this.form.controls;
   }
 
-  isLoaderVisible = false;
-
-  onSubmit(): void {
+  onSubmit(abc:string): void {
+    let xyz:string=abc
     this.submitted = true;
     if (this.form.invalid) {
       return;
     }
+    console.log(xyz)
     this.authService.login(this.credentials);
   }
 
