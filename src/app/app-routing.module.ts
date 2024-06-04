@@ -7,6 +7,7 @@ import { AddPostComponent } from "./screens/add-post/add-post.component";
 import { ProfileScreenComponent } from "./screens/profile-screen/profile-screen.component";
 import { SearchComponent } from "./screens/search/search.component";
 
+
 const routes: Routes = [
   { path: "", redirectTo: "consumer-home/adfeed", pathMatch: "full" },
 

@@ -10,6 +10,7 @@ import { LogoutModule } from "./screens/logout/logout.module";
 import { GlobalErrorHandlerService } from "./services/global-error-handler.service";
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 import { BusinessHomeModule } from "./screens/business-home/business-home.module";
 import { ConsumerHomeModule } from "./screens/consumer-home/consumer-home.module";
 
@@ -30,6 +31,14 @@ import { ReactiveFormsModule } from "@angular/forms";
 =======
   declarations: [AppComponent],
 >>>>>>> e090634 (otpscreenui)
+=======
+import { ReactiveFormsModule } from "@angular/forms";
+import { OtpscreenComponent } from "./screens/otpscreen/otpscreen.component";
+
+
+@NgModule({
+  declarations: [AppComponent, OtpscreenComponent], 
+>>>>>>> 3789018 (Post blocker)
   imports: [
     BrowserModule,
     AppRoutingModule,

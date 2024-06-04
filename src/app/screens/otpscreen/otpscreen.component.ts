@@ -57,7 +57,7 @@ export class OtpscreenComponent implements OnInit, OnDestroy {
   onSubmit(): void {
     this.otpFormSubmitted = true;
     if (this.otpForm.valid) {
-      console.log("Form submitted successfully");
+      console.log("Form submitted successfully", this.otpForm.value);
     } else {
       // Form is invalid, do nothing (error message will be displayed)
     }
