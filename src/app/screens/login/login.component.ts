@@ -1,6 +1,5 @@
 import { Component, OnInit } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { Credentials } from "src/app/models/credentials";
 import { AuthService } from "src/app/services/auth.service";
 
 @Component({
@@ -9,9 +8,6 @@ import { AuthService } from "src/app/services/auth.service";
   styles: [],
 })
 export class LoginComponent {
-  credentials: Credentials = new Credentials();
-  icon: string = "ionEyeOff";
-  showPassword: boolean = false;
   form: FormGroup;
   submitted: boolean = false;
 
@@ -20,12 +16,11 @@ export class LoginComponent {
     private formBuilder: FormBuilder
   ) {
     this.form = this.formBuilder.group({
-      email: ["", [Validators.required, Validators.email]],
       phonenumber: ["", [
         Validators.required,
         Validators.minLength(10),
         Validators.maxLength(10),
-        this.validatePhoneNumber.bind(this) // Bind the function to the current instance
+        this.validatePhoneNumber.bind(this)
       ]],
     });
   }
@@ -34,24 +29,18 @@ export class LoginComponent {
     return this.form.controls;
   }
 
-  onSubmit(abc:string): void {
-    let xyz:string=abc
+  onSubmit(): void {
     this.submitted = true;
     if (this.form.invalid) {
+      console.log("Form is invalid");
       return;
     }
-    console.log(xyz)
-    this.authService.login(this.credentials);
+    console.log("Form value:", this.form.value.phonenumber);
+    // this.authService.login(this.credentials);
   }
 
   signInWithGoogle() {
     this.authService.signInWithGoogle();
-  }
-
-  toggleIcon() {
-    this.icon === "ionEyeOff"
-      ? (this.icon = "ionEye")
-      : (this.icon = "ionEyeOff");
   }
 
   validatePhoneNumber(control: { value: string }): { invalidPhoneNumber: boolean } | null {

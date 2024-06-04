@@ -17,12 +17,15 @@ import { GlobalErrorHandlerService } from "./services/global-error-handler.servi
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> 586572a (Addressed Review comments)
 =======
 >>>>>>> b40fe67 (Update LoginScreen1)
 =======
 >>>>>>> 6ab50cc (otpscreenui)
+=======
+>>>>>>> 952c569 (Post blocker)
 import { BusinessHomeModule } from "./screens/business-home/business-home.module";
 import { ConsumerHomeModule } from "./screens/consumer-home/consumer-home.module";
 <<<<<<< HEAD
@@ -75,7 +78,18 @@ import { ReactiveFormsModule } from "@angular/forms";
 =======
   declarations: [AppComponent],
 >>>>>>> e090634 (otpscreenui)
+<<<<<<< HEAD
 >>>>>>> f8ce701 (otpscreenui)
+=======
+=======
+import { ReactiveFormsModule } from "@angular/forms";
+import { OtpscreenComponent } from "./screens/otpscreen/otpscreen.component";
+
+
+@NgModule({
+  declarations: [AppComponent, OtpscreenComponent], 
+>>>>>>> 3789018 (Post blocker)
+>>>>>>> 952c569 (Post blocker)
   imports: [
     BrowserModule,
     AppRoutingModule,

@@ -14,10 +14,10 @@
     Welcome to Spreezy
   </span>
 
-  <form class="mt-5 flex justify-center" (ngSubmit)="onSubmit(phonenumber.value)">
+  <form class="mt-5 flex justify-center" [formGroup]="form" (ngSubmit)="onSubmit()">
     <div class="login-form w-80">
       <div class="form-group email">
-        <label class="form-label text-black font-regular text-3xl font-roboto " (ngSubmit)="onSubmit(phonenumber.value) ">
+        <label class="form-label text-black font-regular text-3xl font-roboto">
           Sign in
         </label>
       </div>
@@ -28,26 +28,27 @@
         <input
           #phonenumber
           class="form-control input input-primary max-w-full"
-          value=""
           placeholder="+91 Enter number"
           formControlName="phonenumber"
-          onsubmit="onSubmit(phonenumber.value)"
         />
         <span
           class="font-roboto text-primary-0 text-sm ml-3"
           *ngIf="form.controls['phonenumber'].hasError('required') && submitted"
-          >Number is required.</span
         >
+          Number is required.
+        </span>
         <span
           class="font-roboto text-primary-0 text-sm ml-3"
           *ngIf="form.controls['phonenumber'].hasError('minlength') && submitted"
-          >Enter a valid number.</span
         >
+          Enter a valid number.
+        </span>
         <span
           class="font-roboto text-primary-0 text-sm ml-3"
           *ngIf="form.controls['phonenumber'].hasError('maxlength') && submitted"
-          >Enter a valid number.</span
         >
+          Enter a valid number.
+        </span>
       </div>
 
       <div class="buttons flex justify-center mt-5">
@@ -56,7 +57,7 @@
           class="btn py-6 hover:bg-primary-0 text-lg text-white font-roboto w-full btn-primary rounded-md"
         >
           SIGN IN
-        </a>
+        </button>
       </div>
 
       <div class="divider divider-horizontal">OR</div>
@@ -73,15 +74,19 @@
             stroke-width="0"
             version="1.1"
             viewBox="0 0 48 48"
-            enablebackground="new 0 0 48 48"
+            enable-background="new 0 0 48 48"
             class="h-5 w-5"
             xmlns="http://www.w3.org/2000/svg"
           >
-            <!-- Google icon SVG -->
+            <path fill="#EA4335" d="M24 9.5c3.87 0 6.15 1.67 7.54 3.07l5.53-5.53C33.66 4.09 29.32 2 24 2 14.72 2 7.13 7.73 4.15 16.11l6.92 5.37C12.52 14.63 17.82 9.5 24 9.5z"></path>
+            <path fill="#4285F4" d="M46.21 24.62c0-1.32-.12-2.55-.32-3.77H24v7.1h12.56c-.6 3.06-2.4 5.65-4.93 7.39l7.45 5.8c4.35-4.01 6.86-9.91 6.86-15.52z"></path>
+            <path fill="#FBBC05" d="M10.36 29.91c-1.15-.92-2.09-2.08-2.76-3.4l-6.92 5.37C3.87 38.16 8.9 42 14.71 42c4.44 0 8.14-1.49 10.85-4.04l-6.35-4.92c-1.83 1.22-4.14 1.95-6.85 1.95-3.45 0-6.44-1.18-8.72-3.08l-6.91 5.36C4.87 44.53 14.71 48 24 48c8.68 0 15.68-2.83 21.06-7.66l-7.45-5.8c-2.76 2.01-6.27 3.21-10.02 3.21-5.49 0-10.35-2.31-13.8-6.04l7.41-5.77c1.34 1.07 3.02 1.82 4.89 2.13V24.62H10.36v5.29z"></path>
+            <path fill="none" d="M0 0h48v48H0z"></path>
           </svg>
           <span class="text-orange-600">Sign in with Google</span>
         </button>
       </div>
+
       <div class="flex justify-center mt-5">
         <span class="text-gray-500 font-semibold">New to Spreezy? </span>
         <button type="button" class="btn btn-primary w-40 ml-4">Sign up</button>
