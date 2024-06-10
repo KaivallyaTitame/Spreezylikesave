@@ -1,5 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import { OtpService } from "src/app/otp.service";
 import { AuthService } from "src/app/services/auth.service";
 
 @Component({
@@ -10,9 +11,11 @@ import { AuthService } from "src/app/services/auth.service";
 export class LoginComponent {
   form: FormGroup;
   submitted: boolean = false;
+  otpSent: boolean = false;
 
   constructor(
     private authService: AuthService,
+    private otpService: OtpService,
     private formBuilder: FormBuilder
   ) {
     this.form = this.formBuilder.group({
@@ -35,8 +38,17 @@ export class LoginComponent {
       console.log("Form is invalid");
       return;
     }
-    console.log("Form value:", this.form.value.phonenumber);
-    // this.authService.login(this.credentials);
+    const phoneNumber = this.form.value.phonenumber;
+    console.log("Form value:", phoneNumber);
+    this.otpService.sendOtp(phoneNumber).subscribe(
+      response => {
+        console.log("OTP sent successfully", response);
+        this.otpSent = true;
+      },
+      error => {
+        console.error("Error sending OTP", error);
+      }
+    );
   }
 
   signInWithGoogle() {

@@ -28,7 +28,7 @@
         <input
           #phonenumber
           class="form-control input input-primary max-w-full"
-          placeholder="+91 Enter number"
+          placeholder="+91 Enter number(Only IND Mobile Number)"
           formControlName="phonenumber"
         />
         <span
@@ -52,7 +52,7 @@
       </div>
 
       <div class="buttons flex justify-center mt-5">
-        <button type="submit" class="btn btn-primary btn-md font-roboto w-80" [disabled]="form.invalid">
+        <button type="submit" class="btn btn-primary btn-md font-roboto w-80" (click)="onSubmit" [disabled]="form.invalid">
           SIGN IN
         </button>
       </div>
