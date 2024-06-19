@@ -18,7 +18,7 @@
 
   <form [formGroup]="otpForm" class="flex flex-col items-center" (ngSubmit)="onSubmit()">
     <input
-      id="phonenumber-input"
+      id="otp-input"
       class="form-control input input-primary max-w-326 text-center mt-5"
       placeholder="Enter OTP"
       formControlName="otpdigit"
@@ -39,7 +39,7 @@
         class="btn btn-primary btn-md font-roboto w-80"
         [disabled]="otpForm.invalid"
       >
-        SUBMIT
+        SUBMIT OTP
       </button>
     </div>
   </form>
