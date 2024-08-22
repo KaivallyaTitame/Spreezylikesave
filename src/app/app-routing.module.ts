@@ -1,5 +1,6 @@
 import { NgModule } from "@angular/core";
 import { RouterModule, Routes } from "@angular/router";
+<<<<<<< HEAD
 import { HomeScreenComponent} from "./screens/home-screen/home-screen.component";
 import { BusinessInsightsComponent } from "./screens/insights/insights.component";
 import { NotificationScreenComponent } from "./screens/notification-screen/notification-screen.component";
@@ -7,6 +8,12 @@ import { AddPostComponent } from "./screens/add-post/add-post.component";
 import { ProfileScreenComponent } from "./screens/profile-screen/profile-screen.component";
 import { SearchComponent } from "./screens/search/search.component";
 
+=======
+import { customerGuard } from "./authGuards/customer/customer.guard";
+import { otpScreenGuard } from "./authGuards/otpScreen/otp-screen.guard";
+import { businessGuard } from "./authGuards/business/business.guard";
+import { loginGuard } from "./authGuards/login/login.guard";
+>>>>>>> 20f3341 (login functinality is working)
 
 const routes: Routes = [
   { path: "", redirectTo: "business-home/home", pathMatch: "full" },
@@ -31,23 +38,38 @@ const routes: Routes = [
       import("./screens/login/login.module").then(
         (module) => module.LoginModule
       ),
+      canActivate:[loginGuard]
   },
   {
-    path: "home",
+    path: "homeCustomer",
     loadChildren: () =>
-      import("./screens/home/home.module").then((module) => module.HomeModule),
+      import("./screens/home/home.module").then((module) => module.HomeModule), // replace the path of customer
+    canActivate: [customerGuard],
   },
   {
-    path: "otpscreen",
+    path: "otpscreen/:mobileNumber",
     loadChildren: () =>
       import("./screens/otpscreen/otpscreen.module").then(
         (module) => module.OtpscreenModule
       ),
+<<<<<<< HEAD
   } 
 
   
   
 >>>>>>> 6e5649e (Update LoginScreen1)
+=======
+    canActivate: [otpScreenGuard],
+  },
+  {
+    path: "homeBusiness",
+    loadChildren: () =>
+      import("./screens/home/home.module").then(   // replace the path of business
+        (module) => module.HomeModule
+      ),
+    canActivate: [businessGuard],
+  },
+>>>>>>> 20f3341 (login functinality is working)
 ];
 
 @NgModule({

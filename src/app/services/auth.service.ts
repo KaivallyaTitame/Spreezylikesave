@@ -5,15 +5,19 @@ import { Router } from "@angular/router";
 import { Alert } from "../models/alert";
 import { Credentials } from "../models/credentials";
 import { SpreezyError, SpreezyException } from "../models/spreezyException";
+<<<<<<< HEAD
 import { User } from "../models/user";
 import { AlertService } from "../shared/alert.service";
 import { CustomerService } from "./customer.service";
+=======
+>>>>>>> 421cafb (login functinality is working)
 import { HttpClient } from "@angular/common/http";
 
 @Injectable({
   providedIn: "root",
 })
 export class AuthService {
+<<<<<<< HEAD
   alert: Alert = new Alert("", "");
 
   constructor(
@@ -21,6 +25,9 @@ export class AuthService {
     private router: Router,
     private alertService: AlertService
   ) {}
+=======
+  constructor(private fireAuth: AngularFireAuth, private router: Router) {}
+>>>>>>> 421cafb (login functinality is working)
 
   login(credentials: Credentials) {
     this.fireAuth
@@ -98,6 +105,7 @@ export class AuthService {
         localStorage.setItem("token", JSON.stringify(response.user?.email));
       },
       (error) => {
+        console.log(error);
         this.router.navigate(["/login"]);
         throw new SpreezyError(
           SpreezyException.SPEX_4,

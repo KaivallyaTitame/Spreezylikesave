@@ -16,12 +16,15 @@ export class LoginComponent {
     private formBuilder: FormBuilder
   ) {
     this.form = this.formBuilder.group({
-      phonenumber: ["", [
-        Validators.required,
-        Validators.minLength(10),
-        Validators.maxLength(10),
-        this.validatePhoneNumber.bind(this)
-      ]],
+      phonenumber: [
+        "",
+        [
+          Validators.required,
+          Validators.minLength(10),
+          Validators.maxLength(10),
+          this.validatePhoneNumber.bind(this),
+        ],
+      ],
     });
   }
 
@@ -29,10 +32,11 @@ export class LoginComponent {
     return this.form.controls;
   }
 
+  isLoaderVisible = false;
+
   onSubmit(): void {
     this.submitted = true;
     if (this.form.invalid) {
-      console.log("Form is invalid");
       return;
     }
     console.log("Form value:", this.form.value.phonenumber);
@@ -43,7 +47,9 @@ export class LoginComponent {
     this.authService.signInWithGoogle();
   }
 
-  validatePhoneNumber(control: { value: string }): { invalidPhoneNumber: boolean } | null {
+  validatePhoneNumber(control: {
+    value: string;
+  }): { invalidPhoneNumber: boolean } | null {
     const phoneNumberRegex = /^[0-9]{10}$/;
     const isValid = phoneNumberRegex.test(control.value);
     return isValid ? null : { invalidPhoneNumber: true };

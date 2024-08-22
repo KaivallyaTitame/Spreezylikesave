@@ -10,19 +10,23 @@
       />
     </div>
   </div>
-  <span class="flex justify-center font-primary text-primary-0 text-3xl">
+  <span class="flex justify-center font-primary text-orange-500 text-3xl mt-3">
     Welcome to Spreezy
   </span>
 
-  <form class="mt-5 flex justify-center" [formGroup]="form" (ngSubmit)="onSubmit()">
+  <form
+    class="mt-5 flex justify-center"
+    [formGroup]="form"
+    (ngSubmit)="onSubmit()"
+  >
     <div class="login-form w-80">
-      <div class="form-group email">
+      <div class="form-group email mt-3">
         <label class="form-label text-black font-regular text-3xl font-roboto">
           Sign in
         </label>
       </div>
-      <div class="form-group phonenumber relative mt-5">
-        <label class="form-label font-roboto color-black">
+      <div class="form-group phonenumber relative mt-2">
+        <label class="form-label font-roboto text-lg text-gray-700">
           Enter your Registered Mobile number
         </label>
         <input
@@ -60,12 +64,16 @@
         </button>
       </div>
 
-      <div class="divider divider-horizontal">OR</div>
+      <div class="divider flex items-center mt-5">
+        <hr class="flex-grow border-gray-300" />
+        <span class="px-2 text-xl text-gray-500">Or</span>
+        <hr class="flex-grow border-gray-300" />
+      </div>
 
       <!-- <div class="sso-login flex justify-center mt-5">
         <button
           type="button"
-          class="btn gap-2 bg-white w-80 border border-orange-600"
+          class="btn py-6 flex items-center gap-2 bg-white w-full border border-orange-600 rounded-md"
           (click)="signInWithGoogle()"
         >
           <svg

@@ -10,6 +10,14 @@ export class JwtDecoderService {
   constructor() { }
 
   decodeInfoFromToken(token: string) : DecodedToken{
+<<<<<<< HEAD
     return jwtDecode<DecodedToken>(token);
   }
 }
+=======
+
+    return jwtDecode<DecodedToken>(token);
+
+  }
+}
+>>>>>>> 20f3341 (login functinality is working)

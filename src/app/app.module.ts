@@ -7,11 +7,10 @@ import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
 import { LoginModule } from "./screens/login/login.module";
 <<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
 import { LogoutModule } from "./screens/logout/logout.module";
->>>>>>> 79946b6 (business-home working with docker integration)
+=======
+<<<<<<< HEAD
+>>>>>>> e3c8cc1 (login functinality is working)
 import { GlobalErrorHandlerService } from "./services/global-error-handler.service";
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -82,8 +81,11 @@ import { ReactiveFormsModule } from "@angular/forms";
 >>>>>>> f8ce701 (otpscreenui)
 =======
 =======
+=======
+>>>>>>> 20f3341 (login functinality is working)
 import { ReactiveFormsModule } from "@angular/forms";
 import { OtpscreenComponent } from "./screens/otpscreen/otpscreen.component";
+import { LoaderComponent } from './components/loader/loader.component';
 
 
 @NgModule({
@@ -98,6 +100,7 @@ import { OtpscreenComponent } from "./screens/otpscreen/otpscreen.component";
     LoginModule,
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     BusinessHomeModule,
     ConsumerHomeModule
   ],
@@ -109,11 +112,15 @@ import { OtpscreenComponent } from "./screens/otpscreen/otpscreen.component";
 >>>>>>> 00d6748 (otpscreenui)
     
 >>>>>>> e090634 (otpscreenui)
+=======
+    ReactiveFormsModule ,
+    LoaderComponent
+>>>>>>> 20f3341 (login functinality is working)
   ],
   providers: [
     {
       provide: ErrorHandler,
-      useClass: GlobalErrorHandlerService,
+      // useClass: GlobalErrorHandlerService,
     },
     
   ],

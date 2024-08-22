@@ -1,5 +1,16 @@
+import { HttpHeaders } from '@angular/common/http';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+<<<<<<< HEAD
+=======
+import { ActivatedRoute, Router } from '@angular/router';
+import { AuthService } from 'src/app/services/auth.service';
+import { OtpService } from 'src/app/services/otp.service';
+import { jwtDecode } from 'jwt-decode';
+import { JwtDecoderService } from 'src/app/services/jwtDecoder/jwt-decoder.service';
+import { DecodedToken } from 'src/app/models/decodedToken';
+ // Import jwt_decode for decoding JWT tokens
+>>>>>>> 421cafb (login functinality is working)
 
 @Component({
   selector: 'app-otpscreen',
@@ -17,12 +28,35 @@ export class OtpscreenComponent implements OnInit, OnDestroy {
   disableResend: boolean = true;
   otpForm: FormGroup;
   otpFormSubmitted: boolean = false;
+<<<<<<< HEAD
 
   constructor(private formBuilder: FormBuilder) { }
+=======
+  phoneNumber: string;
+  resendOtpSuccess: boolean = false;
+  resendOtpMessage: string = '';
+  isLoaderVisible = false;
+  resendCount = 0;
+
+  constructor(
+    private formBuilder: FormBuilder,
+    private otpService: OtpService,
+    private route: ActivatedRoute,
+    private router: Router,
+    private jwtDecoder : JwtDecoderService
+  ) { }
+>>>>>>> 421cafb (login functinality is working)
 
   ngOnInit(): void {
     this.createForm();
     this.startTimer();
+<<<<<<< HEAD
+=======
+    this.route.paramMap.subscribe(params => {
+      this.phoneNumber = params.get('mobileNumber') || "";
+      console.log('Mobile Number:', this.phoneNumber);
+    });
+>>>>>>> 421cafb (login functinality is working)
   }
 
   ngOnDestroy(): void {
@@ -35,6 +69,7 @@ export class OtpscreenComponent implements OnInit, OnDestroy {
     });
   }
 
+<<<<<<< HEAD
   startTimer(): void {
     this.intervalId = setInterval(() => {
       if (this.timer > 0) {
@@ -50,22 +85,123 @@ export class OtpscreenComponent implements OnInit, OnDestroy {
         // You can add additional actions here when the timer expires
       }
     }, 1000); // Update every second
+=======
+  handleTimer(): void {
+    if (this.timer > 0) {
+      this.timer--;
+      this.disableResend = true;
+      if (this.timer === 0) {
+        clearInterval(this.intervalId);
+        this.disableResend = false;
+      }
+    } else {
+      this.disableResend = false;
+      clearInterval(this.intervalId);
+    }
+  }
+
+  startTimer(): void {
+    this.intervalId = setInterval(() => this.handleTimer(), 1000);
+>>>>>>> 421cafb (login functinality is working)
   }
 
   resendOTP(event: Event): void {
+    if (this.resendCount >= 5) {
+      setTimeout(() => {
+        this.router.navigate(['/login']);
+      }, 3000);
+      return;
+    }
+
     if (this.disableResend) {
       event.preventDefault();
+<<<<<<< HEAD
     } else {
       // Handle resend OTP logic here
+=======
+      return;
+>>>>>>> 421cafb (login functinality is working)
     }
+
+    this.isLoaderVisible = true;
+    this.otpService.reSendOtp(this.phoneNumber).subscribe({
+      next: (response) => {
+        this.isLoaderVisible = false;
+        this.resendCount++;
+        console.log('OTP resent successfully', response);
+        this.timer = 30;
+        this.startTimer();
+        this.resendOtpSuccess = true;
+        this.resendOtpMessage = 'OTP resent successfully.';
+        setTimeout(() => {
+          this.resendOtpSuccess = false;
+        }, 10000);
+      },
+      error: (error) => {
+        this.isLoaderVisible = false;
+        console.error('Error resending OTP', error);
+      }
+    });
   }
 
   onSubmit(): void {
     this.otpFormSubmitted = true;
     if (this.otpForm.valid) {
+<<<<<<< HEAD
       console.log("Form submitted successfully", this.otpForm.value);
     } else {
       // Form is invalid, do nothing (error message will be displayed)
     }
   }
+=======
+      const otp = this.otpForm.value.otpdigit;
+      this.verifyOtp(this.phoneNumber, otp);
+    }
+  }
+
+  verifyOtp(phoneNumber: string, otp: string): void {
+    this.isLoaderVisible = true;
+    this.otpService.verifyOtp(phoneNumber, otp).subscribe({
+      next: (response) => {
+        console.log('OTP verified successfully', response);
+        const token = response.accessToken;
+        localStorage.setItem("token", JSON.stringify(token));
+        localStorage.setItem("refreshToken", JSON.stringify(response.refreshToken));
+
+        const decodedInfoFromToken :DecodedToken = this.jwtDecoder.decodeInfoFromToken(token);
+        const userType = decodedInfoFromToken['User Type'];
+        console.log(decodedInfoFromToken)
+        this.redirectBasedOnUserType(userType);
+      },
+      error: (error) => {
+        this.isLoaderVisible = false;
+        console.error('Error verifying OTP', error);
+        if (error.status === 0) {
+          console.log("Server is unreachable, status code =", error.status);
+        }
+      }
+    });
+  }
+
+  redirectBasedOnUserType(userType: string): void {
+    this.isLoaderVisible = false;
+    switch (userType) {
+      case 'Business':
+        console.log('in business routing')
+        this.router.navigate(['/homeBusiness']);
+        break;
+      case 'Admin':
+        this.router.navigate(['/admin-route']);
+        break;
+      case 'Consumer':
+        this.router.navigate(['/homeCustomer']);
+        break;
+      default:
+        setTimeout(() => {
+          this.router.navigate(['/login']);
+        }, 3000);
+        break;
+    }
+  }
+>>>>>>> 421cafb (login functinality is working)
 }

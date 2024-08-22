@@ -16,4 +16,8 @@ describe('JwtDecoderService', () => {
 <<<<<<< HEAD
 });
 =======
+<<<<<<< HEAD
 });
+=======
+});
+>>>>>>> 20f3341 (login functinality is working)
