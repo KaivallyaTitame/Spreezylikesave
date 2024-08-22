@@ -1,6 +1,13 @@
+import { HttpHeaders } from '@angular/common/http';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { OtpService } from 'src/app/otp.service';  // Import the OtpService
+import { ActivatedRoute, Router } from '@angular/router';
+import { AuthService } from 'src/app/services/auth.service';
+import { OtpService } from 'src/app/services/otp.service';
+import { jwtDecode } from 'jwt-decode';
+import { JwtDecoderService } from 'src/app/services/jwtDecoder/jwt-decoder.service';
+import { DecodedToken } from 'src/app/models/decodedToken';
+ // Import jwt_decode for decoding JWT tokens
 
 @Component({
   selector: 'app-otpscreen',
@@ -12,17 +19,27 @@ export class OtpscreenComponent implements OnInit, OnDestroy {
   disableResend: boolean = true;
   otpForm: FormGroup;
   otpFormSubmitted: boolean = false;
-  phoneNumber: string;  // Store the phone number
+  phoneNumber: string;
+  resendOtpSuccess: boolean = false;
+  resendOtpMessage: string = '';
+  isLoaderVisible = false;
+  resendCount = 0;
 
   constructor(
     private formBuilder: FormBuilder,
-    private otpService: OtpService  // Inject the OtpService
+    private otpService: OtpService,
+    private route: ActivatedRoute,
+    private router: Router,
+    private jwtDecoder : JwtDecoderService
   ) { }
 
   ngOnInit(): void {
     this.createForm();
     this.startTimer();
-    this.phoneNumber = ''; // Initialize phoneNumber
+    this.route.paramMap.subscribe(params => {
+      this.phoneNumber = params.get('mobileNumber') || "";
+      console.log('Mobile Number:', this.phoneNumber);
+    });
   }
 
   ngOnDestroy(): void {
@@ -35,61 +52,108 @@ export class OtpscreenComponent implements OnInit, OnDestroy {
     });
   }
 
-  startTimer(): void {
-    this.intervalId = setInterval(() => {
-      if (this.timer > 0) {
-        this.timer--;
-        if (this.timer === 30) {
-          this.disableResend = true;
-        } else if (this.timer === 0) {
-          clearInterval(this.intervalId);
-          this.disableResend = false;
-        }
-      } else {
+  handleTimer(): void {
+    if (this.timer > 0) {
+      this.timer--;
+      this.disableResend = true;
+      if (this.timer === 0) {
         clearInterval(this.intervalId);
+        this.disableResend = false;
       }
-    }, 1000);
+    } else {
+      this.disableResend = false;
+      clearInterval(this.intervalId);
+    }
+  }
+
+  startTimer(): void {
+    this.intervalId = setInterval(() => this.handleTimer(), 1000);
   }
 
   resendOTP(event: Event): void {
+    if (this.resendCount >= 5) {
+      setTimeout(() => {
+        this.router.navigate(['/login']);
+      }, 3000);
+      return;
+    }
+
     if (this.disableResend) {
       event.preventDefault();
-    } else {
-      // Handle resend OTP logic here
-      // For example, you can call the sendOtp method from the OtpService again
-      this.otpService.sendOtp(this.phoneNumber).subscribe(
-        response => {
-          console.log('OTP resent successfully', response);
-          this.timer = 30; // Restart the timer
-          this.startTimer();
-        },
-        error => {
-          console.error('Error resending OTP', error);
-        }
-      );
+      return;
     }
+
+    this.isLoaderVisible = true;
+    this.otpService.reSendOtp(this.phoneNumber).subscribe({
+      next: (response) => {
+        this.isLoaderVisible = false;
+        this.resendCount++;
+        console.log('OTP resent successfully', response);
+        this.timer = 30;
+        this.startTimer();
+        this.resendOtpSuccess = true;
+        this.resendOtpMessage = 'OTP resent successfully.';
+        setTimeout(() => {
+          this.resendOtpSuccess = false;
+        }, 10000);
+      },
+      error: (error) => {
+        this.isLoaderVisible = false;
+        console.error('Error resending OTP', error);
+      }
+    });
   }
 
   onSubmit(): void {
     this.otpFormSubmitted = true;
     if (this.otpForm.valid) {
       const otp = this.otpForm.value.otpdigit;
-      this.verifyOtp(this.phoneNumber, otp);  // Call the verifyOtp method
-    } else {
-      // Form is invalid, do nothing (error message will be displayed)
+      this.verifyOtp(this.phoneNumber, otp);
     }
   }
 
   verifyOtp(phoneNumber: string, otp: string): void {
-    this.otpService.verifyOtp(phoneNumber, otp).subscribe(
-      response => {
+    this.isLoaderVisible = true;
+    this.otpService.verifyOtp(phoneNumber, otp).subscribe({
+      next: (response) => {
         console.log('OTP verified successfully', response);
-        // Handle successful OTP verification, e.g., navigate to another page
+        const token = response.accessToken;
+        localStorage.setItem("token", JSON.stringify(token));
+        localStorage.setItem("refreshToken", JSON.stringify(response.refreshToken));
+
+        const decodedInfoFromToken :DecodedToken = this.jwtDecoder.decodeInfoFromToken(token);
+        const userType = decodedInfoFromToken['User Type'];
+        console.log(decodedInfoFromToken)
+        this.redirectBasedOnUserType(userType);
       },
-      error => {
+      error: (error) => {
+        this.isLoaderVisible = false;
         console.error('Error verifying OTP', error);
-        // Handle OTP verification failure, e.g., display an error message
+        if (error.status === 0) {
+          console.log("Server is unreachable, status code =", error.status);
+        }
       }
-    );
+    });
+  }
+
+  redirectBasedOnUserType(userType: string): void {
+    this.isLoaderVisible = false;
+    switch (userType) {
+      case 'Business':
+        console.log('in business routing')
+        this.router.navigate(['/homeBusiness']);
+        break;
+      case 'Admin':
+        this.router.navigate(['/admin-route']);
+        break;
+      case 'Consumer':
+        this.router.navigate(['/homeCustomer']);
+        break;
+      default:
+        setTimeout(() => {
+          this.router.navigate(['/login']);
+        }, 3000);
+        break;
+    }
   }
 }

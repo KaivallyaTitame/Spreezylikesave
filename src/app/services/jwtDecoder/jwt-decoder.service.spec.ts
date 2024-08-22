@@ -13,4 +13,8 @@ describe('JwtDecoderService', () => {
   it('should be created', () => {
     expect(service).toBeTruthy();
   });
+<<<<<<< HEAD
 });
+=======
+});
+>>>>>>> 20f3341 (login functinality is working)

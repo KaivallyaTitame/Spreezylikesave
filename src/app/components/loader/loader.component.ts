@@ -4,6 +4,10 @@ import { Component } from '@angular/core';
   selector: 'app-loader',
   templateUrl: './loader.component.html',
   styleUrls: ['./loader.component.css'],
+<<<<<<< HEAD
+=======
+  standalone: true
+>>>>>>> e3c8cc1 (login functinality is working)
 })
 export class LoaderComponent {
 

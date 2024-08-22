@@ -3,15 +3,13 @@ import { GoogleAuthProvider } from "@angular/fire/auth";
 import { AngularFireAuth } from "@angular/fire/compat/auth";
 import { Router } from "@angular/router";
 import { SpreezyError, SpreezyException } from "../models/spreezyException";
+import { HttpClient } from "@angular/common/http";
 
 @Injectable({
   providedIn: "root",
 })
 export class AuthService {
-  constructor(
-    private fireAuth: AngularFireAuth,
-    private router: Router
-  ) {}
+  constructor(private fireAuth: AngularFireAuth, private router: Router) {}
 
   signInWithGoogle() {
     return this.fireAuth.signInWithPopup(new GoogleAuthProvider()).then(
@@ -20,6 +18,7 @@ export class AuthService {
         localStorage.setItem("token", JSON.stringify(response.user?.email));
       },
       (error) => {
+        console.log(error);
         this.router.navigate(["/login"]);
         throw new SpreezyError(
           SpreezyException.SPEX_4,

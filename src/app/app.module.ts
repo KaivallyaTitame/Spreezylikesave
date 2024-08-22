@@ -6,7 +6,7 @@ import { environment } from "src/environments/environment.development";
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
 import { LoginModule } from "./screens/login/login.module";
-import { LogoutModule } from "./screens/logout/logout.module";
+<<<<<<< HEAD
 import { GlobalErrorHandlerService } from "./services/global-error-handler.service";
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -32,8 +32,11 @@ import { ReactiveFormsModule } from "@angular/forms";
   declarations: [AppComponent],
 >>>>>>> e090634 (otpscreenui)
 =======
+=======
+>>>>>>> 20f3341 (login functinality is working)
 import { ReactiveFormsModule } from "@angular/forms";
 import { OtpscreenComponent } from "./screens/otpscreen/otpscreen.component";
+import { LoaderComponent } from './components/loader/loader.component';
 
 
 @NgModule({
@@ -47,6 +50,7 @@ import { OtpscreenComponent } from "./screens/otpscreen/otpscreen.component";
     LoginModule,
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     BusinessHomeModule,
     ConsumerHomeModule
   ],
@@ -58,11 +62,15 @@ import { OtpscreenComponent } from "./screens/otpscreen/otpscreen.component";
 >>>>>>> 00d6748 (otpscreenui)
     
 >>>>>>> e090634 (otpscreenui)
+=======
+    ReactiveFormsModule ,
+    LoaderComponent
+>>>>>>> 20f3341 (login functinality is working)
   ],
   providers: [
     {
       provide: ErrorHandler,
-      useClass: GlobalErrorHandlerService,
+      // useClass: GlobalErrorHandlerService,
     },
     
   ],
