@@ -1,7 +1,0 @@
-export enum ErrorTypes {
-    OTP_SEND_FAILED = "SPX-1-001",
-    WAITING_TIME_LIMIT_EXCEEDED = "SPX-1-002",
-    USER_NOT_FOUND = "SPX-1-003",
-    OTP_NOT_FOUND = "SPX-1-004"
-  }
-  

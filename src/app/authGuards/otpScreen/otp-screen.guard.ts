@@ -1,6 +1,6 @@
 import { CanActivateFn, Router } from '@angular/router';
 import { inject } from '@angular/core';
-import { OtpService } from 'src/app/services/otp.service';
+import { OtpService } from 'src/app/services/otp/otp.service';
 
 export const otpScreenGuard: CanActivateFn = (route, state) => {
   const otpService = inject(OtpService);

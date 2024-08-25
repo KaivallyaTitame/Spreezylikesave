@@ -4,12 +4,14 @@ import { Observable, throwError } from "rxjs";
 import { catchError, map, tap } from "rxjs/operators";
 import { OtpResponse } from "../../models/otpResponse";
 import { VerifyOtpResponse } from "../../models/verifyOtpResponse";
-import { API_CONFIG } from "src/app/api-config";
 
 @Injectable({
   providedIn: "root",
 })
 export class OtpService {
+  private apiUrl =
+    "https://dd02-2409-40c2-3e-e599-f900-2b15-56fa-b30b.ngrok-free.app/";
+
   constructor(private http: HttpClient) {}
   isOtpSentToMobile = false;
 
@@ -21,12 +23,16 @@ export class OtpService {
         { responseType: "json" }
       )
       .pipe(
-        tap(() => {
+        tap((response) => {
+          console.log(response);
           this.isOtpSentToMobile = true;
         }),
         catchError((error) => {
+          console.error("Error sending OTP:", error);
           this.isOtpSentToMobile = false;
-          return throwError(() => new HttpErrorResponse(error));
+          return throwError(
+            () => new Error("Failed to send OTP. Please try again later.")
+          );
         })
       );
   }
@@ -34,8 +40,8 @@ export class OtpService {
   reSendOtp(countrycode: string, mobile: string): Observable<OtpResponse> {
     return this.http
       .post(
-        API_CONFIG.RESEND_OTP,
-        { phoneNumber: mobile, countryCode: countrycode },
+        `${this.apiUrl}auth/resend-otp`,
+        { phoneNumber: mobile },
         { responseType: "text" }
       )
       .pipe(
@@ -44,11 +50,20 @@ export class OtpService {
           return { success: true, message: response };
         }),
         catchError((error: HttpErrorResponse) => {
+          console.log("Error in HTTP response:", error);
+
           let errorMessage = "Failed to send OTP. Please try again later.";
-          const errorBody = JSON.parse(error?.error || "{}");
-          if (errorBody?.errorDescription) {
-            errorMessage = errorBody.errorDescription;
+          if (error.error && typeof error.error === "string") {
+            try {
+              const errorBody = JSON.parse(error.error);
+              if (errorBody.errorDescription) {
+                errorMessage = errorBody.errorDescription;
+              }
+            } catch (e) {
+              console.log("Error parsing error response body:", e);
+            }
           }
+
           return throwError(() => new Error(errorMessage));
         })
       );

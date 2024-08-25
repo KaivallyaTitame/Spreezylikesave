@@ -1,10 +1,8 @@
 import { Component, OnInit } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { OtpService } from "src/app/services/otp.service";
-import { AuthService } from "src/app/services/auth.service";
+import { OtpService } from "src/app/services/otp/otp.service";
+import { AuthService } from "src/app/services/auth/auth.service";
 import { Router } from "@angular/router";
-import { ErrorResponse } from "src/app/models/error-response.model"; // Import the ErrorResponse interface
-import { LoaderComponent } from "src/app/components/loader/loader.component";
 
 @Component({
   selector: "app-login",
@@ -67,15 +65,15 @@ export class LoginComponent {
     });
   }
 
-  signInWithGoogle() {
-    this.authService.signInWithGoogle();
-  }
-
   validatePhoneNumber(control: {
     value: string;
   }): { invalidPhoneNumber: boolean } | null {
     const phoneNumberRegex = /^[0-9]{10}$/;
     const isValid = phoneNumberRegex.test(control.value);
     return isValid ? null : { invalidPhoneNumber: true };
+  }
+
+  signInWithGoogle() {
+    this.authService.signInWithGoogle();
   }
 }
