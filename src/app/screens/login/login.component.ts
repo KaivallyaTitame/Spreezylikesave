@@ -54,4 +54,8 @@ export class LoginComponent {
     const isValid = phoneNumberRegex.test(control.value);
     return isValid ? null : { invalidPhoneNumber: true };
   }
+
+  signInWithGoogle() {
+    this.authService.signInWithGoogle();
+  }
 }

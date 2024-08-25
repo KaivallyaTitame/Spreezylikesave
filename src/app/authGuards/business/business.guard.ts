@@ -1,8 +1,6 @@
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
-import { jwtDecode } from 'jwt-decode';
 import { DecodedToken } from 'src/app/models/decodedToken';
-import { AuthService } from 'src/app/services/auth.service';
 import { JwtDecoderService } from 'src/app/services/jwtDecoder/jwt-decoder.service';
 
 export const businessGuard: CanActivateFn = (route, state) => {

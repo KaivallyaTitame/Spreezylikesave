@@ -4,8 +4,8 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 <<<<<<< HEAD
 =======
 import { ActivatedRoute, Router } from '@angular/router';
-import { AuthService } from 'src/app/services/auth.service';
-import { OtpService } from 'src/app/services/otp.service';
+import { AuthService } from 'src/app/services/auth/auth.service';
+import { OtpService } from 'src/app/services/otp/otp.service';
 import { jwtDecode } from 'jwt-decode';
 import { JwtDecoderService } from 'src/app/services/jwtDecoder/jwt-decoder.service';
 import { DecodedToken } from 'src/app/models/decodedToken';
@@ -107,9 +107,8 @@ export class OtpscreenComponent implements OnInit, OnDestroy {
 
   resendOTP(event: Event): void {
     if (this.resendCount >= 5) {
-      setTimeout(() => {
-        this.router.navigate(['/login']);
-      }, 3000);
+      alert('you reached max count of resent otp, please enter mobile and try agian ')
+      this.router.navigate(['/login']);
       return;
     }
 
@@ -165,7 +164,7 @@ export class OtpscreenComponent implements OnInit, OnDestroy {
       next: (response) => {
         console.log('OTP verified successfully', response);
         const token = response.accessToken;
-        localStorage.setItem("token", JSON.stringify(token));
+        localStorage.setItem("token", token);
         localStorage.setItem("refreshToken", JSON.stringify(response.refreshToken));
 
         const decodedInfoFromToken :DecodedToken = this.jwtDecoder.decodeInfoFromToken(token);
