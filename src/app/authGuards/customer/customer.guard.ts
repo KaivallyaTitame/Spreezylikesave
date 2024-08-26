@@ -31,6 +31,7 @@ export const customerGuard: CanActivateFn = (route, state) => {
           return false;
         } 
         if(userType === 'Consumer') return true;
+        // here based on iss field of token we can varify is it of googleAuth token if yes then we can navigate to consumer.
   }
   
   console.log('in customer guard at 2')

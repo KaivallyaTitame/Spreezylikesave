@@ -23,7 +23,6 @@ export class OtpscreenComponent implements OnInit, OnDestroy {
   resendOtpSuccess: boolean = false;
   resendOtpMessage: string = '';
   isLoaderVisible = false;
-  resendCount = 0;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -71,12 +70,6 @@ export class OtpscreenComponent implements OnInit, OnDestroy {
   }
 
   resendOTP(event: Event): void {
-    if (this.resendCount >= 5) {
-      alert('you reached max count of resent otp, please enter mobile and try agian ')
-      this.router.navigate(['/login']);
-      return;
-    }
-
     if (this.disableResend) {
       event.preventDefault();
       return;
@@ -86,7 +79,6 @@ export class OtpscreenComponent implements OnInit, OnDestroy {
     this.otpService.reSendOtp(this.phoneNumber).subscribe({
       next: (response) => {
         this.isLoaderVisible = false;
-        this.resendCount++;
         console.log('OTP resent successfully', response);
         this.timer = 30;
         this.startTimer();
@@ -99,6 +91,7 @@ export class OtpscreenComponent implements OnInit, OnDestroy {
       error: (error) => {
         this.isLoaderVisible = false;
         console.error('Error resending OTP', error);
+        alert(error.errorDescription);
       }
     });
   }
