@@ -1,13 +1,19 @@
+<<<<<<< HEAD
 import { Component, ViewChild, ElementRef, OnInit } from '@angular/core';
 import { PresignedUrl } from 'src/app/models/presigned-url';
 import { JwtDecoderService } from 'src/app/services/jwt-decoder.service';
 import { PostUploadService } from 'src/app/services/post-upload.service';
+=======
+import { Component, ViewChild, ElementRef } from '@angular/core';
+import { BackendService } from 'src/app/services/backend.service';
+>>>>>>> d3c5975 (Intial commit)
 
 @Component({
   selector: 'app-image-selector',
   templateUrl: './image-selector.component.html',
   styleUrls: ['./image-selector.component.css']
 })
+<<<<<<< HEAD
 export class ImageSelectorComponent implements OnInit {
   @ViewChild('fileInput', { static: false }) fileInput!: ElementRef;
   imagePreviews: string[] = [];
@@ -28,6 +34,16 @@ export class ImageSelectorComponent implements OnInit {
     const decodedInfo = token ? this.jwtDecoder.decodeInfoFromToken(token) : this.jwtDecoder.decodeInfoFromToken('');
       this.username = decodedInfo['sub'];
   }
+=======
+export class ImageSelectorComponent {
+  @ViewChild('fileInput', { static: false }) fileInput!: ElementRef;
+  imagePreviews: string[] = [];
+  imagesUploaded: boolean = false;
+  username: string = 'user123'; 
+  presignedUrl:string="";
+
+  constructor(private backendService: BackendService) { }
+>>>>>>> d3c5975 (Intial commit)
 
   openFileDialog(): void {
     this.fileInput.nativeElement.click();
@@ -35,6 +51,7 @@ export class ImageSelectorComponent implements OnInit {
 
   onImageUpload(event: Event): void {
     const input = event.target as HTMLInputElement;
+<<<<<<< HEAD
 
     if (input.files) {
       const newFiles = Array.from(input.files);
@@ -95,6 +112,19 @@ export class ImageSelectorComponent implements OnInit {
     });
   }
 
+=======
+    if (input.files && input.files.length > 0) {
+      const file = input.files[0];
+      const fileName = [file.name]; 
+      this.imagePreviews = [];
+      this.createImagePreview(file);
+      this.presignedUrl=this.backendService.getPresignedUrl(fileName, this.username);
+      console.log(this.presignedUrl);
+      this.backendService.uploadToS3(file,this.presignedUrl);
+    }
+  }
+
+>>>>>>> d3c5975 (Intial commit)
   private createImagePreview(file: File): void {
     const reader = new FileReader();
     reader.onload = () => {
@@ -102,6 +132,7 @@ export class ImageSelectorComponent implements OnInit {
     };
     reader.readAsDataURL(file);
   }
+<<<<<<< HEAD
 
   removeImage(index: number): void {
     this.imagePreviews.splice(index, 1); 
@@ -112,3 +143,6 @@ export class ImageSelectorComponent implements OnInit {
     this.showPopUp = false; 
   }
 }
+=======
+}
+>>>>>>> d3c5975 (Intial commit)

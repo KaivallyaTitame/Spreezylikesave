@@ -1,34 +1,33 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { CategoryService } from 'src/app/services/category-selector.service';
 
 @Component({
   selector: 'app-category-selector',
   templateUrl: './category-selector.component.html',
   styleUrls: ['./category-selector.component.css']
 })
-export class CategorySelectorComponent implements OnInit {
+export class CategorySelectorComponent {
   selectedCategory: string = '';
 
-  constructor(private router: Router, private categoryService: CategoryService) { }
+  constructor(private router: Router) { }
 
   ngOnInit(): void {
-    this.selectedCategory = this.categoryService.getCategory();
   }
 
   onSelectCategory(event: any): void {
     this.selectedCategory = event.target.value;
-    this.categoryService.setCategory(this.selectedCategory);
-
     switch (this.selectedCategory) {
       case 'Post':
-        this.router.navigate(['create/post-form']);
+        this.router.navigate(['new/post']);
         break;
       case 'Coupon Code':
-        this.router.navigate(['create/coupon-code']);
+        this.router.navigate(['new/coupon-code']);
         break;
       case 'Event':
-        this.router.navigate(['create/events-form']);
+        this.router.navigate(['new/events']);
+        break;
+      case 'Story Ads':
+        this.router.navigate(['/story-ads']);
         break;
       default:
         break;

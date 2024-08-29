@@ -1,120 +1,78 @@
-import { HttpErrorResponse } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { PostDetails } from 'src/app/models/post-details';
-import { JwtDecoderService } from 'src/app/services/jwt-decoder.service';
-import { PostUploadService } from 'src/app/services/post-upload.service';
-import { TextareaUtils } from 'src/app/shared/textarea-utils';
+import { PostForm } from 'src/app/models/post-form';
+import { BackendService } from 'src/app/services/backend.service';
 
 @Component({
   selector: 'app-post-form',
   templateUrl: './post-form.component.html',
   styleUrls: ['./post-form.component.css']
 })
-export class PostFormComponent implements OnInit {
+export class PostFormComponent {
   postFormDetails: FormGroup;
-  postFormData: PostDetails = new PostDetails(); 
-  username: string = '';
-  businessId: string = '';
-  imageFileNames: string[] = [];
-  showPopUp: boolean = false;
-  popUpTitle: string = '';
-  popUpBody: string = '';
+  postFormData: PostForm = new PostForm(); 
+  imageurl:string[]=["nikhil"]; 
 
-  constructor(private fb: FormBuilder, private postUpload: PostUploadService,private jwtDecoder: JwtDecoderService){
+  constructor(private fb: FormBuilder, private backendService: BackendService) {
     this.postFormDetails = this.fb.group({
-      imageFileNames: [[]],
-      username: [''],
-      postTitle: [''],
-      description: [''],
-      expiry: [null],
+      imageFileNames: [''],
+      username: ['',Validators.required],
+      postTitle: ['', Validators.required],
+      description: ['', Validators.required],
+      expiry: [null, Validators.required],
       businessId: [''],
-      promoBadge: [''],
-      termsAndConditions: [''],
-      stepsToAvailOffer: ['']
-    });
-  }
-
-  ngOnInit(): void {
-    const token = localStorage.getItem('token');
-
-    const decodedInfo = token ? this.jwtDecoder.decodeInfoFromToken(token) : this.jwtDecoder.decodeInfoFromToken('');
-    this.username = decodedInfo['sub'];
-    this.businessId = decodedInfo['sub'];
-  
-    this.postFormDetails.get('username')?.setValue(this.username);
-    this.postFormDetails.get('businessId')?.setValue(this.businessId);
-
-    
-    this.postUpload.generatedFileNames$.subscribe(fileNames => {
-      this.imageFileNames = fileNames;
-      this.postFormDetails.get('imageFileNames')?.setValue(this.imageFileNames);
+      promoBadge: ['', Validators.required],
+      termsAndConditions: ['', Validators.required],
+      stepsToAvailOffer: ['', Validators.required]
     });
   }
 
   handleSubmit() {
     if (this.postFormDetails.valid) {
       this.createRequest(this.postFormDetails);
-      this.popUpTitle = 'Success!';
-      this.popUpBody = 'Your post form has been submitted successfully.';
-      this.showPopUp = true;
+      alert('Post details submitted successfully');
       this.postFormDetails.reset();
     } else {
-      this.popUpTitle = 'Error!';
-      this.popUpBody = 'Please fill out form correctly';
-      this.showPopUp = true;
-      this.postFormDetails.reset();
+      alert('Please fill out the form correctly');
     }
   }
 
   createRequest(details: FormGroup) {
-    this.postFormData.imageFileNames = this.postFormDetails.get('imageFileNames')?.value;
-    this.postFormData.username = this.postFormDetails.get('username')?.value;
+    this.postFormData.imageFileNames = this.imageurl;
+    this.postFormData.username = details.value['username'];
     this.postFormData.postTitle = details.value['postTitle'];
     this.postFormData.description = details.value['description'];
     this.postFormData.expiry = details.value['expiry'];
-    this.postFormData.businessId = this.postFormDetails.get('businessId')?.value;
+    this.postFormData.businessId = details.value['businessId'];
     this.postFormData.promoBadge = details.value['promoBadge'];
-    this.postFormData.termsAndConditions = TextareaUtils.convertTextareaToListWithBulletPoints(details.value['termsAndConditions']);
-    this.postFormData.stepsToAvailOffer = TextareaUtils.convertTextareaToListWithBulletPoints(details.value['stepsToAvailOffer']);
+    this.postFormData.termsAndConditions = this.convertTextareaToListWithBulletPoints(details.value['termsAndConditions']);
+    this.postFormData.stepsToAvailOffer = this.convertTextareaToListWithBulletPoints(details.value['stepsToAvailOffer']);
     this.processRequest(this.postFormData);
   }
 
-  processRequest(postFormData: PostDetails) {
-    console.log(postFormData);
-    this.postUpload.submitPostForm(postFormData).subscribe({
-      next: (response) => {
-        this.popUpTitle = 'Success!';
-        this.popUpBody = 'Your post form has been submitted successfully.';
-        this.showPopUp = true;
-        this.postFormDetails.reset(); 
-      },
-      error: (error: HttpErrorResponse) => {
-        this.popUpTitle = 'Error!';
-        if (error.error && error.error.message) {
-          this.popUpBody = `Error: ${error.error.message}`;
-        } else {
-          this.popUpBody = 'Something went wrong. Please try again.';
-        }
-        this.showPopUp = true;
-      }
-    });
-
-  }
-
-  onPopUpClose() {
-    this.showPopUp = false; 
+  convertTextareaToListWithBulletPoints(textareaValue: string): string[] {
+    return textareaValue
+      .split('\n')
+      .map(item => item.trim())  
+      .filter(item => item.length > 0)
+      .map(item => (item.startsWith('• ') ? item : `• ${item}`));
   }
 
   addBulletPointOnEnter(event: KeyboardEvent, textarea: HTMLTextAreaElement): void {
-    TextareaUtils.addBulletPointOnEnter(event, textarea);
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      const cursorPosition = textarea.selectionStart;
+      const textBeforeCursor = textarea.value.slice(0, cursorPosition);
+      const textAfterCursor = textarea.value.slice(cursorPosition);
+      const updatedText = `${textBeforeCursor}\n• ${textAfterCursor}`;
+      textarea.value = updatedText;
+      textarea.selectionStart = textarea.selectionEnd = cursorPosition + 3;
+    }
   }
 
-  addBulletPointOnFocus(textarea: HTMLTextAreaElement): void {
-    TextareaUtils.addBulletPointOnFocus(textarea);
+  processRequest(postFormData: PostForm) {
+    const message = this.backendService.submitPostForm(postFormData);
   }
 
-  resetForm(): void {
-    this.postFormDetails.reset();
-  }
+  
 }

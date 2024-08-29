@@ -1,10 +1,7 @@
-import { HttpErrorResponse } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { EventDetails } from 'src/app/models/event-details';
-import { JwtDecoderService } from 'src/app/services/jwt-decoder.service';
-import { PostUploadService } from 'src/app/services/post-upload.service';
-import { TextareaUtils } from 'src/app/shared/textarea-utils';
+import { EventForm } from 'src/app/models/event-form';
+import { BackendService } from 'src/app/services/backend.service';
 
 @Component({
   selector: 'app-events-form',
@@ -12,111 +9,55 @@ import { TextareaUtils } from 'src/app/shared/textarea-utils';
   styleUrls: ['./events-form.component.css']
 })
 export class EventsFormComponent {
-  eventFormDetails: FormGroup;
-  eventData: EventDetails = new EventDetails();
-  username: string = '';
-  businessId: string = '';
-  imageFileNames: string[] = [];
-  showPopUp: boolean = false;
-  popUpTitle: string = '';
-  popUpBody: string = '';
+  eventFormDetails:FormGroup;
+  eventData:EventForm=new EventForm();
+  imageurl:string="URL";
 
-  constructor(private fb: FormBuilder, private postUpload: PostUploadService,private jwtDecoder : JwtDecoderService) {
-    this.eventFormDetails = this.fb.group({
-      imageFileNames: [[]],
-      username: [''],
-      businessId: [''],
-      eventTitle: [''],
-      description: [''],
-      eventDateAndTime: [''],
-      promoBadge: [''],
-      expiry: [''],
-      bookingUrl: [''],
-      termsAndConditions: [''],
-      stepsToAvailOffer: [''],
-    });
-  }
-
-  ngOnInit(): void {
-
-    const token = localStorage.getItem('token');
-
-    const decodedInfo = token ? this.jwtDecoder.decodeInfoFromToken(token) : this.jwtDecoder.decodeInfoFromToken('');
-    this.username = decodedInfo['sub'];
-    this.businessId = decodedInfo['sub'];
-  
-    this.eventFormDetails.get('username')?.setValue(this.username);
-    this.eventFormDetails.get('businessId')?.setValue(this.businessId);
-
-    
-    this.postUpload.generatedFileNames$.subscribe((fileNames: string[]) => {
-      this.imageFileNames = fileNames;
-      this.eventFormDetails.get('imageFileNames')?.setValue(this.imageFileNames);
+  constructor(private fb:FormBuilder,private backendService:BackendService){
+    this.eventFormDetails=this.fb.group({
+      images: [''],
+      title: ['', Validators.required],
+      eventDescription:['',Validators.required],
+      eventDate:[null,Validators.required],
+      eventStartTime:['',Validators.required],
+      eventEndTime:['',Validators.required],
+      promoBadge:['',Validators.required],
+      expiryDate:[null,Validators.required],
+      bookingUrl:['',Validators.required],
+      termsConditions:['',Validators.required],
+      steps:['',Validators.required]
     });
   }
 
   handleSubmit() {
     if (this.eventFormDetails.valid) {
+      console.log(this.eventFormDetails.value);
       this.createRequest(this.eventFormDetails);
-    } else {
-      this.popUpTitle = 'Error!';
-      this.popUpBody = 'Please fill out form correctly';
-      this.showPopUp = true;
+      alert('Event details submitted successfully');
       this.eventFormDetails.reset();
+    } else {
+      alert('Please fill out the form correctly');
     }
   }
 
   createRequest(details: FormGroup) {
-    this.eventData.imageFileNames = this.imageFileNames;
-    this.eventData.eventTitle = details.value['eventTitle'];
-    this.eventData.description = details.value['description'];
-    this.eventData.eventDateAndTime = details.value['eventDateAndTime'].toString();
+    this.eventData.images=this.imageurl;
+    this.eventData.title = details.value['title'];
+    this.eventData.eventDescription = details.value['eventDescription'];
+    this.eventData.eventDate = details.value['eventDate'];
+    this.eventData.eventStartTime = details.value['eventStartTime'];
+    this.eventData.eventEndTime = details.value['eventEndTime'];
     this.eventData.promoBadge = details.value['promoBadge'];
-    this.eventData.expiry = details.value['expiry'].toString();
+    this.eventData.expiryDate = details.value['expiryDate'];
     this.eventData.bookingUrl = details.value['bookingUrl'];
-    this.eventData.termsAndConditions = TextareaUtils.convertTextareaToListWithBulletPoints(details.value['termsAndConditions']);
-    this.eventData.stepsToAvailOffer = TextareaUtils.convertTextareaToListWithBulletPoints(details.value['stepsToAvailOffer']);
-    this.eventData.businessId=this.businessId;
-    this.eventData.username=this.username;
-
+    this.eventData.termsConditions = details.value['termsConditions'];
+    this.eventData.steps = details.value['steps'];
+  
     this.processRequest(this.eventData);
   }
   
-  processRequest(eventData: EventDetails) {
-    console.log(eventData);
-    this.postUpload.submitEventData(eventData).subscribe({
-      next: (response: any) => {
-        this.popUpTitle = 'Success!';
-        this.popUpBody = 'Your coupon code form has been submitted successfully.';
-        this.showPopUp = true;
-        console.log(eventData);
-        this.eventFormDetails.reset(); 
-      },
-      error: (error: HttpErrorResponse) => {
-        this.popUpTitle = 'Error!';
-        if (error.error && error.error.message) {
-          this.popUpBody = `Error: ${error.error.message}`;
-        } else {
-          this.popUpBody = 'Something went wrong. Please try again.';
-        }
-        this.showPopUp = true;
-      }
-    });
-  }
 
-  onPopUpClose() {
-    this.showPopUp = false; 
-  }
-
-  addBulletPointOnEnter(event: KeyboardEvent, textarea: HTMLTextAreaElement): void {
-    TextareaUtils.addBulletPointOnEnter(event, textarea);
-  }
-
-  addBulletPointOnFocus(textarea: HTMLTextAreaElement): void {
-    TextareaUtils.addBulletPointOnFocus(textarea);
-  }
-
-  resetForm(): void {
-    this.eventFormDetails.reset();
+  processRequest(eventData: any) {
+    const message = this.backendService.submitEventData(eventData);
   }
 }

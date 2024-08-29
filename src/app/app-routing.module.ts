@@ -54,62 +54,13 @@ const routes: Routes = [
     loadChildren: () => import("./screens/consumer-home/consumer-home.module").then(m => m.ConsumerHomeModule),
     // canActivate: [customerGuard]
   },
-
-<<<<<<< HEAD
-<<<<<<< HEAD
-  { path: "**", redirectTo: "consumer-home/adfeed" }
-=======
-    path: "login",
-    loadChildren: () =>
-      import("./screens/login/login.module").then(
-        (module) => module.LoginModule
+  {
+    path:"new",
+    loadChildren:() =>
+      import("./screens/postcreation/postcreation.module").then(
+        (module) =>module.PostcreationModule
       ),
-      canActivate:[loginGuard]
-  },
-  {
-    path: "homeCustomer",
-    loadChildren: () =>
-      import("./screens/home/home.module").then((module) => module.HomeModule), // replace the path of customer
-    canActivate: [customerGuard],
-  },
-  {
-    path: "otpscreen/:mobileNumber",
-    loadChildren: () =>
-      import("./screens/otpScreen/otpscreen.module").then(
-        (module) => module.OtpScreenModule
-      ),
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-  } 
-
-  
-  
->>>>>>> 6e5649e (Update LoginScreen1)
-=======
-    canActivate: [otpScreenGuard],
-=======
-    // canActivate: [otpScreenGuard],
->>>>>>> a8a8c40 (done changes as asked in pr)
-=======
->>>>>>> a523168 (did requested changes)
-=======
-    path: "business-home",
-    loadChildren: () => import("./screens/business-home/business-home.module").then(m => m.BusinessHomeModule),
-    canActivate: [businessGuard],
->>>>>>> 015b527 (changes after pulling from develop)
-  },
-  {
-    path: "otpscreen/:mobileNumber",
-    loadChildren: () => import("./screens/otpScreen/otpscreen.module").then(m => m.OtpScreenModule),
-  },
->>>>>>> 20f3341 (login functinality is working)
-=======
-  { path: "**", redirectTo: "business-home/adfeed" }
->>>>>>> c423dc1 (Fixed navbar icons and updated routing logic)
-=======
-  { path: "**", redirectTo: "login" }
->>>>>>> 65bdbd4 (Used Camel Case, Default route Login and renamed BusinessNavigationService)
+  }
 ];
 
 @NgModule({

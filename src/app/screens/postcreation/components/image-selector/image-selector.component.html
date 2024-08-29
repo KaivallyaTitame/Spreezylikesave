@@ -1,28 +1,12 @@
 <div class="image-selector ml-4 mt-2">
-  <div class="title text-black text-base mt-4">Add Images</div>
-
-  <div class="image-upload">
-    <input type="file" accept="image/*" (change)="onImageUpload($event)" multiple class="hidden" #fileInput>
-    <button type="button" rippleButton (click)="openFileDialog()" class="p-0">
-      <img src="assets/add-image-icon.png" alt="Image Icon" class="image-icon">
-    </button>
-  </div>
-
-  <div class="uploaded-images flex flex-wrap">
-    <div *ngFor="let imgSrc of imagePreviews; let i = index" class="relative mr-2 mb-2">
-      <img [src]="imgSrc" alt="Uploaded Image" class="uploaded-image">
-      <button type="button" (click)="removeImage(i)" rippleButton class="remove-button">
-        &times;
+    <div class="title text-black text-base mt-4">Add Images *</div>
+    <div class="image-upload">
+      <input type="file" accept="image/*" (change)="onImageUpload($event)" multiple class="hidden" #fileInput>
+      <button type="button" rippleButton (click)="openFileDialog()" class="bg-transparent p-0">
+        <img src="assets/add-image-icon.png" alt="Image Icon" class="w-12 h-12">
       </button>
     </div>
-  </div>
-
-  <div class="buttons-container" *ngIf="selectedFiles.length > 0">
-    <button type="button" rippleButton (click)="uploadImages()" class="upload-button">
-      UPLOAD
-    </button>
-  </div>
-</div>
-<div *ngIf="showPopUp">
-  <app-pop-up [messageTitle]="popUpTitle" [messageBody]="popUpBody" (close)="onPopUpClose()"></app-pop-up>
+    <div class="uploaded-images flex flex-wrap gap-2 mt-2">
+      <img *ngFor="let imgSrc of imagePreviews" [src]="imgSrc" alt="Uploaded Image" class="rounded w-12 h-12 object-cover">
+    </div>
 </div>

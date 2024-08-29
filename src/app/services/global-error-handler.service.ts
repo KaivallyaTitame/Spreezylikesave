@@ -30,5 +30,8 @@ export class GlobalErrorHandlerService implements ErrorHandler {
 
     // Optionally log the error to the console for further inspection
     console.error('Global Error Handler:', error);
+
+    // Optionally log the error to the console for further inspection
+    console.error('Global Error Handler:', error);
   }
 }

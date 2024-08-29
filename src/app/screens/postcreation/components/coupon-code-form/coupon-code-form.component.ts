@@ -1,11 +1,7 @@
-import { HttpErrorResponse } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { CouponDetails } from 'src/app/models/coupon-details';
-import { JwtDecoderService } from 'src/app/services/jwt-decoder.service';
-import { PostUploadService } from 'src/app/services/post-upload.service';
-import { TextareaUtils } from 'src/app/shared/textarea-utils';
-
+import { couponCodeForm } from 'src/app/models/couponCodeForm';
+import { BackendService } from 'src/app/services/backend.service';
 
 @Component({
   selector: 'app-coupon-code-form',
@@ -14,108 +10,72 @@ import { TextareaUtils } from 'src/app/shared/textarea-utils';
 })
 export class CouponCodeFormComponent {
   couponCodeFormDetails: FormGroup;
-  couponCodeData: CouponDetails = new CouponDetails();
-  imageFileNames: string[] = [];
-  username:string="";
-  businessId:string="";
-  showPopUp: boolean = false;
-  popUpTitle: string = '';
-  popUpBody: string = '';
+  couponCodeData: couponCodeForm = new couponCodeForm();
+  imageurl: string[] = ["nikhil"];
 
-  constructor(private fb: FormBuilder, private postUpload: PostUploadService,private jwtDecoder : JwtDecoderService) {
+  constructor(private fb: FormBuilder, private backendService: BackendService) {
     this.couponCodeFormDetails = this.fb.group({
-      imageFileNames: [[]],
-      couponTitle: [''],
-      username: [''],
-      description: [''],
-      promoBadge: [''],
-      couponCode: [''],
-      businessId: [''],
-      termsAndConditions: [''],
-      stepsToAvailOffer: [''],
-      expiry: [null]
-    });
-  }
-
-  ngOnInit(): void {
-    
-    const token = localStorage.getItem('token');
-
-    const decodedInfo = token ? this.jwtDecoder.decodeInfoFromToken(token) : this.jwtDecoder.decodeInfoFromToken('');
-    this.username = decodedInfo['sub'];
-    this.businessId = decodedInfo['sub'];
-  
-    this.couponCodeFormDetails.get('username')?.setValue(this.username);
-    this.couponCodeFormDetails.get('businessId')?.setValue(this.businessId);
-
-    
-    this.postUpload.generatedFileNames$.subscribe((fileNames: string[]) => {
-      this.imageFileNames = fileNames;
-      this.couponCodeFormDetails.get('imageFileNames')?.setValue(this.imageFileNames);
+      imageFileNames: [''],
+      couponTitle: ['', Validators.required],
+      username: ['', Validators.required],
+      description: ['', Validators.required],
+      promoBadge: ['', Validators.required],
+      couponCode: ['', Validators.required],
+      businessId: ['', Validators.required],
+      termsAndConditions: ['', Validators.required],
+      stepsToAvailOffer: ['', Validators.required],
+      expiry: [null, Validators.required]
     });
   }
 
   handleSubmit() {
     if (this.couponCodeFormDetails.valid) {
       this.createRequest(this.couponCodeFormDetails);
-    } else {
-      this.popUpTitle = 'Error!';
-      this.popUpBody = 'Please fill out form correctly';
-      this.showPopUp = true;
+      alert('Coupon details submitted successfully');
       this.couponCodeFormDetails.reset();
+    } else {
+      alert('Please fill out the form correctly');
     }
   }
 
   createRequest(details: FormGroup) {
-    this.couponCodeData.imageFileNames =this.imageFileNames;
+    this.couponCodeData.imageFileNames = this.imageurl;
     this.couponCodeData.couponTitle = details.value['couponTitle'];
-    this.couponCodeData.username = this.username;
+    this.couponCodeData.username = details.value['username'];
     this.couponCodeData.description = details.value['description'];
     this.couponCodeData.promoBadge = details.value['promoBadge'];
     this.couponCodeData.couponCode = details.value['couponCode'];
-    this.couponCodeData.businessId = this.businessId;
-    this.couponCodeData.termsAndConditions = TextareaUtils.convertTextareaToListWithBulletPoints(details.value['termsAndConditions']);
-    this.couponCodeData.stepsToAvailOffer = TextareaUtils.convertTextareaToListWithBulletPoints(details.value['stepsToAvailOffer']);
+    this.couponCodeData.businessId = details.value['businessId'];
+    this.couponCodeData.termsAndConditions = this.convertTextareaToListWithBulletPoints(details.value['termsAndConditions']);
+    this.couponCodeData.stepsToAvailOffer = this.convertTextareaToListWithBulletPoints(details.value['stepsToAvailOffer']);
     
     this.couponCodeData.expiry = details.value['expiry'];
 
     this.processRequest(this.couponCodeData);
   }
 
-  processRequest(couponCodeData: CouponDetails) {
-    this.postUpload.submitCouponData(couponCodeData).subscribe({
-      next: () => {
-        this.popUpTitle = 'Success!';
-        this.popUpBody = 'Your coupon code form has been submitted successfully.';
-        this.showPopUp = true;
-        console.log(couponCodeData);
-        this.couponCodeFormDetails.reset(); 
-      },
-      error: (error: HttpErrorResponse) => {
-        this.popUpTitle = 'Error!';
-        if (error.error && error.error.message) {
-          this.popUpBody = `Error: ${error.error.message}`;
-        } else {
-          this.popUpBody = 'Something went wrong. Please try again.';
-        }
-        this.showPopUp = true;
-      }
-    });
-  }
-
-  onPopUpClose() {
-    this.showPopUp = false; 
+  convertTextareaToListWithBulletPoints(textareaValue: string): string[] {
+    return textareaValue
+      .split('\n')
+      .map(item => item.trim())  
+      .filter(item => item.length > 0)
+      .map(item => (item.startsWith('• ') ? item : `• ${item}`));
   }
 
   addBulletPointOnEnter(event: KeyboardEvent, textarea: HTMLTextAreaElement): void {
-    TextareaUtils.addBulletPointOnEnter(event, textarea);
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      const cursorPosition = textarea.selectionStart;
+      const textBeforeCursor = textarea.value.slice(0, cursorPosition);
+      const textAfterCursor = textarea.value.slice(cursorPosition);
+      const updatedText = `${textBeforeCursor}\n• ${textAfterCursor}`;
+      textarea.value = updatedText;
+      textarea.selectionStart = textarea.selectionEnd = cursorPosition + 3;
+    }
   }
 
-  addBulletPointOnFocus(textarea: HTMLTextAreaElement): void {
-    TextareaUtils.addBulletPointOnFocus(textarea);
-  }
-
-  resetForm(): void {
-    this.couponCodeFormDetails.reset();
+  processRequest(couponCodeData: couponCodeForm) {
+    console.log(couponCodeData);
+    this.backendService.submitCouponData(couponCodeData);
   }
 }
