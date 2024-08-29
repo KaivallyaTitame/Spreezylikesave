@@ -146,6 +146,10 @@
     }
   },
   "cli": {
+<<<<<<< HEAD
     "analytics": "1c4d5c32-9b31-4be4-8dc7-a37fb58acd64"
+=======
+    "analytics": "aeeb1069-b0c1-4531-8bda-0dff8518d68b"
+>>>>>>> 4d024f5 (Intial commit)
   }
 }
