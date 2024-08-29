@@ -1,0 +1,109 @@
+<app-category-selector></app-category-selector>
+<form [formGroup]="eventFormDetails" (ngSubmit)="handleSubmit()">
+    <div class="title font-roboto text-black text-base" style="margin-top: 15px; margin-left: 15px;">
+        <label for="title">Title *</label>
+    </div>
+    <div class="input-container" style="margin-left: 15px;">
+        <input formControlName="title" type="text" name="eventTitle" required class="title-input border border-pink-500 rounded-md p-2" placeholder="Add Event Title Here..." id="title">
+        <div *ngIf="eventFormDetails.get('title')?.touched && eventFormDetails.get('title')?.invalid" class="text-red-500">
+            Event Title is required.
+        </div>
+    </div>
+
+    <app-image-selector></app-image-selector>
+    
+    <div class="title font-roboto text-black text-base" style="margin-top: 15px; margin-left: 15px;">
+        <label for="selector">Event Description*</label>
+    </div>
+    <div class="input-container" style="margin-left: 15px;">
+        <textarea formControlName="eventDescription" name="description" required class="offer-details-input border border-pink-500 rounded-md p-2" placeholder="Describe more about the event you want to share with your customer."></textarea>
+        <div *ngIf="eventFormDetails.get('eventDescription')?.touched && eventFormDetails.get('eventDescription')?.invalid" class="text-red-500">
+            Event Description is required.
+        </div>
+    </div>
+
+    <div class="title font-roboto text-black text-base" style="margin-top: 15px; margin-left: 15px;">
+        <label for="eventDate">Event Date*</label>
+    </div>
+    <div class="input-container" style="margin-left: 15px;">
+        <input formControlName="eventDate" type="date" name="date-input" required class="date-input border border-pink-500 rounded-md p-2" id="eventDate">
+        <div *ngIf="eventFormDetails.get('eventDate')?.touched && eventFormDetails.get('eventDate')?.invalid" class="text-red-500">
+            Event Date is required.
+        </div>
+    </div>
+
+    <div class="title font-roboto text-black text-base" style="margin-top: 15px; margin-left: 15px;">
+        <label for="eventStartTime">Event Start Time*</label>
+    </div>
+    <div class="input-container" style="margin-left: 15px;">
+        <input formControlName="eventStartTime" type="time" name="startTime" required class="date-input border border-pink-500 rounded-md p-2" id="eventStartTime">
+        <div *ngIf="eventFormDetails.get('eventStartTime')?.touched && eventFormDetails.get('eventStartTime')?.invalid" class="text-red-500">
+            Event Start Time is required.
+        </div>
+    </div>
+
+    <div class="title font-roboto text-black text-base" style="margin-top: 15px; margin-left: 15px;">
+        <label for="eventEndTime">Event End Time*</label>
+    </div>
+    <div class="input-container" style="margin-left: 15px;">
+        <input formControlName="eventEndTime" type="time" name="EndTime" required class="date-input border border-pink-500 rounded-md p-2" id="eventEndTime">
+        <div *ngIf="eventFormDetails.get('eventEndTime')?.touched && eventFormDetails.get('eventEndTime')?.invalid" class="text-red-500">
+            Event End Time is required.
+        </div>
+    </div>
+
+    <div class="title font-roboto text-black text-base" style="margin-top: 15px; margin-left: 15px;">
+        <label for="badge">Enter PromoBadge*</label>
+    </div>
+    <div class="input-container" style="margin-left: 15px;">
+        <input formControlName="promoBadge" type="text" name="promoBadge" required class="title-input border border-pink-500 rounded-md p-2" placeholder="Add PromoBadge here ..." id="badge">
+        <div *ngIf="eventFormDetails.get('promoBadge')?.touched && eventFormDetails.get('promoBadge')?.invalid" class="text-red-500">
+            Promo Badge is required.
+        </div>
+    </div>
+
+    <div class="title font-roboto text-black text-base" style="margin-top: 15px; margin-left: 15px;">
+        <label for="expiry">Enter Expiry Date*</label>
+    </div>
+    <div class="input-container" style="margin-left: 15px;">
+        <input formControlName="expiryDate" type="date" name="expiryDate" required class="title-input border border-pink-500 rounded-md p-2" id="expiry">
+        <div *ngIf="eventFormDetails.get('expiryDate')?.touched && eventFormDetails.get('expiryDate')?.invalid" class="text-red-500">
+            Expiry Date is required.
+        </div>
+    </div>
+
+    <div class="title font-roboto text-black text-base" style="margin-top: 15px; margin-left: 15px;">
+        <label for="book">Enter Booking URL*</label>
+    </div>
+    <div class="input-container" style="margin-left: 15px;">
+        <input formControlName="bookingUrl" type="text" name="BookingUrl" required class="title-input border border-pink-500 rounded-md p-2" placeholder="Enter BookingUrl" id="book">
+        <div *ngIf="eventFormDetails.get('bookingUrl')?.touched && eventFormDetails.get('bookingUrl')?.invalid" class="text-red-500">
+            Booking URL is required.
+        </div>
+    </div>
+
+    <div class="title font-roboto text-black text-base" style="margin-top: 15px; margin-left: 15px;">
+        <label for="terms">Terms & Conditions *</label>
+    </div>
+    <div class="input-container" style="margin-left: 15px;">
+        <textarea formControlName="termsConditions" name="termsAndConditions" required class="terms-input border border-pink-500 rounded-md p-2" placeholder="Enter terms and conditions" id="terms"></textarea>
+        <div *ngIf="eventFormDetails.get('termsConditions')?.touched && eventFormDetails.get('termsConditions')?.invalid" class="text-red-500">
+            Terms & Conditions are required.
+        </div>
+    </div>
+
+    <div class="title font-roboto text-black text-base" style="margin-top: 15px; margin-left: 15px;">
+        <label for="steps">Steps To Avail Offer*</label>
+    </div>
+    <div class="input-container" style="margin-left: 15px;">
+        <textarea formControlName="steps" name="steps" required class="terms-input border border-pink-500 rounded-md p-2" placeholder="Enter instructions" id="steps"></textarea>
+        <div *ngIf="eventFormDetails.get('steps')?.touched && eventFormDetails.get('steps')?.invalid" class="text-red-500">
+            Steps to avail the offer are required.
+        </div>
+    </div>
+
+    <div class="buttons-container" style="margin-left: 39px; margin-top: 15px;">
+        <button type="button" class="reset-button">RESET DETAILS</button>
+        <button type="submit" class="post-button">POST</button>
+    </div>
+</form>

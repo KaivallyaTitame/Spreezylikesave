@@ -1,0 +1,12 @@
+<div class="image-selector ml-4 mt-2">
+    <div class="title text-black text-base mt-4">Add Images *</div>
+    <div class="image-upload">
+      <input type="file" accept="image/*" (change)="onImageUpload($event)" multiple class="hidden" #fileInput>
+      <button type="button" rippleButton (click)="openFileDialog()" class="bg-transparent p-0">
+        <img src="assets/add-image-icon.png" alt="Image Icon" class="w-12 h-12">
+      </button>
+    </div>
+    <div class="uploaded-images flex flex-wrap gap-2 mt-2">
+      <img *ngFor="let imgSrc of imagePreviews" [src]="imgSrc" alt="Uploaded Image" class="rounded w-12 h-12 object-cover">
+    </div>
+</div>

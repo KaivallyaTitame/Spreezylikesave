@@ -33,7 +33,27 @@ const routes: Routes = [
     loadChildren: () => import("./screens/consumer-home/consumer-home.module").then(m => m.ConsumerHomeModule),
     canActivate: [customerGuard]
   },
-  { path: "**", redirectTo: "login"}
+  {
+    path: "ad-feed",
+    loadChildren: () =>
+      import("./screens/ad-feed/ad-feed.module").then(
+        (module) => module.AdFeedModule
+      ),
+  },
+  {
+    path: "feedback-screen",
+    loadChildren: () =>
+      import("./screens/feedback-screen/feedback-screen.module").then(
+        (module) => module.FeedbackScreenModule
+      ),
+  },
+  {
+    path:"new",
+    loadChildren:() =>
+      import("./screens/postcreation/postcreation.module").then(
+        (module) =>module.PostcreationModule
+      ),
+  }
 ];
 
 @NgModule({

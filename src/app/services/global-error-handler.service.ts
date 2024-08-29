@@ -11,11 +11,24 @@ export class GlobalErrorHandlerService implements ErrorHandler {
   constructor(private alertService: AlertService, private zone: NgZone) {}
 
   handleError(error: any): void {
-    if (!(error instanceof HttpErrorResponse)) {
-      error = error.rejection;
+    let errorMessage = "An unexpected error occurred";
+    let errorName = "Error";
+
+    if (error) {
+      if (!(error instanceof HttpErrorResponse) && error.rejection) {
+        error = error.rejection; // Get the real error object
+      }
+
+      // Safely access the error properties
+      errorName = error?.name || errorName;
+      errorMessage = error?.message || errorMessage;
     }
+
     this.zone.run(() => {
-      this.alertService.sendAlertTrigger(new Alert(error.name, error.message));
+      this.alertService.sendAlertTrigger(new Alert(errorName, errorMessage));
     });
+
+    // Optionally log the error to the console for further inspection
+    console.error('Global Error Handler:', error);
   }
 }

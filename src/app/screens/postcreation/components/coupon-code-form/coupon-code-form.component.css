@@ -1,0 +1,77 @@
+.title-input,
+.url-input,
+.date-input,
+.badge-input,
+.enter-coupon-code-input,
+.terms-input{
+    font-size: 12px;
+    width: 330px;
+    height: 28px;
+    margin-top: 5px;
+    border-radius: 4px;
+    border-color: #ED6A5A;
+    color: #979797;
+}
+
+.offer-details-input,
+.how-to-avail-input,
+.how-to-redeem-input,
+.terms-input {
+    height: 81px;
+    width: 330px;
+    border-color: #ED6A5A;
+}
+
+.title-input::placeholder,
+.url-input::placeholder,
+.date-input::placeholder,
+.badge-input::placeholder,
+.offer-details-input::placeholder,
+.how-to-avail-input::placeholder,
+.how-to-redeem-input::placeholder,
+.terms-input::placeholder {
+    color: #979797;
+    font-family: 'Roboto';
+    font-size: 12px;
+}
+
+.buttons-container {
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+}
+
+.reset-button,
+.post-button {
+    font-size: 14px;
+    font-family: 'Roboto';
+    color: #FFFFFF;
+    background-color: #ED6A5A;
+    border: 2px solid #ED6A5A;
+    border-radius: 4px;
+    width: 130px;
+    height: 35px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.post-button {
+    margin-left: 22px;
+}
+
+.reset-button:hover,
+.post-button:hover {
+    background-color: #f57c6c; /* Slightly lighter shade */
+}
+
+.reset-button:active,
+.post-button:active {
+    background-color: #db594a; /* Slightly darker shade */
+}
+
+.reset-button:focus,
+.post-button:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(237, 106, 90, 0.4);
+}
+
