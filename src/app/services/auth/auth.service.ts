@@ -21,7 +21,6 @@ export class AuthService {
         console.log(error);
         this.router.navigate(["/login"]);
         throw new Error("Error occurred while logging in. Try again after sometime.")
-        
       }
     );
   }
