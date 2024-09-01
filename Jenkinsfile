@@ -41,7 +41,9 @@ pipeline
             steps{
                 
                 withCredentials([file(credentialsId: 'nexus_npm_credentials', variable: 'npm_nexus_credentials')]) {
-                 sh "npm install --userconfig ${npm_nexus_credentials} --registry https://nexus.spreezy.in/repository/npm-group/ --loglevel verbose"
+                //  sh "npm install --userconfig ${npm_nexus_credentials} --registry https://nexus.spreezy.in/repository/npm-group/ --loglevel verbose"
+                    sh "npm config set registry http://registry.npmjs.org/"
+                    sh "npm install --loglevel verbose"
                 }
             }
         }
