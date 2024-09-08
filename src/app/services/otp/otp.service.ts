@@ -10,7 +10,7 @@ import { VerifyOtpResponse } from "../../models/verifyOtpResponse";
 })
 export class OtpService {
   private apiUrl =
-    "https://dd02-2409-40c2-3e-e599-f900-2b15-56fa-b30b.ngrok-free.app/";
+    "http://localhost:8083/";
 
   constructor(private http: HttpClient) {}
   isOtpSentToMobile = false;

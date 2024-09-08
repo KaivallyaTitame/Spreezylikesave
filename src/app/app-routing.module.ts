@@ -53,6 +53,7 @@ const routes: Routes = [
         (module) => module.OtpscreenModule
       ),
 <<<<<<< HEAD
+<<<<<<< HEAD
   } 
 
   
@@ -60,6 +61,9 @@ const routes: Routes = [
 >>>>>>> 6e5649e (Update LoginScreen1)
 =======
     canActivate: [otpScreenGuard],
+=======
+    // canActivate: [otpScreenGuard],
+>>>>>>> a8a8c40 (done changes as asked in pr)
   },
   {
     path: "homeBusiness",
