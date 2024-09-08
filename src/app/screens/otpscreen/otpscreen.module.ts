@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 
 import { OtpscreenRoutingModule } from './otpscreen-routing.module';
 import { OtpscreenComponent } from './otpscreen.component';
+import { ReactiveFormsModule } from '@angular/forms';
 
 
 
@@ -12,7 +13,8 @@ import { OtpscreenComponent } from './otpscreen.component';
   ],
   imports: [
     CommonModule,
-    OtpscreenRoutingModule
+    OtpscreenRoutingModule,
+    
   ]
 })
 export class OtpscreenModule { }

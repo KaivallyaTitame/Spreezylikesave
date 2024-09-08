@@ -1,7 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 /** @type {import('rippleui').Config} */
 module.exports = {
-  darkMode: 'class',
   rippleui: {
     themes: [
       // Explicitly overriding the darkTheme in RippleUI as it breaks if system theme is dark.
@@ -9,7 +8,6 @@ module.exports = {
       {
         themeName: "light",
         colorScheme: "light",
-        
         colors: {
           primary: "#ED6A5A",
           backgroundPrimary: "#FFFFFF",

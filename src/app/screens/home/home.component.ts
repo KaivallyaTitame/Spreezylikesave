@@ -1,7 +1,5 @@
 import { Component } from "@angular/core";
-import { JwtDecoderService } from "src/app/services/jwtDecoder/jwt-decoder.service";
-import { tap } from "rxjs";
-import { AuthService } from "src/app/services/auth/auth.service";
+import { AuthService } from "src/app/services/auth.service";
 
 @Component({
   selector: "app-home",
@@ -9,17 +7,9 @@ import { AuthService } from "src/app/services/auth/auth.service";
   styles: [],
 })
 export class HomeComponent {
-  constructor(
-    private authService: AuthService,
-    private jwtDecode: JwtDecoderService
-  ) {}
+  constructor(private authService: AuthService) {}
 
   logout() {
-    let token = localStorage.getItem("token") || "";
-    let userName = this.jwtDecode.decodeInfoFromToken(token).sub;
-    console.log("Token:", token);
-    console.log("Username:", userName);
-
-    this.authService.logout(token, userName)
+    this.authService.logout();
   }
 }

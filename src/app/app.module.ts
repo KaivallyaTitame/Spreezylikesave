@@ -7,10 +7,14 @@ import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
 import { LoginModule } from "./screens/login/login.module";
 <<<<<<< HEAD
+<<<<<<< HEAD
 import { LogoutModule } from "./screens/logout/logout.module";
 =======
 <<<<<<< HEAD
 >>>>>>> e3c8cc1 (login functinality is working)
+=======
+<<<<<<< HEAD
+>>>>>>> ed7e1fa (done changes as asked in pr)
 import { GlobalErrorHandlerService } from "./services/global-error-handler.service";
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -83,15 +87,24 @@ import { ReactiveFormsModule } from "@angular/forms";
 =======
 =======
 >>>>>>> 20f3341 (login functinality is working)
+=======
+import { GlobalErrorHandlerService } from "./services/global-error-handler.service";
+>>>>>>> a8a8c40 (done changes as asked in pr)
 import { ReactiveFormsModule } from "@angular/forms";
 import { OtpscreenComponent } from "./screens/otpscreen/otpscreen.component";
 import { LoaderComponent } from './components/loader/loader.component';
-
-
+import { RegisterModule } from "./screens/register/register.module";
 @NgModule({
+<<<<<<< HEAD
   declarations: [AppComponent, OtpscreenComponent], 
 >>>>>>> 3789018 (Post blocker)
+<<<<<<< HEAD
 >>>>>>> 952c569 (Post blocker)
+=======
+=======
+  declarations: [AppComponent, OtpscreenComponent],
+>>>>>>> a8a8c40 (done changes as asked in pr)
+>>>>>>> ed7e1fa (done changes as asked in pr)
   imports: [
     BrowserModule,
     AppRoutingModule,
@@ -114,13 +127,18 @@ import { LoaderComponent } from './components/loader/loader.component';
 >>>>>>> e090634 (otpscreenui)
 =======
     ReactiveFormsModule ,
+<<<<<<< HEAD
     LoaderComponent
 >>>>>>> 20f3341 (login functinality is working)
+=======
+    LoaderComponent,
+    RegisterModule
+>>>>>>> a8a8c40 (done changes as asked in pr)
   ],
   providers: [
     {
       provide: ErrorHandler,
-      // useClass: GlobalErrorHandlerService,
+      useClass: GlobalErrorHandlerService,
     },
     
   ],

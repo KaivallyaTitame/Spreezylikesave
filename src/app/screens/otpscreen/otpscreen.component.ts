@@ -202,5 +202,9 @@ export class OtpscreenComponent implements OnInit, OnDestroy {
         break;
     }
   }
+<<<<<<< HEAD
 >>>>>>> 421cafb (login functinality is working)
 }
+=======
+}
+>>>>>>> 31cb5cf (done changes as asked in pr)
