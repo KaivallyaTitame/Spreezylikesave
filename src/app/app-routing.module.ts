@@ -33,18 +33,11 @@ const routes: Routes = [
   { path: "register", loadChildren: () => import("./screens/register/register.module").then(m => m.RegisterModule) },
 
   {
-<<<<<<< HEAD
-<<<<<<< HEAD
-    path: "business-home",
-    loadChildren: () => import("./screens/business-home/business-home.module").then(m => m.BusinessHomeModule),
-<<<<<<< HEAD
-=======
-    path: "",
-    redirectTo: "login",
-    pathMatch: "full",
->>>>>>> ef5dd52 (Minor changes)
-=======
-    // canActivate: [businessGuard]
+    path: "home",
+    loadChildren: () =>
+      import("./screens/home/home.module").then(
+        (module) => module.HomeModule
+      ),
   },
   {
     path: "otpscreen/:mobileNumber",

@@ -29,86 +29,16 @@ import { RegisterModule } from "./screens/register/register.module";
   declarations: [
     AppComponent
   ],
-<<<<<<< HEAD
-=======
-import { OtpComponent } from './otp/otp.component';
-=======
-import { ReactiveFormsModule } from "@angular/forms";
->>>>>>> 00d6748 (otpscreenui)
-
-@NgModule({
-<<<<<<< HEAD
-  declarations: [AppComponent, OtpComponent],
->>>>>>> 6e5649e (Update LoginScreen1)
-=======
-  declarations: [AppComponent],
->>>>>>> e090634 (otpscreenui)
-=======
-=======
->>>>>>> 20f3341 (login functinality is working)
-=======
-import { GlobalErrorHandlerService } from "./services/global-error-handler.service";
->>>>>>> a8a8c40 (done changes as asked in pr)
-import { ReactiveFormsModule } from "@angular/forms";
-import { RegisterModule } from "./screens/register/register.module";
-@NgModule({
-<<<<<<< HEAD
-<<<<<<< HEAD
-  declarations: [AppComponent, OtpscreenComponent], 
->>>>>>> 3789018 (Post blocker)
-=======
-  declarations: [AppComponent, OtpscreenComponent],
->>>>>>> a8a8c40 (done changes as asked in pr)
-=======
-  declarations: [AppComponent],
->>>>>>> fd6032b (used popup component where needed to show error responses)
-=======
->>>>>>> 015b527 (changes after pulling from develop)
+  declarations: [
+    AppComponent
+  ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
     AngularFireModule.initializeApp(environment.firebase),
     LoginModule,
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-    LogoutModule,
->>>>>>> 79946b6 (business-home working with docker integration)
-    BusinessHomeModule,
-<<<<<<< HEAD
-    ConsumerHomeModule
-  ],
-  exports: [
-    LoginComponent 
-=======
-=======
-    ReactiveFormsModule
->>>>>>> 00d6748 (otpscreenui)
-    
->>>>>>> e090634 (otpscreenui)
-=======
-    ReactiveFormsModule ,
-<<<<<<< HEAD
-    LoaderComponent
->>>>>>> 20f3341 (login functinality is working)
-=======
-    LoaderComponent,
-    RegisterModule
->>>>>>> a8a8c40 (done changes as asked in pr)
-  ],
-=======
-    ReactiveFormsModule,
-    RegisterModule,
-],
->>>>>>> fd6032b (used popup component where needed to show error responses)
-=======
-    ConsumerHomeModule,
-    ReactiveFormsModule,
-    RegisterModule
+    FontAwesomeModule
   ],
 >>>>>>> 015b527 (changes after pulling from develop)
   providers: [
@@ -116,7 +46,9 @@ import { RegisterModule } from "./screens/register/register.module";
       provide: ErrorHandler,
       useClass: GlobalErrorHandlerService,
     },
+    
   ],
   bootstrap: [AppComponent],
+  
 })
 export class AppModule {}

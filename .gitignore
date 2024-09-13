@@ -1,6 +1,6 @@
 /node_modules
 /.angular
-/dist
+
 /android
 /ios
 /cypress
@@ -17,4 +17,3 @@
 .npmrc
 /dist
 /icons
-.vscode/

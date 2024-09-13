@@ -1,0 +1,17 @@
+/* consumer-navbar.component.css */
+
+.consumer-wrapper {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+.consumer-content {
+    flex: 1; /* Grow to fill remaining space */
+    overflow-y: auto; /* Enable vertical scrolling */
+}
+
+.drawer-toggle:checked~.overlay {
+    opacity: 0;
+    visibility: visible;
+}
