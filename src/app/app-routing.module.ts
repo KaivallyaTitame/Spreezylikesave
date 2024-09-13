@@ -39,8 +39,8 @@ const routes: Routes = [
   {
     path: "ad-feed",
     loadChildren: () =>
-      import("./screens/ad-feed/ad-feed.module").then(
-        (module) => module.AdFeedModule
+      import("./screens/home/home.module").then(
+        (module) => module.HomeModule
       ),
   },
   {

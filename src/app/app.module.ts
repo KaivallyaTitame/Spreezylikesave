@@ -24,18 +24,16 @@ import { RegisterModule } from "./screens/register/register.module";
     HttpClientModule,
     AngularFireModule.initializeApp(environment.firebase),
     LoginModule,
-    LogoutModule,
-    BusinessHomeModule,
-    ConsumerHomeModule,
-    ReactiveFormsModule,
-    RegisterModule
+    FontAwesomeModule
   ],
   providers: [
     {
       provide: ErrorHandler,
       useClass: GlobalErrorHandlerService,
     },
+    
   ],
   bootstrap: [AppComponent],
+  
 })
 export class AppModule {}

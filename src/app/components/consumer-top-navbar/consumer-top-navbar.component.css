@@ -1,0 +1,4 @@
+.drawer-toggle:checked~.overlay {
+    opacity: 0;
+    visibility: visible;
+}
