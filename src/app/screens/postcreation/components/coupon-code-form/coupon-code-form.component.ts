@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { couponCodeForm } from 'src/app/models/couponCodeForm';
-import { BackendService } from 'src/app/services/backend.service';
+import { couponDetails } from 'src/app/models/coupon-details';
+import { BackendService } from 'src/app/services/post-upload.service';
 
 @Component({
   selector: 'app-coupon-code-form',
@@ -10,7 +10,7 @@ import { BackendService } from 'src/app/services/backend.service';
 })
 export class CouponCodeFormComponent {
   couponCodeFormDetails: FormGroup;
-  couponCodeData: couponCodeForm = new couponCodeForm();
+  couponCodeData: couponDetails = new couponDetails();
   imageurl: string[] = ["nikhil"];
 
   constructor(private fb: FormBuilder, private backendService: BackendService) {
@@ -31,7 +31,6 @@ export class CouponCodeFormComponent {
   handleSubmit() {
     if (this.couponCodeFormDetails.valid) {
       this.createRequest(this.couponCodeFormDetails);
-      alert('Coupon details submitted successfully');
       this.couponCodeFormDetails.reset();
     } else {
       alert('Please fill out the form correctly');
@@ -74,7 +73,7 @@ export class CouponCodeFormComponent {
     }
   }
 
-  processRequest(couponCodeData: couponCodeForm) {
+  processRequest(couponCodeData: couponDetails) {
     console.log(couponCodeData);
     this.backendService.submitCouponData(couponCodeData);
   }

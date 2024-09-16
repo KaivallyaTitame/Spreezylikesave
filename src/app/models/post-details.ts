@@ -1,4 +1,4 @@
-export class PostDetails {
+export class postDetails {
     postTitle: string = ' ';
     username: string = ' ';
     description: string = ' ';

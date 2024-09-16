@@ -20,8 +20,11 @@ import { loginGuard } from "./authGuards/login/login.guard";
 >>>>>>> 20f3341 (login functinality is working)
 
 const routes: Routes = [
-  { path: "", redirectTo: "login", pathMatch: "full" },
-
+  {
+    path: "",
+    redirectTo: "new",
+    pathMatch: "full",
+  },
   {
     path: "login",
     loadChildren: () => import("./screens/login/login.module").then(m => m.LoginModule),

@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { EventForm } from 'src/app/models/event-form';
-import { BackendService } from 'src/app/services/backend.service';
+import { eventDetails } from 'src/app/models/event-details';
+import { BackendService } from 'src/app/services/post-upload.service';
 
 @Component({
   selector: 'app-events-form',
@@ -9,29 +9,28 @@ import { BackendService } from 'src/app/services/backend.service';
   styleUrls: ['./events-form.component.css']
 })
 export class EventsFormComponent {
-  eventFormDetails:FormGroup;
-  eventData:EventForm=new EventForm();
-  imageurl:string="URL";
+  eventFormDetails: FormGroup;
+  eventData: eventDetails = new eventDetails();
+  imageurl: string[] = ["sample-image"];
+  username: string="nikhil123";
 
-  constructor(private fb:FormBuilder,private backendService:BackendService){
-    this.eventFormDetails=this.fb.group({
-      images: [''],
-      title: ['', Validators.required],
-      eventDescription:['',Validators.required],
-      eventDate:[null,Validators.required],
-      eventStartTime:['',Validators.required],
-      eventEndTime:['',Validators.required],
-      promoBadge:['',Validators.required],
-      expiryDate:[null,Validators.required],
-      bookingUrl:['',Validators.required],
-      termsConditions:['',Validators.required],
-      steps:['',Validators.required]
+  constructor(private fb: FormBuilder, private backendService: BackendService) {
+    this.eventFormDetails = this.fb.group({
+      imageFileNames: [''],
+      businessId:[''],
+      eventTitle: ['', Validators.required],
+      description: ['', Validators.required],
+      eventDateAndTime: ['', Validators.required],
+      promoBadge: ['', Validators.required],
+      expiry: ['', Validators.required],
+      bookingUrl: ['', Validators.required],
+      termsAndConditions: ['', Validators.required],
+      stepsToAvailOffer: ['', Validators.required],
     });
   }
 
   handleSubmit() {
     if (this.eventFormDetails.valid) {
-      console.log(this.eventFormDetails.value);
       this.createRequest(this.eventFormDetails);
       alert('Event details submitted successfully');
       this.eventFormDetails.reset();
@@ -41,23 +40,45 @@ export class EventsFormComponent {
   }
 
   createRequest(details: FormGroup) {
-    this.eventData.images=this.imageurl;
-    this.eventData.title = details.value['title'];
-    this.eventData.eventDescription = details.value['eventDescription'];
-    this.eventData.eventDate = details.value['eventDate'];
-    this.eventData.eventStartTime = details.value['eventStartTime'];
-    this.eventData.eventEndTime = details.value['eventEndTime'];
+    this.eventData.imageFileNames = this.imageurl;
+    this.eventData.eventTitle = details.value['eventTitle'];
+    this.eventData.description = details.value['description'];
+    this.eventData.eventDateAndTime = details.value['eventDateAndTime'].toString();
     this.eventData.promoBadge = details.value['promoBadge'];
-    this.eventData.expiryDate = details.value['expiryDate'];
+    this.eventData.expiry = details.value['expiry'].toString();
     this.eventData.bookingUrl = details.value['bookingUrl'];
-    this.eventData.termsConditions = details.value['termsConditions'];
-    this.eventData.steps = details.value['steps'];
-  
-    this.processRequest(this.eventData);
-  }
-  
+    this.eventData.termsAndConditions = this.convertTextareaToListWithBulletPoints(details.value['termsAndConditions']);
+    this.eventData.stepsToAvailOffer = this.convertTextareaToListWithBulletPoints(details.value['stepsToAvailOffer']);
+    this.eventData.businessId=this.username;
+    this.eventData.username=this.username;
 
-  processRequest(eventData: any) {
-    const message = this.backendService.submitEventData(eventData);
+    this.processRequest(this.eventData);
+    console.log(this.eventData);
+  }
+
+  convertTextareaToListWithBulletPoints(textareaValue: string): string[] {
+    return textareaValue
+      .split('\n')
+      .map(item => item.trim())  
+      .filter(item => item.length > 0)
+      .map(item => (item.startsWith('• ') ? item : `• ${item}`));
+  }
+
+  addBulletPointOnEnter(event: KeyboardEvent, textarea: HTMLTextAreaElement): void {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      const cursorPosition = textarea.selectionStart;
+      const textBeforeCursor = textarea.value.slice(0, cursorPosition);
+      const textAfterCursor = textarea.value.slice(cursorPosition);
+      const updatedText = `${textBeforeCursor}\n• ${textAfterCursor}`;
+      textarea.value = updatedText;
+      textarea.selectionStart = textarea.selectionEnd = cursorPosition + 3;
+    }
+  }
+
+  processRequest(eventData: eventDetails) {
+    console.log(eventData);
+    const message=this.backendService.submitEventData(eventData);
+    console.log(message);
   }
 }

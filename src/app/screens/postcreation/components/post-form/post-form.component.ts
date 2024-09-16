@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { PostForm } from 'src/app/models/post-form';
-import { BackendService } from 'src/app/services/backend.service';
+import { postDetails } from 'src/app/models/post-details';
+import { BackendService } from 'src/app/services/post-upload.service';
 
 @Component({
   selector: 'app-post-form',
@@ -10,7 +10,7 @@ import { BackendService } from 'src/app/services/backend.service';
 })
 export class PostFormComponent {
   postFormDetails: FormGroup;
-  postFormData: PostForm = new PostForm(); 
+  postFormData: postDetails = new postDetails(); 
   imageurl:string[]=["nikhil"]; 
 
   constructor(private fb: FormBuilder, private backendService: BackendService) {
@@ -70,7 +70,7 @@ export class PostFormComponent {
     }
   }
 
-  processRequest(postFormData: PostForm) {
+  processRequest(postFormData: postDetails) {
     const message = this.backendService.submitPostForm(postFormData);
   }
 
