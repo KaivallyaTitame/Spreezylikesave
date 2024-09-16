@@ -13,31 +13,31 @@
 }
 
 ::backdrop {
-    background-color: white;
+  background-color: white;
 }
 
 #bottom-navbar {
-    background-color: theme('colors.primarycolor.0'); 
+  background-color: theme('colors.primarycolor.0'); 
 }
 
 .nav-item {
-    background-color: theme('colors.primarycolor.0'); 
-    color: white; 
-    transition: background-color 0.1s, color 0.1s; 
+  background-color: theme('colors.primarycolor.0'); 
+  color: white; 
+  transition: background-color 0.1s, color 0.1s; 
 }
 
 .nav-item:hover {
-    background-color: white; 
+  background-color: white; 
 }
 
 .nav-item:hover fa-icon {
-    color: theme('colors.primarycolor.0'); 
+  color: theme('colors.primarycolor.0'); 
 }
 
 .nav-item.active {
-    background-color: white; 
+  background-color: white; 
 }
 
 .nav-item.active fa-icon {
-    color: theme('colors.primarycolor.0'); 
+  color: theme('colors.primarycolor.0'); 
 }

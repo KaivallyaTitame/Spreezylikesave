@@ -6,24 +6,7 @@ import { BusinessNavigationServiceService } from 'src/app/services/business-navi
 
 @Component({
   selector: 'app-business-bottom-navbar',
-  templateUrl: './business-bottom-navbar.component.html',
-  styles: [`
-    img {
-      transition: filter 0.1s ease;
-    }
-
-    .insights-icon {
-      filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(0deg) brightness(100%) contrast(100%);
-    }
-
-    .insights-icon:hover {
-      filter: invert(31%) sepia(60%) saturate(4275%) hue-rotate(328deg) brightness(95%) contrast(97%);
-    }
-
-    .active-icon {
-      color: var(--primarycolor-0);
-    }
-  `]
+  templateUrl: './business-bottom-navbar.component.html'
 })
 export class BusinessBottomNavbarComponent {
   constructor(private router: Router, private _navigation: BusinessNavigationServiceService) {}

@@ -10,10 +10,11 @@
     </div>
 
     <div (click)="Insights()" [ngClass]="{'active': Insights_screen_active}" class="nav-item grow text-center py-2 cursor-pointer flex justify-center items-center" style="height: 100%;">
-      <img src="assets/icons/insights.svg" alt="Insights Icon" 
-           class="insights-icon"
-           [ngClass]="{'active-icon': Insights_screen_active, 'text-white': !Insights_screen_active}"
-           style="width: 2em; height: 2em; fill: currentColor;">
+      <fa-icon 
+        class="py-1 my-2 text-3xl" 
+        [ngClass]="{'active-icon': Insights_screen_active, 'text-white': !Insights_screen_active}" 
+        [icon]="faChartColumn">
+      </fa-icon>
     </div>
 
     <div (click)="Add_Post()" [ngClass]="{'active': Post_screen_active}" class="nav-item grow text-center py-2 cursor-pointer" style="height: 100%;">

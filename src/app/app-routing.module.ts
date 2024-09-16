@@ -1,8 +1,7 @@
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
-import { customerGuard } from "./authGuards/customer/customer.guard";
-import { businessGuard } from "./authGuards/business/business.guard";
-import { loginGuard } from "./authGuards/login/login.guard";
+import { NgModule } from "@angular/core";
+import { RouterModule, Routes } from "@angular/router";
+import { ConsumerBottomNavbarComponent } from 'src/app/components/consumer-bottom-navbar/consumer-bottom-navbar.component';
+import { ConsumerTopNavbarComponent } from 'src/app/components/consumer-top-navbar/consumer-top-navbar.component';
 
 const routes: Routes = [
   {
