@@ -1,23 +1,7 @@
-<<<<<<< HEAD
 import { NgModule } from "@angular/core";
 import { RouterModule, Routes } from "@angular/router";
-<<<<<<< HEAD
-import { HomeScreenComponent} from "./screens/home-screen/home-screen.component";
-import { BusinessInsightsComponent } from "./screens/insights/insights.component";
-import { NotificationScreenComponent } from "./screens/notification-screen/notification-screen.component";
-import { AddPostComponent } from "./screens/add-post/add-post.component";
-import { ProfileScreenComponent } from "./screens/profile-screen/profile-screen.component";
-import { SearchComponent } from "./screens/search/search.component";
-
-=======
-=======
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
->>>>>>> 015b527 (changes after pulling from develop)
-import { customerGuard } from "./authGuards/customer/customer.guard";
-import { businessGuard } from "./authGuards/business/business.guard";
-import { loginGuard } from "./authGuards/login/login.guard";
->>>>>>> 20f3341 (login functinality is working)
+import { ConsumerBottomNavbarComponent } from 'src/app/components/consumer-bottom-navbar/consumer-bottom-navbar.component';
+import { ConsumerTopNavbarComponent } from 'src/app/components/consumer-top-navbar/consumer-top-navbar.component';
 
 const routes: Routes = [
   {
