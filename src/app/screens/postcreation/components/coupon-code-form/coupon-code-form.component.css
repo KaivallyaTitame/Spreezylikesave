@@ -61,12 +61,12 @@
 
 .reset-button:hover,
 .post-button:hover {
-    background-color: #f57c6c; /* Slightly lighter shade */
+    background-color: #f57c6c; 
 }
 
 .reset-button:active,
 .post-button:active {
-    background-color: #db594a; /* Slightly darker shade */
+    background-color: #db594a;
 }
 
 .reset-button:focus,

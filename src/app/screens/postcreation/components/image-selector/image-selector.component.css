@@ -35,3 +35,69 @@
     object-fit: cover;
     border-radius: 4px;
 }
+
+.buttons-container {
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+}
+
+.upload-button {
+    font-size: 14px;
+    font-family: 'Roboto'!important;
+    color: #FFFFFF;
+    background-color: #ED6A5A;
+    border: 2px solid #ED6A5A;
+    border-radius: 4px;
+    width: 130px;
+    height: 35px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.upload-button {
+    margin-left: 22px;
+}
+
+.upload-button:hover {
+    background-color: #f57c6c; 
+}
+
+.upload-button:active {
+    background-color: #db594a;
+}
+
+.upload-button:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(237, 106, 90, 0.4);
+}
+
+
+.uploaded-images {
+    display: flex;
+    gap: 8px;
+}
+  
+.relative {
+    position: relative;
+}
+  
+button {
+    cursor: pointer;
+}
+  
+button.absolute {
+    top: -4px;
+    left: -4px;
+    background-color:  #db594a;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    font-size: 12px;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+  

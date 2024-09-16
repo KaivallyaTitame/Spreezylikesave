@@ -1,31 +1,35 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { couponCodeForm } from '../models/couponCodeForm';
-import { PostForm } from '../models/post-form';
-import { catchError, forkJoin, Observable, throwError } from 'rxjs';
+import { couponDetails } from '../models/coupon-details';
+import { postDetails } from '../models/post-details';
+import { eventDetails } from '../models/event-details';
+import { PresignedUrl } from '../models/presigned-url';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
+
 export class BackendService {
 
   constructor(private http:HttpClient) { }
 
-  private apiUrl = 'https://ddbb-2401-4900-1c43-c143-a1d0-169-2fb5-c996.ngrok-free.app'; 
-
-  submitCouponData(data:couponCodeForm){
+  submitCouponData(data:couponDetails){
     this.http.post(
-      'https://ddbb-2401-4900-1c43-c143-a1d0-169-2fb5-c996.ngrok-free.app/content/coupon/create', 
+      'https://8d3b-2401-4900-1c43-9c3f-fcc1-f5e8-a115-5440.ngrok-free.app/content/coupon/create', 
       data,
       {responseType:'text',
        headers: new HttpHeaders({
         'ngrok-skip-browser-warning': 'true',
+        'Content-Type': 'application/json',
+        'accept': '*/*'
       }),
      },
     )
     .subscribe({
       next: (response)=>{
         console.log('response got from backend is : ', response);
+        alert('Coupon details submitted successfully');
         return `added successfully ${response}`;
       },
       error: (error)=>{
@@ -35,14 +39,15 @@ export class BackendService {
     });
   }
 
-  submitPostForm(data:PostForm){
+  submitPostForm(data:postDetails){
     console.log(data);
     this.http.post(
-      'https://ddbb-2401-4900-1c43-c143-a1d0-169-2fb5-c996.ngrok-free.app/content/post/create',
+     'https://8d3b-2401-4900-1c43-9c3f-fcc1-f5e8-a115-5440.ngrok-free.app/content/post/create',
        data, 
        {responseType:'text',
         headers: new HttpHeaders({
           'ngrok-skip-browser-warning': 'true',
+          'Content-Type': 'application/json'
         }),
        }, 
       )
@@ -58,8 +63,13 @@ export class BackendService {
     });
   }
 
-  submitEventData(data:PostForm){
-    this.http.post('URL', data, {responseType:'text'})
+  submitEventData(data:eventDetails){
+    this.http.post('https://8d3b-2401-4900-1c43-9c3f-fcc1-f5e8-a115-5440.ngrok-free.app/content/event/create', data, {responseType:'text',
+      headers: new HttpHeaders({
+        'ngrok-skip-browser-warning': 'true',
+        'Content-Type': 'application/json'
+      }),
+     })
     .subscribe({
       next: (response)=>{
         console.log('response got from backend is : ', response);
@@ -72,23 +82,11 @@ export class BackendService {
     });
   }
 
-  getPresignedUrl(imageFileNames: string[], username: string) : any{
-    this.http.post(
-      `https://8c19-2401-4900-1c43-c143-b316-b7ca-ff77-e7b1.ngrok-free.app/content/generate-presigned-url`,
+  getPresignedUrl(imageFileNames: string[], username: string) : Observable<PresignedUrl> {
+    return this.http.post<PresignedUrl>(
+      "https://8d3b-2401-4900-1c43-9c3f-fcc1-f5e8-a115-5440.ngrok-free.app/content/generate-presigned-url",
       { imageFileNames, username },
-      {
-        headers: new HttpHeaders({
-          'ngrok-skip-browser-warning': 'true',
-        }),
-      }
-    ).subscribe({
-      next: (presignedUrl) => {
-        console.log('Presigned URL retrieved successfully:', presignedUrl);
-      },
-      error: (error: any) => {
-        console.error('Error retrieving presigned URL:', error);
-      }
-    });
+    );
   }
 
   uploadToS3(file: File, presignedUrl: string){
@@ -102,7 +100,10 @@ export class BackendService {
         console.log('uploaded sucessfully', response);
       },
       error: (error:any) => {
-        console.error('error in uploading image to s3', error);
+        console.error('Error uploading image to S3:', error);
+        console.error('Status:', error.status);
+        console.error('Message:', error.message);
+        console.error('Response:', error.error);
       }
     });
   }

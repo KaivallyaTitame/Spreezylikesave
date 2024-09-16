@@ -1,4 +1,4 @@
-export class couponCodeForm{
+export class couponDetails{
     imageFileNames: string[] = [''];
     couponTitle: string = '';         
     username: string = '';            
