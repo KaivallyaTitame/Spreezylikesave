@@ -1,28 +1,41 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
-import { ConsumerNavbarRoutingModule } from './consumer-navbar-routing.module';
-import { ConsumerNavbarComponent } from './consumer-navbar.component';
+import { ConsumerTopNavbarComponent } from './consumer-top-navbar/consumer-top-navbar.component';
+import { ConsumerBottomNavbarComponent } from './consumer-bottom-navbar/consumer-bottom-navbar.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-// import { ShreableModule } from 'src/app/shreable/shreable.module';
-import { ComponentsModule } from 'src/app/components/components.module';
-// import { ConsumerTopNavbarComponent } from 'src/app/components/consumer-top-navbar/consumer-top-navbar.component';
-// import { ConsumerBottomNavbarComponent } from 'src/app/components/consumer-bottom-navbar/consumer-bottom-navbar.component';
-
+import { PostComponent } from './post/post.component';
+import { InsightsComponent } from './insights/insights.component';
+import { ProfileComponent } from './profile/profile.component';
+import { HomeComponent } from './home/home.component';
+import { NotificationComponent } from './notification/notification.component';
+import { RouterModule } from '@angular/router';
+import { ConsumerNavbarRoutingModule } from './consumer-navbar-routing.module';
 
 
 @NgModule({
   declarations: [
-    ConsumerNavbarComponent,
-    // ConsumerTopNavbarComponent,
-    // ConsumerBottomNavbarComponent
+    ConsumerTopNavbarComponent,
+    ConsumerBottomNavbarComponent,
+    NotificationComponent,
+    PostComponent,
+    InsightsComponent,
+    ProfileComponent,
+    HomeComponent,
   ],
   imports: [
     CommonModule,
-    ConsumerNavbarRoutingModule,
     FontAwesomeModule,
-    // ShreableModule,
-    ComponentsModule
+    RouterModule,
+    ConsumerNavbarRoutingModule
+  ],
+  exports: [
+    ConsumerTopNavbarComponent,
+    ConsumerBottomNavbarComponent,
+    NotificationComponent,
+    PostComponent,
+    InsightsComponent,
+    ProfileComponent,
+    HomeComponent,
   ]
 })
 export class ConsumerNavbarModule { }
