@@ -19,11 +19,11 @@ export class CouponCodeFormComponent {
     this.couponCodeFormDetails = this.fb.group({
       imageFileNames: [''],
       couponTitle: ['', Validators.required],
-      username: ['', Validators.required],
+      username: [this.username, Validators.required],
       description: ['', Validators.required],
       promoBadge: ['', Validators.required],
       couponCode: ['', Validators.required],
-      businessId: ['', Validators.required],
+      businessId: [this.businessId, Validators.required],
       termsAndConditions: ['', Validators.required],
       stepsToAvailOffer: ['', Validators.required],
       expiry: [null, Validators.required]

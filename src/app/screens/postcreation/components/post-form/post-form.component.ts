@@ -12,17 +12,17 @@ export class PostFormComponent {
   postFormDetails: FormGroup;
   postFormData: postDetails = new postDetails(); 
   imageFileNames: string[] = [];
-  username:string="nikhil123";
-  businessId:string="nikhil2321";
+  username: string = 'nikhil123';
+  businessId: string = 'nikhil2321';
 
   constructor(private fb: FormBuilder, private backendService: BackendService) {
     this.postFormDetails = this.fb.group({
       imageFileNames: [''],
-      username: ['',Validators.required],
+      username: [this.username,Validators.required],
       postTitle: ['', Validators.required],
       description: ['', Validators.required],
       expiry: [null, Validators.required],
-      businessId: [''],
+      businessId: [this.businessId],
       promoBadge: ['', Validators.required],
       termsAndConditions: ['', Validators.required],
       stepsToAvailOffer: ['', Validators.required]
@@ -41,6 +41,7 @@ export class PostFormComponent {
       alert('Post details submitted successfully');
       this.postFormDetails.reset();
     } else {
+      console.log(this.postFormDetails);
       alert('Please fill out the form correctly');
     }
   }

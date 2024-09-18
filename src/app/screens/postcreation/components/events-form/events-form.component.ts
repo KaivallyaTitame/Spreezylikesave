@@ -11,13 +11,15 @@ import { BackendService } from 'src/app/services/post-upload.service';
 export class EventsFormComponent {
   eventFormDetails: FormGroup;
   eventData: eventDetails = new eventDetails();
-  username: string="nikhil123";
+  username: string = 'nikhil123';
+  businessId: string = 'nikhil2321';
   imageFileNames: string[] = [];
 
   constructor(private fb: FormBuilder, private backendService: BackendService) {
     this.eventFormDetails = this.fb.group({
       imageFileNames: [''],
-      businessId:[''],
+      username:[this.username],
+      businessId:[this.businessId],
       eventTitle: ['', Validators.required],
       description: ['', Validators.required],
       eventDateAndTime: ['', Validators.required],
@@ -55,7 +57,7 @@ export class EventsFormComponent {
     this.eventData.bookingUrl = details.value['bookingUrl'];
     this.eventData.termsAndConditions = this.convertTextareaToListWithBulletPoints(details.value['termsAndConditions']);
     this.eventData.stepsToAvailOffer = this.convertTextareaToListWithBulletPoints(details.value['stepsToAvailOffer']);
-    this.eventData.businessId=this.username;
+    this.eventData.businessId=this.businessId;
     this.eventData.username=this.username;
 
     this.processRequest(this.eventData);
