@@ -4,15 +4,15 @@
 .badge-input,
 .enter-coupon-code-input,
 .terms-input,
-.username-input,
-.business-id-input {
-    font-size: 12px;
+.offer-details-input,
+.how-to-redeem-input{
+    font-size: 14px;
     width: 330px;
     height: 28px;
     margin-top: 5px;
     border-radius: 4px;
     border-color: #ED6A5A;
-    color: #979797;
+    color: black;
 }
 
 .offer-details-input,
@@ -31,9 +31,7 @@
 .offer-details-input::placeholder,
 .how-to-avail-input::placeholder,
 .how-to-redeem-input::placeholder,
-.terms-input::placeholder,
-.username-input::placeholder,
-.business-id-input::placeholder {
+.terms-input::placeholder{
     color: #979797;
     font-family: 'Roboto';
     font-size: 12px;
@@ -65,12 +63,12 @@
 
 .reset-button:hover,
 .post-button:hover {
-    background-color: #f57c6c; /* Slightly lighter shade */
+    background-color: #f57c6c; 
 }
 
 .reset-button:active,
 .post-button:active {
-    background-color: #db594a; /* Slightly darker shade */
+    background-color: #db594a; 
 }
 
 .reset-button:focus,

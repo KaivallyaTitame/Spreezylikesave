@@ -4,7 +4,7 @@ import { couponDetails } from '../models/coupon-details';
 import { postDetails } from '../models/post-details';
 import { eventDetails } from '../models/event-details';
 import { PresignedUrl } from '../models/presigned-url';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -12,79 +12,89 @@ import { Observable } from 'rxjs';
 
 export class BackendService {
 
-  constructor(private http:HttpClient) { }
+  private generatedFileNamesSubject = new BehaviorSubject<string[]>([]);
+  generatedFileNames$ = this.generatedFileNamesSubject.asObservable();
 
-  submitCouponData(data:couponDetails){
+  constructor(private http: HttpClient) { }
+
+  setGeneratedFileNames(fileNames: string[]): void {
+    this.generatedFileNamesSubject.next(fileNames);
+    console.log('Generated file names:', fileNames);
+  }
+
+  getGeneratedFileNames(): string[] {
+    return this.generatedFileNamesSubject.getValue();
+  }
+
+  submitCouponData(data: couponDetails): void {
     this.http.post(
-      'https://8d3b-2401-4900-1c43-9c3f-fcc1-f5e8-a115-5440.ngrok-free.app/content/coupon/create', 
+      'http://192.168.0.198:8081/content/coupon/create',
       data,
-      {responseType:'text',
-       headers: new HttpHeaders({
-        'ngrok-skip-browser-warning': 'true',
-        'Content-Type': 'application/json',
-        'accept': '*/*'
-      }),
-     },
-    )
-    .subscribe({
-      next: (response)=>{
-        console.log('response got from backend is : ', response);
+      {
+        responseType: 'text',
+        headers: new HttpHeaders({
+          'ngrok-skip-browser-warning': 'true',
+          'Content-Type': 'application/json',
+          'accept': '*/*'
+        })
+      }
+    ).subscribe({
+      next: (response) => {
+        console.log('Response from backend:', response);
         alert('Coupon details submitted successfully');
-        return `added successfully ${response}`;
       },
-      error: (error)=>{
-        console.log('error occured : ', error)
-        return 'something is wrong in  funcion of backend service'
+      error: (error) => {
+        console.error('Error occurred:', error);
+        alert('Error submitting coupon details');
       }
     });
   }
 
-  submitPostForm(data:postDetails){
-    console.log(data);
+  submitPostForm(data: postDetails): void {
     this.http.post(
-     'https://8d3b-2401-4900-1c43-9c3f-fcc1-f5e8-a115-5440.ngrok-free.app/content/post/create',
-       data, 
-       {responseType:'text',
+      'http://192.168.0.198:8081/content/post/create',
+      data,
+      {
+        responseType: 'text',
         headers: new HttpHeaders({
           'ngrok-skip-browser-warning': 'true',
           'Content-Type': 'application/json'
-        }),
-       }, 
-      )
-    .subscribe({
-      next: (response)=>{
-        console.log('response got from backend is : ', response);
-        return `added successfully ${response}`;
+        })
+      }
+    ).subscribe({
+      next: (response) => {
+        console.log('Response from backend:', response);
       },
-      error: (error)=>{
-        console.log('error occured : ', error)
-        return 'something is wrong in  funcion of backend service'
+      error: (error) => {
+        console.error('Error occurred:', error);
       }
     });
   }
 
-  submitEventData(data:eventDetails){
-    this.http.post('https://8d3b-2401-4900-1c43-9c3f-fcc1-f5e8-a115-5440.ngrok-free.app/content/event/create', data, {responseType:'text',
-      headers: new HttpHeaders({
-        'ngrok-skip-browser-warning': 'true',
-        'Content-Type': 'application/json'
-      }),
-     })
-    .subscribe({
-      next: (response)=>{
-        console.log('response got from backend is : ', response);
-        return `added successfully ${response}`;
+  submitEventData(data: eventDetails): void {
+    this.http.post(
+      'http://192.168.0.198:8081/content/event/create',
+      data,
+      {
+        responseType: 'text',
+        headers: new HttpHeaders({
+          'ngrok-skip-browser-warning': 'true',
+          'Content-Type': 'application/json'
+        })
+      }
+    ).subscribe({
+      next: (response) => {
+        console.log('Response from backend:', response);
       },
-      error: (error)=>{
-        console.log('error occured : ', error)
-        return 'something is wrong in  funcion of backend service'
+      error: (error) => {
+        console.error('Error occurred:', error);
       }
     });
   }
 
-  getPresignedUrl(imageFileNames: string[], username: string) : Observable<PresignedUrl> {
+  getPresignedUrl(imageFileNames: string[], username: string): Observable<PresignedUrl> {
     return this.http.post<PresignedUrl>(
-      "https://8d3b-2401-4900-1c43-9c3f-fcc1-f5e8-a115-5440.ngrok-free.app/content/generate-presigned-url",
+      'http://192.168.0.198:8081/content/generate-presigned-url',
       { imageFileNames, username },
     );
   }

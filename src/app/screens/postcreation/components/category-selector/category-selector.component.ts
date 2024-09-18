@@ -26,9 +26,6 @@ export class CategorySelectorComponent {
       case 'Event':
         this.router.navigate(['new/events']);
         break;
-      case 'Story Ads':
-        this.router.navigate(['/story-ads']);
-        break;
       default:
         break;
     }

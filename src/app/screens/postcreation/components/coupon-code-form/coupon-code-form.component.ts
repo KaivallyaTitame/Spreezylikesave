@@ -11,7 +11,9 @@ import { BackendService } from 'src/app/services/post-upload.service';
 export class CouponCodeFormComponent {
   couponCodeFormDetails: FormGroup;
   couponCodeData: couponDetails = new couponDetails();
-  imageurl: string[] = ["nikhil"];
+  imageFileNames: string[] = [];
+  username:string="nikhil123";
+  businessId:string="nikhil2321";
 
   constructor(private fb: FormBuilder, private backendService: BackendService) {
     this.couponCodeFormDetails = this.fb.group({
@@ -26,6 +28,13 @@ export class CouponCodeFormComponent {
       stepsToAvailOffer: ['', Validators.required],
       expiry: [null, Validators.required]
     });
+    this.imageFileNames = this.backendService.getGeneratedFileNames();
+  }
+
+  ngOnInit(): void {
+    this.backendService.generatedFileNames$.subscribe(fileNames => {
+      this.imageFileNames = fileNames;
+    });
   }
 
   handleSubmit() {
@@ -38,13 +47,13 @@ export class CouponCodeFormComponent {
   }
 
   createRequest(details: FormGroup) {
-    this.couponCodeData.imageFileNames = this.imageurl;
+    this.couponCodeData.imageFileNames =this.imageFileNames;
     this.couponCodeData.couponTitle = details.value['couponTitle'];
-    this.couponCodeData.username = details.value['username'];
+    this.couponCodeData.username = this.username;
     this.couponCodeData.description = details.value['description'];
     this.couponCodeData.promoBadge = details.value['promoBadge'];
     this.couponCodeData.couponCode = details.value['couponCode'];
-    this.couponCodeData.businessId = details.value['businessId'];
+    this.couponCodeData.businessId = this.businessId;
     this.couponCodeData.termsAndConditions = this.convertTextareaToListWithBulletPoints(details.value['termsAndConditions']);
     this.couponCodeData.stepsToAvailOffer = this.convertTextareaToListWithBulletPoints(details.value['stepsToAvailOffer']);
     
@@ -70,6 +79,13 @@ export class CouponCodeFormComponent {
       const updatedText = `${textBeforeCursor}\n• ${textAfterCursor}`;
       textarea.value = updatedText;
       textarea.selectionStart = textarea.selectionEnd = cursorPosition + 3;
+    }
+  }
+
+  addBulletPointOnFocus(textarea: HTMLTextAreaElement): void {
+    if (!textarea.value.startsWith('•')) {
+      textarea.value = `• ${textarea.value}`;
+      textarea.selectionStart = textarea.selectionEnd = textarea.value.length;
     }
   }
 

@@ -3,15 +3,15 @@
 
   <div class="image-upload">
     <input type="file" accept="image/*" (change)="onImageUpload($event)" multiple class="hidden" #fileInput>
-    <button type="button" rippleButton (click)="openFileDialog()" class="bg-transparent p-0">
-      <img src="assets/add-image-icon.png" alt="Image Icon" class="w-12 h-12">
+    <button type="button" rippleButton (click)="openFileDialog()" class="p-0">
+      <img src="assets/add-image-icon.png" alt="Image Icon" class="image-icon">
     </button>
   </div>
 
   <div class="uploaded-images flex flex-wrap">
     <div *ngFor="let imgSrc of imagePreviews; let i = index" class="relative mr-2 mb-2">
-      <img [src]="imgSrc" alt="Uploaded Image" class="rounded w-12 h-12 object-cover">
-      <button type="button" (click)="removeImage(i)" class="absolute top-0 left-0 bg-#db594a-600 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
+      <img [src]="imgSrc" alt="Uploaded Image" class="uploaded-image">
+      <button type="button" (click)="removeImage(i)" rippleButton class="remove-button">
         &times;
       </button>
     </div>

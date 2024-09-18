@@ -9,14 +9,6 @@
     </div>
       
     <app-image-selector></app-image-selector>
-    
-    <div class="title font-roboto text-black text-base" style="margin-top: 15px; margin-left: 15px;">
-        <label for="username">Username *</label>
-    </div>
-    <div class="input-container" style="margin-left: 15px;">
-        <input formControlName="username" type="text" name="username" required class="title-input border border-pink-500 rounded-md p-2" placeholder="Enter username here..." id="username">
-        <div *ngIf="couponCodeFormDetails.get('username')?.touched && couponCodeFormDetails.get('username')?.invalid" class="text-red-500">Username is required</div>
-    </div>
 
     <div class="title font-roboto text-black text-base" style="margin-top: 15px; margin-left: 15px;">
         <label for="description">Offer Details*</label>
@@ -51,18 +43,10 @@
     </div>
 
     <div class="title font-roboto text-black text-base" style="margin-top: 15px; margin-left: 15px;">
-        <label for="businessId">Business ID *</label>
-    </div>
-    <div class="input-container" style="margin-left: 15px;">
-        <input formControlName="businessId" type="text" name="businessId" required class="title-input border border-pink-500 rounded-md p-2" placeholder="Enter business ID..." id="businessId">
-        <div *ngIf="couponCodeFormDetails.get('businessId')?.touched && couponCodeFormDetails.get('businessId')?.invalid" class="text-red-500">Business ID is required</div>
-    </div>
-
-    <div class="title font-roboto text-black text-base" style="margin-top: 15px; margin-left: 15px;">
         <label for="termsAndConditions">Terms & Conditions *</label>
     </div>
     <div class="input-container" style="margin-left: 15px;">
-        <textarea formControlName="termsAndConditions" #termsTextarea name="termsAndConditions" required class="terms-input border border-pink-500 rounded-md p-2" placeholder="Enter terms and conditions" id="termsAndConditions" (keydown)="addBulletPointOnEnter($event, termsTextarea)"></textarea>
+        <textarea formControlName="termsAndConditions" #termsTextarea name="termsAndConditions" required class="terms-input border border-pink-500 rounded-md p-2" placeholder="Enter terms and conditions" id="termsAndConditions" (keydown)="addBulletPointOnEnter($event, termsTextarea)" (focus)="addBulletPointOnFocus(termsTextarea)" ></textarea>
         <div *ngIf="couponCodeFormDetails.get('termsAndConditions')?.touched && couponCodeFormDetails.get('termsAndConditions')?.invalid" class="text-red-500">Terms & Conditions are required</div>
     </div>
 
@@ -70,7 +54,7 @@
         <label for="stepsToAvailOffer">How to Redeem *</label>
     </div>
     <div class="input-container" style="margin-left: 15px;">
-        <textarea formControlName="stepsToAvailOffer" #howToRedeemTextarea name="stepsToAvailOffer" required class="how-to-redeem-input border border-pink-500 rounded-md p-2" placeholder="Provide instructions on how to redeem the coupon code." id="stepsToAvailOffer" (keydown)="addBulletPointOnEnter($event, howToRedeemTextarea)"></textarea>
+        <textarea formControlName="stepsToAvailOffer" #howToRedeemTextarea name="stepsToAvailOffer" required class="how-to-redeem-input border border-pink-500 rounded-md p-2" placeholder="Provide instructions on how to redeem the coupon code." id="stepsToAvailOffer" (keydown)="addBulletPointOnEnter($event, howToRedeemTextarea)" (focus)="addBulletPointOnFocus(howToRedeemTextarea)"></textarea>
         <div *ngIf="couponCodeFormDetails.get('stepsToAvailOffer')?.touched && couponCodeFormDetails.get('stepsToAvailOffer')?.invalid" class="text-red-500">Instructions are required</div>
     </div>
 

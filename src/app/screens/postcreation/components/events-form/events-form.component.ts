@@ -11,8 +11,8 @@ import { BackendService } from 'src/app/services/post-upload.service';
 export class EventsFormComponent {
   eventFormDetails: FormGroup;
   eventData: eventDetails = new eventDetails();
-  imageurl: string[] = ["sample-image"];
   username: string="nikhil123";
+  imageFileNames: string[] = [];
 
   constructor(private fb: FormBuilder, private backendService: BackendService) {
     this.eventFormDetails = this.fb.group({
@@ -29,6 +29,12 @@ export class EventsFormComponent {
     });
   }
 
+  ngOnInit(): void {
+    this.backendService.generatedFileNames$.subscribe(fileNames => {
+      this.imageFileNames = fileNames;
+    });
+  }
+
   handleSubmit() {
     if (this.eventFormDetails.valid) {
       this.createRequest(this.eventFormDetails);
@@ -40,7 +46,7 @@ export class EventsFormComponent {
   }
 
   createRequest(details: FormGroup) {
-    this.eventData.imageFileNames = this.imageurl;
+    this.eventData.imageFileNames = this.imageFileNames;
     this.eventData.eventTitle = details.value['eventTitle'];
     this.eventData.description = details.value['description'];
     this.eventData.eventDateAndTime = details.value['eventDateAndTime'].toString();
@@ -76,6 +82,13 @@ export class EventsFormComponent {
     }
   }
 
+  addBulletPointOnFocus(textarea: HTMLTextAreaElement): void {
+    if (!textarea.value.startsWith('•')) {
+      textarea.value = `• ${textarea.value}`;
+      textarea.selectionStart = textarea.selectionEnd = textarea.value.length;
+    }
+  }
+  
   processRequest(eventData: eventDetails) {
     console.log(eventData);
     const message=this.backendService.submitEventData(eventData);

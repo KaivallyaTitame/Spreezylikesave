@@ -11,7 +11,9 @@ import { BackendService } from 'src/app/services/post-upload.service';
 export class PostFormComponent {
   postFormDetails: FormGroup;
   postFormData: postDetails = new postDetails(); 
-  imageurl:string[]=["nikhil"]; 
+  imageFileNames: string[] = [];
+  username:string="nikhil123";
+  businessId:string="nikhil2321";
 
   constructor(private fb: FormBuilder, private backendService: BackendService) {
     this.postFormDetails = this.fb.group({
@@ -27,6 +29,12 @@ export class PostFormComponent {
     });
   }
 
+  ngOnInit(): void {
+    this.backendService.generatedFileNames$.subscribe(fileNames => {
+      this.imageFileNames = fileNames;
+    });
+  }
+
   handleSubmit() {
     if (this.postFormDetails.valid) {
       this.createRequest(this.postFormDetails);
@@ -38,12 +46,12 @@ export class PostFormComponent {
   }
 
   createRequest(details: FormGroup) {
-    this.postFormData.imageFileNames = this.imageurl;
-    this.postFormData.username = details.value['username'];
+    this.postFormData.imageFileNames = this.imageFileNames;
+    this.postFormData.username = this.username;
     this.postFormData.postTitle = details.value['postTitle'];
     this.postFormData.description = details.value['description'];
     this.postFormData.expiry = details.value['expiry'];
-    this.postFormData.businessId = details.value['businessId'];
+    this.postFormData.businessId = this.businessId;
     this.postFormData.promoBadge = details.value['promoBadge'];
     this.postFormData.termsAndConditions = this.convertTextareaToListWithBulletPoints(details.value['termsAndConditions']);
     this.postFormData.stepsToAvailOffer = this.convertTextareaToListWithBulletPoints(details.value['stepsToAvailOffer']);
@@ -70,6 +78,13 @@ export class PostFormComponent {
     }
   }
 
+  addBulletPointOnFocus(textarea: HTMLTextAreaElement): void {
+    if (!textarea.value.startsWith('•')) {
+      textarea.value = `• ${textarea.value}`;
+      textarea.selectionStart = textarea.selectionEnd = textarea.value.length;
+    }
+  }
+  
   processRequest(postFormData: postDetails) {
     const message = this.backendService.submitPostForm(postFormData);
   }
