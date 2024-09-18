@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 
 import { BusinessInsightsRoutingModule } from './business-insights-routing.module';
 import { BusinessInsightsComponent } from './business-insights.component';
-import { BusinessModuleModule } from 'src/app/business-module/business-module.module';
+import { BusinessNavbarModule } from '../business-navbar/business-navbar.module';
 
 
 @NgModule({
@@ -13,7 +13,7 @@ import { BusinessModuleModule } from 'src/app/business-module/business-module.mo
   imports: [
     CommonModule,
     BusinessInsightsRoutingModule,
-    BusinessModuleModule
+    BusinessNavbarModule
   ]
 })
 export class BusinessInsightsModule { }

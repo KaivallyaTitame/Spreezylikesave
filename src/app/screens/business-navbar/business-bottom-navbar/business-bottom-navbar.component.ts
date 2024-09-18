@@ -18,7 +18,7 @@ export class BusinessBottomNavbarComponent {
   Profile_screen_active: boolean = this._navigation.Is_Profile;
 
   Home() {
-    this.router.navigate(['/businessnavbar']);
+    this.router.navigate(['/businessnavbar/home']);
     this.updateActiveState('Home');
   }
 

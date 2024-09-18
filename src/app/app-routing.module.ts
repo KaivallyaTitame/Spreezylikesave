@@ -1,7 +1,7 @@
 import { NgModule } from "@angular/core";
 import { RouterModule, Routes } from "@angular/router";
-import { ConsumerBottomNavbarComponent } from 'src/app/components/consumer-bottom-navbar/consumer-bottom-navbar.component';
-import { ConsumerTopNavbarComponent } from 'src/app/components/consumer-top-navbar/consumer-top-navbar.component';
+import { ConsumerBottomNavbarComponent } from "./screens/consumer-navbar/consumer-bottom-navbar/consumer-bottom-navbar.component";
+import { ConsumerTopNavbarComponent } from "./screens/consumer-navbar/consumer-top-navbar/consumer-top-navbar.component";
 
 const routes: Routes = [
   {
