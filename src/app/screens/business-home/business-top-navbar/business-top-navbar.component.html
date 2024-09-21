@@ -1,51 +1,53 @@
 <div class="relative">
-  <div class="fixed top-0 w-full z-30 flex box-border h-auto">
+  <div class="flex box-border h-auto fixed top-0 w-full z-30">
     <div class="navbar py-1 bg-primarycolor-0 shadow-none">
-      <div class="navbar-start flex items-center">
+      <div class="navbar-start">
         <input type="checkbox" id="drawer-left" class="drawer-toggle hidden" />
-        <label for="drawer-left" class="btn w-9 bg-primarycolor-0 flex items-center justify-center" style="height: 7.3%;">
+        <label for="drawer-left" class="btn w-9 bg-primarycolor-0" style="height:7.3%">
           <fa-icon class="text-white text-2xl" [icon]="faBars"></fa-icon>
         </label>
 
-        <label class="overlay bg-white h-full" for="drawer-left"></label>
-        <div class="drawer fixed top-0 left-0 w-4/5 h-full border-r-2 z-40 bg-white" style="margin-top: 56px;">
-          <div class="drawer-content pt-2 px-2 mt-1 overflow-y-auto" style="height: 87%;">
-            <aside class="sidebar h-full flex flex-col bg-white">
-              <section class="sidebar-title p-2 text-center">
+        <label class="overlay bg-white dark:bg-white h-full" for="drawer-left"></label>
+        <div class="drawer fixed top-0 left-0 w-4/5 h-full border-r-2 z-40 bg-white dark:bg-white" style="margin-top: 56px;">
+          <div class="drawer-content pt-2 px-2 mt-1 overflow-x-hidden overflow-y-auto bg-white dark:bg-white" style="height: 87%;">
+            <aside class="sidebar h-full flex flex-col bg-white dark:bg-white">
+              <section class="sidebar-title p-2">
                 <div class="flex flex-col w-full">
-                  <div class="avatar h-14 w-14 mx-auto">
-                    <img *ngIf="business" [src]="business.profilePicture" alt="avatar" class="rounded-full" />
+                  <div class="grow h-16 text-center justify-center mx-auto mb-2 pb-3 w-16 z-40">
+                    <div class="avatar h-14 w-14">
+                      <img src="https://i.pravatar.cc/150?u=a042581f4e29026024d" alt="avatar" />
+                    </div>
                   </div>
-                  <span class="text-xl mt-2 font-sidebar text-primary">{{ business?.name }}</span>
-                  <span class="text-lg font-normal font-sidebar text-content2">{{ business?.username }}</span>
+                  <span class="text-xl mt-2 font-sidebar text-primary text-center">Business Name</span>
+                  <span class="text-lg font-normal font-sidebar text-content2 dark:text-content2 text-center">Business User Name</span>
                 </div>
               </section>
 
               <div class="divider my-2"></div>
 
-              <section class="sidebar-content flex-grow pt-1">
+              <section class="sidebar-content flex-grow overflow-visible pt-1">
                 <nav class="menu rounded-md">
                   <section class="menu-section px-2">
                     <ul class="menu-items">
                       <li class="menu-item py-1">
                         <fa-icon class="pl-0 pr-1 text-lg w-8 h-8 text-primarycolor-0" [icon]="faFilePen"></fa-icon>
-                        <span class="pl-1 text-lg font-normal">Share Feedback</span>
+                        <span class="pl-1 text-lg font-normal text-black dark:text-black">Share Feedback</span>
                       </li>
                       <li class="menu-item py-1" (click)="navigateToSettings()">
                         <fa-icon class="pl-0 pr-1 text-lg w-8 h-8 text-primarycolor-0" [icon]="faGear"></fa-icon>
-                        <span class="pl-1 text-lg font-normal">Settings</span>
+                        <span class="pl-1 text-lg font-normal text-black dark:text-black">Settings</span>
                       </li>
                       <li class="menu-item py-1">
                         <img src="assets/logo.png" alt="Contact Us" class="pl-0 pr-1 w-8 h-8" />
-                        <span class="pl-1 text-lg font-normal">Contact Us</span>
+                        <span class="pl-1 text-lg font-normal text-black dark:text-black">Contact Us</span>
                       </li>
                       <li class="menu-item py-1">
                         <fa-icon class="pl-0 pr-1 text-lg w-8 h-8 text-primarycolor-0" [icon]="faCircleQuestion"></fa-icon>
-                        <span class="pl-1 text-lg font-normal">Help</span>
+                        <span class="pl-1 text-lg font-normal text-black dark:text-black">Help</span>
                       </li>
                       <li class="menu-item py-1">
                         <fa-icon class="pl-0 pr-1 text-lg w-8 h-8 text-primarycolor-0" [icon]="faFileLines"></fa-icon>
-                        <span class="pl-1 text-lg font-normal">Terms & Conditions</span>
+                        <span class="pl-1 text-lg font-normal text-black dark:text-black">Terms & Conditions</span>
                       </li>
                     </ul>
                   </section>
@@ -54,11 +56,11 @@
 
               <div class="divider my-2"></div>
 
-              <section class="sidebar-footer">
+              <section class="sidebar-footer mt-auto">
                 <ul class="menu-items">
                   <li class="menu-item py-1">
                     <fa-icon class="pl-1 pr-1 text-lg w-8 h-8 text-primarycolor-0" [icon]="faArrowRightFromBracket"></fa-icon>
-                    <span class="pl-1 text-lg font-normal">Logout</span>
+                    <span class="pl-1 text-lg font-normal text-black dark:text-black">Logout</span>
                   </li>
                 </ul>
               </section>
@@ -68,13 +70,15 @@
 
         <a class="navbar-item ml-0 pl-1 font-medium text-2xl text-white font-primary">Spreezy</a>
       </div>
-      <div class="navbar-end flex items-center">
-        <a class="navbar-item" (click)="navigateToSearch()" title="Search">
-          <fa-icon class="text-white text-2xl hover:opacity-80" [icon]="faSearch"></fa-icon>
+      <div class="navbar-end">
+        <a class="navbar-item">
+          <fa-icon class="ml-0 my-0 p-0 text-white text-2xl" [icon]="faSearch"></fa-icon>
         </a>
       </div>
     </div>
   </div>
 
-  <div class="bottom-component z-10"></div>
+  <div class="bottom-component z-10">
+  </div>
 </div>
+

@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ProfileScreenRoutingModule } from './profile-screen-routing.module';
 import { ProfileScreenComponent } from './profile-screen.component';
-import { BusinessNavbarModule } from '../business-navbar/business-navbar.module';
+import { BusinessHomeModule } from '../business-home/business-home.module';
 
 @NgModule({
   declarations: [
@@ -10,8 +10,8 @@ import { BusinessNavbarModule } from '../business-navbar/business-navbar.module'
   ],
   imports: [
     CommonModule,
-    ProfileScreenRoutingModule,
-    BusinessNavbarModule
-  ]
+    ProfileScreenRoutingModule
+  ],
+  exports: [ProfileScreenComponent]
 })
 export class ProfileScreenModule { }

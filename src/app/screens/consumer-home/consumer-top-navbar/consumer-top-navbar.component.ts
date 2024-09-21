@@ -1,29 +1,31 @@
-import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { faArrowRightFromBracket, faBars, faCircleQuestion, faFileLines, faFilePen, faGear, faSearch } from '@fortawesome/free-solid-svg-icons';
-import { ConsumerNavigationService } from 'src/app/services/consumer-navigation.service';
-import { UserProfileDTO } from 'src/app/models/UserProfileDTO';
+import { Component } from '@angular/core';
+import { faArrowRightFromBracket, faBars, faCircleQuestion, faDiceD20, faFileLines, faFilePen, faGear, faMessage, faSearch } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-consumer-top-navbar',
   templateUrl: './consumer-top-navbar.component.html',
   styleUrls: ['./consumer-top-navbar.component.css']
 })
-export class ConsumerTopNavbarComponent implements OnInit {
-  faIcons = {
-    bars: faBars,
-    search: faSearch,
-    gear: faGear,
-    filePen: faFilePen,
-    fileLines: faFileLines,
-    circleQuestion: faCircleQuestion,
-    arrowRightFromBracket: faArrowRightFromBracket
-  };
+export class ConsumerTopNavbarComponent {
+  faBars = faBars;
+  faSearch = faSearch;
+  faMessage = faMessage;
+  faGear = faGear;
+  faFilePen = faFilePen;
+  faDiceD20 = faDiceD20;
+  faCircleQuestion = faCircleQuestion;
+  faFileLines = faFileLines;
+  faArrowRightFromBracket = faArrowRightFromBracket;
 
-  consumer: any;  
+  toggleSidebar() {
+    const consumerTopNavbar = document.querySelector('.consumer-top-navbar') as HTMLElement;
+    const bottomNavbar = document.querySelector('#bottom-navbar') as HTMLElement;
 
-  constructor(private router: Router, private consumernavigationservice: ConsumerNavigationService) {}
+    if (consumerTopNavbar) {
+      consumerTopNavbar.classList.toggle('drawer-open'); // Change this to the appropriate class for showing/hiding the top navbar
+    }
 
+<<<<<<< HEAD
   ngOnInit(): void {
     this.fetchConsumerInformation();
   }
@@ -41,5 +43,10 @@ export class ConsumerTopNavbarComponent implements OnInit {
         this.consumer = {};
       }
     });
+=======
+    if (bottomNavbar) {
+      bottomNavbar.classList.toggle('bottom-navbar-shifted');
+    }
+>>>>>>> a3409d9 (improved folder and file structure, edited names of consumer and business navigation bars)
   }
 }

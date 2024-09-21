@@ -1,26 +1,39 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { UserProfileDTO } from '../models/UserProfileDTO';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ConsumerNavigationService {
-  constructor(private http:HttpClient) { }
-  
-  is_AdFeed: boolean = false; 
-  is_Search: boolean = false;
-  is_Notification: boolean = false;
-  is_Profile: boolean = false;
+  Is_Home: boolean = true; // You can set the default screen to be active initially
+  Is_Search: boolean = false;
+  Is_Notification: boolean = false;
+  Is_Profile: boolean = false;
 
-  getConsumerDetails(): Observable<UserProfileDTO[]> {
-    return this.http.get<UserProfileDTO[]> (`https://dummyjson.com/c/98c2-5f66-47f6-9292`,
-      {
-        responseType: 'json',
-        headers: new HttpHeaders({
-        'ngrok-skip-browser-warning': 'true',
-      }),
-    });
+  // Reset the states (optional helper function)
+  resetNavigation() {
+    this.Is_Home = false;
+    this.Is_Search = false;
+    this.Is_Notification = false;
+    this.Is_Profile = false;
+  }
+  setActiveScreen(screen: string) {
+    this.resetNavigation();
+    switch (screen) {
+      case 'Home':
+        this.Is_Home = true;
+        break;
+      case 'Search':
+        this.Is_Search = true;
+        break;
+      case 'Notification':
+        this.Is_Notification = true;
+        break;
+      case 'Profile':
+        this.Is_Profile = true;
+        break;
+      default:
+        this.Is_Home = true; // Fallback to home if the screen doesn't match
+        break;
+    }
   }
 }

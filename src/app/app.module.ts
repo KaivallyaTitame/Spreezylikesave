@@ -14,16 +14,19 @@ import { LogoutModule } from "./screens/logout/logout.module";
 >>>>>>> 79946b6 (business-home working with docker integration)
 import { GlobalErrorHandlerService } from "./services/global-error-handler.service";
 <<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
 import { BusinessHomeModule } from "./screens/business-home/business-home.module";
 import { ConsumerHomeModule } from "./screens/consumer-home/consumer-home.module";
 <<<<<<< HEAD
 =======
 import { ReactiveFormsModule } from "@angular/forms";
 import { RegisterModule } from "./screens/register/register.module";
->>>>>>> 015b527 (changes after pulling from develop)
 
+=======
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { LoginComponent } from "./screens/login/login.component";
+// import { ConsumerHomeModule } from "./screens/consumer-home/consumer-home.module";
+import { BusinessHomeModule } from "./screens/business-home/business-home.module";
+>>>>>>> ed04675 (improved folder and file structure, edited names of consumer and business navigation bars)
 
 @NgModule({
   declarations: [
@@ -38,9 +41,13 @@ import { RegisterModule } from "./screens/register/register.module";
     HttpClientModule,
     AngularFireModule.initializeApp(environment.firebase),
     LoginModule,
-    FontAwesomeModule
+    FontAwesomeModule,
+    // ConsumerHomeModule,
+    // BusinessHomeModule
   ],
->>>>>>> 015b527 (changes after pulling from develop)
+  exports: [
+    LoginComponent 
+  ],
   providers: [
     {
       provide: ErrorHandler,
