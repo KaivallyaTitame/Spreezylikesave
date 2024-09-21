@@ -1,7 +1,10 @@
 import { NgModule } from "@angular/core";
 import { RouterModule, Routes } from "@angular/router";
-import { ConsumerBottomNavbarComponent } from "./screens/consumer-navbar/consumer-bottom-navbar/consumer-bottom-navbar.component";
-import { ConsumerTopNavbarComponent } from "./screens/consumer-navbar/consumer-top-navbar/consumer-top-navbar.component";
+import { HomeScreenComponent} from "./screens/home-screen/home-screen.component";
+import { BusinessInsightsComponent } from "./screens/insights/insights.component";
+import { NotificationScreenComponent } from "./screens/notification-screen/notification-screen.component";
+import { AddPostComponent } from "./screens/add-post/add-post.component";
+import { ProfileScreenComponent } from "./screens/profile-screen/profile-screen.component";
 
 const routes: Routes = [
   {
@@ -38,7 +41,7 @@ const routes: Routes = [
   {
     path: "ad-feed",
     loadChildren: () =>
-      import("./screens/home/home.module").then(
+      import("./screens/home-screen/home-screen.module").then(
         (module) => module.HomeModule
       ),
   },

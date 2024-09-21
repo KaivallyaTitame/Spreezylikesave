@@ -12,7 +12,10 @@ import { BusinessHomeModule } from "./screens/business-home/business-home.module
 import { ConsumerHomeModule } from "./screens/consumer-home/consumer-home.module";
 import { ReactiveFormsModule } from "@angular/forms";
 import { RegisterModule } from "./screens/register/register.module";
-
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { LoginComponent } from "./screens/login/login.component";
+// import { ConsumerHomeModule } from "./screens/consumer-home/consumer-home.module";
+import { BusinessHomeModule } from "./screens/business-home/business-home.module";
 
 @NgModule({
   declarations: [
@@ -24,7 +27,12 @@ import { RegisterModule } from "./screens/register/register.module";
     HttpClientModule,
     AngularFireModule.initializeApp(environment.firebase),
     LoginModule,
-    FontAwesomeModule
+    FontAwesomeModule,
+    // ConsumerHomeModule,
+    // BusinessHomeModule
+  ],
+  exports: [
+    LoginComponent 
   ],
   providers: [
     {

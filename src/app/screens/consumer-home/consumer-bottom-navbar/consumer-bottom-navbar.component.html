@@ -1,41 +1,45 @@
 <div class="bottom fixed bottom-0 w-full z-20">
   <div id="bottom-navbar" class="flex justify-center bg-primarycolor-0 mb-0 w-auto" style="height: 55px;">
-
-    <div (click)="navigateTo('AdFeed')" [ngClass]="{'active': isActive('AdFeed')}" 
-      class="nav-item grow text-center py-2 cursor-pointer" style="height: 100%;">
-      <fa-icon 
-        class="py-1 my-2 text-3xl" 
-        [ngClass]="{'active-icon': isActive('AdFeed'), 'text-white': !isActive('AdFeed')}" 
-        [icon]="faHome"> 
-      </fa-icon>
-    </div>
-
-    <div (click)="navigateTo('Search')" [ngClass]="{'active': isActive('Search')}" 
-      class="nav-item grow text-center py-2 cursor-pointer" style="height: 100%;">
-      <fa-icon 
-        class="py-1 my-2 text-3xl" 
-        [ngClass]="{'active-icon': isActive('Search'), 'text-white': !isActive('Search')}" 
-        [icon]="faSearch">
-      </fa-icon>
-    </div>
-
-    <div (click)="navigateTo('Notification')" [ngClass]="{'active': isActive('Notification')}" 
-      class="nav-item grow text-center py-2 cursor-pointer" style="height: 100%;">
-      <fa-icon 
-        class="py-1 my-2 text-3xl" 
-        [ngClass]="{'active-icon': isActive('Notification'), 'text-white': !isActive('Notification')}" 
-        [icon]="faBell">
-      </fa-icon>
-    </div>
-
-    <div (click)="navigateTo('Profile')" [ngClass]="{'active': isActive('Profile')}" 
-      class="nav-item grow text-center py-2 cursor-pointer" style="height: 100%;">
-      <fa-icon 
-        class="py-1 my-2 text-3xl" 
-        [ngClass]="{'active-icon': isActive('Profile'), 'text-white': !isActive('Profile')}" 
-        [icon]="faCircleUser">
-      </fa-icon>
-    </div>
     
+    <app-home-screen>
+      <div (click)="Home()" [ngClass]="{'active': Home_screen_active}" class="nav-item grow text-center py-2 cursor-pointer" style="height: 100%;">
+        <fa-icon 
+          class="py-1 my-2 text-3xl" 
+          [ngClass]="{'active-icon': Home_screen_active, 'text-white': !Home_screen_active}" 
+          [icon]="faHome">
+        </fa-icon>
+      </div>
+    </app-home-screen>
+
+    <app-search>
+      <div (click)="Search()" [ngClass]="{'active': Search_screen_active}" class="nav-item grow text-center py-2 cursor-pointer" style="height: 100%;">
+        <fa-icon 
+          class="py-1 my-2 text-3xl" 
+          [ngClass]="{'active-icon': Search_screen_active, 'text-white': !Search_screen_active}" 
+          [icon]="faSearch">
+        </fa-icon>
+      </div>
+    </app-search>
+
+    <app-notification-screen>
+      <div (click)="Notification()" [ngClass]="{'active': Notification_screen_active}" class="nav-item grow text-center py-2 cursor-pointer" style="height: 100%;">
+        <fa-icon 
+          class="py-1 my-2 text-3xl" 
+          [ngClass]="{'active-icon': Notification_screen_active, 'text-white': !Notification_screen_active}" 
+          [icon]="faBell">
+        </fa-icon>
+      </div>
+    </app-notification-screen>
+    
+    <app-profile-screen>
+      <div (click)="Profile()" [ngClass]="{'active': Profile_screen_active}" class="nav-item grow text-center py-2 cursor-pointer" style="height: 100%;">
+        <fa-icon 
+          class="py-1 my-2 text-3xl" 
+          [ngClass]="{'active-icon': Profile_screen_active, 'text-white': !Profile_screen_active}" 
+          [icon]="faCircleUser">
+        </fa-icon>
+      </div>
+    </app-profile-screen>
+
   </div>
 </div>
