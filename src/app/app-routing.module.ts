@@ -22,7 +22,7 @@ import { loginGuard } from "./authGuards/login/login.guard";
 const routes: Routes = [
   {
     path: "",
-    redirectTo: "new",
+    redirectTo: "create",
     pathMatch: "full",
   },
   {
@@ -58,7 +58,7 @@ const routes: Routes = [
     // canActivate: [customerGuard]
   },
   {
-    path:"new",
+    path:"create",
     loadChildren:() =>
       import("./screens/postcreation/postcreation.module").then(
         (module) =>module.PostcreationModule

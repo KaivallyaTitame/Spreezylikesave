@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { eventDetails } from 'src/app/models/event-details';
-import { BackendService } from 'src/app/services/post-upload.service';
+import { JwtDecoderService } from 'src/app/services/jwt-decoder.service';
+import { postUpload } from 'src/app/services/post-upload.service';
 
 @Component({
   selector: 'app-events-form',
@@ -11,10 +12,11 @@ import { BackendService } from 'src/app/services/post-upload.service';
 export class EventsFormComponent {
   eventFormDetails: FormGroup;
   eventData: eventDetails = new eventDetails();
-  imageurl: string[] = ["sample-image"];
-  username: string="nikhil123";
+  username: string = '';
+  businessId: string = '';
+  imageFileNames: string[] = [];
 
-  constructor(private fb: FormBuilder, private backendService: BackendService) {
+  constructor(private fb: FormBuilder, private postUpload: postUpload,private jwtDecoder : JwtDecoderService) {
     this.eventFormDetails = this.fb.group({
       imageFileNames: [''],
       businessId:[''],
@@ -26,6 +28,25 @@ export class EventsFormComponent {
       bookingUrl: ['', Validators.required],
       termsAndConditions: ['', Validators.required],
       stepsToAvailOffer: ['', Validators.required],
+    });
+  }
+
+  ngOnInit(): void {
+
+    this.postUpload.generatedFileNames$.subscribe(fileNames => {
+      this.imageFileNames = fileNames;
+    });
+
+    const token = localStorage.getItem('token');
+    if (token) {
+      const decodedInfo = this.jwtDecoder.decodeInfoFromToken(token);
+      this.username = decodedInfo['sub']; 
+      this.businessId = decodedInfo['sub']; 
+    }
+
+    this.eventFormDetails.patchValue({
+      username: this.username,
+      businessId: this.businessId
     });
   }
 
@@ -78,7 +99,7 @@ export class EventsFormComponent {
 
   processRequest(eventData: eventDetails) {
     console.log(eventData);
-    const message=this.backendService.submitEventData(eventData);
+    const message=this.postUpload.submitEventData(eventData);
     console.log(message);
   }
 }

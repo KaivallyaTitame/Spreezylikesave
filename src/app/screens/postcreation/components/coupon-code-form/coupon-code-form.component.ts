@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { couponDetails } from 'src/app/models/coupon-details';
-import { BackendService } from 'src/app/services/post-upload.service';
+import { JwtDecoderService } from 'src/app/services/jwt-decoder.service';
+import { postUpload } from 'src/app/services/post-upload.service';
 
 @Component({
   selector: 'app-coupon-code-form',
@@ -11,9 +12,11 @@ import { BackendService } from 'src/app/services/post-upload.service';
 export class CouponCodeFormComponent {
   couponCodeFormDetails: FormGroup;
   couponCodeData: couponDetails = new couponDetails();
-  imageurl: string[] = ["nikhil"];
+  imageFileNames: string[] = [];
+  username:string="";
+  businessId:string="";
 
-  constructor(private fb: FormBuilder, private backendService: BackendService) {
+  constructor(private fb: FormBuilder, private postUpload: postUpload,private jwtDecoder : JwtDecoderService) {
     this.couponCodeFormDetails = this.fb.group({
       imageFileNames: [''],
       couponTitle: ['', Validators.required],
@@ -25,6 +28,26 @@ export class CouponCodeFormComponent {
       termsAndConditions: ['', Validators.required],
       stepsToAvailOffer: ['', Validators.required],
       expiry: [null, Validators.required]
+    });
+    this.imageFileNames = this.postUpload.getGeneratedFileNames();
+  }
+
+  ngOnInit(): void {
+
+    this.postUpload.generatedFileNames$.subscribe(fileNames => {
+      this.imageFileNames = fileNames;
+    });
+    
+    const token = localStorage.getItem('token');
+    if (token) {
+      const decodedInfo = this.jwtDecoder.decodeInfoFromToken(token);
+      this.username = decodedInfo['sub']; 
+      this.businessId = decodedInfo['sub']; 
+    }
+
+    this.couponCodeFormDetails.patchValue({
+      username: this.username,
+      businessId: this.businessId
     });
   }
 
@@ -75,6 +98,6 @@ export class CouponCodeFormComponent {
 
   processRequest(couponCodeData: couponDetails) {
     console.log(couponCodeData);
-    this.backendService.submitCouponData(couponCodeData);
+    this.postUpload.submitCouponData(couponCodeData);
   }
 }

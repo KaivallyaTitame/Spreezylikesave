@@ -1,6 +1,6 @@
 import { Component, ViewChild, ElementRef } from '@angular/core';
 import { PresignedUrl } from 'src/app/models/presigned-url';
-import { BackendService } from 'src/app/services/post-upload.service';
+import { postUpload } from 'src/app/services/post-upload.service';
 
 @Component({
   selector: 'app-image-selector',
@@ -15,7 +15,7 @@ export class ImageSelectorComponent {
   username: string = 'user123'; 
   presignedUrls: string[] = [];
 
-  constructor(private backendService: BackendService) { }
+  constructor(private postUpload: postUpload) { }
 
   openFileDialog(): void {
     this.fileInput.nativeElement.click();
@@ -33,12 +33,15 @@ export class ImageSelectorComponent {
 
   uploadImages(): void {
     const fileNames = this.selectedFiles.map(file => file.name);
-    this.backendService.getPresignedUrl(fileNames, this.username).subscribe({
+    this.postUpload.getPresignedUrl(fileNames, this.username).subscribe({
       next: (presignedUrl: PresignedUrl) => {
         this.presignedUrls = presignedUrl.presignedUrls;
+
+        this.postUpload.setGeneratedFileNames(presignedUrl.generatedFileNames);
+        
         this.selectedFiles.forEach((file, index) => {
           const url = this.presignedUrls[index];
-          this.backendService.uploadToS3(file, url)
+          this.postUpload.uploadToS3(file, url);
         });
         this.imagesUploaded = true;
       },

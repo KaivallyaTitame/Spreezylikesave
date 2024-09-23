@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { postDetails } from 'src/app/models/post-details';
-import { BackendService } from 'src/app/services/post-upload.service';
+import { JwtDecoderService } from 'src/app/services/jwt-decoder.service';
+import { postUpload } from 'src/app/services/post-upload.service';
 
 @Component({
   selector: 'app-post-form',
@@ -11,9 +12,11 @@ import { BackendService } from 'src/app/services/post-upload.service';
 export class PostFormComponent {
   postFormDetails: FormGroup;
   postFormData: postDetails = new postDetails(); 
-  imageurl:string[]=["nikhil"]; 
+  username: string = 'nikhil123';
+  businessId: string = 'nikhil2321';
+  imageFileNames: string[] = [];
 
-  constructor(private fb: FormBuilder, private backendService: BackendService) {
+  constructor(private fb: FormBuilder, private postUpload: postUpload,private jwtDecoder : JwtDecoderService) {
     this.postFormDetails = this.fb.group({
       imageFileNames: [''],
       username: ['',Validators.required],
@@ -25,6 +28,26 @@ export class PostFormComponent {
       termsAndConditions: ['', Validators.required],
       stepsToAvailOffer: ['', Validators.required]
     });
+  }
+
+  ngOnInit(): void {
+    this.postUpload.generatedFileNames$.subscribe(fileNames => {
+      this.imageFileNames = fileNames;
+    });
+
+    const token = localStorage.getItem('token');
+    if (token) {
+      const decodedInfo = this.jwtDecoder.decodeInfoFromToken(token);
+      this.username = decodedInfo['sub']; 
+      this.businessId = decodedInfo['sub']; 
+    }
+
+    this.postFormDetails.patchValue({
+      username: this.username,
+      businessId: this.businessId
+    });
+
+    
   }
 
   handleSubmit() {
@@ -71,7 +94,7 @@ export class PostFormComponent {
   }
 
   processRequest(postFormData: postDetails) {
-    const message = this.backendService.submitPostForm(postFormData);
+    const message = this.postUpload.submitPostForm(postFormData);
   }
 
   

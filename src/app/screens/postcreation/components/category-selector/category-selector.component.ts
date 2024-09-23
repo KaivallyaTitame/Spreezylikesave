@@ -18,13 +18,13 @@ export class CategorySelectorComponent {
     this.selectedCategory = event.target.value;
     switch (this.selectedCategory) {
       case 'Post':
-        this.router.navigate(['new/post']);
+        this.router.navigate(['create/post-form']);
         break;
       case 'Coupon Code':
-        this.router.navigate(['new/coupon-code']);
+        this.router.navigate(['create/coupon-code']);
         break;
       case 'Event':
-        this.router.navigate(['new/events']);
+        this.router.navigate(['create/events-form']);
         break;
       case 'Story Ads':
         this.router.navigate(['/story-ads']);

@@ -4,19 +4,23 @@ import { couponDetails } from '../models/coupon-details';
 import { postDetails } from '../models/post-details';
 import { eventDetails } from '../models/event-details';
 import { PresignedUrl } from '../models/presigned-url';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { environment } from 'src/environments/environment.development';
 
 @Injectable({
   providedIn: 'root'
 })
 
-export class BackendService {
+export class postUpload {
 
-  constructor(private http:HttpClient) { }
+  private generatedFileNamesSubject = new BehaviorSubject<string[]>([]);
+  generatedFileNames$ = this.generatedFileNamesSubject.asObservable();
+
+  constructor(private http: HttpClient) { }
 
   submitCouponData(data:couponDetails){
     this.http.post(
-      'https://8d3b-2401-4900-1c43-9c3f-fcc1-f5e8-a115-5440.ngrok-free.app/content/coupon/create', 
+      `${environment.apiGateway}/content/coupon/create`,
       data,
       {responseType:'text',
        headers: new HttpHeaders({
@@ -42,9 +46,10 @@ export class BackendService {
   submitPostForm(data:postDetails){
     console.log(data);
     this.http.post(
-     'https://8d3b-2401-4900-1c43-9c3f-fcc1-f5e8-a115-5440.ngrok-free.app/content/post/create',
-       data, 
-       {responseType:'text',
+      `${environment.apiGateway}/content/post/create`,
+      data,
+      {
+        responseType: 'text',
         headers: new HttpHeaders({
           'ngrok-skip-browser-warning': 'true',
           'Content-Type': 'application/json'
@@ -63,17 +68,20 @@ export class BackendService {
     });
   }
 
-  submitEventData(data:eventDetails){
-    this.http.post('https://8d3b-2401-4900-1c43-9c3f-fcc1-f5e8-a115-5440.ngrok-free.app/content/event/create', data, {responseType:'text',
-      headers: new HttpHeaders({
-        'ngrok-skip-browser-warning': 'true',
-        'Content-Type': 'application/json'
-      }),
-     })
-    .subscribe({
-      next: (response)=>{
-        console.log('response got from backend is : ', response);
-        return `added successfully ${response}`;
+  submitEventData(data: eventDetails): void {
+    this.http.post(
+      `${environment.apiGateway}/content/event/create`,
+      data,
+      {
+        responseType: 'text',
+        headers: new HttpHeaders({
+          'ngrok-skip-browser-warning': 'true',
+          'Content-Type': 'application/json'
+        })
+      }
+    ).subscribe({
+      next: (response) => {
+        console.log('Response from backend:', response);
       },
       error: (error)=>{
         console.log('error occured : ', error)
@@ -84,7 +92,7 @@ export class BackendService {
 
   getPresignedUrl(imageFileNames: string[], username: string) : Observable<PresignedUrl> {
     return this.http.post<PresignedUrl>(
-      "https://8d3b-2401-4900-1c43-9c3f-fcc1-f5e8-a115-5440.ngrok-free.app/content/generate-presigned-url",
+      `${environment.apiGateway}/content/generate-presigned-url`,
       { imageFileNames, username },
     );
   }
