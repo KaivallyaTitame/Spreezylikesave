@@ -1,65 +1,65 @@
 <app-category-selector></app-category-selector>
 <form [formGroup]="couponCodeFormDetails" (ngSubmit)="handleSubmit()">
-    <div class="title font-roboto text-black text-base" style="margin-top: 15px; margin-left: 15px;">
+    <div class="font-roboto text-black text-base mt-4 ml-4">
         <label for="couponTitle">Title *</label>
     </div>
-    <div class="input-container" style="margin-left: 15px;">
-        <input formControlName="couponTitle" type="text" name="couponTitle" required class="title-input border border-pink-500 rounded-md p-2" placeholder="Add Title Here..." id="couponTitle">
+    <div class="ml-4">
+        <input formControlName="couponTitle" type="text" name="couponTitle" required class="title-input w-[330px] h-[28px] mt-1 border border-[#ED6A5A] rounded-md p-2" placeholder="Add Title Here..." id="couponTitle">
         <div *ngIf="couponCodeFormDetails.get('couponTitle')?.touched && couponCodeFormDetails.get('couponTitle')?.invalid" class="text-red-500">Title is required</div>
     </div>
-      
+
     <app-image-selector></app-image-selector>
 
-    <div class="title font-roboto text-black text-base" style="margin-top: 15px; margin-left: 15px;">
+    <div class="font-roboto text-black text-base mt-4 ml-4">
         <label for="description">Offer Details*</label>
     </div>
-    <div class="input-container" style="margin-left: 15px;">
-        <textarea formControlName="description" name="description" required class="offer-details-input border border-pink-500 rounded-md p-2" placeholder="Describe more about the offer you want to share with your customer."></textarea>
+    <div class="ml-4">
+        <textarea formControlName="description" name="description" required class="offer-details-input w-[330px] h-[81px] mt-1 border border-[#ED6A5A] rounded-md p-2" placeholder="Describe more about the offer you want to share with your customer."></textarea>
         <div *ngIf="couponCodeFormDetails.get('description')?.touched && couponCodeFormDetails.get('description')?.invalid" class="text-red-500">Offer details are required</div>
     </div>
 
-    <div class="title font-roboto text-black text-base" style="margin-top: 15px; margin-left: 15px;">
+    <div class="font-roboto text-black text-base mt-4 ml-4">
         <label for="couponCode">Enter coupon code*</label>
     </div>
-    <div class="input-container" style="margin-left: 15px;">
-        <input formControlName="couponCode" type="text" name="couponCode" required class="enter-coupon-code-input border border-pink-500 rounded-md p-2" placeholder="Enter coupon code..." id="couponCode">
+    <div class="ml-4">
+        <input formControlName="couponCode" type="text" name="couponCode" required class="enter-coupon-code-input w-[330px] h-[28px] mt-1 border border-[#ED6A5A] rounded-md p-2" placeholder="Enter coupon code..." id="couponCode">
         <div *ngIf="couponCodeFormDetails.get('couponCode')?.touched && couponCodeFormDetails.get('couponCode')?.invalid" class="text-red-500">Coupon code is required</div>
     </div>
 
-    <div class="title font-roboto text-black text-base" style="margin-top: 15px; margin-left: 15px;">
+    <div class="font-roboto text-black text-base mt-4 ml-4">
         <label for="expiry">Offer Expiry Date *</label>
     </div>
-    <div class="input-container" style="margin-left: 15px;">
-        <input formControlName="expiry" type="datetime-local" name="expiry" required class="date-input border border-pink-500 rounded-md p-2" id="expiry">
+    <div class="ml-4">
+        <input formControlName="expiry" type="datetime-local" name="expiry" required class="date-input w-[330px] h-[28px] mt-1 border border-[#ED6A5A] rounded-md p-2" id="expiry">
         <div *ngIf="couponCodeFormDetails.get('expiry')?.touched && couponCodeFormDetails.get('expiry')?.invalid" class="text-red-500">Expiry date is required</div>
     </div>
 
-    <div class="title font-roboto text-black text-base" style="margin-top: 15px; margin-left: 15px;">
+    <div class="font-roboto text-black text-base mt-4 ml-4">
         <label for="promoBadge">Offer Badge*</label>
     </div>
-    <div class="input-container" style="margin-left: 15px;">
-        <input formControlName="promoBadge" type="text" name="promoBadge" required class="badge-input border border-pink-500 rounded-md p-2" placeholder="Eg: Upto 30% Off" id="promoBadge">
+    <div class="ml-4">
+        <input formControlName="promoBadge" type="text" name="promoBadge" required class="badge-input w-[330px] h-[28px] mt-1 border border-[#ED6A5A] rounded-md p-2" placeholder="Eg: Upto 30% Off" id="promoBadge">
         <div *ngIf="couponCodeFormDetails.get('promoBadge')?.touched && couponCodeFormDetails.get('promoBadge')?.invalid" class="text-red-500">Offer badge is required</div>
     </div>
 
-    <div class="title font-roboto text-black text-base" style="margin-top: 15px; margin-left: 15px;">
+    <div class="font-roboto text-black text-base mt-4 ml-4">
         <label for="termsAndConditions">Terms & Conditions *</label>
     </div>
-    <div class="input-container" style="margin-left: 15px;">
-        <textarea formControlName="termsAndConditions" #termsTextarea name="termsAndConditions" required class="terms-input border border-pink-500 rounded-md p-2" placeholder="Enter terms and conditions" id="termsAndConditions" (keydown)="addBulletPointOnEnter($event, termsTextarea)" (focus)="addBulletPointOnFocus(termsTextarea)" ></textarea>
+    <div class="ml-4">
+        <textarea formControlName="termsAndConditions" #termsTextarea name="termsAndConditions" required class="terms-input w-[330px] h-[81px] mt-1 border border-[#ED6A5A] rounded-md p-2" placeholder="Enter terms and conditions" id="termsAndConditions" (keydown)="addBulletPointOnEnter($event, termsTextarea)" (focus)="addBulletPointOnFocus(termsTextarea)" ></textarea>
         <div *ngIf="couponCodeFormDetails.get('termsAndConditions')?.touched && couponCodeFormDetails.get('termsAndConditions')?.invalid" class="text-red-500">Terms & Conditions are required</div>
     </div>
 
-    <div class="title font-roboto text-black text-base" style="margin-top: 15px; margin-left: 15px;">
+    <div class="font-roboto text-black text-base mt-4 ml-4">
         <label for="stepsToAvailOffer">How to Redeem *</label>
     </div>
-    <div class="input-container" style="margin-left: 15px;">
-        <textarea formControlName="stepsToAvailOffer" #howToRedeemTextarea name="stepsToAvailOffer" required class="how-to-redeem-input border border-pink-500 rounded-md p-2" placeholder="Provide instructions on how to redeem the coupon code." id="stepsToAvailOffer" (keydown)="addBulletPointOnEnter($event, howToRedeemTextarea)" (focus)="addBulletPointOnFocus(howToRedeemTextarea)"></textarea>
+    <div class="ml-4">
+        <textarea formControlName="stepsToAvailOffer" #howToRedeemTextarea name="stepsToAvailOffer" required class="how-to-redeem-input w-[330px] h-[81px] mt-1 border border-[#ED6A5A] rounded-md p-2" placeholder="Provide instructions on how to redeem the coupon code." id="stepsToAvailOffer" (keydown)="addBulletPointOnEnter($event, howToRedeemTextarea)" (focus)="addBulletPointOnFocus(howToRedeemTextarea)"></textarea>
         <div *ngIf="couponCodeFormDetails.get('stepsToAvailOffer')?.touched && couponCodeFormDetails.get('stepsToAvailOffer')?.invalid" class="text-red-500">Instructions are required</div>
     </div>
 
-    <div class="buttons-container" style="margin-left: 39px; margin-top: 15px;">
-        <button type="button" class="reset-button" (click)="couponCodeFormDetails.reset()">RESET DETAILS</button>
-        <button type="submit" class="post-button">POST</button>
+    <div class="flex items-center ml-10 mt-4">
+        <button type="button" class="reset-button w-[130px] h-[35px] bg-[#ED6A5A] text-white border border-[#ED6A5A] rounded-md hover:bg-[#f57c6c] focus:outline-none focus:ring-4 focus:ring-[#ED6A5A]">RESET DETAILS</button>
+        <button type="submit" class="post-button w-[130px] h-[35px] bg-[#ED6A5A] text-white border border-[#ED6A5A] rounded-md ml-4 hover:bg-[#f57c6c] focus:outline-none focus:ring-4 focus:ring-[#ED6A5A]">POST</button>
     </div>
 </form>

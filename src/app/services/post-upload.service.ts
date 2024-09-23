@@ -5,12 +5,13 @@ import { postDetails } from '../models/post-details';
 import { eventDetails } from '../models/event-details';
 import { PresignedUrl } from '../models/presigned-url';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { environment } from 'src/environments/environment.development';
 
 @Injectable({
   providedIn: 'root'
 })
 
-export class BackendService {
+export class postUpload {
 
   private generatedFileNamesSubject = new BehaviorSubject<string[]>([]);
   generatedFileNames$ = this.generatedFileNamesSubject.asObservable();
@@ -28,7 +29,7 @@ export class BackendService {
 
   submitCouponData(data: couponDetails): void {
     this.http.post(
-      'http://192.168.0.198:8081/content/coupon/create',
+      `${environment.apiGateway}/content/coupon/create`,
       data,
       {
         responseType: 'text',
@@ -52,7 +53,7 @@ export class BackendService {
 
   submitPostForm(data: postDetails): void {
     this.http.post(
-      'http://192.168.0.198:8081/content/post/create',
+      `${environment.apiGateway}/content/post/create`,
       data,
       {
         responseType: 'text',
@@ -73,7 +74,7 @@ export class BackendService {
 
   submitEventData(data: eventDetails): void {
     this.http.post(
-      'http://192.168.0.198:8081/content/event/create',
+      `${environment.apiGateway}/content/event/create`,
       data,
       {
         responseType: 'text',
@@ -94,7 +95,7 @@ export class BackendService {
 
   getPresignedUrl(imageFileNames: string[], username: string): Observable<PresignedUrl> {
     return this.http.post<PresignedUrl>(
-      'http://192.168.0.198:8081/content/generate-presigned-url',
+      `${environment.apiGateway}/content/generate-presigned-url`,
       { imageFileNames, username },
     );
   }

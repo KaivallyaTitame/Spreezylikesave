@@ -14,11 +14,11 @@ const routes: Routes = [
     component:CouponCodeFormComponent
   },
   {
-    path:'post',
+    path:'post-form',
     component:PostFormComponent
   },
   {
-    path:'events',
+    path:'events-form',
     component:EventsFormComponent
   }
 ];

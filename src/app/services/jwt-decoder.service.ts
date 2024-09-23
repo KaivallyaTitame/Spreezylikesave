@@ -1,17 +1,17 @@
 import { Injectable } from '@angular/core';
-import { DecodedToken } from '../models/decoded-token';
 import { jwtDecode } from 'jwt-decode';
+import { DecodedToken } from 'src/app/models/decoded-token';
 
 @Injectable({
   providedIn: 'root'
 })
 export class JwtDecoderService {
-
   constructor() { }
+
   decodeInfoFromToken(token: string): DecodedToken {
     const dummyDecodedToken: DecodedToken = {
-      userType: "business",
-      tokenType: "Bearer",
+      "User Type": "guest",
+      Token_type: "Bearer",
       iss: "Spreezy",
       sub: "dummyUser",
       iat: Date.now() / 1000, 

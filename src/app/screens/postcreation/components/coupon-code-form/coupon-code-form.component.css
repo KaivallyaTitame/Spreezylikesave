@@ -1,5 +1,4 @@
 .title-input,
-.url-input,
 .date-input,
 .badge-input,
 .enter-coupon-code-input,
@@ -12,7 +11,7 @@
     margin-top: 5px;
     border-radius: 4px;
     border-color: #ED6A5A;
-    color: black ;
+    color: black !important; 
 }
 
 .offer-details-input,
@@ -29,6 +28,7 @@
 .date-input::placeholder,
 .badge-input::placeholder,
 .offer-details-input::placeholder,
+.enter-coupon-code-input,
 .terms-input::placeholder,
 .how-to-redeem-input::placeholder {
     color: #979797; 
