@@ -1,6 +1,6 @@
 export const environment = {
   production: false,
-  apiGateway: "http://192.168.0.198:8081",
+  apiGateway: "http://192.168.1.105:8081",
   firebase: {
     apiKey: "AIzaSyAefHwV7r5LaXZHjcE3U0wxxBlQhA3BqwE",
     authDomain: "spreezy-auth.firebaseapp.com",
