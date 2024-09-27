@@ -14,7 +14,6 @@ import { BusinessInsightsModule } from '../../insights/insights.module';
 })
 export class BusinessBottomNavbarComponent {
   constructor(private router: Router, private _navigation: BusinessNavigationServiceService) {}
-
   Home_screen_active: boolean = this._navigation.Is_Home;
   Insights_screen_active: boolean = this._navigation.Is_Insights;
   Post_screen_active: boolean = this._navigation.Is_Post;

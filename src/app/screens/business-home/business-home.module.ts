@@ -12,6 +12,7 @@ import { AddPostModule } from '../add-post/add-post.module';
 import { ProfileScreenModule } from '../profile-screen/profile-screen.module';
 import { BusinessHomeComponent } from './business-home.component';
 
+<<<<<<< HEAD
 
 const routes: Routes = [
   { path: '', component: BusinessBottomNavbarComponent },
@@ -24,6 +25,20 @@ const routes: Routes = [
     { path: 'profile', loadChildren: () => import('../profile-screen/profile-screen.module').then(m => m.ProfileScreenModule) }
   ]
 }
+=======
+const routes: Routes = [
+  {
+    path: '',
+    component: BusinessHomeComponent, 
+    children: [
+      { path: 'home', component: HomeScreenComponent },
+      { path: 'insights', component: BusinessInsightsComponent },
+      { path: 'notifications', component: NotificationScreenComponent },
+      { path: 'add-post', component: AddPostComponent },
+      { path: 'profile', component: ProfileScreenComponent }
+    ]
+  }
+>>>>>>> 5fddd63 (Business and consumer navigation bar working)
 ];
 
 @NgModule({

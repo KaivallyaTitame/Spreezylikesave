@@ -1,36 +1,45 @@
-.drawer-toggle:checked~.overlay {
-    opacity: 0;
-    visibility: visible;
+.drawer-toggle:checked ~ .overlay {
+  opacity: 0;
+  visibility: visible;
 }
-/* Add this CSS to handle the bottom navbar behavior and alignment */
-.sidebar-title {
-    /* Ensure the sidebar title is left-aligned */
-    text-align: left;
-  }
-  
-  .sidebar-title .flex-col {
-    /* Adjust alignment of the names */
-    justify-content: center;
-    align-items: flex-start;
-  }
 
-  .drawer {
-    z-index: 40; /* Higher than bottom-navbar */
-  }
-  
-  .bottom-navbar {
-    z-index: 30; /* Lower than sidebar */
-  }
-  
-  
-  .drawer-content {
-    /* Ensure the drawer content does not overlap the bottom navbar */
-    z-index: 20;
-  }
-  
-  /* Style to push the bottom navbar back when sidebar is open */
-  .drawer-open ~ .bottom-component {
-    transform: translateY(100x); /* Adjust value as necessary */
-    transition: transform 0.3s ease; /* Smooth transition */
-  }
-  
+.sidebar-title {
+  text-align: left; 
+}
+
+.sidebar-title .flex-col {
+  justify-content: center;
+  align-items: flex-start; 
+}
+
+.drawer {
+  z-index: 40; 
+  display: flex;
+  flex-direction: column; 
+  height: 100vh; 
+}
+
+.drawer-content {
+  flex-grow: 1; 
+  overflow-y: auto; 
+  z-index: 20; 
+}
+
+.sidebar-footer {
+  margin-top: auto; 
+  padding-bottom: 20px; 
+}
+
+.sidebar-footer .divider {
+  margin-top: 20px; 
+  margin-bottom: 1.8cm; 
+}
+
+.sidebar-footer .menu-item:last-child {
+  margin-top: -1.8cm; 
+}
+
+.drawer-open ~ .bottom-component {
+  transform: translateY(100%); 
+  transition: transform 0.3s ease; 
+}
