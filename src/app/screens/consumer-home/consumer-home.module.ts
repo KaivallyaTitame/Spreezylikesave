@@ -4,31 +4,38 @@ import { ConsumerTopNavbarComponent } from './consumer-top-navbar/consumer-top-n
 import { ConsumerBottomNavbarComponent } from './consumer-bottom-navbar/consumer-bottom-navbar.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { RouterModule, Routes } from '@angular/router';
-import { ConsumerNavbarRoutingModule } from './consumer-home-routing.module';
-import { SearchModule } from '../search/search.module';
-import { HomeModule } from '../home-screen/home-screen.module';
-import { NotificationScreenModule } from '../notification-screen/notification-screen.module';
-import { ProfileScreenModule } from '../profile-screen/profile-screen.module';
+import { HomeScreenComponent } from '../home-screen/home-screen.component';
+import { SearchComponent } from '../search/search.component';
+import { NotificationScreenComponent } from '../notification-screen/notification-screen.component';
+import { ProfileScreenComponent } from '../profile-screen/profile-screen.component';
+import { ConsumerHomeComponent } from './consumer-home.component';
+
 
 const routes: Routes = [
-  { path: '', component: ConsumerBottomNavbarComponent },
-  { path: 'top', component: ConsumerTopNavbarComponent }
+  { 
+    path: '', 
+    component: ConsumerHomeComponent,
+    children: [
+      { path: 'home', component: HomeScreenComponent },
+      { path: 'search', component: SearchComponent },
+      { path: 'notifications', component: NotificationScreenComponent },
+      { path: 'profile', component: ProfileScreenComponent }
+    ]
+  }
 ];
 
 @NgModule({
   declarations: [
     ConsumerTopNavbarComponent,
-    ConsumerBottomNavbarComponent
+    ConsumerBottomNavbarComponent,
+    ConsumerHomeComponent
   ],
   imports: [
     CommonModule,
     FontAwesomeModule,
     RouterModule.forChild(routes),
-    SearchModule,
-    HomeModule,
-    NotificationScreenModule,
-    ProfileScreenModule
-  ],
+
+],
   exports: [
     ConsumerTopNavbarComponent,
     ConsumerBottomNavbarComponent,

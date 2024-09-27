@@ -12,18 +12,18 @@ import { AddPostModule } from '../add-post/add-post.module';
 import { ProfileScreenModule } from '../profile-screen/profile-screen.module';
 import { BusinessHomeComponent } from './business-home.component';
 
-
 const routes: Routes = [
-  { path: '', component: BusinessBottomNavbarComponent },
-  { path: 'top', component: BusinessTopNavbarComponent,
-  children: [
-    { path: 'home', loadChildren: () => import('../home-screen/home-screen.component').then(m => m.HomeScreenComponent) },
-    { path: 'insights', loadChildren: () => import('../insights/insights.module').then(m => m.BusinessInsightsModule) },
-    { path: 'notifications', loadChildren: () => import('../notification-screen/notification-screen.module').then(m => m.NotificationScreenModule) },
-    { path: 'add-post', loadChildren: () => import('../add-post/add-post.module').then(m => m.AddPostModule) },
-    { path: 'profile', loadChildren: () => import('../profile-screen/profile-screen.module').then(m => m.ProfileScreenModule) }
-  ]
-}
+  {
+    path: '',
+    component: BusinessHomeComponent, 
+    children: [
+      { path: 'home', component: HomeScreenComponent },
+      { path: 'insights', component: BusinessInsightsComponent },
+      { path: 'notifications', component: NotificationScreenComponent },
+      { path: 'add-post', component: AddPostComponent },
+      { path: 'profile', component: ProfileScreenComponent }
+    ]
+  }
 ];
 
 @NgModule({

@@ -2,11 +2,8 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { HomeScreenComponent } from '../home-screen/home-screen.component';
 import { NotificationScreenComponent } from '../notification-screen/notification-screen.component';
-import { AddPostComponent } from '../add-post/add-post.component';
+import { SearchComponent } from '../search/search.component';
 import { ProfileScreenComponent } from '../profile-screen/profile-screen.component';
-import { ConsumerBottomNavbarComponent } from './consumer-bottom-navbar/consumer-bottom-navbar.component';
-import { ConsumerTopNavbarComponent } from './consumer-top-navbar/consumer-top-navbar.component';
-
 
 const routes: Routes = [
   { 
@@ -29,7 +26,7 @@ const routes: Routes = [
   }, 
   { path: 'home', component: HomeScreenComponent },
   { path: 'notification', component: NotificationScreenComponent },
-  { path: 'post', component: AddPostComponent },
+  { path: 'search', component: SearchComponent },
   { path: 'profile', component: ProfileScreenComponent },
 >>>>>>> 1c8e8a1 (improved folder and file structure, edited names of consumer and business navigation bars)
 ];

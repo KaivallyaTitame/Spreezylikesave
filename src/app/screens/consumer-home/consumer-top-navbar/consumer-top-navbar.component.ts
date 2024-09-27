@@ -16,6 +16,7 @@ export class ConsumerTopNavbarComponent {
   faCircleQuestion = faCircleQuestion;
   faFileLines = faFileLines;
   faArrowRightFromBracket = faArrowRightFromBracket;
+<<<<<<< HEAD
 
   toggleSidebar() {
     const consumerTopNavbar = document.querySelector('.consumer-top-navbar') as HTMLElement;
@@ -47,4 +48,6 @@ export class ConsumerTopNavbarComponent {
   }
 =======
 >>>>>>> 1c8e8a1 (improved folder and file structure, edited names of consumer and business navigation bars)
+=======
+>>>>>>> ede22af (Business and consumer navigation bar working)
 }

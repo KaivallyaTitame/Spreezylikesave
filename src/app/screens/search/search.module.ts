@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { SearchRoutingModule } from './search-routing.module';
 import { SearchComponent } from './search.component';
 <<<<<<< HEAD
+<<<<<<< HEAD
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { FormsModule } from '@angular/forms';
 import { SharedModule } from 'src/app/shared/shared-module/shared-module.module';
@@ -10,15 +11,18 @@ import { SharedModule } from 'src/app/shared/shared-module/shared-module.module'
 import { BusinessBottomNavbarComponent } from '../business-home/business-bottom-navbar/business-bottom-navbar.component';
 import { BusinessTopNavbarComponent } from '../business-home/business-top-navbar/business-top-navbar.component';
 >>>>>>> 1c8e8a1 (improved folder and file structure, edited names of consumer and business navigation bars)
+=======
+import { ConsumerHomeModule } from '../consumer-home/consumer-home.module';
+>>>>>>> ede22af (Business and consumer navigation bar working)
 
 @NgModule({
   declarations: [
     SearchComponent,
-
   ],
   imports: [
     CommonModule,
-    SearchRoutingModule
+    SearchRoutingModule,
+    ConsumerHomeModule
   ],
   exports: [
     SearchComponent,
