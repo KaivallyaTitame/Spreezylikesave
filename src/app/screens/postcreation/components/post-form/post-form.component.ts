@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { postDetails } from 'src/app/models/post-details';
 import { JwtDecoderService } from 'src/app/services/jwt-decoder.service';
@@ -9,21 +10,24 @@ import { postUpload } from 'src/app/services/post-upload.service';
   templateUrl: './post-form.component.html',
   styleUrls: ['./post-form.component.css']
 })
-export class PostFormComponent {
+export class PostFormComponent implements OnInit {
   postFormDetails: FormGroup;
   postFormData: postDetails = new postDetails(); 
-  username: string = 'nikhil123';
-  businessId: string = 'nikhil2321';
+  username: string = '';
+  businessId: string = '';
   imageFileNames: string[] = [];
+  showPopUp: boolean = false;
+  popUpTitle: string = '';
+  popUpBody: string = '';
 
-  constructor(private fb: FormBuilder, private postUpload: postUpload,private jwtDecoder : JwtDecoderService) {
+  constructor(private fb: FormBuilder, private postUpload: postUpload,private jwtDecoder: JwtDecoderService){
     this.postFormDetails = this.fb.group({
-      imageFileNames: [''],
-      username: [this.username,Validators.required],
+      imageFileNames: [[], Validators.required],
+      username: ['', Validators.required],
       postTitle: ['', Validators.required],
       description: ['', Validators.required],
       expiry: [null, Validators.required],
-      businessId: [this.businessId],
+      businessId: ['', Validators.required],
       promoBadge: ['', Validators.required],
       termsAndConditions: ['', Validators.required],
       stepsToAvailOffer: ['', Validators.required]
@@ -31,29 +35,28 @@ export class PostFormComponent {
   }
 
   ngOnInit(): void {
-    this.postUpload.generatedFileNames$.subscribe(fileNames => {
-      this.imageFileNames = fileNames;
-    });
-
     const token = localStorage.getItem('token');
-    if (token) {
-      const decodedInfo = this.jwtDecoder.decodeInfoFromToken(token);
-      this.username = decodedInfo['sub']; 
-      this.businessId = decodedInfo['sub']; 
-    }
 
-    this.postFormDetails.patchValue({
-      username: this.username,
-      businessId: this.businessId
-    });
+    const decodedInfo = token ? this.jwtDecoder.decodeInfoFromToken(token) : this.jwtDecoder.decodeInfoFromToken('');
+    this.username = decodedInfo['sub'];
+    this.businessId = decodedInfo['sub'];
+  
+    this.postFormDetails.get('username')?.setValue(this.username);
+    this.postFormDetails.get('businessId')?.setValue(this.businessId);
 
     
+    this.postUpload.generatedFileNames$.subscribe(fileNames => {
+      this.imageFileNames = fileNames;
+      this.postFormDetails.get('imageFileNames')?.setValue(this.imageFileNames);
+    });
   }
 
   handleSubmit() {
     if (this.postFormDetails.valid) {
       this.createRequest(this.postFormDetails);
-      alert('Post details submitted successfully');
+      this.popUpTitle = 'Success!';
+      this.popUpBody = 'Your post form has been submitted successfully.';
+      this.showPopUp = true;
       this.postFormDetails.reset();
     } else {
       console.log(this.postFormDetails);
@@ -62,12 +65,12 @@ export class PostFormComponent {
   }
 
   createRequest(details: FormGroup) {
-    this.postFormData.imageFileNames = this.imageFileNames;
-    this.postFormData.username = this.username;
+    this.postFormData.imageFileNames = this.postFormDetails.get('imageFileNames')?.value;
+    this.postFormData.username = this.postFormDetails.get('username')?.value;
     this.postFormData.postTitle = details.value['postTitle'];
     this.postFormData.description = details.value['description'];
     this.postFormData.expiry = details.value['expiry'];
-    this.postFormData.businessId = this.businessId;
+    this.postFormData.businessId = this.postFormDetails.get('businessId')?.value;
     this.postFormData.promoBadge = details.value['promoBadge'];
     this.postFormData.termsAndConditions = this.convertTextareaToListWithBulletPoints(details.value['termsAndConditions']);
     this.postFormData.stepsToAvailOffer = this.convertTextareaToListWithBulletPoints(details.value['stepsToAvailOffer']);
@@ -77,7 +80,7 @@ export class PostFormComponent {
   convertTextareaToListWithBulletPoints(textareaValue: string): string[] {
     return textareaValue
       .split('\n')
-      .map(item => item.trim())  
+      .map(item => item.trim())
       .filter(item => item.length > 0)
       .map(item => (item.startsWith('• ') ? item : `• ${item}`));
   }
@@ -100,10 +103,30 @@ export class PostFormComponent {
       textarea.selectionStart = textarea.selectionEnd = textarea.value.length;
     }
   }
-  
+
   processRequest(postFormData: postDetails) {
-    const message = this.postUpload.submitPostForm(postFormData);
+    console.log(postFormData);
+    this.postUpload.submitPostForm(postFormData).subscribe({
+      next: (response) => {
+        this.popUpTitle = 'Success!';
+        this.popUpBody = 'Your post form has been submitted successfully.';
+        this.showPopUp = true;
+        this.postFormDetails.reset(); 
+      },
+      error: (error: HttpErrorResponse) => {
+        this.popUpTitle = 'Error!';
+        if (error.error && error.error.message) {
+          this.popUpBody = `Error: ${error.error.message}`;
+        } else {
+          this.popUpBody = 'Something went wrong. Please try again.';
+        }
+        this.showPopUp = true;
+      }
+    });
+
   }
 
-  
+  onPopUpClose() {
+    this.showPopUp = false; 
+  }
 }

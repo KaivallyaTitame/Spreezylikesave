@@ -8,6 +8,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { PostFormComponent } from './components/post-form/post-form.component';
 import { EventsFormComponent } from './components/events-form/events-form.component';
 import { ImageSelectorComponent } from './components/image-selector/image-selector.component';
+import { PopUpComponent } from 'src/app/components/pop-up/pop-up.component';
 
 
 @NgModule({
@@ -16,7 +17,8 @@ import { ImageSelectorComponent } from './components/image-selector/image-select
     CouponCodeFormComponent,
     PostFormComponent,
     EventsFormComponent,
-    ImageSelectorComponent
+    ImageSelectorComponent,
+    PopUpComponent
   ],
   imports: [
     CommonModule,

@@ -1,23 +1,30 @@
-import { Component, ViewChild, ElementRef } from '@angular/core';
+import { Component, ViewChild, ElementRef, OnInit } from '@angular/core';
 import { PresignedUrl } from 'src/app/models/presigned-url';
 import { postUpload } from 'src/app/services/post-upload.service';
+import { JwtDecoderService } from 'src/app/services/jwt-decoder.service';
 
 @Component({
   selector: 'app-image-selector',
   templateUrl: './image-selector.component.html',
   styleUrls: ['./image-selector.component.css']
 })
-export class ImageSelectorComponent {
+export class ImageSelectorComponent implements OnInit {
   @ViewChild('fileInput', { static: false }) fileInput!: ElementRef;
   imagePreviews: string[] = [];
   selectedFiles: File[] = [];
-  username: string = 'user123'; 
+  username: string = '';  
   presignedUrls: string[] = [];
   maxImageCount: number = 2; 
   isUploadDisabled: boolean = true; 
   isUploadCompleted: boolean = false; 
 
-  constructor(private postUpload: postUpload) { }
+  constructor(private postUpload: postUpload, private jwtDecoder: JwtDecoderService) {}
+
+  ngOnInit(): void {
+    const token = localStorage.getItem('token');
+    const decodedInfo = token ? this.jwtDecoder.decodeInfoFromToken(token) : this.jwtDecoder.decodeInfoFromToken('');
+      this.username = decodedInfo['sub'];
+  }
 
   openFileDialog(): void {
     this.fileInput.nativeElement.click();
@@ -52,6 +59,7 @@ export class ImageSelectorComponent {
     }
 
     const fileNames = this.selectedFiles.map(file => file.name);
+
     this.postUpload.getPresignedUrl(fileNames, this.username).subscribe({
       next: (presignedUrl: PresignedUrl) => {
         console.log(presignedUrl);
@@ -92,5 +100,5 @@ export class ImageSelectorComponent {
 
   private updateUploadButtonState(): void {
     this.isUploadDisabled = this.selectedFiles.length === 0 || this.selectedFiles.length > this.maxImageCount || this.isUploadCompleted;
-  }
+  } 
 }

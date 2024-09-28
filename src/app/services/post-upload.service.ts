@@ -27,8 +27,8 @@ export class postUpload {
     return this.generatedFileNamesSubject.getValue();
   }
 
-  submitCouponData(data: couponDetails): void {
-    this.http.post(
+  submitCouponData(data: couponDetails): Observable<String> {
+    return this.http.post(
       `${environment.apiGateway}/content/coupon/create`,
       data,
       {
@@ -36,61 +36,38 @@ export class postUpload {
         headers: new HttpHeaders({
           'ngrok-skip-browser-warning': 'true',
           'Content-Type': 'application/json',
-          'accept': '*/*'
-        })
+          'accept': '*/*',
+        }),
       }
-    ).subscribe({
-      next: (response) => {
-        console.log('Response from backend:', response);
-        alert('Coupon details submitted successfully');
-      },
-      error: (error) => {
-        console.error('Error occurred:', error);
-        alert('Error submitting coupon details');
-      }
-    });
+    );
   }
 
-  submitPostForm(data: postDetails): void {
-    this.http.post(
+  submitPostForm(data: postDetails): Observable<String> {
+    return this.http.post(
       `${environment.apiGateway}/content/post/create`,
       data,
       {
         responseType: 'text',
         headers: new HttpHeaders({
           'ngrok-skip-browser-warning': 'true',
-          'Content-Type': 'application/json'
-        })
+          'Content-Type': 'application/json',
+        }),
       }
-    ).subscribe({
-      next: (response) => {
-        console.log('Response from backend:', response);
-      },
-      error: (error) => {
-        console.error('Error occurred:', error);
-      }
-    });
+    );
   }
 
-  submitEventData(data: eventDetails): void {
-    this.http.post(
+  submitEventData(data: eventDetails): Observable<String> {
+    return this.http.post(
       `${environment.apiGateway}/content/event/create`,
       data,
       {
         responseType: 'text',
         headers: new HttpHeaders({
           'ngrok-skip-browser-warning': 'true',
-          'Content-Type': 'application/json'
-        })
+          'Content-Type': 'application/json',
+        }),
       }
-    ).subscribe({
-      next: (response) => {
-        console.log('Response from backend:', response);
-      },
-      error: (error) => {
-        console.error('Error occurred:', error);
-      }
-    });
+    );
   }
 
   getPresignedUrl(imageFileNames: string[], username: string): Observable<PresignedUrl> {
