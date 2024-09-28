@@ -56,3 +56,6 @@
     <button type="submit" class="post-button">POST</button>
   </div>
 </form>
+<div *ngIf="showPopUp">
+  <app-pop-up [messageTitle]="popUpTitle" [messageBody]="popUpBody" (close)="onPopUpClose()"></app-pop-up>
+</div>

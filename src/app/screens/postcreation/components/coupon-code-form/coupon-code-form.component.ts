@@ -1,3 +1,4 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { couponDetails } from 'src/app/models/coupon-details';
@@ -15,10 +16,13 @@ export class CouponCodeFormComponent {
   imageFileNames: string[] = [];
   username:string="";
   businessId:string="";
+  showPopUp: boolean = false;
+  popUpTitle: string = '';
+  popUpBody: string = '';
 
   constructor(private fb: FormBuilder, private postUpload: postUpload,private jwtDecoder : JwtDecoderService) {
     this.couponCodeFormDetails = this.fb.group({
-      imageFileNames: [''],
+      imageFileNames: [[], Validators.required],
       couponTitle: ['', Validators.required],
       username: ['', Validators.required],
       description: ['', Validators.required],
@@ -29,34 +33,31 @@ export class CouponCodeFormComponent {
       stepsToAvailOffer: ['', Validators.required],
       expiry: [null, Validators.required]
     });
-    this.imageFileNames = this.postUpload.getGeneratedFileNames();
   }
 
   ngOnInit(): void {
-
-    this.postUpload.generatedFileNames$.subscribe(fileNames => {
-      this.imageFileNames = fileNames;
-    });
     
     const token = localStorage.getItem('token');
-    if (token) {
-      const decodedInfo = this.jwtDecoder.decodeInfoFromToken(token);
-      this.username = decodedInfo['sub']; 
-      this.businessId = decodedInfo['sub']; 
-    }
 
-    this.couponCodeFormDetails.patchValue({
-      username: this.username,
-      businessId: this.businessId
+    const decodedInfo = token ? this.jwtDecoder.decodeInfoFromToken(token) : this.jwtDecoder.decodeInfoFromToken('');
+    this.username = decodedInfo['sub'];
+    this.businessId = decodedInfo['sub'];
+  
+    this.couponCodeFormDetails.get('username')?.setValue(this.username);
+    this.couponCodeFormDetails.get('businessId')?.setValue(this.businessId);
+
+    
+    this.postUpload.generatedFileNames$.subscribe(fileNames => {
+      this.imageFileNames = fileNames;
+      this.couponCodeFormDetails.get('imageFileNames')?.setValue(this.imageFileNames);
     });
   }
 
   handleSubmit() {
     if (this.couponCodeFormDetails.valid) {
       this.createRequest(this.couponCodeFormDetails);
-      this.couponCodeFormDetails.reset();
     } else {
-      alert('Please fill out the form correctly');
+      alert('Please fill out the form correctly please');
     }
   }
 
@@ -97,7 +98,27 @@ export class CouponCodeFormComponent {
   }
 
   processRequest(couponCodeData: couponDetails) {
-    console.log(couponCodeData);
-    this.postUpload.submitCouponData(couponCodeData);
+    this.postUpload.submitCouponData(couponCodeData).subscribe({
+      next: (response) => {
+        this.popUpTitle = 'Success!';
+        this.popUpBody = 'Your coupon code form has been submitted successfully.';
+        this.showPopUp = true;
+        console.log(couponCodeData);
+        this.couponCodeFormDetails.reset(); 
+      },
+      error: (error: HttpErrorResponse) => {
+        this.popUpTitle = 'Error!';
+        if (error.error && error.error.message) {
+          this.popUpBody = `Error: ${error.error.message}`;
+        } else {
+          this.popUpBody = 'Something went wrong. Please try again.';
+        }
+        this.showPopUp = true;
+      }
+    });
+  }
+
+  onPopUpClose() {
+    this.showPopUp = false; 
   }
 }

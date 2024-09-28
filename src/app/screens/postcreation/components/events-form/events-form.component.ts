@@ -1,3 +1,4 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { eventDetails } from 'src/app/models/event-details';
@@ -15,11 +16,15 @@ export class EventsFormComponent {
   username: string = '';
   businessId: string = '';
   imageFileNames: string[] = [];
+  showPopUp: boolean = false;
+  popUpTitle: string = '';
+  popUpBody: string = '';
 
   constructor(private fb: FormBuilder, private postUpload: postUpload,private jwtDecoder : JwtDecoderService) {
     this.eventFormDetails = this.fb.group({
-      imageFileNames: [''],
-      businessId:[''],
+      imageFileNames: [[], Validators.required],
+      username: ['', Validators.required],
+      businessId: ['', Validators.required],
       eventTitle: ['', Validators.required],
       description: ['', Validators.required],
       eventDateAndTime: ['', Validators.required],
@@ -33,28 +38,25 @@ export class EventsFormComponent {
 
   ngOnInit(): void {
 
+    const token = localStorage.getItem('token');
+
+    const decodedInfo = token ? this.jwtDecoder.decodeInfoFromToken(token) : this.jwtDecoder.decodeInfoFromToken('');
+    this.username = decodedInfo['sub'];
+    this.businessId = decodedInfo['sub'];
+  
+    this.eventFormDetails.get('username')?.setValue(this.username);
+    this.eventFormDetails.get('businessId')?.setValue(this.businessId);
+
+    
     this.postUpload.generatedFileNames$.subscribe(fileNames => {
       this.imageFileNames = fileNames;
-    });
-
-    const token = localStorage.getItem('token');
-    if (token) {
-      const decodedInfo = this.jwtDecoder.decodeInfoFromToken(token);
-      this.username = decodedInfo['sub']; 
-      this.businessId = decodedInfo['sub']; 
-    }
-
-    this.eventFormDetails.patchValue({
-      username: this.username,
-      businessId: this.businessId
+      this.eventFormDetails.get('imageFileNames')?.setValue(this.imageFileNames);
     });
   }
 
   handleSubmit() {
     if (this.eventFormDetails.valid) {
       this.createRequest(this.eventFormDetails);
-      alert('Event details submitted successfully');
-      this.eventFormDetails.reset();
     } else {
       alert('Please fill out the form correctly');
     }
@@ -74,7 +76,6 @@ export class EventsFormComponent {
     this.eventData.username=this.username;
 
     this.processRequest(this.eventData);
-    console.log(this.eventData);
   }
 
   convertTextareaToListWithBulletPoints(textareaValue: string): string[] {
@@ -99,7 +100,27 @@ export class EventsFormComponent {
 
   processRequest(eventData: eventDetails) {
     console.log(eventData);
-    const message=this.postUpload.submitEventData(eventData);
-    console.log(message);
+    this.postUpload.submitEventData(eventData).subscribe({
+      next: (response) => {
+        this.popUpTitle = 'Success!';
+        this.popUpBody = 'Your coupon code form has been submitted successfully.';
+        this.showPopUp = true;
+        console.log(eventData);
+        this.eventFormDetails.reset(); 
+      },
+      error: (error: HttpErrorResponse) => {
+        this.popUpTitle = 'Error!';
+        if (error.error && error.error.message) {
+          this.popUpBody = `Error: ${error.error.message}`;
+        } else {
+          this.popUpBody = 'Something went wrong. Please try again.';
+        }
+        this.showPopUp = true;
+      }
+    });
+  }
+
+  onPopUpClose() {
+    this.showPopUp = false; 
   }
 }

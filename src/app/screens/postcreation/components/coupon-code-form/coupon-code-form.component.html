@@ -63,3 +63,6 @@
         <button type="submit" class="post-button w-[130px] h-[35px] bg-[#ED6A5A] text-white border border-[#ED6A5A] rounded-md ml-4 hover:bg-[#f57c6c] focus:outline-none focus:ring-4 focus:ring-[#ED6A5A]">POST</button>
     </div>
 </form>
+<div *ngIf="showPopUp">
+    <app-pop-up [messageTitle]="popUpTitle" [messageBody]="popUpBody" (close)="onPopUpClose()"></app-pop-up>
+</div>

@@ -18,76 +18,56 @@ export class postUpload {
 
   constructor(private http: HttpClient) { }
 
-  submitCouponData(data:couponDetails){
-    this.http.post(
-      `${environment.apiGateway}/content/coupon/create`,
-      data,
-      {responseType:'text',
-       headers: new HttpHeaders({
-        'ngrok-skip-browser-warning': 'true',
-        'Content-Type': 'application/json',
-        'accept': '*/*'
-      }),
-     },
-    )
-    .subscribe({
-      next: (response)=>{
-        console.log('response got from backend is : ', response);
-        alert('Coupon details submitted successfully');
-        return `added successfully ${response}`;
-      },
-      error: (error)=>{
-        console.log('error occured : ', error)
-        return 'something is wrong in  funcion of backend service'
-      }
-    });
+  setGeneratedFileNames(fileNames: string[]): void {
+    this.generatedFileNamesSubject.next(fileNames);
+    console.log('Generated file names:', fileNames);
   }
 
-  submitPostForm(data:postDetails){
-    console.log(data);
-    this.http.post(
+  getGeneratedFileNames(): string[] {
+    return this.generatedFileNamesSubject.getValue();
+  }
+
+  submitCouponData(data: couponDetails): Observable<String> {
+    return this.http.post(
+      `${environment.apiGateway}/content/coupon/create`,
+      data,
+      {
+        responseType: 'text',
+        headers: new HttpHeaders({
+          'ngrok-skip-browser-warning': 'true',
+          'Content-Type': 'application/json',
+          'accept': '*/*',
+        }),
+      }
+    );
+  }
+
+  submitPostForm(data: postDetails): Observable<String> {
+    return this.http.post(
       `${environment.apiGateway}/content/post/create`,
       data,
       {
         responseType: 'text',
         headers: new HttpHeaders({
           'ngrok-skip-browser-warning': 'true',
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         }),
-       }, 
-      )
-    .subscribe({
-      next: (response)=>{
-        console.log('response got from backend is : ', response);
-        return `added successfully ${response}`;
-      },
-      error: (error)=>{
-        console.log('error occured : ', error)
-        return 'something is wrong in  funcion of backend service'
       }
-    });
+    );
   }
 
-  submitEventData(data: eventDetails): void {
-    this.http.post(
+  submitEventData(data: eventDetails): Observable<String> {
+    return this.http.post(
       `${environment.apiGateway}/content/event/create`,
       data,
       {
         responseType: 'text',
         headers: new HttpHeaders({
           'ngrok-skip-browser-warning': 'true',
-          'Content-Type': 'application/json'
-        })
+          'Content-Type': 'application/json',
+        }),
       }
-    ).subscribe({
-      next: (response) => {
-        console.log('Response from backend:', response);
-      },
-      error: (error)=>{
-        console.log('error occured : ', error)
-        return 'something is wrong in  funcion of backend service'
-      }
-    });
+    );
   }
 
   getPresignedUrl(imageFileNames: string[], username: string) : Observable<PresignedUrl> {
