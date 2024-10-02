@@ -35,7 +35,7 @@
     </div>
 
     <div class="font-roboto text-black text-base mt-4 ml-4">
-        <label for="promoBadge">Offer Badge*</label>
+        <label for="promoBadge">Offer Badge</label>
     </div>
     <div class="ml-4">
         <input formControlName="promoBadge" type="text" name="promoBadge" required class="badge-input w-[330px] h-[28px] mt-1 border border-[#ED6A5A] rounded-md p-2" placeholder="Eg: Upto 30% Off" id="promoBadge">
@@ -59,7 +59,7 @@
     </div>
 
     <div class="flex items-center ml-10 mt-4">
-        <button type="button" class="reset-button w-[130px] h-[35px] bg-[#ED6A5A] text-white border border-[#ED6A5A] rounded-md hover:bg-[#f57c6c] focus:outline-none focus:ring-4 focus:ring-[#ED6A5A]">RESET DETAILS</button>
+        <button type="button" class="reset-button w-[130px] h-[35px] bg-[#ED6A5A] text-white border border-[#ED6A5A] rounded-md hover:bg-[#f57c6c] focus:outline-none focus:ring-4 focus:ring-[#ED6A5A]" (click)="resetForm()">RESET DETAILS</button>
         <button type="submit" class="post-button w-[130px] h-[35px] bg-[#ED6A5A] text-white border border-[#ED6A5A] rounded-md ml-4 hover:bg-[#f57c6c] focus:outline-none focus:ring-4 focus:ring-[#ED6A5A]">POST</button>
     </div>
 </form>

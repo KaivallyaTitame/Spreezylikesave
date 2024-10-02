@@ -1,4 +1,4 @@
-export class eventDetails {
+export class EventDetails {
   eventTitle: string;
   username: string;
   description: string;

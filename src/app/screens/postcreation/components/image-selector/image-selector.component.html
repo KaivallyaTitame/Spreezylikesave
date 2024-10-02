@@ -1,5 +1,5 @@
 <div class="image-selector ml-4 mt-2">
-  <div class="title text-black text-base mt-4">Add Images *</div>
+  <div class="title text-black text-base mt-4">Add Images</div>
 
   <div class="image-upload">
     <input type="file" accept="image/*" (change)="onImageUpload($event)" multiple class="hidden" #fileInput>
@@ -22,4 +22,7 @@
       UPLOAD
     </button>
   </div>
+</div>
+<div *ngIf="showPopUp">
+  <app-pop-up [messageTitle]="popUpTitle" [messageBody]="popUpBody" (close)="onPopUpClose()"></app-pop-up>
 </div>

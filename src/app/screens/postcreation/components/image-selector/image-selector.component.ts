@@ -1,7 +1,7 @@
 import { Component, ViewChild, ElementRef, OnInit } from '@angular/core';
 import { PresignedUrl } from 'src/app/models/presigned-url';
-import { postUpload } from 'src/app/services/post-upload.service';
 import { JwtDecoderService } from 'src/app/services/jwt-decoder.service';
+import { PostUploadService } from 'src/app/services/post-upload.service';
 
 @Component({
   selector: 'app-image-selector',
@@ -15,10 +15,13 @@ export class ImageSelectorComponent implements OnInit {
   username: string = '';  
   presignedUrls: string[] = [];
   maxImageCount: number = 2; 
-  isUploadDisabled: boolean = true; 
   isUploadCompleted: boolean = false; 
+  showPopUp: boolean = false;
+  popUpTitle: string = '';
+  popUpBody: string = '';
+  uploadImageCount:number=0;
 
-  constructor(private postUpload: postUpload, private jwtDecoder: JwtDecoderService) {}
+  constructor(private postUpload: PostUploadService, private jwtDecoder: JwtDecoderService) {}
 
   ngOnInit(): void {
     const token = localStorage.getItem('token');
@@ -37,7 +40,9 @@ export class ImageSelectorComponent implements OnInit {
       const newFiles = Array.from(input.files);
       
       if (newFiles.length + this.selectedFiles.length > this.maxImageCount) {
-        alert(`You can only upload a total of ${this.maxImageCount} images.`);
+        this.popUpTitle="Error!";
+        this.popUpBody="You can upload maximum of 2 images only";
+        this.showPopUp=true;
         return;
       }
 
@@ -45,16 +50,20 @@ export class ImageSelectorComponent implements OnInit {
         if (!this.selectedFiles.some(f => f.name === file.name)) {
           this.selectedFiles.push(file);
           this.createImagePreview(file);
+        }else{
+          this.popUpTitle="Error!";
+          this.popUpBody="Image is already selected";
+          this.showPopUp=true;
         }
       });
-
-      this.updateUploadButtonState();
     }
   }
 
   uploadImages(): void {
     if (this.isUploadCompleted) {
-      alert('Images have already been uploaded.');
+      this.popUpTitle="Error!";
+      this.popUpBody="Maximum limit of uploading image have reached";
+      this.showPopUp=true;
       return;
     }
 
@@ -70,12 +79,15 @@ export class ImageSelectorComponent implements OnInit {
         this.selectedFiles.forEach((file, index) => {
           const url = this.presignedUrls[index];
           this.postUpload.uploadToS3(file, url);
-        });
+          this.popUpTitle = 'Sucess!';
+          this.popUpBody = 'Sucessfully uploaded';
+          this.showPopUp = true;
+          this.uploadImageCount+=this.selectedFiles.length;
+          if(this.uploadImageCount>this.maxImageCount){
+            this.isUploadCompleted=true;
+          }
 
-        this.isUploadCompleted = true;
-        this.selectedFiles = [];
-        this.imagePreviews = [];
-        this.isUploadDisabled = true;
+        });
       },
       error: (error: any) => {
         console.error('Error retrieving presigned URLs:', error);
@@ -94,11 +106,9 @@ export class ImageSelectorComponent implements OnInit {
   removeImage(index: number): void {
     this.imagePreviews.splice(index, 1); 
     this.selectedFiles.splice(index, 1);
-
-    this.updateUploadButtonState();
   }
 
-  private updateUploadButtonState(): void {
-    this.isUploadDisabled = this.selectedFiles.length === 0 || this.selectedFiles.length > this.maxImageCount || this.isUploadCompleted;
-  } 
+  onPopUpClose() {
+    this.showPopUp = false; 
+  }
 }

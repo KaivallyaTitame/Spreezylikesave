@@ -1,9 +1,10 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { eventDetails } from 'src/app/models/event-details';
+import { EventDetails } from 'src/app/models/event-details';
 import { JwtDecoderService } from 'src/app/services/jwt-decoder.service';
-import { postUpload } from 'src/app/services/post-upload.service';
+import { PostUploadService } from 'src/app/services/post-upload.service';
+import { TextareaUtils } from 'src/app/shared/textarea-utils';
 
 @Component({
   selector: 'app-events-form',
@@ -12,7 +13,7 @@ import { postUpload } from 'src/app/services/post-upload.service';
 })
 export class EventsFormComponent {
   eventFormDetails: FormGroup;
-  eventData: eventDetails = new eventDetails();
+  eventData: EventDetails = new EventDetails();
   username: string = '';
   businessId: string = '';
   imageFileNames: string[] = [];
@@ -20,19 +21,19 @@ export class EventsFormComponent {
   popUpTitle: string = '';
   popUpBody: string = '';
 
-  constructor(private fb: FormBuilder, private postUpload: postUpload,private jwtDecoder : JwtDecoderService) {
+  constructor(private fb: FormBuilder, private postUpload: PostUploadService,private jwtDecoder : JwtDecoderService) {
     this.eventFormDetails = this.fb.group({
-      imageFileNames: [[], Validators.required],
-      username: ['', Validators.required],
-      businessId: ['', Validators.required],
-      eventTitle: ['', Validators.required],
-      description: ['', Validators.required],
-      eventDateAndTime: ['', Validators.required],
-      promoBadge: ['', Validators.required],
-      expiry: ['', Validators.required],
-      bookingUrl: ['', Validators.required],
-      termsAndConditions: ['', Validators.required],
-      stepsToAvailOffer: ['', Validators.required],
+      imageFileNames: [[]],
+      username: [''],
+      businessId: [''],
+      eventTitle: [''],
+      description: [''],
+      eventDateAndTime: [''],
+      promoBadge: [''],
+      expiry: [''],
+      bookingUrl: [''],
+      termsAndConditions: [''],
+      stepsToAvailOffer: [''],
     });
   }
 
@@ -48,7 +49,7 @@ export class EventsFormComponent {
     this.eventFormDetails.get('businessId')?.setValue(this.businessId);
 
     
-    this.postUpload.generatedFileNames$.subscribe(fileNames => {
+    this.postUpload.generatedFileNames$.subscribe((fileNames: string[]) => {
       this.imageFileNames = fileNames;
       this.eventFormDetails.get('imageFileNames')?.setValue(this.imageFileNames);
     });
@@ -58,7 +59,10 @@ export class EventsFormComponent {
     if (this.eventFormDetails.valid) {
       this.createRequest(this.eventFormDetails);
     } else {
-      alert('Please fill out the form correctly');
+      this.popUpTitle = 'Error!';
+      this.popUpBody = 'Please fill out form correctly';
+      this.showPopUp = true;
+      this.eventFormDetails.reset();
     }
   }
 
@@ -70,45 +74,18 @@ export class EventsFormComponent {
     this.eventData.promoBadge = details.value['promoBadge'];
     this.eventData.expiry = details.value['expiry'].toString();
     this.eventData.bookingUrl = details.value['bookingUrl'];
-    this.eventData.termsAndConditions = this.convertTextareaToListWithBulletPoints(details.value['termsAndConditions']);
-    this.eventData.stepsToAvailOffer = this.convertTextareaToListWithBulletPoints(details.value['stepsToAvailOffer']);
+    this.eventData.termsAndConditions = TextareaUtils.convertTextareaToListWithBulletPoints(details.value['termsAndConditions']);
+    this.eventData.stepsToAvailOffer = TextareaUtils.convertTextareaToListWithBulletPoints(details.value['stepsToAvailOffer']);
     this.eventData.businessId=this.businessId;
     this.eventData.username=this.username;
 
     this.processRequest(this.eventData);
   }
-
-  convertTextareaToListWithBulletPoints(textareaValue: string): string[] {
-    return textareaValue
-      .split('\n')
-      .map(item => item.trim())  
-      .filter(item => item.length > 0)
-      .map(item => (item.startsWith('• ') ? item : `• ${item}`));
-  }
-
-  addBulletPointOnEnter(event: KeyboardEvent, textarea: HTMLTextAreaElement): void {
-    if (event.key === 'Enter') {
-      event.preventDefault();
-      const cursorPosition = textarea.selectionStart;
-      const textBeforeCursor = textarea.value.slice(0, cursorPosition);
-      const textAfterCursor = textarea.value.slice(cursorPosition);
-      const updatedText = `${textBeforeCursor}\n• ${textAfterCursor}`;
-      textarea.value = updatedText;
-      textarea.selectionStart = textarea.selectionEnd = cursorPosition + 3;
-    }
-  }
-
-  addBulletPointOnFocus(textarea: HTMLTextAreaElement): void {
-    if (!textarea.value.startsWith('•')) {
-      textarea.value = `• ${textarea.value}`;
-      textarea.selectionStart = textarea.selectionEnd = textarea.value.length;
-    }
-  }
   
-  processRequest(eventData: eventDetails) {
+  processRequest(eventData: EventDetails) {
     console.log(eventData);
     this.postUpload.submitEventData(eventData).subscribe({
-      next: (response) => {
+      next: (response: any) => {
         this.popUpTitle = 'Success!';
         this.popUpBody = 'Your coupon code form has been submitted successfully.';
         this.showPopUp = true;
@@ -129,5 +106,17 @@ export class EventsFormComponent {
 
   onPopUpClose() {
     this.showPopUp = false; 
+  }
+
+  addBulletPointOnEnter(event: KeyboardEvent, textarea: HTMLTextAreaElement): void {
+    TextareaUtils.addBulletPointOnEnter(event, textarea);
+  }
+
+  addBulletPointOnFocus(textarea: HTMLTextAreaElement): void {
+    TextareaUtils.addBulletPointOnFocus(textarea);
+  }
+
+  resetForm(): void {
+    this.eventFormDetails.reset();
   }
 }

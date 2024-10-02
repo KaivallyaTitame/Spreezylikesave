@@ -1,4 +1,4 @@
-export class couponDetails{
+export class CouponDetails{
     imageFileNames: string[] = [''];
     couponTitle: string = '';         
     username: string = '';            
