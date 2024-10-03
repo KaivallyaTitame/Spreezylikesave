@@ -8,6 +8,10 @@ import { AuthService } from "src/app/services/auth.service";
   styles: [],
 })
 export class LoginComponent {
+  showPopUp: boolean = false;  // State to control popup visibility
+  popupMessageTitle: string = '';  // Title for the popup
+  popupMessageBody: string = '';   // Message body for the popup
+
   form: FormGroup;
   submitted: boolean = false;
 
@@ -55,7 +59,20 @@ export class LoginComponent {
     return isValid ? null : { invalidPhoneNumber: true };
   }
 
+  showPopup(title: string, message: string) {
+    this.popupMessageTitle = title;
+    this.popupMessageBody = message;
+    this.showPopUp = true;
+  }
+
+  // Method to handle popup close
+  handleClosePopUp() {
+    this.showPopUp = false;
+  }
+
   signInWithGoogle() {
     this.authService.signInWithGoogle();
   }
+
+  
 }

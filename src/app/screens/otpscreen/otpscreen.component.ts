@@ -1,4 +1,3 @@
-import { HttpHeaders } from '@angular/common/http';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 <<<<<<< HEAD
@@ -22,7 +21,14 @@ import { DecodedToken } from 'src/app/models/decodedToken';
 >>>>>>> b4f2286 (completed UI)
 })
 export class OtpscreenComponent implements OnInit, OnDestroy {
+<<<<<<< HEAD
   
+=======
+  showPopUp: boolean = false;
+  popupMessageTitle: string = '';
+  popupMessageBody: string = '';
+
+>>>>>>> da7be76 (used popup component where needed to show error responses)
   timer: number = 30;
   intervalId: any;
   disableResend: boolean = true;
@@ -138,6 +144,8 @@ export class OtpscreenComponent implements OnInit, OnDestroy {
       },
       error: (error) => {
         this.isLoaderVisible = false;
+        this.showPopup(`Error ${error.errorCode}`, ` ${error || 'Error occured while resending otp (Internal Server Error)'}  `)
+        this.isLoaderVisible = false;
         console.error('Error resending OTP', error);
       }
     });
@@ -175,9 +183,7 @@ export class OtpscreenComponent implements OnInit, OnDestroy {
       error: (error) => {
         this.isLoaderVisible = false;
         console.error('Error verifying OTP', error);
-        if (error.status === 0) {
-          console.log("Server is unreachable, status code =", error.status);
-        }
+        this.showPopup(`Error ${error.error.errorCode} `, `${error.error.errorDescription || "Internal server error please try again later"} `)
       }
     });
   }
@@ -203,8 +209,21 @@ export class OtpscreenComponent implements OnInit, OnDestroy {
     }
   }
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> 421cafb (login functinality is working)
 }
 =======
 }
 >>>>>>> 31cb5cf (done changes as asked in pr)
+=======
+
+  showPopup(title : string, body : string){
+    this.popupMessageTitle = title;
+    this.popupMessageBody = body;
+    this.showPopUp = true;
+  }
+  handleClosePopUp(){
+    this.showPopUp = false;
+  }
+}
+>>>>>>> da7be76 (used popup component where needed to show error responses)

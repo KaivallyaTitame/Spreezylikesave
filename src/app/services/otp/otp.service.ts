@@ -4,14 +4,13 @@ import { Observable, throwError } from "rxjs";
 import { catchError, map, tap } from "rxjs/operators";
 import { OtpResponse } from "../../models/otpResponse";
 import { VerifyOtpResponse } from "../../models/verifyOtpResponse";
+import { environment } from "src/environments/environment.development";
 
 @Injectable({
   providedIn: "root",
 })
 export class OtpService {
-  private apiUrl =
-    "http://localhost:8083/";
-
+  private apiUrl = environment.apiUrl;
   constructor(private http: HttpClient) {}
   isOtpSentToMobile = false;
 
@@ -31,7 +30,7 @@ export class OtpService {
           console.error("Error sending OTP:", error);
           this.isOtpSentToMobile = false;
           return throwError(
-            () => new Error("Failed to send OTP. Please try again later.")
+            () => new HttpErrorResponse(error)
           );
         })
       );

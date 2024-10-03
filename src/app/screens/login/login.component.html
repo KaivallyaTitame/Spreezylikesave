@@ -10,7 +10,7 @@
       />
     </div>
   </div>
-  <span class="flex justify-center font-primary text-orange-500 text-3xl mt-3">
+  <span class="flex justify-center font-primary text-3xl text-primary-0 mt-3">
     Welcome to Spreezy
   </span>
 
@@ -29,6 +29,7 @@
         <label class="form-label font-roboto text-lg text-gray-700">
           Enter your Registered Mobile number
         </label>
+<<<<<<< HEAD
         <input
           #phonenumber
           class="form-control input input-primary max-w-full"
@@ -53,12 +54,67 @@
         >
           Enter a valid number.
         </span>
+=======
+        <div class="flex items-center mt-1 border border-primary-0 rounded-md">
+          <div
+            class="flex w-1/4 items-center pl-3 pr-1 text-xl text-primary"
+          >
+            +91 |
+          </div>
+          <input
+            #phonenumber
+            class="form-control py-6 input bg-white text-lg text-black placeholder-gray-400 focus:outline-none w-full border-none"
+            placeholder="Enter Number"
+            formControlName="phonenumber"
+          />
+        </div>
+
+        <div class="text-sm ml-3 mt-2 text-red-500">
+          <span
+            class="font-roboto"
+            *ngIf="
+              form.controls['phonenumber'].hasError('required') && submitted
+            "
+          >
+            Number is required.
+          </span>
+          <span
+            class="font-roboto"
+            *ngIf="
+              form.controls['phonenumber'].hasError('minlength') && submitted
+            "
+          >
+            Mobile number should not be less than 10 digits.
+          </span>
+          <span
+            class="font-roboto"
+            *ngIf="
+              form.controls['phonenumber'].hasError('maxlength') && submitted
+            "
+          >
+            Mobile number should not be greater than 10 digits.
+          </span>
+          <span
+            class="font-roboto"
+            *ngIf="
+              form.controls['phonenumber'].hasError('invalidPhoneNumber') &&
+              submitted
+            "
+          >
+            Enter a valid mobile number.
+          </span>
+        </div>
+>>>>>>> da7be76 (used popup component where needed to show error responses)
       </div>
 
       <div class="buttons flex justify-center mt-5">
         <button
           type="submit"
-          class="btn py-6 hover:bg-primary-0 text-lg text-white font-roboto w-full btn-primary rounded-md"
+<<<<<<< HEAD
+          class="btn py-6 hover:bg-primary-0 text-lg text-white font-roboto w-full btn-primary-0 rounded-md"
+=======
+          class="btn py-6  hover:bg-primary-0 text-lg text-white font-roboto w-full btn-primary rounded-md" 
+>>>>>>> da7be76 (used popup component where needed to show error responses)
         >
           SIGN IN
         </button>
@@ -73,9 +129,10 @@
       <!-- <div class="sso-login flex justify-center mt-5">
         <button
           type="button"
-          class="btn py-6 flex items-center gap-2 bg-white w-full border border-orange-600 rounded-md"
+          class="btn py-6 flex items-center gap-2 bg-secondary w-full border border-primary-0 rounded-md"
           (click)="signInWithGoogle()"
         >
+<<<<<<< HEAD
           <svg
             stroke="currentColor"
             fill="currentColor"
@@ -92,6 +149,10 @@
             <path fill="none" d="M0 0h48v48H0z"></path>
           </svg>
           <span class="text-orange-600">Sign in with Google</span>
+=======
+          <img src="../../../assets/GOOGLE.png" class="h-6" alt="img" />
+          <span class="text-lg text-primary-0">Sign in with Google</span>
+>>>>>>> da7be76 (used popup component where needed to show error responses)
         </button>
       </div>
 
@@ -101,14 +162,11 @@
       </div>
     </div>
   </form>
-<<<<<<< HEAD
   <app-pop-up
-    *ngIf="showPopUp"
-    [messageTitle]="popupMessageTitle"
-    [messageBody]="popupMessageBody"
-    (close)="handleClosePopUp()"
+  *ngIf="showPopUp"
+  [messageTitle]="popupMessageTitle"
+  [messageBody]="popupMessageBody"
+  (close)="handleClosePopUp()"
   ></app-pop-up>
-</div>
-=======
 </div>
 >>>>>>> ed7e1fa (done changes as asked in pr)

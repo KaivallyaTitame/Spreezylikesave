@@ -5,11 +5,16 @@ import { LoaderComponent } from 'src/app/components/loader/loader.component';
 
 
 
+
+
 @NgModule({
+  declarations: [PopUpComponent, LoaderComponent],
   declarations: [PopUpComponent, LoaderComponent],
   imports: [
     CommonModule
+    CommonModule
   ],
   exports: [PopUpComponent , LoaderComponent]
+  exports: [PopUpComponent , LoaderComponent]
 })
-export class SharedModule { }
+export class SharedModuleModule { }
