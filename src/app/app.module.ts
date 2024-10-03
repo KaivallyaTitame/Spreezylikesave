@@ -44,17 +44,22 @@ import { LoaderComponent } from './components/loader/loader.component';
 import { RegisterModule } from "./screens/register/register.module";
 @NgModule({
 <<<<<<< HEAD
+<<<<<<< HEAD
   declarations: [AppComponent, OtpscreenComponent], 
 >>>>>>> 3789018 (Post blocker)
 =======
   declarations: [AppComponent, OtpscreenComponent],
 >>>>>>> a8a8c40 (done changes as asked in pr)
+=======
+  declarations: [AppComponent],
+>>>>>>> fd6032b (used popup component where needed to show error responses)
   imports: [
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
     AngularFireModule.initializeApp(environment.firebase),
     LoginModule,
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -79,6 +84,11 @@ import { RegisterModule } from "./screens/register/register.module";
     RegisterModule
 >>>>>>> a8a8c40 (done changes as asked in pr)
   ],
+=======
+    ReactiveFormsModule,
+    RegisterModule,
+],
+>>>>>>> fd6032b (used popup component where needed to show error responses)
   providers: [
     {
       provide: ErrorHandler,

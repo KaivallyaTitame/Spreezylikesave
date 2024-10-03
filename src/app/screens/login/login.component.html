@@ -10,7 +10,7 @@
       />
     </div>
   </div>
-  <span class="flex justify-center font-primary text-orange-500 text-3xl mt-3">
+  <span class="flex justify-center font-primary text-3xl text-primary-0 mt-3">
     Welcome to Spreezy
   </span>
 
@@ -29,9 +29,9 @@
         <label class="form-label font-roboto text-lg text-gray-700">
           Enter your Registered Mobile number
         </label>
-        <div class="flex items-center mt-1 border border-orange-600 rounded-md">
+        <div class="flex items-center mt-1 border border-primary-0 rounded-md">
           <div
-            class="flex w-1/4 items-center pl-3 pr-1 text-xl text-orange-500"
+            class="flex w-1/4 items-center pl-3 pr-1 text-xl text-primary"
           >
             +91 |
           </div>
@@ -83,7 +83,7 @@
       <div class="buttons flex justify-center mt-5">
         <button
           type="submit"
-          class="btn py-6  hover:bg-orange-600 text-lg text-white font-roboto w-full btn-primary rounded-md" 
+          class="btn py-6  hover:bg-primary-0 text-lg text-white font-roboto w-full btn-primary rounded-md" 
         >
           SIGN IN
         </button>
@@ -98,11 +98,11 @@
       <!-- <div class="sso-login flex justify-center mt-5">
         <button
           type="button"
-          class="btn py-6 flex items-center gap-2 bg-white w-full border border-orange-600 rounded-md"
+          class="btn py-6 flex items-center gap-2 bg-secondary w-full border border-primary-0 rounded-md"
           (click)="signInWithGoogle()"
         >
           <img src="../../../assets/GOOGLE.png" class="h-6" alt="img" />
-          <span class="text-lg text-orange-600">Sign in with Google</span>
+          <span class="text-lg text-primary-0">Sign in with Google</span>
         </button>
       </div>
 
@@ -118,9 +118,9 @@
     </div>
   </form>
   <app-pop-up
-    *ngIf="showPopUp"
-    [messageTitle]="popupMessageTitle"
-    [messageBody]="popupMessageBody"
-    (close)="handleClosePopUp()"
+  *ngIf="showPopUp"
+  [messageTitle]="popupMessageTitle"
+  [messageBody]="popupMessageBody"
+  (close)="handleClosePopUp()"
   ></app-pop-up>
 </div>

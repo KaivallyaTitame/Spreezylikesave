@@ -93,4 +93,11 @@
       </button>
     </p>
   </div>
+  <app-pop-up
+  *ngIf="showPopUp"
+  [messageTitle]="popupMessageTitle"
+  [messageBody]="popupMessageBody"
+  (close)="handleClosePopUp()"
+  ></app-pop-up>
+
 </div>

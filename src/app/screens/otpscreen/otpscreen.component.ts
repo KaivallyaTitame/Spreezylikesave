@@ -1,4 +1,3 @@
-import { HttpHeaders } from '@angular/common/http';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -14,6 +13,10 @@ import { DecodedToken } from 'src/app/models/decodedToken';
   templateUrl: './otpscreen.component.html',
 })
 export class OtpscreenComponent implements OnInit, OnDestroy {
+  showPopUp: boolean = false;
+  popupMessageTitle: string = '';
+  popupMessageBody: string = '';
+
   timer: number = 30;
   intervalId: any;
   disableResend: boolean = true;
@@ -90,8 +93,9 @@ export class OtpscreenComponent implements OnInit, OnDestroy {
       },
       error: (error) => {
         this.isLoaderVisible = false;
+        this.showPopup(`Error ${error.errorCode}`, ` ${error || 'Error occured while resending otp (Internal Server Error)'}  `)
+        this.isLoaderVisible = false;
         console.error('Error resending OTP', error);
-        alert(error.errorDescription);
       }
     });
   }
@@ -121,9 +125,7 @@ export class OtpscreenComponent implements OnInit, OnDestroy {
       error: (error) => {
         this.isLoaderVisible = false;
         console.error('Error verifying OTP', error);
-        if (error.status === 0) {
-          console.log("Server is unreachable, status code =", error.status);
-        }
+        this.showPopup(`Error ${error.error.errorCode} `, `${error.error.errorDescription || "Internal server error please try again later"} `)
       }
     });
   }
@@ -147,5 +149,14 @@ export class OtpscreenComponent implements OnInit, OnDestroy {
         }, 3000);
         break;
     }
+  }
+
+  showPopup(title : string, body : string){
+    this.popupMessageTitle = title;
+    this.popupMessageBody = body;
+    this.showPopUp = true;
+  }
+  handleClosePopUp(){
+    this.showPopUp = false;
   }
 }

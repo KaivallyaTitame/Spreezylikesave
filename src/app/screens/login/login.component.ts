@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { OtpService } from "src/app/services/otp/otp.service";
 import { AuthService } from "src/app/services/auth/auth.service";
 import { Router } from "@angular/router";
+import { PopUpComponent } from "src/app/components/pop-up/pop-up.component";
 
 @Component({
   selector: "app-login",
@@ -10,6 +11,10 @@ import { Router } from "@angular/router";
   styles: [],
 })
 export class LoginComponent {
+  showPopUp: boolean = false;  // State to control popup visibility
+  popupMessageTitle: string = '';  // Title for the popup
+  popupMessageBody: string = '';   // Message body for the popup
+
   form: FormGroup;
   submitted: boolean = false;
   otpSent: boolean = false;
@@ -50,11 +55,13 @@ export class LoginComponent {
       next: (response) => {
         this.isLoaderVisible = false;
         this.otpSent = true;
+        this.showPopup('Success', 'OTP sent successfully.');
         this.router.navigate(["/otpscreen", phoneNumber]);
       },
       error: (error) => {
         this.isLoaderVisible = false;
         console.log("Error sending OTP:", error);
+        this.showPopup(`Error (${error.error.errorCode})`, `${error.error.errorDescription || 'Failed to send OTP. Please try again later(Internal server Error).'} `);
         if (error.status == 0) {
           console.log("when server is of status code = ", error.status);
         }
@@ -73,7 +80,20 @@ export class LoginComponent {
     return isValid ? null : { invalidPhoneNumber: true };
   }
 
+  showPopup(title: string, message: string) {
+    this.popupMessageTitle = title;
+    this.popupMessageBody = message;
+    this.showPopUp = true;
+  }
+
+  // Method to handle popup close
+  handleClosePopUp() {
+    this.showPopUp = false;
+  }
+
   signInWithGoogle() {
     this.authService.signInWithGoogle();
   }
+
+  
 }
