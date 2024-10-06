@@ -10,11 +10,6 @@ import { LogoutModule } from "./screens/logout/logout.module";
 import { GlobalErrorHandlerService } from "./services/global-error-handler.service";
 import { BusinessHomeModule } from "./screens/business-home/business-home.module";
 import { ConsumerHomeModule } from "./screens/consumer-home/consumer-home.module";
-import { ReactiveFormsModule } from "@angular/forms";
-import { RegisterModule } from "./screens/register/register.module";
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { BusinessHomeModule } from "./screens/business-home/business-home.module";
-import { ConsumerHomeModule } from "./screens/consumer-home/consumer-home.module";
 
 @NgModule({
   declarations: [
@@ -26,13 +21,7 @@ import { ConsumerHomeModule } from "./screens/consumer-home/consumer-home.module
     HttpClientModule,
     AngularFireModule.initializeApp(environment.firebase),
     LoginModule,
-    FontAwesomeModule,
-    AddPostModule,
-    BusinessInsightsModule,
-    HomeModule,
-    NotificationScreenModule,
-    ProfileScreenModule,
-    SearchModule,
+    BusinessHomeModule,
     ConsumerHomeModule
   ],
   exports: [

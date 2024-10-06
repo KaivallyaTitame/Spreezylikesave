@@ -13,7 +13,8 @@ import { BusinessTopNavbarComponent } from '../business-home/business-top-navbar
 >>>>>>> 1c8e8a1 (improved folder and file structure, edited names of consumer and business navigation bars)
 =======
 import { ConsumerHomeModule } from '../consumer-home/consumer-home.module';
->>>>>>> ede22af (Business and consumer navigation bar working)
+import { BusinessHomeModule } from '../business-home/business-home.module';
+
 
 
 @NgModule({
@@ -24,6 +25,7 @@ import { ConsumerHomeModule } from '../consumer-home/consumer-home.module';
     CommonModule,
     SearchRoutingModule,
     ConsumerHomeModule,
+    BusinessHomeModule
   ],
   exports: [
     SearchComponent,
