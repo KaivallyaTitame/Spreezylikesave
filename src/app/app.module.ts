@@ -14,6 +14,9 @@ import { LogoutModule } from "./screens/logout/logout.module";
 >>>>>>> 79946b6 (business-home working with docker integration)
 import { GlobalErrorHandlerService } from "./services/global-error-handler.service";
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 586572a (Addressed Review comments)
 import { BusinessHomeModule } from "./screens/business-home/business-home.module";
 import { ConsumerHomeModule } from "./screens/consumer-home/consumer-home.module";
 <<<<<<< HEAD
@@ -54,13 +57,7 @@ import { ConsumerHomeModule } from "./screens/consumer-home/consumer-home.module
     HttpClientModule,
     AngularFireModule.initializeApp(environment.firebase),
     LoginModule,
-    FontAwesomeModule,
-    AddPostModule,
-    BusinessInsightsModule,
-    HomeModule,
-    NotificationScreenModule,
-    ProfileScreenModule,
-    SearchModule,
+    BusinessHomeModule,
     ConsumerHomeModule
   ],
   exports: [

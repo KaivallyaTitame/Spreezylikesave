@@ -12,6 +12,7 @@ const routes: Routes = [
       { path: 'addpost',  loadChildren: () => import('../add-post/add-post.module').then(m => m.AddPostModule) },
       { path: 'notification', loadChildren: () => import('../notification-screen/notification-screen.module').then(m => m.NotificationScreenModule) },
       { path: 'profile', loadChildren: () => import('../profile-screen/profile-screen.module').then(m => m.ProfileScreenModule) },
+      { path: 'search', loadChildren: () => import('../search/search.module').then(m => m.SearchModule) },
       { path: '', redirectTo: 'business-home/home', pathMatch: 'full' } 
     ]
   },
