@@ -3,7 +3,6 @@ import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { OtpService } from "src/app/services/otp/otp.service";
 import { AuthService } from "src/app/services/auth/auth.service";
 import { Router } from "@angular/router";
-import { PopUpComponent } from "src/app/components/pop-up/pop-up.component";
 
 @Component({
   selector: "app-login",
@@ -61,10 +60,9 @@ export class LoginComponent {
       error: (error) => {
         this.isLoaderVisible = false;
         console.log("Error sending OTP:", error);
-        this.showPopup(`Error (${error.error.errorCode})`, `${error.error.errorDescription || 'Failed to send OTP. Please try again later(Internal server Error).'} `);
-        if (error.status == 0) {
-          console.log("when server is of status code = ", error.status);
-        }
+        const errorCode = error?.error?.errorCode || "Server is down";
+        const errorDescription = error?.error?.errorDescription || "Failed to send OTP. Please try again later (Internal server Error).";
+        this.showPopup(`Error (${errorCode})`, errorDescription);
       },
       complete: () => {
         this.isLoaderVisible = false;

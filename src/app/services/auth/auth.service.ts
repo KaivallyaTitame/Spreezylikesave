@@ -26,7 +26,7 @@ export class AuthService {
     );
   }
 
-  private apiUrl = environment.apiUrl;
+  private apiUrl = environment.apiGateway;
 
   logout(){
     let token = localStorage.getItem('token') || '';

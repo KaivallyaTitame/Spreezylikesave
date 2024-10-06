@@ -23,7 +23,7 @@ import { AlertPopupComponent } from "src/app/components/alert-popup/alert-popup.
 >>>>>>> a8a8c40 (done changes as asked in pr)
 import { LoginRoutingModule } from "./login-routing.module";
 import { LoginComponent } from "./login.component";
-import { SharedModuleModule } from "src/app/shared/shared-module/shared-module.module";
+import { SharedModule } from "src/app/shared/shared-module/shared-module.module";
 
 @NgModule({
 <<<<<<< HEAD
@@ -42,6 +42,7 @@ import { SharedModuleModule } from "src/app/shared/shared-module/shared-module.m
     NgIconsModule.withIcons({ ionEye, ionEyeOff }),
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     LoaderComponent
 >>>>>>> 20f3341 (login functinality is working)
 =======
@@ -49,6 +50,9 @@ import { SharedModuleModule } from "src/app/shared/shared-module/shared-module.m
 =======
     SharedModuleModule
 >>>>>>> fd6032b (used popup component where needed to show error responses)
+=======
+    SharedModule
+>>>>>>> a523168 (did requested changes)
   ],
   schemas: [NO_ERRORS_SCHEMA],
   exports: [

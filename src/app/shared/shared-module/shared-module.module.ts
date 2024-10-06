@@ -12,4 +12,4 @@ import { LoaderComponent } from 'src/app/components/loader/loader.component';
   ],
   exports: [PopUpComponent , LoaderComponent]
 })
-export class SharedModuleModule { }
+export class SharedModule { }

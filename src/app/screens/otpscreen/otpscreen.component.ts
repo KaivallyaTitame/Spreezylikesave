@@ -93,7 +93,7 @@ export class OtpscreenComponent implements OnInit, OnDestroy {
       },
       error: (error) => {
         this.isLoaderVisible = false;
-        this.showPopup(`Error ${error.errorCode}`, ` ${error || 'Error occured while resending otp (Internal Server Error)'}  `)
+        this.showPopup(`Error ${error?.errorCode}`, ` ${error || 'Error occured while resending otp (Internal Server Error)'}  `)
         this.isLoaderVisible = false;
         console.error('Error resending OTP', error);
       }
@@ -125,7 +125,7 @@ export class OtpscreenComponent implements OnInit, OnDestroy {
       error: (error) => {
         this.isLoaderVisible = false;
         console.error('Error verifying OTP', error);
-        this.showPopup(`Error ${error.error.errorCode} `, `${error.error.errorDescription || "Internal server error please try again later"} `)
+        this.showPopup(`Error ${error?.error?.errorCode || ""} `, `${error?.error?.errorDescription || "Internal server error please try again later"} `)
       }
     });
   }

@@ -39,8 +39,6 @@ import { ReactiveFormsModule } from "@angular/forms";
 import { GlobalErrorHandlerService } from "./services/global-error-handler.service";
 >>>>>>> a8a8c40 (done changes as asked in pr)
 import { ReactiveFormsModule } from "@angular/forms";
-import { OtpscreenComponent } from "./screens/otpscreen/otpscreen.component";
-import { LoaderComponent } from './components/loader/loader.component';
 import { RegisterModule } from "./screens/register/register.module";
 @NgModule({
 <<<<<<< HEAD

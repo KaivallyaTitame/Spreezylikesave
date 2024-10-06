@@ -10,7 +10,6 @@ import { SearchComponent } from "./screens/search/search.component";
 
 =======
 import { customerGuard } from "./authGuards/customer/customer.guard";
-import { otpScreenGuard } from "./authGuards/otpScreen/otp-screen.guard";
 import { businessGuard } from "./authGuards/business/business.guard";
 import { loginGuard } from "./authGuards/login/login.guard";
 >>>>>>> 20f3341 (login functinality is working)
@@ -54,6 +53,7 @@ const routes: Routes = [
       ),
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
   } 
 
   
@@ -64,6 +64,8 @@ const routes: Routes = [
 =======
     // canActivate: [otpScreenGuard],
 >>>>>>> a8a8c40 (done changes as asked in pr)
+=======
+>>>>>>> a523168 (did requested changes)
   },
   {
     path: "homeBusiness",
@@ -71,7 +73,7 @@ const routes: Routes = [
       import("./screens/home/home.module").then(   // replace the path of business
         (module) => module.HomeModule
       ),
-    canActivate: [businessGuard],
+    canActivate: [loginGuard],
   },
 >>>>>>> 20f3341 (login functinality is working)
 ];
