@@ -23,8 +23,8 @@ import { RegisterModule } from "./screens/register/register.module";
 
 =======
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { LoginComponent } from "./screens/login/login.component";
 import { BusinessHomeModule } from "./screens/business-home/business-home.module";
+<<<<<<< HEAD
 <<<<<<< HEAD
 >>>>>>> ed04675 (improved folder and file structure, edited names of consumer and business navigation bars)
 =======
@@ -37,6 +37,9 @@ import { ConsumerHomeModule } from "./screens/consumer-home/consumer-home.module
 import { SearchModule } from "./screens/search/search.module";
 
 >>>>>>> 1a45171 (Business and consumer navigation bar working)
+=======
+import { ConsumerHomeModule } from "./screens/consumer-home/consumer-home.module";
+>>>>>>> 15ab62a (Corrected Routes for consumer-home and business-home)
 
 @NgModule({
   declarations: [

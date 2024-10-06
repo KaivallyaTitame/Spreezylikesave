@@ -6,7 +6,7 @@ import { Injectable } from '@angular/core';
 export class ConsumerNavigationService {
   constructor() { }
   
-  Is_Home: boolean = true; 
+  Is_Home: boolean = false; 
   Is_Search: boolean = false;
   Is_Notification: boolean = false;
   Is_Profile: boolean = false;

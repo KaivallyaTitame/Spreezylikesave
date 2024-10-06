@@ -4,7 +4,11 @@ import { CommonModule } from '@angular/common';
 import { AddPostRoutingModule } from './add-post-routing.module';
 import { AddPostComponent } from './add-post.component';
 import { BusinessHomeModule } from '../business-home/business-home.module';
+import { RouterModule, Routes } from '@angular/router';
 
+const routes: Routes = [
+  { path: '', component: AddPostComponent }
+];
 
 @NgModule({
   declarations: [
@@ -12,7 +16,9 @@ import { BusinessHomeModule } from '../business-home/business-home.module';
   ],
   imports: [
     CommonModule,
-    AddPostRoutingModule
+    AddPostRoutingModule,
+    BusinessHomeModule,
+    RouterModule.forChild(routes)
   ],
   exports: [AddPostComponent]
 })

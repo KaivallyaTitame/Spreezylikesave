@@ -4,6 +4,7 @@ import { SearchRoutingModule } from './search-routing.module';
 import { SearchComponent } from './search.component';
 import { ConsumerHomeModule } from '../consumer-home/consumer-home.module';
 
+
 @NgModule({
   declarations: [
     SearchComponent,
@@ -11,7 +12,7 @@ import { ConsumerHomeModule } from '../consumer-home/consumer-home.module';
   imports: [
     CommonModule,
     SearchRoutingModule,
-    ConsumerHomeModule
+    ConsumerHomeModule,
   ],
   exports: [
     SearchComponent,
