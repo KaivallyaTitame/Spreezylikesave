@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 import { faArrowRightFromBracket, faBars, faCircleQuestion, faDiceD20, faDiceD6, faFileLines, faFilePen, faGear, faMessage, faSearch } from '@fortawesome/free-solid-svg-icons';
 
 
@@ -20,4 +21,10 @@ export class BusinessTopNavbarComponent {
   faDiceD6 = faDiceD6
   faDiceD20 = faDiceD20
   faFilePen = faFilePen
+
+  constructor(private router: Router) {} 
+
+  navigateToSearch(): void {
+    this.router.navigate(['business-home/search']); 
+  }
 }

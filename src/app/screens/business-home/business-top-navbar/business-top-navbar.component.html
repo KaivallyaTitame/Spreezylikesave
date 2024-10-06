@@ -71,8 +71,8 @@
         <a class="navbar-item ml-0 pl-1 font-medium text-2xl text-white font-primary">Spreezy</a>
       </div>
       <div class="navbar-end">
-        <a class="navbar-item" [routerLink]="['business-home/search']">
-          <fa-icon class="text-white text-2xl" [icon]="faSearch"></fa-icon>
+        <a class="navbar-item" (click)="navigateToSearch()" title="Search">
+          <fa-icon class="text-white text-2xl hover:opacity-80" [icon]="faSearch"></fa-icon>
         </a>
       </div>
     </div>

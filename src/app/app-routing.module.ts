@@ -8,7 +8,7 @@ import { ProfileScreenComponent } from "./screens/profile-screen/profile-screen.
 import { SearchComponent } from "./screens/search/search.component";
 
 const routes: Routes = [
-  { path: "", redirectTo: "business-home/home", pathMatch: "full" },
+  { path: "", redirectTo: "consumer-home/home", pathMatch: "full" },
 
   { path: "login", loadChildren: () => import("./screens/login/login.module").then(m => m.LoginModule) },
   { path: "register", loadChildren: () => import("./screens/register/register.module").then(m => m.RegisterModule) },
@@ -22,7 +22,7 @@ const routes: Routes = [
     loadChildren: () => import("./screens/consumer-home/consumer-home.module").then(m => m.ConsumerHomeModule),
   },
 
-  { path: "**", redirectTo: "business-home/home" }
+  { path: "**", redirectTo: "consumer-home/home" }
 ];
 
 @NgModule({
