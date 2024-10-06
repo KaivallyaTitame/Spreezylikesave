@@ -10,11 +10,6 @@ export class JwtDecoderService {
   constructor() { }
 
   decodeInfoFromToken(token: string) : DecodedToken{
-    try{
-      return jwtDecode<DecodedToken>(token);
-    }
-    catch(error){
-      throw new Error("Error while decoding token");
-    }
+    return jwtDecode<DecodedToken>(token);
   }
 }

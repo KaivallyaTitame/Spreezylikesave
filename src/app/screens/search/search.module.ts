@@ -15,6 +15,7 @@ import { BusinessTopNavbarComponent } from '../business-home/business-top-navbar
 import { ConsumerHomeModule } from '../consumer-home/consumer-home.module';
 >>>>>>> ede22af (Business and consumer navigation bar working)
 
+
 @NgModule({
   declarations: [
     SearchComponent,
@@ -22,7 +23,7 @@ import { ConsumerHomeModule } from '../consumer-home/consumer-home.module';
   imports: [
     CommonModule,
     SearchRoutingModule,
-    ConsumerHomeModule
+    ConsumerHomeModule,
   ],
   exports: [
     SearchComponent,

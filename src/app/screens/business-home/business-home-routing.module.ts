@@ -1,27 +1,24 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { HomeScreenComponent } from '../home-screen/home-screen.component';
-import { BusinessInsightsComponent } from '../insights/insights.component';
-import { NotificationScreenComponent } from '../notification-screen/notification-screen.component';
-import { AddPostComponent } from '../add-post/add-post.component';
-import { ProfileScreenComponent } from '../profile-screen/profile-screen.component';
-
+import { BusinessHomeComponent } from './business-home.component';
 
 const routes: Routes = [
   {
-    path: "",
-    redirectTo: "home",
-    pathMatch: "full",
+    path: '',
+    component: BusinessHomeComponent,
+    children: [
+      { path: 'home', loadChildren: () => import('../home-screen/home-screen.module').then(m => m.HomeModule) },
+      { path: 'insights', loadChildren: () => import('../insights/insights.module').then(m => m.BusinessInsightsModule) },
+      { path: 'addpost',  loadChildren: () => import('../add-post/add-post.module').then(m => m.AddPostModule) },
+      { path: 'notification', loadChildren: () => import('../notification-screen/notification-screen.module').then(m => m.NotificationScreenModule) },
+      { path: 'profile', loadChildren: () => import('../profile-screen/profile-screen.module').then(m => m.ProfileScreenModule) },
+      { path: '', redirectTo: 'business-home/home', pathMatch: 'full' } 
+    ]
   },
-  { path: 'home', component: HomeScreenComponent },
-  { path: 'insights', component: BusinessInsightsComponent},
-  { path: 'notification', component: NotificationScreenComponent},
-  { path: 'post', component: AddPostComponent },
-  { path: 'profile', component: ProfileScreenComponent}
 ];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
-export class BusinessNavbarRoutingModule { }
+export class BusinessHomeRoutingModule { }

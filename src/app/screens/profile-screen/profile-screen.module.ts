@@ -4,6 +4,9 @@ import { ProfileScreenRoutingModule } from './profile-screen-routing.module';
 import { ProfileScreenComponent } from './profile-screen.component';
 import { BusinessHomeModule } from '../business-home/business-home.module';
 import { ConsumerHomeModule } from '../consumer-home/consumer-home.module';
+import { RouterModule, Routes } from '@angular/router';
+
+
 
 @NgModule({
   declarations: [

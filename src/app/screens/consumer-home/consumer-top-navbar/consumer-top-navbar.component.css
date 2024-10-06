@@ -49,6 +49,7 @@
 .drawer-open ~ .bottom-component {
   transform: translateY(100%); 
   transition: transform 0.3s ease; 
+<<<<<<< HEAD
 }
 <<<<<<< HEAD
 
@@ -96,3 +97,6 @@
 >>>>>>> 1c8e8a1 (improved folder and file structure, edited names of consumer and business navigation bars)
 =======
 >>>>>>> ede22af (Business and consumer navigation bar working)
+=======
+}
+>>>>>>> 9200722 (Corrected Routes for consumer-home and business-home)
