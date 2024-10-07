@@ -1,23 +1,4 @@
-<div class="ad-feed mt-12">
-  <div class="ad-feed mt-12">
-    <div *ngFor="let ad of ads" class="ad-item">
-      <ng-container *ngIf="ad.advertisementType == 'Post'">
-        <div [ngClass]="{'opacity-50 pointer-events-none': isExpired(ad.offerExpiry)}">
-          <app-Post [postDetails]="ad"></app-Post>
-        </div>
-      </ng-container>
-  
-      <ng-container *ngIf="ad.advertisementType == 'Event'">
-        <div [ngClass]="{'opacity-50 pointer-events-none': isExpired(ad.offerExpiry)}">
-          <app-Event [eventDetails]="ad"></app-Event>
-        </div>
-      </ng-container>
-  
-      <ng-container *ngIf="ad.advertisementType == 'Coupon'">
-        <div [ngClass]="{'opacity-50 pointer-events-none': isExpired(ad.offerExpiry)}">
-          <app-Coupon [couponDetails]="ad"></app-Coupon>
-        </div>
-      </ng-container>
-    </div>
-  </div>
+<div class="mt-16 mb-16 test1:w-full" style="max-height: 2400px;">
+  <div class="text-center text-xl font-normal ml-5 mr-5 text-black dark:text-black">Ad-Feed screen in Working Stage</div>
+</div>
 

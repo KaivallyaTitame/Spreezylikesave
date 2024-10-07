@@ -61,7 +61,7 @@ export class BusinessBottomNavbarComponent {
 =======
 export class BusinessBottomNavbarComponent implements OnInit {
 
-  faHome = faHome;
+  faHome = faHome; 
   faAdd = faAdd;
   faBell = faBell;
   faUser = faUser;
@@ -70,7 +70,7 @@ export class BusinessBottomNavbarComponent implements OnInit {
   faChartColumn = faChartColumn;
   faCircleUser = faCircleUser;
 
-  homeScreenActive = false;
+  adFeedScreenActive = false;  
   insightsScreenActive = false;
   postScreenActive = false;
   notificationScreenActive = false;
@@ -134,13 +134,13 @@ export class BusinessBottomNavbarComponent implements OnInit {
       default: return false;
 =======
   private resetActiveStates() {
-    this.homeScreenActive = false;
+    this.adFeedScreenActive = false;  
     this.insightsScreenActive = false;
     this.postScreenActive = false;
     this.notificationScreenActive = false;
     this.profileScreenActive = false;
 
-    this.navigation.Is_Home = false;
+    this.navigation.Is_AdFeed = false;  
     this.navigation.Is_Insights = false;
     this.navigation.Is_Post = false;
     this.navigation.Is_Notification = false;
@@ -151,9 +151,9 @@ export class BusinessBottomNavbarComponent implements OnInit {
     this.resetActiveStates(); 
 
     switch (screen.toLowerCase()) {
-      case 'home':
-        this.homeScreenActive = true;
-        this.navigation.Is_Home = true;
+      case 'adfeed': 
+        this.adFeedScreenActive = true;
+        this.navigation.Is_AdFeed = true;  
         break;
       case 'insights':
         this.insightsScreenActive = true;
@@ -176,8 +176,8 @@ export class BusinessBottomNavbarComponent implements OnInit {
 
   isActive(screen: string): boolean {
     switch (screen.toLowerCase()) {
-      case 'home':
-        return this.homeScreenActive;
+      case 'adfeed': 
+        return this.adFeedScreenActive;  
       case 'insights':
         return this.insightsScreenActive;
       case 'addpost':
