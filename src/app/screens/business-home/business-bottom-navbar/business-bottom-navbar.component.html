@@ -1,14 +1,15 @@
 <div class="bottom fixed bottom-0 w-full z-20">
   <div id="bottom-navbar" class="flex bg-primarycolor-0 mb-0 w-full z-20" style="height: 55px;">
 
-    <div (click)="navigateTo('Home')" [ngClass]="{'active': isActive('Home')}" 
-      class="nav-item grow text-center py-2 cursor-pointer" style="height: 100%;">
-      <fa-icon 
-        class="py-1 my-2 text-3xl" 
-        [ngClass]="{'active-icon': isActive('Home'), 'text-white': !isActive('Home')}" 
-        [icon]="faHome">
-      </fa-icon>
-    </div>
+    <div (click)="navigateTo('AdFeed')" [ngClass]="{'active': isActive('AdFeed')}" 
+    class="nav-item grow text-center py-2 cursor-pointer" style="height: 100%;">
+    <fa-icon 
+      class="py-1 my-2 text-3xl" 
+      [ngClass]="{'active-icon': isActive('AdFeed'), 'text-white': !isActive('AdFeed')}" 
+      [icon]="faHome"> 
+    </fa-icon>
+</div>
+
 
     <div (click)="navigateTo('Insights')" [ngClass]="{'active': isActive('Insights')}" 
       class="nav-item grow text-center py-2 cursor-pointer flex justify-center items-center" style="height: 100%;">

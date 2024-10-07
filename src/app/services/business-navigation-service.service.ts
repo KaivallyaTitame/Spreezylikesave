@@ -7,7 +7,7 @@ export class BusinessNavigationServiceService {
 
   constructor() { }
 
-  Is_Home:boolean = true
+  Is_AdFeed:boolean = true
   Is_Insights:boolean = false
   Is_Post:boolean = false;
   Is_Notification:boolean = false;
