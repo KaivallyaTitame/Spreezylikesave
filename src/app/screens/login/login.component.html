@@ -56,9 +56,7 @@
         </span>
 =======
         <div class="flex items-center mt-1 border border-primary-0 rounded-md">
-          <div
-            class="flex w-1/4 items-center pl-3 pr-1 text-xl text-primary"
-          >
+          <div class="flex w-1/4 items-center pl-3 pr-1 text-xl text-primary">
             +91 |
           </div>
           <input
@@ -111,10 +109,14 @@
         <button
           type="submit"
 <<<<<<< HEAD
+<<<<<<< HEAD
           class="btn py-6 hover:bg-primary-0 text-lg text-white font-roboto w-full btn-primary-0 rounded-md"
 =======
           class="btn py-6  hover:bg-primary-0 text-lg text-white font-roboto w-full btn-primary rounded-md" 
 >>>>>>> da7be76 (used popup component where needed to show error responses)
+=======
+          class="btn py-6 hover:bg-primary-0 text-lg text-white font-roboto w-full btn-primary rounded-md"
+>>>>>>> 4eb2664 (updated)
         >
           SIGN IN
         </button>
@@ -156,17 +158,27 @@
         </button>
       </div>
 
+<<<<<<< HEAD
       <div class="flex justify-center mt-5">
         <span class="text-gray-500 font-semibold">New to Spreezy? </span>
         <button type="button" class="btn btn-primary w-40 ml-4">Sign up</button>
+=======
+      <div class="flex justify-center mt-10">
+        <span class="text-xl text-gray-500 font-medium">New to Spreezy?</span>
+        <button
+          type="button"
+          class="btn text-lg text-white font-roboto ml-4 py-4 rounded-md btn-primary"
+        >
+          SIGN UP
+        </button>
+>>>>>>> 4eb2664 (updated)
       </div>
     </div>
   </form>
   <app-pop-up
-  *ngIf="showPopUp"
-  [messageTitle]="popupMessageTitle"
-  [messageBody]="popupMessageBody"
-  (close)="handleClosePopUp()"
+    *ngIf="showPopUp"
+    [messageTitle]="popupMessageTitle"
+    [messageBody]="popupMessageBody"
+    (close)="handleClosePopUp()"
   ></app-pop-up>
 </div>
->>>>>>> ed7e1fa (done changes as asked in pr)

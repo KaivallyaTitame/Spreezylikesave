@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 <<<<<<< HEAD
@@ -19,14 +20,26 @@ import { DecodedToken } from 'src/app/models/decodedToken';
 =======
   templateUrl: './otpscreen.component.html',  
 >>>>>>> b4f2286 (completed UI)
+=======
+import { Component, OnDestroy, OnInit } from "@angular/core";
+import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import { ActivatedRoute, Router } from "@angular/router";
+import { OtpService } from "src/app/services/otp/otp.service";
+import { JwtDecoderService } from "src/app/services/jwtDecoder/jwt-decoder.service";
+import { DecodedToken } from "src/app/models/decodedToken";
+
+@Component({
+  selector: "app-otpscreen",
+  templateUrl: "./otpscreen.component.html",
+>>>>>>> 4eb2664 (updated)
 })
 export class OtpscreenComponent implements OnInit, OnDestroy {
 <<<<<<< HEAD
   
 =======
   showPopUp: boolean = false;
-  popupMessageTitle: string = '';
-  popupMessageBody: string = '';
+  popupMessageTitle: string = "";
+  popupMessageBody: string = "";
 
 >>>>>>> da7be76 (used popup component where needed to show error responses)
   timer: number = 30;
@@ -40,7 +53,7 @@ export class OtpscreenComponent implements OnInit, OnDestroy {
 =======
   phoneNumber: string;
   resendOtpSuccess: boolean = false;
-  resendOtpMessage: string = '';
+  resendOtpMessage: string = "";
   isLoaderVisible = false;
   resendCount = 0;
 
@@ -49,18 +62,28 @@ export class OtpscreenComponent implements OnInit, OnDestroy {
     private otpService: OtpService,
     private route: ActivatedRoute,
     private router: Router,
+<<<<<<< HEAD
     private jwtDecoder : JwtDecoderService
   ) { }
 >>>>>>> 421cafb (login functinality is working)
+=======
+    private jwtDecoder: JwtDecoderService
+  ) {}
+>>>>>>> 4eb2664 (updated)
 
   ngOnInit(): void {
     this.createForm();
     this.startTimer();
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
     this.route.paramMap.subscribe(params => {
       this.phoneNumber = params.get('mobileNumber') || "";
       console.log('Mobile Number:', this.phoneNumber);
+=======
+    this.route.paramMap.subscribe((params) => {
+      this.phoneNumber = params.get("mobileNumber") || "";
+>>>>>>> 4eb2664 (updated)
     });
 >>>>>>> 421cafb (login functinality is working)
   }
@@ -71,7 +94,10 @@ export class OtpscreenComponent implements OnInit, OnDestroy {
 
   createForm(): void {
     this.otpForm = this.formBuilder.group({
-      otpdigit: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(6)]]
+      otpdigit: [
+        "",
+        [Validators.required, Validators.minLength(6), Validators.maxLength(6)],
+      ],
     });
   }
 
@@ -132,22 +158,33 @@ export class OtpscreenComponent implements OnInit, OnDestroy {
     this.otpService.reSendOtp(this.phoneNumber).subscribe({
       next: (response) => {
         this.isLoaderVisible = false;
+<<<<<<< HEAD
         this.resendCount++;
         console.log('OTP resent successfully', response);
+=======
+>>>>>>> 4eb2664 (updated)
         this.timer = 30;
         this.startTimer();
         this.resendOtpSuccess = true;
-        this.resendOtpMessage = 'OTP resent successfully.';
+        this.resendOtpMessage = "OTP resent successfully.";
         setTimeout(() => {
           this.resendOtpSuccess = false;
         }, 10000);
       },
       error: (error) => {
         this.isLoaderVisible = false;
+<<<<<<< HEAD
         this.showPopup(`Error ${error.errorCode}`, ` ${error || 'Error occured while resending otp (Internal Server Error)'}  `)
+=======
+        this.showPopup(
+          `Error (${error?.errorCode || "Unable to resend otp"}) `,
+          ` ${
+            error || "Error occured while resending otp (Internal Server Error)"
+          }  `
+        );
+>>>>>>> 4eb2664 (updated)
         this.isLoaderVisible = false;
-        console.error('Error resending OTP', error);
-      }
+      },
     });
   }
 
@@ -170,40 +207,51 @@ export class OtpscreenComponent implements OnInit, OnDestroy {
     this.isLoaderVisible = true;
     this.otpService.verifyOtp(phoneNumber, otp).subscribe({
       next: (response) => {
-        console.log('OTP verified successfully', response);
         const token = response.accessToken;
         localStorage.setItem("token", token);
-        localStorage.setItem("refreshToken", JSON.stringify(response.refreshToken));
-
-        const decodedInfoFromToken :DecodedToken = this.jwtDecoder.decodeInfoFromToken(token);
-        const userType = decodedInfoFromToken['User Type'];
-        console.log(decodedInfoFromToken)
+        localStorage.setItem(
+          "refreshToken",
+          JSON.stringify(response.refreshToken)
+        );
+        const decodedInfoFromToken: DecodedToken =
+          this.jwtDecoder.decodeInfoFromToken(token);
+        const userType = decodedInfoFromToken["User Type"];
         this.redirectBasedOnUserType(userType);
       },
       error: (error) => {
         this.isLoaderVisible = false;
+<<<<<<< HEAD
         console.error('Error verifying OTP', error);
         this.showPopup(`Error ${error.error.errorCode} `, `${error.error.errorDescription || "Internal server error please try again later"} `)
       }
+=======
+        this.showPopup(
+          `Error ${error?.error?.errorCode || ""} `,
+          `${
+            error?.error?.errorDescription ||
+            "Internal server error please try again later"
+          } `
+        );
+      },
+>>>>>>> 4eb2664 (updated)
     });
   }
 
   redirectBasedOnUserType(userType: string): void {
     this.isLoaderVisible = false;
     switch (userType) {
-      case 'Business':
-        console.log('in business routing')
-        this.router.navigate(['/homeBusiness']);
+      case "Business":
+        this.router.navigate(["/homeBusiness"]);
         break;
-      case 'Admin':
-        this.router.navigate(['/admin-route']);
+      case "Admin":
+        this.router.navigate(["/admin-route"]);
         break;
-      case 'Consumer':
-        this.router.navigate(['/homeCustomer']);
+      case "Consumer":
+        this.router.navigate(["/homeCustomer"]);
         break;
       default:
         setTimeout(() => {
-          this.router.navigate(['/login']);
+          this.router.navigate(["/login"]);
         }, 3000);
         break;
     }
@@ -217,13 +265,16 @@ export class OtpscreenComponent implements OnInit, OnDestroy {
 >>>>>>> 31cb5cf (done changes as asked in pr)
 =======
 
-  showPopup(title : string, body : string){
+  showPopup(title: string, body: string) {
     this.popupMessageTitle = title;
     this.popupMessageBody = body;
     this.showPopUp = true;
   }
-  handleClosePopUp(){
+  handleClosePopUp() {
     this.showPopUp = false;
   }
 }
+<<<<<<< HEAD
 >>>>>>> da7be76 (used popup component where needed to show error responses)
+=======
+>>>>>>> 4eb2664 (updated)

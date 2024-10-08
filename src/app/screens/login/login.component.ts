@@ -8,9 +8,9 @@ import { AuthService } from "src/app/services/auth.service";
   styles: [],
 })
 export class LoginComponent {
-  showPopUp: boolean = false;  // State to control popup visibility
-  popupMessageTitle: string = '';  // Title for the popup
-  popupMessageBody: string = '';   // Message body for the popup
+  showPopUp: boolean = false;
+  popupMessageTitle: string = "";
+  popupMessageBody: string = "";
 
   form: FormGroup;
   submitted: boolean = false;
@@ -43,12 +43,36 @@ export class LoginComponent {
     if (this.form.invalid) {
       return;
     }
+<<<<<<< HEAD
     console.log("Form value:", this.form.value.phonenumber);
     // this.authService.login(this.credentials);
   }
 
   signInWithGoogle() {
     this.authService.signInWithGoogle();
+=======
+    const phoneNumber = this.form.value.phonenumber;
+    this.isLoaderVisible = true;
+    this.otpService.sendOtp(phoneNumber).subscribe({
+      next: (response) => {
+        this.isLoaderVisible = false;
+        this.otpSent = true;
+        this.showPopup("Success", "OTP sent successfully.");
+        this.router.navigate(["/otpscreen", phoneNumber]);
+      },
+      error: (error) => {
+        this.isLoaderVisible = false;
+        const errorCode = error?.error?.errorCode || "Server is down";
+        const errorDescription =
+          error?.error?.errorDescription ||
+          "Failed to send OTP. Please try again later (Internal server Error).";
+        this.showPopup(`Error (${errorCode})`, errorDescription);
+      },
+      complete: () => {
+        this.isLoaderVisible = false;
+      },
+    });
+>>>>>>> 4eb2664 (updated)
   }
 
   validatePhoneNumber(control: {
@@ -73,6 +97,4 @@ export class LoginComponent {
   signInWithGoogle() {
     this.authService.signInWithGoogle();
   }
-
-  
 }

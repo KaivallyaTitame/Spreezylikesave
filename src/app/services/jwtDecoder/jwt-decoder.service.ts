@@ -10,7 +10,12 @@ export class JwtDecoderService {
   constructor() { }
 
   decodeInfoFromToken(token: string) : DecodedToken{
-    return jwtDecode<DecodedToken>(token);
+    try{
+      return jwtDecode<DecodedToken>(token);
+    }
+    catch(error){
+      throw new Error("Error while decoding token");
+    }
   }
 }
 >>>>>>> 20f3341 (login functinality is working)
