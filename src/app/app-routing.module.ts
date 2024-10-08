@@ -48,7 +48,7 @@ const routes: Routes = [
   {
     path: "otpscreen/:mobileNumber",
     loadChildren: () =>
-      import("./screens/otpscreen/otpscreen.module").then(
+      import("./screens/otpScreen/otpscreen.module").then(
         (module) => module.OtpscreenModule
       ),
 <<<<<<< HEAD
