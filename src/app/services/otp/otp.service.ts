@@ -23,11 +23,9 @@ export class OtpService {
       )
       .pipe(
         tap((response) => {
-          console.log(response);
           this.isOtpSentToMobile = true;
         }),
         catchError((error) => {
-          console.error("Error sending OTP:", error);
           this.isOtpSentToMobile = false;
           return throwError(
             () => new HttpErrorResponse(error)
@@ -39,7 +37,7 @@ export class OtpService {
   reSendOtp(countrycode: string, mobile: string): Observable<OtpResponse> {
     return this.http
       .post(
-        `${this.apiUrl}auth/resend-otp`,
+        `${this.apiUrl}/auth/resend-otp`,
         { phoneNumber: mobile },
         { responseType: "text" }
       )
@@ -49,20 +47,11 @@ export class OtpService {
           return { success: true, message: response };
         }),
         catchError((error: HttpErrorResponse) => {
-          console.log("Error in HTTP response:", error);
-
           let errorMessage = "Failed to send OTP. Please try again later.";
-          if (error.error && typeof error.error === "string") {
-            try {
-              const errorBody = JSON.parse(error.error);
-              if (errorBody.errorDescription) {
-                errorMessage = errorBody.errorDescription;
-              }
-            } catch (e) {
-              console.log("Error parsing error response body:", e);
-            }
+          const errorBody = JSON.parse(error?.error);
+          if (errorBody?.errorDescription) {
+             errorMessage = errorBody.errorDescription;
           }
-
           return throwError(() => new Error(errorMessage));
         })
       );

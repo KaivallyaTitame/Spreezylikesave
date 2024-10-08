@@ -10,9 +10,9 @@ import { Router } from "@angular/router";
   styles: [],
 })
 export class LoginComponent {
-  showPopUp: boolean = false;  // State to control popup visibility
-  popupMessageTitle: string = '';  // Title for the popup
-  popupMessageBody: string = '';   // Message body for the popup
+  showPopUp: boolean = false;
+  popupMessageTitle: string = "";
+  popupMessageBody: string = "";
 
   form: FormGroup;
   submitted: boolean = false;
@@ -54,14 +54,15 @@ export class LoginComponent {
       next: (response) => {
         this.isLoaderVisible = false;
         this.otpSent = true;
-        this.showPopup('Success', 'OTP sent successfully.');
+        this.showPopup("Success", "OTP sent successfully.");
         this.router.navigate(["/otpscreen", phoneNumber]);
       },
       error: (error) => {
         this.isLoaderVisible = false;
-        console.log("Error sending OTP:", error);
         const errorCode = error?.error?.errorCode || "Server is down";
-        const errorDescription = error?.error?.errorDescription || "Failed to send OTP. Please try again later (Internal server Error).";
+        const errorDescription =
+          error?.error?.errorDescription ||
+          "Failed to send OTP. Please try again later (Internal server Error).";
         this.showPopup(`Error (${errorCode})`, errorDescription);
       },
       complete: () => {
@@ -92,6 +93,4 @@ export class LoginComponent {
   signInWithGoogle() {
     this.authService.signInWithGoogle();
   }
-
-  
 }

@@ -47,13 +47,12 @@
   </span>
   <form
     [formGroup]="otpForm"
-
     class="flex flex-col items-center mt-3"
     (ngSubmit)="onSubmit()"
   >
     <input
       id="otp-input"
-      class="form-control py-5 input bg-white text-lg  text-black font-semibold placeholder-gray-400 focus:outline-none w-full border-orange-600"
+      class="form-control py-5 input bg-white text-lg text-black font-semibold placeholder-gray-400 focus:outline-none w-full border-orange-600"
       placeholder="Enter OTP"
       formControlName="otpdigit"
       minlength="6"
@@ -94,10 +93,9 @@
     </p>
   </div>
   <app-pop-up
-  *ngIf="showPopUp"
-  [messageTitle]="popupMessageTitle"
-  [messageBody]="popupMessageBody"
-  (close)="handleClosePopUp()"
+    *ngIf="showPopUp"
+    [messageTitle]="popupMessageTitle"
+    [messageBody]="popupMessageBody"
+    (close)="handleClosePopUp()"
   ></app-pop-up>
-
 </div>

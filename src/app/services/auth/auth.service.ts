@@ -9,40 +9,54 @@ import { environment } from "src/environments/environment.development";
   providedIn: "root",
 })
 export class AuthService {
-  constructor(private fireAuth: AngularFireAuth, private router: Router, private http: HttpClient, private jwtDecoder: JwtDecoderService) {}
+  constructor(
+    private fireAuth: AngularFireAuth,
+    private router: Router,
+    private http: HttpClient,
+    private jwtDecoder: JwtDecoderService
+  ) {}
 
   signInWithGoogle() {
     return this.fireAuth.signInWithPopup(new GoogleAuthProvider()).then(
       (response) => {
-        console.log('response from goggle login: ',response)
+        console.log("response from goggle login: ", response);
         this.router.navigate(["/homeCustomer"]);
-        // localStorage.setItem("token", JSON.stringify(response.user?.email));
+        localStorage.setItem("token", JSON.stringify(response.user?.email));
       },
       (error) => {
         console.log(error);
         this.router.navigate(["/login"]);
-        throw new Error("Error occurred while logging in. Try again after sometime.")
+        throw new Error(
+          "Error occurred while logging in. Try again after sometime."
+        );
       }
     );
   }
 
   private apiUrl = environment.apiGateway;
 
-  logout(){
-    let token = localStorage.getItem('token') || '';
-    let userName = this.jwtDecoder.decodeInfoFromToken(token)['sub'] || '';
-    return this.http.post(`${this.apiUrl}auth/${userName}/logout`, {}, {headers: new HttpHeaders({
-      Authorization: `Bearer ${token}`
-    })}).subscribe({
-      next: (response) => {
-        localStorage.removeItem("token");
-        localStorage.removeItem("refreshToken");
-        console.log("Came in resp of logout", response);
-        window.location.reload();
-      },
-      error: (error) => {
-        console.log("Error while logout", error);
-      },
-    });
+  logout() {
+    let token = localStorage.getItem("token") || "";
+    let userName = this.jwtDecoder.decodeInfoFromToken(token)["sub"] || "";
+    return this.http
+      .post(
+        `${this.apiUrl}/auth/${userName}/logout`,
+        {},
+        {
+          headers: new HttpHeaders({
+            Authorization: `Bearer ${token}`,
+          }),
+        }
+      )
+      .subscribe({
+        next: (response) => {
+          localStorage.removeItem("token");
+          localStorage.removeItem("refreshToken");
+          window.location.reload();
+        },
+        error: (error) => {
+          throw new Error(`Error while logout : ${error}`);
+        },
+      });
   }
 }

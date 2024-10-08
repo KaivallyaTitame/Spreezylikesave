@@ -1,21 +1,18 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
-import { AuthService } from 'src/app/services/auth/auth.service';
-import { OtpService } from 'src/app/services/otp/otp.service';
-import { jwtDecode } from 'jwt-decode';
-import { JwtDecoderService } from 'src/app/services/jwtDecoder/jwt-decoder.service';
-import { DecodedToken } from 'src/app/models/decodedToken';
- // Import jwt_decode for decoding JWT tokens
+import { Component, OnDestroy, OnInit } from "@angular/core";
+import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import { ActivatedRoute, Router } from "@angular/router";
+import { OtpService } from "src/app/services/otp/otp.service";
+import { JwtDecoderService } from "src/app/services/jwtDecoder/jwt-decoder.service";
+import { DecodedToken } from "src/app/models/decodedToken";
 
 @Component({
-  selector: 'app-otpscreen',
-  templateUrl: './otpscreen.component.html',
+  selector: "app-otpscreen",
+  templateUrl: "./otpscreen.component.html",
 })
 export class OtpscreenComponent implements OnInit, OnDestroy {
   showPopUp: boolean = false;
-  popupMessageTitle: string = '';
-  popupMessageBody: string = '';
+  popupMessageTitle: string = "";
+  popupMessageBody: string = "";
 
   timer: number = 30;
   intervalId: any;
@@ -24,7 +21,7 @@ export class OtpscreenComponent implements OnInit, OnDestroy {
   otpFormSubmitted: boolean = false;
   phoneNumber: string;
   resendOtpSuccess: boolean = false;
-  resendOtpMessage: string = '';
+  resendOtpMessage: string = "";
   isLoaderVisible = false;
 
   constructor(
@@ -32,15 +29,14 @@ export class OtpscreenComponent implements OnInit, OnDestroy {
     private otpService: OtpService,
     private route: ActivatedRoute,
     private router: Router,
-    private jwtDecoder : JwtDecoderService
-  ) { }
+    private jwtDecoder: JwtDecoderService
+  ) {}
 
   ngOnInit(): void {
     this.createForm();
     this.startTimer();
-    this.route.paramMap.subscribe(params => {
-      this.phoneNumber = params.get('mobileNumber') || "";
-      console.log('Mobile Number:', this.phoneNumber);
+    this.route.paramMap.subscribe((params) => {
+      this.phoneNumber = params.get("mobileNumber") || "";
     });
   }
 
@@ -50,7 +46,10 @@ export class OtpscreenComponent implements OnInit, OnDestroy {
 
   createForm(): void {
     this.otpForm = this.formBuilder.group({
-      otpdigit: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(6)]]
+      otpdigit: [
+        "",
+        [Validators.required, Validators.minLength(6), Validators.maxLength(6)],
+      ],
     });
   }
 
@@ -82,21 +81,24 @@ export class OtpscreenComponent implements OnInit, OnDestroy {
     this.otpService.reSendOtp(this.phoneNumber).subscribe({
       next: (response) => {
         this.isLoaderVisible = false;
-        console.log('OTP resent successfully', response);
         this.timer = 30;
         this.startTimer();
         this.resendOtpSuccess = true;
-        this.resendOtpMessage = 'OTP resent successfully.';
+        this.resendOtpMessage = "OTP resent successfully.";
         setTimeout(() => {
           this.resendOtpSuccess = false;
         }, 10000);
       },
       error: (error) => {
         this.isLoaderVisible = false;
-        this.showPopup(`Error ${error?.errorCode}`, ` ${error || 'Error occured while resending otp (Internal Server Error)'}  `)
+        this.showPopup(
+          `Error (${error?.errorCode || "Unable to resend otp"}) `,
+          ` ${
+            error || "Error occured while resending otp (Internal Server Error)"
+          }  `
+        );
         this.isLoaderVisible = false;
-        console.error('Error resending OTP', error);
-      }
+      },
     });
   }
 
@@ -112,51 +114,56 @@ export class OtpscreenComponent implements OnInit, OnDestroy {
     this.isLoaderVisible = true;
     this.otpService.verifyOtp(phoneNumber, otp).subscribe({
       next: (response) => {
-        console.log('OTP verified successfully', response);
         const token = response.accessToken;
         localStorage.setItem("token", token);
-        localStorage.setItem("refreshToken", JSON.stringify(response.refreshToken));
-
-        const decodedInfoFromToken :DecodedToken = this.jwtDecoder.decodeInfoFromToken(token);
-        const userType = decodedInfoFromToken['User Type'];
-        console.log(decodedInfoFromToken)
+        localStorage.setItem(
+          "refreshToken",
+          JSON.stringify(response.refreshToken)
+        );
+        const decodedInfoFromToken: DecodedToken =
+          this.jwtDecoder.decodeInfoFromToken(token);
+        const userType = decodedInfoFromToken["User Type"];
         this.redirectBasedOnUserType(userType);
       },
       error: (error) => {
         this.isLoaderVisible = false;
-        console.error('Error verifying OTP', error);
-        this.showPopup(`Error ${error?.error?.errorCode || ""} `, `${error?.error?.errorDescription || "Internal server error please try again later"} `)
-      }
+        this.showPopup(
+          `Error ${error?.error?.errorCode || ""} `,
+          `${
+            error?.error?.errorDescription ||
+            "Internal server error please try again later"
+          } `
+        );
+      },
     });
   }
 
   redirectBasedOnUserType(userType: string): void {
     this.isLoaderVisible = false;
     switch (userType) {
-      case 'Business':
-        console.log('in business routing')
-        this.router.navigate(['/homeBusiness']);
+      case "Business":
+        this.router.navigate(["/homeBusiness"]);
         break;
-      case 'Admin':
-        this.router.navigate(['/admin-route']);
+      case "Admin":
+        this.router.navigate(["/admin-route"]);
         break;
-      case 'Consumer':
-        this.router.navigate(['/homeCustomer']);
+      case "Consumer":
+        this.router.navigate(["/homeCustomer"]);
         break;
       default:
         setTimeout(() => {
-          this.router.navigate(['/login']);
+          this.router.navigate(["/login"]);
         }, 3000);
         break;
     }
   }
 
-  showPopup(title : string, body : string){
+  showPopup(title: string, body: string) {
     this.popupMessageTitle = title;
     this.popupMessageBody = body;
     this.showPopUp = true;
   }
-  handleClosePopUp(){
+  handleClosePopUp() {
     this.showPopUp = false;
   }
 }

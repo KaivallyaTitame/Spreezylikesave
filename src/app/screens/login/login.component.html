@@ -30,9 +30,7 @@
           Enter your Registered Mobile number
         </label>
         <div class="flex items-center mt-1 border border-primary-0 rounded-md">
-          <div
-            class="flex w-1/4 items-center pl-3 pr-1 text-xl text-primary"
-          >
+          <div class="flex w-1/4 items-center pl-3 pr-1 text-xl text-primary">
             +91 |
           </div>
           <input
@@ -83,7 +81,7 @@
       <div class="buttons flex justify-center mt-5">
         <button
           type="submit"
-          class="btn py-6  hover:bg-primary-0 text-lg text-white font-roboto w-full btn-primary rounded-md" 
+          class="btn py-6 hover:bg-primary-0 text-lg text-white font-roboto w-full btn-primary rounded-md"
         >
           SIGN IN
         </button>
@@ -110,7 +108,7 @@
         <span class="text-xl text-gray-500 font-medium">New to Spreezy?</span>
         <button
           type="button"
-          class="btn  text-lg text-white font-roboto ml-4 py-4 rounded-md btn-primary" 
+          class="btn text-lg text-white font-roboto ml-4 py-4 rounded-md btn-primary"
         >
           SIGN UP
         </button>
@@ -118,9 +116,9 @@
     </div>
   </form>
   <app-pop-up
-  *ngIf="showPopUp"
-  [messageTitle]="popupMessageTitle"
-  [messageBody]="popupMessageBody"
-  (close)="handleClosePopUp()"
+    *ngIf="showPopUp"
+    [messageTitle]="popupMessageTitle"
+    [messageBody]="popupMessageBody"
+    (close)="handleClosePopUp()"
   ></app-pop-up>
 </div>
