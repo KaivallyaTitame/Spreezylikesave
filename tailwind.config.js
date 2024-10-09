@@ -16,7 +16,7 @@ module.exports = {
       },
       {
         themeName: "dark",
-        // colorScheme: "light",
+        colorScheme: "light",
         colors: {
           primary: "#ED6A5A",
           backgroundPrimary: "#FFFFFF",
