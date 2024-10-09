@@ -21,8 +21,14 @@ const routes: Routes = [
   { path: "register", loadChildren: () => import("./screens/register/register.module").then(m => m.RegisterModule) },
 
   {
+<<<<<<< HEAD
     path: "business-home",
     loadChildren: () => import("./screens/business-home/business-home.module").then(m => m.BusinessHomeModule),
+=======
+    path: "",
+    redirectTo: "login",
+    pathMatch: "full",
+>>>>>>> ef5dd52 (Minor changes)
   },
   {
 <<<<<<< HEAD
@@ -49,7 +55,7 @@ const routes: Routes = [
     path: "otpscreen/:mobileNumber",
     loadChildren: () =>
       import("./screens/otpScreen/otpscreen.module").then(
-        (module) => module.OtpscreenModule
+        (module) => module.OtpScreenModule
       ),
 <<<<<<< HEAD
 <<<<<<< HEAD
