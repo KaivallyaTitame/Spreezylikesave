@@ -9,8 +9,12 @@ import { AlertPopupComponent } from "src/app/screens/alert-popup/alert-popup.com
 import { LoginRoutingModule } from "./login-routing.module";
 import { LoginComponent } from "./login.component";
 import { BusinessHomeModule } from "../business-home/business-home.module";
+<<<<<<< HEAD
  
 
+=======
+import { SharedModule } from "src/app/shared/shared-module/shared-module.module";
+>>>>>>> 015b527 (changes after pulling from develop)
 
 @NgModule({
   declarations: [
@@ -36,8 +40,11 @@ import { SharedModule } from "src/app/shared/shared-module/shared-module.module"
     LoginRoutingModule,
     ReactiveFormsModule,
 <<<<<<< HEAD
+<<<<<<< HEAD
     NgIconsModule.withIcons({ ionEye, ionEyeOff })
 =======
+=======
+>>>>>>> 015b527 (changes after pulling from develop)
     NgIconsModule.withIcons({ ionEye, ionEyeOff }),
 <<<<<<< HEAD
 <<<<<<< HEAD
