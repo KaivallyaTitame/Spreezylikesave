@@ -32,7 +32,6 @@ import { GlobalErrorHandlerService } from "./services/global-error-handler.servi
 import { BusinessHomeModule } from "./screens/business-home/business-home.module";
 import { ConsumerHomeModule } from "./screens/consumer-home/consumer-home.module";
 <<<<<<< HEAD
-=======
 import { ReactiveFormsModule } from "@angular/forms";
 import { RegisterModule } from "./screens/register/register.module";
 
@@ -55,16 +54,26 @@ import { SearchModule } from "./screens/search/search.module";
 =======
 import { ConsumerHomeModule } from "./screens/consumer-home/consumer-home.module";
 >>>>>>> 15ab62a (Corrected Routes for consumer-home and business-home)
+=======
+<<<<<<< HEAD
+=======
+import { ReactiveFormsModule } from "@angular/forms";
+import { RegisterModule } from "./screens/register/register.module";
+>>>>>>> 015b527 (changes after pulling from develop)
+>>>>>>> d472ce0 (changes after pulling from develop)
 
 @NgModule({
   declarations: [
     AppComponent
   ],
 <<<<<<< HEAD
+<<<<<<< HEAD
   declarations: [
     AppComponent
   ],
 =======
+=======
+>>>>>>> d472ce0 (changes after pulling from develop)
 =======
 import { OtpComponent } from './otp/otp.component';
 =======
@@ -111,7 +120,12 @@ import { RegisterModule } from "./screens/register/register.module";
 =======
   declarations: [AppComponent],
 >>>>>>> fd6032b (used popup component where needed to show error responses)
+<<<<<<< HEAD
 >>>>>>> 16b96f6 (used popup component where needed to show error responses)
+=======
+=======
+>>>>>>> 015b527 (changes after pulling from develop)
+>>>>>>> d472ce0 (changes after pulling from develop)
   imports: [
     BrowserModule,
     AppRoutingModule,
@@ -123,6 +137,7 @@ import { RegisterModule } from "./screens/register/register.module";
 <<<<<<< HEAD
 <<<<<<< HEAD
     BusinessHomeModule,
+<<<<<<< HEAD
     ConsumerHomeModule
   ],
   exports: [
@@ -148,14 +163,18 @@ import { RegisterModule } from "./screens/register/register.module";
     RegisterModule,
 ],
 >>>>>>> fd6032b (used popup component where needed to show error responses)
+=======
+    ConsumerHomeModule,
+    ReactiveFormsModule,
+    RegisterModule,
+  ],
+>>>>>>> 015b527 (changes after pulling from develop)
   providers: [
     {
       provide: ErrorHandler,
       useClass: GlobalErrorHandlerService,
     },
-    
   ],
   bootstrap: [AppComponent],
-  
 })
 export class AppModule {}

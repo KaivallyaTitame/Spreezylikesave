@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { NgModule } from "@angular/core";
 import { RouterModule, Routes } from "@angular/router";
 <<<<<<< HEAD
@@ -9,6 +10,10 @@ import { ProfileScreenComponent } from "./screens/profile-screen/profile-screen.
 import { SearchComponent } from "./screens/search/search.component";
 
 =======
+=======
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
+>>>>>>> 015b527 (changes after pulling from develop)
 import { customerGuard } from "./authGuards/customer/customer.guard";
 import { otpScreenGuard } from "./authGuards/otpScreen/otp-screen.guard";
 import { businessGuard } from "./authGuards/business/business.guard";
@@ -18,10 +23,19 @@ import { loginGuard } from "./authGuards/login/login.guard";
 const routes: Routes = [
   { path: "", redirectTo: "business-home/home", pathMatch: "full" },
 
-  { path: "login", loadChildren: () => import("./screens/login/login.module").then(m => m.LoginModule) },
+  {
+    path: "login",
+    loadChildren: () => import("./screens/login/login.module").then(m => m.LoginModule),
+    canActivate: [loginGuard]
+  },
   { path: "register", loadChildren: () => import("./screens/register/register.module").then(m => m.RegisterModule) },
 
   {
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> ee25ecf (changes after pulling from develop)
     path: "business-home",
     loadChildren: () => import("./screens/business-home/business-home.module").then(m => m.BusinessHomeModule),
   },
@@ -64,14 +78,20 @@ const routes: Routes = [
 =======
     // canActivate: [otpScreenGuard],
 >>>>>>> a8a8c40 (done changes as asked in pr)
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> a523168 (did requested changes)
+=======
+    path: "business-home",
+    loadChildren: () => import("./screens/business-home/business-home.module").then(m => m.BusinessHomeModule),
+    canActivate: [businessGuard],
+>>>>>>> 015b527 (changes after pulling from develop)
+>>>>>>> ee25ecf (changes after pulling from develop)
   },
   {
-    path: "homeBusiness",
-    loadChildren: () =>
-      import("./screens/home/home.module").then(   // replace the path of business
-        (module) => module.HomeModule
-      ),
-    canActivate: [businessGuard],
+    path: "otpscreen/:mobileNumber",
+    loadChildren: () => import("./screens/otpScreen/otpscreen.module").then(m => m.OtpScreenModule),
   },
 >>>>>>> 20f3341 (login functinality is working)
 ];
