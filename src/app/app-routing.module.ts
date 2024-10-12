@@ -26,7 +26,7 @@ const routes: Routes = [
   {
     path: "login",
     loadChildren: () => import("./screens/login/login.module").then(m => m.LoginModule),
-    canActivate: [loginGuard]
+    // canActivate: [loginGuard]
   },
   { path: "register", loadChildren: () => import("./screens/register/register.module").then(m => m.RegisterModule) },
 
@@ -45,6 +45,7 @@ const routes: Routes = [
     loadChildren: () => import("./screens/consumer-home/consumer-home.module").then(m => m.ConsumerHomeModule),
   },
 
+<<<<<<< HEAD
   { path: "**", redirectTo: "consumer-home/adfeed" }
 =======
     path: "login",
@@ -94,6 +95,9 @@ const routes: Routes = [
     loadChildren: () => import("./screens/otpScreen/otpscreen.module").then(m => m.OtpScreenModule),
   },
 >>>>>>> 20f3341 (login functinality is working)
+=======
+  { path: "**", redirectTo: "business-home/adfeed" }
+>>>>>>> c423dc1 (Fixed navbar icons and updated routing logic)
 ];
 
 @NgModule({
