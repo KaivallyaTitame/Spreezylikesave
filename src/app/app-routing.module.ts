@@ -20,12 +20,12 @@ import { loginGuard } from "./authGuards/login/login.guard";
 >>>>>>> 20f3341 (login functinality is working)
 
 const routes: Routes = [
-  { path: "", redirectTo: "consumer-home/adfeed", pathMatch: "full" },
+  { path: "", redirectTo: "business-home/adfeed", pathMatch: "full" },
 
   {
     path: "login",
     loadChildren: () => import("./screens/login/login.module").then(m => m.LoginModule),
-    canActivate: [loginGuard]
+    // canActivate: [loginGuard]
   },
   { path: "register", loadChildren: () => import("./screens/register/register.module").then(m => m.RegisterModule) },
 
@@ -34,11 +34,19 @@ const routes: Routes = [
 <<<<<<< HEAD
     path: "business-home",
     loadChildren: () => import("./screens/business-home/business-home.module").then(m => m.BusinessHomeModule),
+<<<<<<< HEAD
 =======
     path: "",
     redirectTo: "login",
     pathMatch: "full",
 >>>>>>> ef5dd52 (Minor changes)
+=======
+    // canActivate: [businessGuard]
+  },
+  {
+    path: "otpscreen/:mobileNumber",
+    loadChildren: () => import("./screens/otpScreen/otpscreen.module").then(m => m.OtpScreenModule),
+>>>>>>> c423dc1 (Fixed navbar icons and updated routing logic)
   },
   {
 <<<<<<< HEAD
@@ -46,6 +54,7 @@ const routes: Routes = [
     loadChildren: () => import("./screens/consumer-home/consumer-home.module").then(m => m.ConsumerHomeModule),
   },
 
+<<<<<<< HEAD
   { path: "**", redirectTo: "consumer-home/adfeed" }
 =======
     path: "login",
@@ -93,6 +102,9 @@ const routes: Routes = [
     loadChildren: () => import("./screens/otpScreen/otpscreen.module").then(m => m.OtpScreenModule),
   },
 >>>>>>> 20f3341 (login functinality is working)
+=======
+  { path: "**", redirectTo: "business-home/adfeed" }
+>>>>>>> c423dc1 (Fixed navbar icons and updated routing logic)
 ];
 
 @NgModule({
