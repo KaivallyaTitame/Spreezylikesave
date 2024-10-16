@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
+import { Router } from '@angular/router';
 import { faArrowRightFromBracket, faBars, faCircleQuestion, faFileLines, faFilePen, faGear, faSearch } from '@fortawesome/free-solid-svg-icons';
-import { JwtDecoderService } from 'src/app/services/jwtDecoder/jwt-decoder.service';
-import { DecodedToken } from 'src/app/models/decodedToken';
+import { ConsumerNavigationService } from 'src/app/services/consumer-navigation.service';
+import { UserProfileDto } from 'src/app/models/UserProfileDTO';
 
 @Component({
   selector: 'app-consumer-top-navbar',
@@ -65,11 +66,23 @@ export class ConsumerTopNavbarComponent {
     arrowRightFromBracket: faArrowRightFromBracket,
   };
 
-  constructor(private jwtDecoder: JwtDecoderService) {}
-  isUserPresentInDatabase(idTokenKey: string | null) {
-    const token = localStorage.getItem('token')!;
-    const decodedInfoFromToken: DecodedToken = this.jwtDecoder.decodeInfoFromToken(token);
-    console.log(decodedInfoFromToken);
+  constructor(private router: Router, private consumernavigationservice: ConsumerNavigationService ) {}
+
+  @Input() userinformation!: UserProfileDto[];
+  user: any;
+
+  ngOnInit(): void{
+    this.fetchUserInformation();
+  }
+
+  fetchUserInformation() {
+    this.consumernavigationservice.getUserDetails().subscribe(
+      (data: UserProfileDto[]) => {
+        this.user = data;
+        console.log('Consumer Details:', this.user);
+
+      }
+    );
   }
 }
 >>>>>>> 9200722 (Corrected Routes for consumer-home and business-home)

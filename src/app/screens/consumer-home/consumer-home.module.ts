@@ -20,6 +20,7 @@ import { ConsumerHomeRoutingModule } from './consumer-home-routing.module';
   exports: [
     ConsumerTopNavbarComponent,
     ConsumerBottomNavbarComponent,
+    ConsumerHomeComponent
   ]
 })
 export class ConsumerHomeModule { }

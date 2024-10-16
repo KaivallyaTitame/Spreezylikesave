@@ -1,12 +1,9 @@
 import { Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { faAdd, faBell, faChartColumn, faCirclePlus, faCircleUser, faHome, faUser } from '@fortawesome/free-solid-svg-icons';
 import { mdiChartBoxOutline } from '@mdi/js';
 import { BusinessNavigationServiceService } from 'src/app/services/business-navigation-service.service';
-import { HomeModule } from '../../home-screen/home-screen.module';
-import { AddPostModule } from '../../add-post/add-post.module';
-import { ProfileScreenModule } from '../../profile-screen/profile-screen.module';
-import { BusinessInsightsModule } from '../../insights/insights.module';
 
 @Component({
   selector: 'app-business-bottom-navbar',
@@ -14,51 +11,9 @@ import { BusinessInsightsModule } from '../../insights/insights.module';
   templateUrl: './business-bottom-navbar.component.html'
 =======
   templateUrl: './business-bottom-navbar.component.html',
-  styles: [`
-    .nav-icon {
-      color: #FFFFFF; 
-      font-size: 24px;
-      transition: color 0.3s ease, transform 0.3s ease;
-    }
-    .nav-icon:hover, .active-icon {
-      color: #007BFF; 
-      transform: scale(1.2); 
-    }
-
-    .nav-icon-container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 10px;
-      transition: background-color 0.3s ease;
-    }
-    .nav-icon-container:hover {
-      background-color: rgba(0, 123, 255, 0.1); 
-      border-radius: 50%; 
-    }
-  `]
->>>>>>> bc8790b (Corrected Routes for consumer-home and business-home)
+  styles: []
 })
-<<<<<<< HEAD
-export class BusinessBottomNavbarComponent {
-  constructor(private router: Router, private _navigation: BusinessNavigationServiceService) {}
-  Home_screen_active: boolean = this._navigation.Is_Home;
-  Insights_screen_active: boolean = this._navigation.Is_Insights;
-  Post_screen_active: boolean = this._navigation.Is_Post;
-  Notification_screen_active: boolean = this._navigation.Is_Notification;
-  Profile_screen_active: boolean = this._navigation.Is_Profile;
 
-
-  Home() {
-<<<<<<< HEAD
-    this.router.navigate(['/businessnavbar/home']);
-    this.updateActiveState('Home');
-=======
-    this.router.navigate(['business-home/businessnavbar']);
-    this.updateActiveState('home');
->>>>>>> bc8790b (Corrected Routes for consumer-home and business-home)
-=======
 export class BusinessBottomNavbarComponent implements OnInit {
 
   faHome = faHome; 

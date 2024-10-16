@@ -8,6 +8,10 @@ import { AppComponent } from "./app.component";
 import { LoginModule } from "./screens/login/login.module";
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+import { LogoutModule } from "./screens/logout/logout.module";
+>>>>>>> 79946b6 (business-home working with docker integration)
 import { GlobalErrorHandlerService } from "./services/global-error-handler.service";
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -19,6 +23,7 @@ import { ConsumerHomeModule } from "./screens/consumer-home/consumer-home.module
 import { ReactiveFormsModule } from "@angular/forms";
 import { RegisterModule } from "./screens/register/register.module";
 >>>>>>> 015b527 (changes after pulling from develop)
+
 
 @NgModule({
   declarations: [
@@ -69,6 +74,10 @@ import { RegisterModule } from "./screens/register/register.module";
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+    LogoutModule,
+>>>>>>> 79946b6 (business-home working with docker integration)
     BusinessHomeModule,
 <<<<<<< HEAD
     ConsumerHomeModule
@@ -99,7 +108,7 @@ import { RegisterModule } from "./screens/register/register.module";
 =======
     ConsumerHomeModule,
     ReactiveFormsModule,
-    RegisterModule,
+    RegisterModule
   ],
 >>>>>>> 015b527 (changes after pulling from develop)
   providers: [
