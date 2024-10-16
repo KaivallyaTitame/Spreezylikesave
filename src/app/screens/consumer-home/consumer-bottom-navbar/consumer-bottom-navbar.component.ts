@@ -8,19 +8,7 @@ import { ConsumerNavigationService } from 'src/app/services/consumer-navigation.
   templateUrl: './consumer-bottom-navbar.component.html',
   styles: []
 })
-<<<<<<< HEAD
-export class ConsumerBottomNavbarComponent {
-  
-  constructor(private router: Router, private _navigation: ConsumerNavigationService) {}
-  Home_screen_active: boolean = this._navigation.Is_Home;
-  Search_screen_active: boolean = this._navigation.Is_Search;
-  Notification_screen_active: boolean = this._navigation.Is_Notification;
-  Profile_screen_active: boolean = this._navigation.Is_Profile;
 
-  Home() {
-    this.router.navigate(['/consumernavbar']);
-    this.updateActiveState('Home');
-=======
 export class ConsumerBottomNavbarComponent implements OnInit {
 
   faHome = faHome;

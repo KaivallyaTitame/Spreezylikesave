@@ -43,6 +43,7 @@ const routes: Routes = [
 <<<<<<< HEAD
     path: "consumer-home",
     loadChildren: () => import("./screens/consumer-home/consumer-home.module").then(m => m.ConsumerHomeModule),
+    // canActivate: [customerGuard]
   },
 
 <<<<<<< HEAD

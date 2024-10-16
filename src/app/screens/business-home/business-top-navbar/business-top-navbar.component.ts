@@ -1,13 +1,13 @@
 import { Component } from '@angular/core';
 import { faArrowRightFromBracket, faBars, faCircleQuestion, faDiceD20, faDiceD6, faFileLines, faFilePen, faGear, faMessage, faSearch } from '@fortawesome/free-solid-svg-icons';
-
+import { UserProfile } from 'firebase/auth';
+import { UserProfileDto } from 'src/app/models/UserProfileDTO';
+import { BusinessNavigationServiceService } from 'src/app/services/business-navigation-service.service';
 
 @Component({
   selector: 'app-business-top-navbar',
   templateUrl: './business-top-navbar.component.html',
-  styleUrls: [
-'./business-top-navbar.component.css'
-  ]
+  styleUrls: ['./business-top-navbar.component.css']
 })
 export class BusinessTopNavbarComponent {
   faBars = faBars
