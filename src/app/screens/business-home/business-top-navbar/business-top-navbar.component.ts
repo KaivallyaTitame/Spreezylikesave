@@ -1,8 +1,7 @@
-import { Component, Input } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { faArrowRightFromBracket, faBars, faCircleQuestion, faDiceD20, faDiceD6, faFileLines, faFilePen, faGear, faMessage, faSearch } from '@fortawesome/free-solid-svg-icons';
-import { UserProfile } from 'firebase/auth';
-import { UserProfileDto } from 'src/app/models/UserProfileDTO';
+import { UserProfileDTO } from 'src/app/models/UserProfileDTO';
 import { BusinessNavigationServiceService } from 'src/app/services/business-navigation-service.service';
 
 @Component({
@@ -10,37 +9,51 @@ import { BusinessNavigationServiceService } from 'src/app/services/business-navi
   templateUrl: './business-top-navbar.component.html',
   styleUrls: ['./business-top-navbar.component.css']
 })
-export class BusinessTopNavbarComponent {
-  faBars = faBars
-  faSearch = faSearch
-  faMessage = faMessage
-  faGear = faGear
-  faArrowRightFromBracket = faArrowRightFromBracket
-  faCircleQuestion = faCircleQuestion 
-  faFileLines = faFileLines
-  faDiceD6 = faDiceD6
-  faDiceD20 = faDiceD20
-  faFilePen = faFilePen
+export class BusinessTopNavbarComponent implements OnInit {
 
-  constructor(private router: Router) {} 
+  faBars = faBars;
+  faSearch = faSearch;
+  faMessage = faMessage;
+  faGear = faGear;
+  faArrowRightFromBracket = faArrowRightFromBracket;
+  faCircleQuestion = faCircleQuestion;
+  faFileLines = faFileLines;
+  faDiceD6 = faDiceD6;
+  faDiceD20 = faDiceD20;
+  faFilePen = faFilePen;
 
-  navigateToSearch(): void {
-    this.router.navigate(['business-home/search']); 
-  }
+  business: any; 
 
-  @Input() businessDetails!: UserProfileDto[];
-  business: any;
+  constructor(private router: Router, private businessNavigationServiceService: BusinessNavigationServiceService) { }
 
   ngOnInit(): void {
     this.fetchBusinessDetails();
   }
 
+  navigateToSearch(): void {
+    this.router.navigate(['business-home/search']);
+  }
+
   fetchBusinessDetails() {
-    this.businessNavigationServiceService.getBusinessDetails().subscribe(
-      (data: UserProfileDto[]) => {
-        this.business = data;
-        console.log('Business Details:', this.business);
+    this.businessNavigationServiceService.getBusinessDetails().subscribe({
+      next: (data: UserProfileDTO[]) => {
+        console.log('Raw Data:', data);
+
+        if (data.length > 0) {
+          this.business = data[0]; 
+          console.log('Business Details:', this.business);
+        } else {
+          console.warn('No business details found.');
+          this.business = {}; 
+        }
+      },
+      error: (error) => {
+        console.error('Failed to fetch business details', error);
+        this.business = {}; 
+      },
+      complete: () => {
+        console.log('Business information fetching completed');
       }
-    );
-}
+    });
+  }
 }
