@@ -9,10 +9,10 @@ import { UserProfileDTO } from '../models/UserProfileDTO';
 export class ConsumerNavigationService {
   constructor(private http:HttpClient) { }
   
-  Is_AdFeed: boolean = false; 
-  Is_Search: boolean = false;
-  Is_Notification: boolean = false;
-  Is_Profile: boolean = false;
+  is_AdFeed: boolean = false; 
+  is_Search: boolean = false;
+  is_Notification: boolean = false;
+  is_Profile: boolean = false;
 
   getConsumerDetails(): Observable<UserProfileDTO[]> {
     return this.http.get<UserProfileDTO[]> (`https://dummyjson.com/c/98c2-5f66-47f6-9292`,

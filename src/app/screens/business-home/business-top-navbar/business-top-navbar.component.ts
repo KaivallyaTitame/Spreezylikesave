@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { faArrowRightFromBracket, faBars, faCircleQuestion, faDiceD20, faDiceD6, faFileLines, faFilePen, faGear, faMessage, faSearch } from '@fortawesome/free-solid-svg-icons';
 import { UserProfileDTO } from 'src/app/models/UserProfileDTO';
-import { BusinessNavigationServiceService } from 'src/app/services/business-navigation-service.service';
+import { BusinessNavigationService } from 'src/app/services/business-navigation.service';
 
 @Component({
   selector: 'app-business-top-navbar',
@@ -24,7 +24,7 @@ export class BusinessTopNavbarComponent implements OnInit {
 
   business: any; 
 
-  constructor(private router: Router, private businessNavigationServiceService: BusinessNavigationServiceService) { }
+  constructor(private router: Router, private businessNavigationService: BusinessNavigationService) { }
 
   ngOnInit(): void {
     this.fetchBusinessDetails();
@@ -35,7 +35,7 @@ export class BusinessTopNavbarComponent implements OnInit {
   }
 
   fetchBusinessDetails() {
-    this.businessNavigationServiceService.getBusinessDetails().subscribe({
+    this.businessNavigationService.getBusinessDetails().subscribe({
       next: (data: UserProfileDTO[]) => {
         console.log('Raw Data:', data);
 

@@ -20,7 +20,7 @@ import { loginGuard } from "./authGuards/login/login.guard";
 >>>>>>> 20f3341 (login functinality is working)
 
 const routes: Routes = [
-  { path: "", redirectTo: "business-home/adfeed", pathMatch: "full" },
+  { path: "", redirectTo: "login", pathMatch: "full" },
 
   {
     path: "login",
@@ -55,6 +55,7 @@ const routes: Routes = [
     // canActivate: [customerGuard]
   },
 
+<<<<<<< HEAD
 <<<<<<< HEAD
   { path: "**", redirectTo: "consumer-home/adfeed" }
 =======
@@ -106,6 +107,9 @@ const routes: Routes = [
 =======
   { path: "**", redirectTo: "business-home/adfeed" }
 >>>>>>> c423dc1 (Fixed navbar icons and updated routing logic)
+=======
+  { path: "**", redirectTo: "login" }
+>>>>>>> 65bdbd4 (Used Camel Case, Default route Login and renamed BusinessNavigationService)
 ];
 
 @NgModule({
