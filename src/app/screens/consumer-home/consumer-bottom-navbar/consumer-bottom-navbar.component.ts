@@ -73,10 +73,10 @@ export class ConsumerBottomNavbarComponent implements OnInit {
     this.Notification_screen_active = false;
     this.Profile_screen_active = false;
 
-    this._navigation.Is_AdFeed = false;
-    this._navigation.Is_Search = false;
-    this._navigation.Is_Notification = false;
-    this._navigation.Is_Profile = false;
+    this._navigation.is_AdFeed = false;
+    this._navigation.is_Search = false;
+    this._navigation.is_Notification = false;
+    this._navigation.is_Profile = false;
   }
 
   private updateActiveState(screen: string) {
@@ -85,19 +85,19 @@ export class ConsumerBottomNavbarComponent implements OnInit {
     switch (screen.toLowerCase()) {
       case 'adfeed':
         this.AdFeed_screen_active = true;
-        this._navigation.Is_AdFeed = true;
+        this._navigation.is_AdFeed = true;
         break;
       case 'search':
         this.Search_screen_active = true;
-        this._navigation.Is_Search = true;
+        this._navigation.is_Search = true;
         break;
       case 'notification':
         this.Notification_screen_active = true;
-        this._navigation.Is_Notification = true;
+        this._navigation.is_Notification = true;
         break;
       case 'profile':
         this.Profile_screen_active = true;
-        this._navigation.Is_Profile = true;
+        this._navigation.is_Profile = true;
         break;
       default:
         break;

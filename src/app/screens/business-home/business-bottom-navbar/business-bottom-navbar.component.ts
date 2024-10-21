@@ -38,7 +38,7 @@ export class BusinessBottomNavbarComponent implements OnInit {
   notificationScreenActive = false;
   profileScreenActive = false;
 
-  constructor(private router: Router, private navigation: BusinessNavigationServiceService) {}
+  constructor(private router: Router, private navigation: BusinessNavigationService) {}
 
   ngOnInit(): void {
     this.updateActiveStates();
@@ -102,11 +102,11 @@ export class BusinessBottomNavbarComponent implements OnInit {
     this.notificationScreenActive = false;
     this.profileScreenActive = false;
 
-    this.navigation.Is_AdFeed = false;  
-    this.navigation.Is_Insights = false;
-    this.navigation.Is_Post = false;
-    this.navigation.Is_Notification = false;
-    this.navigation.Is_Profile = false;
+    this.navigation.is_AdFeed = false;  
+    this.navigation.is_Insights = false;
+    this.navigation.is_Post = false;
+    this.navigation.is_Notification = false;
+    this.navigation.is_Profile = false;
   }
 
   private updateActiveState(screen: string) {
@@ -115,23 +115,23 @@ export class BusinessBottomNavbarComponent implements OnInit {
     switch (screen.toLowerCase()) {
       case 'adfeed': 
         this.adFeedScreenActive = true;
-        this.navigation.Is_AdFeed = true;  
+        this.navigation.is_AdFeed = true;  
         break;
       case 'insights':
         this.insightsScreenActive = true;
-        this.navigation.Is_Insights = true;
+        this.navigation.is_Insights = true;
         break;
       case 'addpost':
         this.postScreenActive = true;
-        this.navigation.Is_Post = true;
+        this.navigation.is_Post = true;
         break;
       case 'notification':
         this.notificationScreenActive = true;
-        this.navigation.Is_Notification = true;
+        this.navigation.is_Notification = true;
         break;
       case 'profile':
         this.profileScreenActive = true;
-        this.navigation.Is_Profile = true;
+        this.navigation.is_Profile = true;
         break;
     }
   }
