@@ -15,10 +15,7 @@ export class BusinessService {
 
   getBusinessDetails(username: string): Observable<BusinessDetails[]> {
     return this.http.get<BusinessDetails[]>(`https://dummyjson.com/c/2c5d-5b3e-4419-b5ee/${username}`, {
-      responseType: 'json',
-      headers: new HttpHeaders({
-        'ngrok-skip-browser-warning': 'true',
-      }),
+      responseType: 'json'
     })
     .pipe(
       catchError(error => {
@@ -30,29 +27,23 @@ export class BusinessService {
 
   getProfilePosts(username: string): Observable<AdvertisementDetails[]> {
     return this.http.get<{ advertisements: AdvertisementDetails[] }>(`https://dummyjson.com/c/8fc4-305d-41a6-9f57/${username}`, {
-      responseType: 'json',
-      headers: new HttpHeaders({
-        'ngrok-skip-browser-warning': 'true',
-      }),
+      responseType: 'json'
     }).pipe(
       map(response => response.advertisements),
       catchError(error => {
         console.error('Error fetching profile posts', error);
-        return of([]); // return an empty array in case of error
+        return of([]);
       })
     );
   }
 
   getSavedPosts(username: string): Observable<AdvertisementDetails[]> {
     return this.http.get<AdvertisementDetails[]>(`https://dummyjson.com/c/7a77-80db-45c1-baf0/${username}`, {
-      responseType: 'json',
-      headers: new HttpHeaders({
-        'ngrok-skip-browser-warning': 'true',
-      }),
+      responseType: 'json'
     }).pipe(
       catchError(error => {
         console.error('Error fetching saved posts', error);
-        return of([]); // handle error by returning an empty array
+        return of([]);
       })
     );
   }
