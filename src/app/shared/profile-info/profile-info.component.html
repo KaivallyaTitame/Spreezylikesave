@@ -1,0 +1,12 @@
+<div class="flex items-center mb-2" (click)="onProfileClick(username)">
+    <img
+      [src]="imageUrl"
+      alt="{{ name }} profile picture"
+      class="w-16 h-16 rounded-full object-cover mr-4"
+    />
+    <div>
+      <h3 class="text-sm text-gray-900 font-secondary">{{ name }}</h3>
+      <p class="text-sm text-gray-500 font-secondary">{{ username }}</p>
+    </div>
+  </div>
+  

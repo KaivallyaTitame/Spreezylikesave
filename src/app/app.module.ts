@@ -39,4 +39,3 @@ import { RegisterModule } from "./screens/register/register.module";
   bootstrap: [AppComponent],
 })
 export class AppModule {}
-

@@ -5,7 +5,7 @@ import { businessGuard } from "./authGuards/business/business.guard";
 import { loginGuard } from "./authGuards/login/login.guard";
 
 const routes: Routes = [
-  { path: "", redirectTo: "login", pathMatch: "full" },
+  { path: "", redirectTo: "consumer-home", pathMatch: "full" },
 
   {
     path: "login",
