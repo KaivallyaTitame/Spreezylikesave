@@ -9,7 +9,7 @@ import { AdFeedModule } from 'src/app/screens/ad-feed/ad-feed.module';
   declarations: [
     PopUpComponent,
     LoaderComponent,
-    ProfileInfoComponent  // Declare here
+    ProfileInfoComponent
   ],
   imports: [
     CommonModule,
@@ -19,7 +19,7 @@ import { AdFeedModule } from 'src/app/screens/ad-feed/ad-feed.module';
     PopUpComponent,
     LoaderComponent,
     ProfileInfoComponent,
-    AdFeedModule  // Export it so other modules can use it
+    AdFeedModule
   ]
 })
 export class SharedModule {}

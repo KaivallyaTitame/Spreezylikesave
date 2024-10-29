@@ -13,7 +13,7 @@ const routes: Routes = [
       { path: 'notification', loadChildren: () => import('../notification-screen/notification-screen.module').then(m => m.NotificationScreenModule) },
       { path: 'profile', loadChildren: () => import('../profile-screen/profile-screen.module').then(m => m.ProfileScreenModule) },
       { path: 'search', loadChildren: () => import('../search/search.module').then(m => m.SearchModule) },
-      { path: '', redirectTo: 'business-home/adfeed', pathMatch: 'full' } 
+      { path: '', redirectTo: 'business-home/adfeed', pathMatch: 'full' }
     ]
   },
 ];

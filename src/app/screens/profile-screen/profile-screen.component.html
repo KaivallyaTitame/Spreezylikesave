@@ -9,23 +9,24 @@
           <p class="text-red-500 mb-2 tracking-wider truncate max-w-screen-md">@{{ business.username }}</p>
           <div class="social-links flex justify-start items-center">
             <a [href]="business.phoneNumber" class="text-red-500" target="_blank">
-              <i class="ri-phone-line text-2xl pr-1"></i>
+              <fa-icon [icon]="faPhone" class="text-2xl px-1"></fa-icon>
             </a>
             <a [href]="business.email" class="text-red-500 px-2" target="_blank">
-              <i class="ri-mail-line text-2xl px-1"></i>
+              <fa-icon [icon]="faEnvelope" class="text-2xl px-1"></fa-icon>
             </a>
             <a [href]="business.instagramUrl" class="text-red-500 px-1" target="_blank">
-              <i class="ri-instagram-line text-2xl px-1"></i>
+              <fa-icon [icon]="faInstagram" class="text-2xl px-1"></fa-icon>
             </a>
             <a [href]="business.facebookUrl" class="text-red-500 px-1" target="_blank">
-              <i class="ri-facebook-line text-2xl"></i>
+              <fa-icon [icon]="faFacebook" class="text-2xl px-1"></fa-icon>
             </a>
             <a [href]="business.facebookUrl" class="text-red-500" target="_blank">
-              <i class="ri-share-line text-2xl px-2"></i>
+              <fa-icon [icon]="faShare" class="text-2xl px-2"></fa-icon>
             </a>
           </div>
         </div>
       </div>
+
       <div class="stats bg-white flex justify-between mt-2 px-12 text-center " style="font-family: 'Roboto', sans-serif; font-weight: 400; letter-spacing: 0.5px;">
         <div>
           <p class="font-bold">{{ business.numberOfAdvertisements }}</p>

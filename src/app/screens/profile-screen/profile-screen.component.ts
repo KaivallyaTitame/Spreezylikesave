@@ -1,12 +1,12 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { BusinessService } from 'src/app/services/business-profile.service';
-import { faBars, faSpinner, faList, faUserGroup, faMagnifyingGlass, faThumbsUp, faThumbsDown, faLocationArrow, faBookmark, faEllipsisVertical, faLocationDot, faHeart, faBell, faCircleUser } from '@fortawesome/free-solid-svg-icons';
+import { faPhone, faEnvelope, faShare, faList, faBookmark, faCircleUser } from '@fortawesome/free-solid-svg-icons';
+import { faInstagram, faFacebook } from '@fortawesome/free-brands-svg-icons';
 import { BusinessDetails } from 'src/app/models/BusinessDetails';
 import { AdvertisementDetails } from 'src/app/models/ad-details';
 import { DecodedToken } from 'src/app/models/decodedToken';
 import { JwtDecoderService } from 'src/app/services/jwtDecoder/jwt-decoder.service';
 import { ActivatedRoute } from '@angular/router';
-
 
 @Component({
   selector: 'app-profile-screen',
@@ -24,19 +24,13 @@ export class ProfileScreenComponent implements OnInit {
   postsPerPage: number = 10;
   loadingProfilePosts: boolean = false;
   loadingSavedPosts: boolean = false;
-  faSpinner = faSpinner;
-  faBars = faBars;
+  faPhone = faPhone;
+  faEnvelope = faEnvelope;
+  faInstagram = faInstagram;
+  faFacebook = faFacebook;
+  faShare = faShare;
   faList = faList;
-  faUserGroup = faUserGroup;
-  faMagnifyingGlass = faMagnifyingGlass;
-  faThumbsUp = faThumbsUp;
-  faThumbsDown = faThumbsDown;
-  faLocationArrow = faLocationArrow;
   faBookmark = faBookmark;
-  faEllipsisVertical = faEllipsisVertical;
-  faLocationDot = faLocationDot;
-  faHeart = faHeart;
-  faBell = faBell;
   faCircleUser = faCircleUser;
   selectedTab: string = 'posts'; //selected tab by default
   currentUsername: string = '';
@@ -50,7 +44,8 @@ export class ProfileScreenComponent implements OnInit {
 
   ngOnInit(): void {
     this.currentUsername = this.fetchCurrentUsername();
-    console.log('Current username final is:',this.currentUsername);
+    console.log('Current username final is:', this.currentUsername);
+    
     this.route.paramMap.subscribe(params => {
       this.username = params.get('username');
       if (this.username) {
@@ -68,30 +63,47 @@ export class ProfileScreenComponent implements OnInit {
   }
 
   fetchBusinessDetails(username: string) {
-    this.businessService.getBusinessDetails(username).subscribe((data: BusinessDetails[]) => {
-      this.business = data;
-      console.log('Business Details:', this.business);
-    });
+    this.businessService.getBusinessDetails(username)
+      .subscribe({
+        next:(data) => {
+          this.business = data;
+        },
+        error:(error) => {
+          console.error('Error fetching business details', error);
+        }
+      });
   }
-
+  
   fetchProfilePosts(username: string) {
     this.loadingProfilePosts = true;
-    this.businessService.getProfilePosts(username).subscribe((data: AdvertisementDetails[]) => {
-      this.profilePosts = data;
-      console.log('Profile Posts:', this.profilePosts);
-      this.visibleProfilePosts = this.profilePosts.slice(0, this.postsPerPage);
-      this.loadingProfilePosts = false;
-    });
+    this.businessService.getProfilePosts(username)
+      .subscribe({
+        next:(data) => {
+          this.profilePosts = data;
+          this.visibleProfilePosts = this.profilePosts.slice(0, this.postsPerPage);
+          this.loadingProfilePosts = false;
+        },
+        error:(error) => {
+          console.error('Error fetching profile posts', error);
+          this.loadingProfilePosts = false;
+        }
+      });
   }
-
+  
   fetchSavedPosts(username: string) {
     this.loadingSavedPosts = true;
-    this.businessService.getSavedPosts(username).subscribe((data: AdvertisementDetails[]) => {
-      this.savedPosts = data;
-      console.log('Saved Posts:', this.savedPosts);
-      this.visibleSavedPosts = this.savedPosts.slice(0, this.postsPerPage);
-      this.loadingSavedPosts = false;
-    });
+    this.businessService.getSavedPosts(username)
+      .subscribe({
+        next:(data) => {
+          this.savedPosts = data;
+          this.visibleSavedPosts = this.savedPosts.slice(0, this.postsPerPage);
+          this.loadingSavedPosts = false;
+        },
+        error:(error) => {
+          console.error('Error fetching saved posts', error);
+          this.loadingSavedPosts = false;
+        }
+      });
   }
 
   switchTab(tab: string): void {

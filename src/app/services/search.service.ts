@@ -8,7 +8,7 @@ import { tap, catchError } from 'rxjs/operators';
 })
 export class SearchService {
 
-  private businessesUrl = 'http://localhost:8762/user/search';
+  private businessesUrl = 'https://dummyjson.com/c/da4e-1011-4418-9e94/user/search';
   private imageUrl = 'http://images.spreezy.in';
 
   constructor(private http: HttpClient) { 
