@@ -5,7 +5,7 @@ import { ProfileScreenComponent } from './profile-screen.component';
 
 const routes: Routes = [
   {
-    path: ':username',
+    path: '',
     component : ProfileScreenComponent
   }
 ];

@@ -25,6 +25,7 @@ export class BusinessService {
     );
   }
 
+  // Add username parameter to the method
   getProfilePosts(username: string): Observable<AdvertisementDetails[]> {
     return this.http.get<{ advertisements: AdvertisementDetails[] }>(`https://dummyjson.com/c/8fc4-305d-41a6-9f57/${username}`, {
       responseType: 'json'
@@ -37,6 +38,7 @@ export class BusinessService {
     );
   }
 
+  // Add username parameter to the method
   getSavedPosts(username: string): Observable<AdvertisementDetails[]> {
     return this.http.get<AdvertisementDetails[]>(`https://dummyjson.com/c/7a77-80db-45c1-baf0/${username}`, {
       responseType: 'json'

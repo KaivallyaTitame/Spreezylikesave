@@ -37,23 +37,17 @@ export class BusinessTopNavbarComponent implements OnInit {
   fetchBusinessDetails() {
     this.businessNavigationService.getBusinessDetails().subscribe({
       next: (data: UserProfileDTO[]) => {
-        console.log('Raw Data:', data);
 
         if (data.length > 0) {
-          this.business = data[0]; 
-          console.log('Business Details:', this.business);
+          this.business = data[0];
         } else {
-          console.warn('No business details found.');
           this.business = {}; 
         }
       },
       error: (error) => {
-        console.error('Failed to fetch business details', error);
         this.business = {}; 
       },
-      complete: () => {
-        console.log('Business information fetching completed');
-      }
+      complete: () => {}
     });
   }
 }

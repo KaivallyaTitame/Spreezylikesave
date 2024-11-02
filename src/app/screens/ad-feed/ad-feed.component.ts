@@ -4,6 +4,7 @@ import { AdvertisementDetailsService } from 'src/app/services/advertisementTypes
 import { OfferDescriptionDTO } from 'src/app/models/offerdescriptionGet';
 
 import { AdvertisementDetails } from 'src/app/models/ad-details';
+import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
   selector: 'app-ad-feed',
@@ -13,7 +14,11 @@ import { AdvertisementDetails } from 'src/app/models/ad-details';
 export class AdFeedComponent implements OnInit {
   ads: AdvertisementDetails []= [];
 
-  constructor(private AdvertisementDetailsService: AdvertisementDetailsService) {}
+  constructor(private AdvertisementDetailsService: AdvertisementDetailsService, private authService: AuthService) {}
+
+  logout() {
+    this.authService.logout();
+  }
 
   ngOnInit(): void {
     this.fetchAds();

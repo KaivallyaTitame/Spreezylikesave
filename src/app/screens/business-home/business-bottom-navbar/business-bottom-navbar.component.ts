@@ -25,7 +25,6 @@ export class BusinessBottomNavbarComponent implements OnInit {
   postScreenActive = false;
   notificationScreenActive = false;
   profileScreenActive = false;
-  currentUser: string = 'tanvi247';
 
   constructor(private router: Router, private navigation: BusinessNavigationService) {}
 
@@ -37,11 +36,7 @@ export class BusinessBottomNavbarComponent implements OnInit {
   }
 
   navigateTo(screen: string) {
-    if (screen.toLowerCase() === 'profile') {
-      this.router.navigate([`/business-home/profile/${this.currentUser}`]);
-    } else {
-      this.router.navigate([`/business-home/${screen.toLowerCase()}`]);
-    }
+    this.router.navigate([`/business-home/${screen.toLowerCase()}`]);
     this.updateActiveState(screen);
   }
 
