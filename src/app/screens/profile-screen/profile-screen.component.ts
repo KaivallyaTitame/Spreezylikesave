@@ -14,7 +14,7 @@ import { ActivatedRoute } from '@angular/router';
   styleUrls: ['./profile-screen.component.css']
 })
 export class ProfileScreenComponent implements OnInit {
-  business: any;
+  businessDetails: BusinessDetails;
   @Input() profilePosts!: AdvertisementDetails[];
   @Input() savedPosts!: AdvertisementDetails[];
   visibleProfilePosts: AdvertisementDetails[] = [];
@@ -66,7 +66,7 @@ export class ProfileScreenComponent implements OnInit {
     this.businessService.getBusinessDetails(username)
       .subscribe({
         next:(data) => {
-          this.business = data;
+          this.businessDetails = data;
         },
         error:(error) => {
           console.error('Error fetching business details', error);
@@ -106,30 +106,45 @@ export class ProfileScreenComponent implements OnInit {
       });
   }
 
-  switchTab(tab: string): void {
-    this.selectedTab = tab;
+// Properties to store scroll positions for each tab
+private scrollPositions: { [key: string]: number } = {
+  posts: 0,
+  saved: 0,
+};
 
-    // Reset scroll position on tab switch
-    const scrollContainer = document.querySelector('.scroll-container');
-    if (scrollContainer) {
-      scrollContainer.scrollTop = 0;
-    }
+switchTab(tab: string): void {
+  // Save the current scroll position for the active tab
+  const scrollContainer = document.querySelector('.scroll-container');
+  if (scrollContainer) {
+    this.scrollPositions[this.selectedTab] = scrollContainer.scrollTop;
   }
 
-  onScroll(event: any) {
-    const scrollContainer = event.target;
-    const scrollPosition = scrollContainer.scrollTop + scrollContainer.clientHeight;
-    const scrollHeight = scrollContainer.scrollHeight;
+  // Switch the selected tab
+  this.selectedTab = tab;
 
-    // Check if the user has scrolled near the bottom (e.g., within 100px)
-    if (scrollPosition >= scrollHeight - 100) {
-      if (this.selectedTab === 'posts' && !this.loadingProfilePosts) {
-        this.loadMoreProfilePosts();
-      } else if (this.selectedTab === 'saved' && !this.loadingSavedPosts) {
-        this.loadMoreSavedPosts();
-      }
+  // Restore the scroll position for the new tab
+  setTimeout(() => {
+    const newScrollContainer = document.querySelector('.scroll-container');
+    if (newScrollContainer) {
+      newScrollContainer.scrollTop = this.scrollPositions[tab] || 0;
+    }
+  }, 0);
+}
+
+onScroll(event: any) {
+  const scrollContainer = event.target;
+  const scrollPosition = scrollContainer.scrollTop + scrollContainer.clientHeight;
+  const scrollHeight = scrollContainer.scrollHeight;
+
+  // Check if the user has scrolled near the bottom (e.g., within 100px)
+  if (scrollPosition >= scrollHeight - 100) {
+    if (this.selectedTab === 'posts' && !this.loadingProfilePosts) {
+      this.loadMoreProfilePosts();
+    } else if (this.selectedTab === 'saved' && !this.loadingSavedPosts) {
+      this.loadMoreSavedPosts();
     }
   }
+}
 
   loadMoreProfilePosts() {
     const nextPageStartIndex = this.profilePostPage * this.postsPerPage;

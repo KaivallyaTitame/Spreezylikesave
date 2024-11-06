@@ -1,26 +1,26 @@
 <div>
   <div class="mt-16 mb-16 test1:w-full" style="max-height: 2400px;">
-    <div class="profile-container">
+    <div *ngIf="businessDetails" class="profile-container">
 <!-- Business Details and Stats -->
       <div class="header bg-white p-2 flex items-center" style="font-family: 'Roboto', sans-serif; font-weight: 400; letter-spacing: 0.5px;">
-        <img src="{{ business.profilePictureUrl }}" alt="Business Logo" class="rounded-full ml-2 w-24 h-24 border border-red-5">
+        <img src="{{ businessDetails.profilePictureUrl }}" alt="Business Logo" class="rounded-full ml-2 w-24 h-24 border border-red-5">
         <div class="ml-5 mt-2">
-          <h2 class="text-black text-lg font-bold tracking-wider truncate max-w-screen-md">{{ business.name }}</h2>
-          <p class="text-red-500 mb-2 tracking-wider truncate max-w-screen-md">@{{ business.username }}</p>
+          <h2 class="text-black text-lg font-bold tracking-wider truncate max-w-screen-md">{{ businessDetails.name }}</h2>
+          <p class="text-red-500 mb-2 tracking-wider truncate max-w-screen-md">@{{ businessDetails.username }}</p>
           <div class="social-links flex justify-start items-center">
-            <a [href]="business.phoneNumber" class="text-red-500" target="_blank">
+            <a [href]="businessDetails.phoneNumber" class="text-red-500" target="_blank">
               <fa-icon [icon]="faPhone" class="text-2xl px-1"></fa-icon>
             </a>
-            <a [href]="business.email" class="text-red-500 px-2" target="_blank">
+            <a [href]="businessDetails.email" class="text-red-500 px-2" target="_blank">
               <fa-icon [icon]="faEnvelope" class="text-2xl px-1"></fa-icon>
             </a>
-            <a [href]="business.instagramUrl" class="text-red-500 px-1" target="_blank">
+            <a [href]="businessDetails.instagramUrl" class="text-red-500 px-1" target="_blank">
               <fa-icon [icon]="faInstagram" class="text-2xl px-1"></fa-icon>
             </a>
-            <a [href]="business.facebookUrl" class="text-red-500 px-1" target="_blank">
+            <a [href]="businessDetails.facebookUrl" class="text-red-500 px-1" target="_blank">
               <fa-icon [icon]="faFacebook" class="text-2xl px-1"></fa-icon>
             </a>
-            <a [href]="business.facebookUrl" class="text-red-500" target="_blank">
+            <a [href]="businessDetails.facebookUrl" class="text-red-500" target="_blank">
               <fa-icon [icon]="faShare" class="text-2xl px-2"></fa-icon>
             </a>
           </div>
@@ -29,15 +29,15 @@
 
       <div class="stats bg-white flex justify-between mt-2 px-12 text-center " style="font-family: 'Roboto', sans-serif; font-weight: 400; letter-spacing: 0.5px;">
         <div>
-          <p class="font-bold">{{ business.numberOfAdvertisements }}</p>
+          <p class="font-bold">{{ businessDetails.numberOfAdvertisements }}</p>
           <p>Posts</p>
         </div>
         <div>
-          <p class="font-bold">{{ business.followers }}</p>
+          <p class="font-bold">{{ businessDetails.followers }}</p>
           <p>Followers</p>
         </div>
         <div>
-          <p class="font-bold">{{ business.following }}</p>
+          <p class="font-bold">{{ businessDetails.following }}</p>
           <p>Following</p>
         </div>
       </div>

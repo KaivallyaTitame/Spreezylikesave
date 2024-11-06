@@ -1,6 +1,6 @@
 import { AdvertisementDetails } from 'src/app/models/ad-details';
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { BusinessDetails } from '../models/BusinessDetails';
 import { map, catchError } from 'rxjs/operators';
@@ -8,19 +8,34 @@ import { map, catchError } from 'rxjs/operators';
 @Injectable({
   providedIn: 'root'
 })
+
+
 export class BusinessService {
 
   constructor(private http: HttpClient) { }
 
+  // BusinessDetails cannot be null so provided an empty object
+  private emptyBusinessDetails: BusinessDetails = {
+    name: '',
+    username: '',
+    profilePictureUrl: '',
+    numberOfAdvertisements: '',
+    followers: '',
+    following: '',
+    email: '',
+    phoneNumber: '',
+    facebookUrl: '',
+    instagramUrl: ''
+  };
 
-  getBusinessDetails(username: string): Observable<BusinessDetails[]> {
-    return this.http.get<BusinessDetails[]>(`https://dummyjson.com/c/2c5d-5b3e-4419-b5ee/${username}`, {
+  getBusinessDetails(username: string): Observable<BusinessDetails> {
+    return this.http.get<BusinessDetails>(`https://dummyjson.com/c/2c5d-5b3e-4419-b5ee/${username}`, {
       responseType: 'json'
     })
     .pipe(
       catchError(error => {
         console.error('Error fetching business details', error);
-        return of([]); // return an empty array or handle the error as needed
+        return of(this.emptyBusinessDetails);
       })
     );
   }
