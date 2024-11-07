@@ -1,6 +1,6 @@
 import { AdvertisementDetails } from 'src/app/models/ad-details';
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { BusinessDetails } from '../models/BusinessDetails';
 import { map, catchError } from 'rxjs/operators';
@@ -40,26 +40,34 @@ export class BusinessService {
     );
   }
 
-  getProfilePosts(username: string): Observable<AdvertisementDetails[]> {
-    return this.http.get<{ advertisements: AdvertisementDetails[] }>(`https://dummyjson.com/c/8fc4-305d-41a6-9f57/${username}`, {
-      responseType: 'json'
-    }).pipe(
-      map(response => response.advertisements),
-      catchError(error => {
-        console.error('Error fetching profile posts', error);
-        return of([]);
-      })
-    );
+  getProfilePosts(username: string, page: number, postsPerPage: number): Observable<AdvertisementDetails[]> {
+    return this.http.get<AdvertisementDetails[]>(`https://4720-2401-4900-1c44-5f73-e36c-cd1d-2ab9-c7ad.ngrok-free.app/feed-on-profile-page/posts-section/${username}?page=${page}&pageSize=${postsPerPage}`,{
+      responseType: 'json',
+      headers: new HttpHeaders({
+        'ngrok-skip-browser-warning': 'true',
+      }),
+    })
+      .pipe(
+        catchError(error => {
+          console.error('Error fetching profile posts', error);
+          return of([]); // Return empty array on error
+        })
+      );
   }
-
-  getSavedPosts(username: string): Observable<AdvertisementDetails[]> {
-    return this.http.get<AdvertisementDetails[]>(`https://dummyjson.com/c/7a77-80db-45c1-baf0/${username}`, {
-      responseType: 'json'
-    }).pipe(
-      catchError(error => {
-        console.error('Error fetching saved posts', error);
-        return of([]);
+  
+  getSavedPosts(username: string, page: number, postsPerPage: number): Observable<AdvertisementDetails[]> {
+    return this.http.get<AdvertisementDetails[]>(`https://4720-2401-4900-1c44-5f73-e36c-cd1d-2ab9-c7ad.ngrok-free.app/feed-on-profile-page/posts-section/${username}?page=${page}&pageSize=${postsPerPage}`,{
+      responseType: 'json',
+      headers: new HttpHeaders({
+        'ngrok-skip-browser-warning': 'true',
       })
-    );
+    })
+      .pipe(
+        catchError(error => {
+          console.error('Error fetching saved posts', error);
+          return of([]); // Return empty array on error
+        })
+      );
   }
+  
 }

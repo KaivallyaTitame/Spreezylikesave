@@ -19,8 +19,8 @@ export class ProfileScreenComponent implements OnInit {
   @Input() savedPosts!: AdvertisementDetails[];
   visibleProfilePosts: AdvertisementDetails[] = [];
   visibleSavedPosts: AdvertisementDetails[] = [];
-  profilePostPage: number = 1;
-  savedPostPage: number = 1;
+  profilePostPage: number = 0;
+  savedPostPage: number = 0;
   postsPerPage: number = 10;
   loadingProfilePosts: boolean = false;
   loadingSavedPosts: boolean = false;
@@ -50,8 +50,8 @@ export class ProfileScreenComponent implements OnInit {
       this.username = params.get('username');
       if (this.username) {
         this.fetchBusinessDetails(this.username);
-        this.fetchProfilePosts(this.username);
-        this.fetchSavedPosts(this.username);
+        this.fetchProfilePosts(this.username, this.profilePostPage);
+        this.fetchSavedPosts(this.username, this.savedPostPage);
       }
     });
   }
@@ -74,37 +74,56 @@ export class ProfileScreenComponent implements OnInit {
       });
   }
   
-  fetchProfilePosts(username: string) {
+  fetchProfilePosts(username: string, page: number) {
     this.loadingProfilePosts = true;
-    this.businessService.getProfilePosts(username)
+    this.businessService.getProfilePosts(username, page, this.postsPerPage)
       .subscribe({
-        next:(data) => {
-          this.profilePosts = data;
-          this.visibleProfilePosts = this.profilePosts.slice(0, this.postsPerPage);
+        next: (data) => {
+          this.visibleProfilePosts.push(...data); // Append new data
           this.loadingProfilePosts = false;
+          if (data.length > 0) {
+            this.profilePostPage++; // Increment page if there are more posts
+          }
         },
-        error:(error) => {
+        error: (error) => {
           console.error('Error fetching profile posts', error);
           this.loadingProfilePosts = false;
         }
       });
   }
   
-  fetchSavedPosts(username: string) {
+  fetchSavedPosts(username: string, page: number) {
     this.loadingSavedPosts = true;
-    this.businessService.getSavedPosts(username)
+    this.businessService.getSavedPosts(username, page, this.postsPerPage)
       .subscribe({
-        next:(data) => {
-          this.savedPosts = data;
-          this.visibleSavedPosts = this.savedPosts.slice(0, this.postsPerPage);
+        next: (data) => {
+          this.visibleSavedPosts.push(...data); // Append new data
           this.loadingSavedPosts = false;
+          if (data.length > 0) {
+            this.savedPostPage++; // Increment page if there are more posts
+          }
         },
-        error:(error) => {
+        error: (error) => {
           console.error('Error fetching saved posts', error);
           this.loadingSavedPosts = false;
         }
       });
   }
+  
+  onScroll(event: any) {
+    const scrollContainer = event.target;
+    const scrollPosition = scrollContainer.scrollTop + scrollContainer.clientHeight;
+    const scrollHeight = scrollContainer.scrollHeight;
+  
+    if (scrollPosition >= scrollHeight - 100) {
+      if (this.selectedTab === 'posts' && !this.loadingProfilePosts) {
+        this.fetchProfilePosts(this.username!, this.profilePostPage); // Pass current page
+      } else if (this.selectedTab === 'saved' && !this.loadingSavedPosts) {
+        this.fetchSavedPosts(this.username!, this.savedPostPage); // Pass current page
+      }
+    }
+  }
+  
 
 // Properties to store scroll positions for each tab
 private scrollPositions: { [key: string]: number } = {
@@ -131,20 +150,20 @@ switchTab(tab: string): void {
   }, 0);
 }
 
-onScroll(event: any) {
-  const scrollContainer = event.target;
-  const scrollPosition = scrollContainer.scrollTop + scrollContainer.clientHeight;
-  const scrollHeight = scrollContainer.scrollHeight;
+// onScroll(event: any) {
+//   const scrollContainer = event.target;
+//   const scrollPosition = scrollContainer.scrollTop + scrollContainer.clientHeight;
+//   const scrollHeight = scrollContainer.scrollHeight;
 
-  // Check if the user has scrolled near the bottom (e.g., within 100px)
-  if (scrollPosition >= scrollHeight - 100) {
-    if (this.selectedTab === 'posts' && !this.loadingProfilePosts) {
-      this.loadMoreProfilePosts();
-    } else if (this.selectedTab === 'saved' && !this.loadingSavedPosts) {
-      this.loadMoreSavedPosts();
-    }
-  }
-}
+//   // Check if the user has scrolled near the bottom (e.g., within 100px)
+//   if (scrollPosition >= scrollHeight - 100) {
+//     if (this.selectedTab === 'posts' && !this.loadingProfilePosts) {
+//       this.loadMoreProfilePosts();
+//     } else if (this.selectedTab === 'saved' && !this.loadingSavedPosts) {
+//       this.loadMoreSavedPosts();
+//     }
+//   }
+// }
 
   loadMoreProfilePosts() {
     const nextPageStartIndex = this.profilePostPage * this.postsPerPage;
