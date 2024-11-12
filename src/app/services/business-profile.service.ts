@@ -1,9 +1,10 @@
+import { throwError } from 'rxjs';
 import { AdvertisementDetails } from 'src/app/models/ad-details';
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { BusinessDetails } from '../models/BusinessDetails';
-import { map, catchError } from 'rxjs/operators';
+import { catchError } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -41,7 +42,7 @@ export class BusinessService {
   }
 
   getProfilePosts(username: string, page: number, postsPerPage: number): Observable<AdvertisementDetails[]> {
-    return this.http.get<AdvertisementDetails[]>(`https://4720-2401-4900-1c44-5f73-e36c-cd1d-2ab9-c7ad.ngrok-free.app/feed-on-profile-page/posts-section/${username}?page=${page}&pageSize=${postsPerPage}`,{
+    return this.http.get<AdvertisementDetails[]>(`https://a12f-2401-4900-1c7e-8cc1-6367-f69d-244d-112d.ngrok-free.app/feed-on-profile-page/posts-section/${username}?page=${page}&pageSize=${postsPerPage}`,{
       responseType: 'json',
       headers: new HttpHeaders({
         'ngrok-skip-browser-warning': 'true',
@@ -50,13 +51,13 @@ export class BusinessService {
       .pipe(
         catchError(error => {
           console.error('Error fetching profile posts', error);
-          return of([]); // Return empty array on error
+          return throwError(() => new Error('Failed to fetch profile posts'));
         })
       );
   }
   
   getSavedPosts(username: string, page: number, postsPerPage: number): Observable<AdvertisementDetails[]> {
-    return this.http.get<AdvertisementDetails[]>(`https://4720-2401-4900-1c44-5f73-e36c-cd1d-2ab9-c7ad.ngrok-free.app/feed-on-profile-page/posts-section/${username}?page=${page}&pageSize=${postsPerPage}`,{
+    return this.http.get<AdvertisementDetails[]>(`https://a12f-2401-4900-1c7e-8cc1-6367-f69d-244d-112d.ngrok-free.app/feed-on-profile-page/posts-section/${username}?page=${page}&pageSize=${postsPerPage}`,{
       responseType: 'json',
       headers: new HttpHeaders({
         'ngrok-skip-browser-warning': 'true',
@@ -65,7 +66,7 @@ export class BusinessService {
       .pipe(
         catchError(error => {
           console.error('Error fetching saved posts', error);
-          return of([]); // Return empty array on error
+          return throwError(() => new Error('Failed to fetch Saved posts'));
         })
       );
   }

@@ -22,3 +22,7 @@
     opacity: 0.5;
     pointer-events: none;
   }
+  .stats.justify-center {
+    justify-content: center;
+  }
+  

@@ -66,6 +66,6 @@ export class SearchComponent implements OnInit {
 
   onUserClick(username: string): void {
     console.log('Navigating to profile:', username);
-    this.router.navigate([`/profile/business/${username}`]);
+    this.router.navigate([`/business-home/profile/${username}`]);
   }
 }

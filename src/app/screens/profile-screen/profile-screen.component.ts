@@ -35,6 +35,11 @@ export class ProfileScreenComponent implements OnInit {
   selectedTab: string = 'posts'; //selected tab by default
   currentUsername: string = '';
   username: string | null = null;
+  userType: string;
+
+  showPopup: boolean = false;
+  popupTitle: string = 'Error';
+  popupBody: string = '';
 
   constructor(
     private businessService: BusinessService,
@@ -45,7 +50,8 @@ export class ProfileScreenComponent implements OnInit {
   ngOnInit(): void {
     this.currentUsername = this.fetchCurrentUsername();
     console.log('Current username final is:', this.currentUsername);
-    
+    console.log('User type is:', this.userType);
+
     this.route.paramMap.subscribe(params => {
       this.username = params.get('username');
       if (this.username) {
@@ -55,10 +61,11 @@ export class ProfileScreenComponent implements OnInit {
       }
     });
   }
-
   fetchCurrentUsername(): string {
     const token = localStorage.getItem('token') || '';
     const decodedToken: DecodedToken = this.JwtDecoder.decodeInfoFromToken(token);
+    this.userType = decodedToken["User Type"];
+    this.currentUsername = decodedToken.sub;
     return decodedToken.sub;
   }
 
@@ -69,6 +76,7 @@ export class ProfileScreenComponent implements OnInit {
           this.businessDetails = data;
         },
         error:(error) => {
+          this.showError('Error fetching business details', 'Please try again later.');
           console.error('Error fetching business details', error);
         }
       });
@@ -86,6 +94,7 @@ export class ProfileScreenComponent implements OnInit {
           }
         },
         error: (error) => {
+          this.showError('Error fetching profile posts', 'Please check your connection.');
           console.error('Error fetching profile posts', error);
           this.loadingProfilePosts = false;
         }
@@ -104,12 +113,19 @@ export class ProfileScreenComponent implements OnInit {
           }
         },
         error: (error) => {
+          this.showError(error, 'Unable to load saved posts.');
           console.error('Error fetching saved posts', error);
           this.loadingSavedPosts = false;
         }
       });
   }
   
+  showError(title: string, body: string) {
+    this.popupTitle = title;
+    this.popupBody = body;
+    this.showPopup = true;
+  }
+
   onScroll(event: any) {
     const scrollContainer = event.target;
     const scrollPosition = scrollContainer.scrollTop + scrollContainer.clientHeight;
