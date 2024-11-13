@@ -11,10 +11,13 @@
 .select {
     font-size: 12px;
     border-color: #ED6A5A;
-    width: 330px;
+    width: 400px;
     height: 28px;
     color: #979797;
     background-color: white;
     border-radius: 4px;
     border-width: 1.2px;
+    font-family: 'Roboto';
+    padding: 4px 12px 4px; 
+    
 }

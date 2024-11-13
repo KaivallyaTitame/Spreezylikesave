@@ -10,7 +10,7 @@ import { environment } from "src/environments/environment.development";
   providedIn: "root",
 })
 export class OtpService {
-  private apiUrl = environment.apiUrl;
+  private apiUrl = environment.apiGateway;
   constructor(private http: HttpClient) {}
   isOtpSentToMobile = false;
 

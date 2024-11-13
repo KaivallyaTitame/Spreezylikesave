@@ -1,9 +1,10 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { postDetails } from 'src/app/models/post-details';
+import { PostDetails } from 'src/app/models/post-details';
 import { JwtDecoderService } from 'src/app/services/jwt-decoder.service';
-import { postUpload } from 'src/app/services/post-upload.service';
+import { PostUploadService } from 'src/app/services/post-upload.service';
+import { TextareaUtils } from 'src/app/shared/textarea-utils';
 
 @Component({
   selector: 'app-post-form',
@@ -12,7 +13,7 @@ import { postUpload } from 'src/app/services/post-upload.service';
 })
 export class PostFormComponent implements OnInit {
   postFormDetails: FormGroup;
-  postFormData: postDetails = new postDetails(); 
+  postFormData: PostDetails = new PostDetails(); 
   username: string = '';
   businessId: string = '';
   imageFileNames: string[] = [];
@@ -20,17 +21,17 @@ export class PostFormComponent implements OnInit {
   popUpTitle: string = '';
   popUpBody: string = '';
 
-  constructor(private fb: FormBuilder, private postUpload: postUpload,private jwtDecoder: JwtDecoderService){
+  constructor(private fb: FormBuilder, private postUpload: PostUploadService,private jwtDecoder: JwtDecoderService){
     this.postFormDetails = this.fb.group({
-      imageFileNames: [[], Validators.required],
-      username: ['', Validators.required],
-      postTitle: ['', Validators.required],
-      description: ['', Validators.required],
-      expiry: [null, Validators.required],
-      businessId: ['', Validators.required],
-      promoBadge: ['', Validators.required],
-      termsAndConditions: ['', Validators.required],
-      stepsToAvailOffer: ['', Validators.required]
+      imageFileNames: [[]],
+      username: [''],
+      postTitle: [''],
+      description: [''],
+      expiry: [null],
+      businessId: [''],
+      promoBadge: [''],
+      termsAndConditions: [''],
+      stepsToAvailOffer: ['']
     });
   }
 
@@ -59,7 +60,10 @@ export class PostFormComponent implements OnInit {
       this.showPopUp = true;
       this.postFormDetails.reset();
     } else {
-      alert('Please fill out the form correctly');
+      this.popUpTitle = 'Error!';
+      this.popUpBody = 'Please fill out form correctly';
+      this.showPopUp = true;
+      this.postFormDetails.reset();
     }
   }
 
@@ -71,39 +75,12 @@ export class PostFormComponent implements OnInit {
     this.postFormData.expiry = details.value['expiry'];
     this.postFormData.businessId = this.postFormDetails.get('businessId')?.value;
     this.postFormData.promoBadge = details.value['promoBadge'];
-    this.postFormData.termsAndConditions = this.convertTextareaToListWithBulletPoints(details.value['termsAndConditions']);
-    this.postFormData.stepsToAvailOffer = this.convertTextareaToListWithBulletPoints(details.value['stepsToAvailOffer']);
+    this.postFormData.termsAndConditions = TextareaUtils.convertTextareaToListWithBulletPoints(details.value['termsAndConditions']);
+    this.postFormData.stepsToAvailOffer = TextareaUtils.convertTextareaToListWithBulletPoints(details.value['stepsToAvailOffer']);
     this.processRequest(this.postFormData);
   }
 
-  convertTextareaToListWithBulletPoints(textareaValue: string): string[] {
-    return textareaValue
-      .split('\n')
-      .map(item => item.trim())
-      .filter(item => item.length > 0)
-      .map(item => (item.startsWith('• ') ? item : `• ${item}`));
-  }
-
-  addBulletPointOnEnter(event: KeyboardEvent, textarea: HTMLTextAreaElement): void {
-    if (event.key === 'Enter') {
-      event.preventDefault();
-      const cursorPosition = textarea.selectionStart;
-      const textBeforeCursor = textarea.value.slice(0, cursorPosition);
-      const textAfterCursor = textarea.value.slice(cursorPosition);
-      const updatedText = `${textBeforeCursor}\n• ${textAfterCursor}`;
-      textarea.value = updatedText;
-      textarea.selectionStart = textarea.selectionEnd = cursorPosition + 3;
-    }
-  }
-
-  addBulletPointOnFocus(textarea: HTMLTextAreaElement): void {
-    if (!textarea.value.startsWith('•')) {
-      textarea.value = `• ${textarea.value}`;
-      textarea.selectionStart = textarea.selectionEnd = textarea.value.length;
-    }
-  }
-
-  processRequest(postFormData: postDetails) {
+  processRequest(postFormData: PostDetails) {
     console.log(postFormData);
     this.postUpload.submitPostForm(postFormData).subscribe({
       next: (response) => {
@@ -127,5 +104,17 @@ export class PostFormComponent implements OnInit {
 
   onPopUpClose() {
     this.showPopUp = false; 
+  }
+
+  addBulletPointOnEnter(event: KeyboardEvent, textarea: HTMLTextAreaElement): void {
+    TextareaUtils.addBulletPointOnEnter(event, textarea);
+  }
+
+  addBulletPointOnFocus(textarea: HTMLTextAreaElement): void {
+    TextareaUtils.addBulletPointOnFocus(textarea);
+  }
+
+  resetForm(): void {
+    this.postFormDetails.reset();
   }
 }

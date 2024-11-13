@@ -1,14 +1,15 @@
-import { Component, Input } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { faArrowRightFromBracket, faBars, faCircleQuestion, faFileLines, faFilePen, faGear, faSearch } from '@fortawesome/free-solid-svg-icons';
 import { ConsumerNavigationService } from 'src/app/services/consumer-navigation.service';
-import { UserProfileDto } from 'src/app/models/UserProfileDTO';
+import { UserProfileDTO } from 'src/app/models/UserProfileDTO';
 
 @Component({
   selector: 'app-consumer-top-navbar',
   templateUrl: './consumer-top-navbar.component.html',
   styleUrls: ['./consumer-top-navbar.component.css']
 })
+<<<<<<< HEAD
 export class ConsumerTopNavbarComponent {
 <<<<<<< HEAD
   faBars = faBars;
@@ -58,6 +59,9 @@ export class ConsumerTopNavbarComponent {
 >>>>>>> 526736d (Business and consumer navigation bar working)
 }
 =======
+=======
+export class ConsumerTopNavbarComponent implements OnInit {
+>>>>>>> 2389594 (pulled sucessfully develop)
   faIcons = {
     bars: faBars,
     search: faSearch,
@@ -65,26 +69,33 @@ export class ConsumerTopNavbarComponent {
     filePen: faFilePen,
     fileLines: faFileLines,
     circleQuestion: faCircleQuestion,
-    arrowRightFromBracket: faArrowRightFromBracket,
+    arrowRightFromBracket: faArrowRightFromBracket
   };
 
-  constructor(private router: Router, private consumernavigationservice: ConsumerNavigationService ) {}
+  consumer: any;  
 
-  @Input() userinformation!: UserProfileDto[];
-  user: any;
+  constructor(private router: Router, private consumernavigationservice: ConsumerNavigationService) {}
 
-  ngOnInit(): void{
-    this.fetchUserInformation();
+  ngOnInit(): void {
+    this.fetchConsumerInformation();
   }
 
-  fetchUserInformation() {
-    this.consumernavigationservice.getUserDetails().subscribe(
-      (data: UserProfileDto[]) => {
-        this.user = data;
-        console.log('Consumer Details:', this.user);
-
+  fetchConsumerInformation() {
+    this.consumernavigationservice.getConsumerDetails().subscribe({
+      next: (data: UserProfileDTO[]) => {
+  
+        if (data.length > 0) {
+          this.consumer = data[0];  
+        } else {
+          this.consumer = {};  
+        }
+      },
+      error: (error) => {
+        this.consumer = {}; 
+      },
+      complete: () => {
       }
-    );
+    });
   }
 }
 >>>>>>> 9a99b50 (Corrected Routes for consumer-home and business-home)

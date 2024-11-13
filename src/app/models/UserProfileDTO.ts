@@ -1,4 +1,4 @@
-export interface UserProfileDto {
+export interface UserProfileDTO {
     username: string;
     name: string;
     profilePicture: string;

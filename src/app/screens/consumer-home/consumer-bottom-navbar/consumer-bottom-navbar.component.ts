@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { faSearch, faBell, faHome, faUser, faCircleUser } from '@fortawesome/free-solid-svg-icons';
+import { faSearch, faBell, faHome, faCircleUser } from '@fortawesome/free-solid-svg-icons';
 import { ConsumerNavigationService } from 'src/app/services/consumer-navigation.service';
 
 @Component({
@@ -28,7 +28,6 @@ export class ConsumerBottomNavbarComponent implements OnInit {
     this.router.events.subscribe(() => {
       this.updateActiveStates();
     });
->>>>>>> bc8790b (Corrected Routes for consumer-home and business-home)
   }
 
   navigateTo(screen: string) {
@@ -45,28 +44,6 @@ export class ConsumerBottomNavbarComponent implements OnInit {
     }
   }
 
-<<<<<<< HEAD
-  faHome = faHome;
-  faSearch = faSearch;
-  faBell = faBell;
-  faUser = faUser;
-  faCircleUser = faCircleUser;
-
-  private updateActiveState(screen: string) {
-    this._navigation.Is_Home = screen === 'Home';
-    this._navigation.Is_Search = screen === 'Search';
-    this._navigation.Is_Notification = screen === 'Notification';
-    this._navigation.Is_Profile = screen === 'Profile';
-  }
-
-  isActive(screen: string): boolean {
-    switch (screen) {
-      case 'Home': return this.Home_screen_active;
-      case 'Search': return this.Search_screen_active;
-      case 'Notification': return this.Notification_screen_active;
-      case 'Profile': return this.Profile_screen_active;
-      default: return false;
-=======
   private resetActiveStates() {
     this.AdFeed_screen_active = false;
     this.Search_screen_active = false;
@@ -116,7 +93,6 @@ export class ConsumerBottomNavbarComponent implements OnInit {
         return this.Profile_screen_active;
       default:
         return false;
->>>>>>> bc8790b (Corrected Routes for consumer-home and business-home)
     }
   }
 }

@@ -1,6 +1,8 @@
 import { Component, OnInit } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { AuthService } from "src/app/services/auth.service";
+import { OtpService } from "src/app/services/otp/otp.service";
+import { AuthService } from "src/app/services/auth/auth.service";
+import { Router } from "@angular/router";
 
 @Component({
   selector: "app-login",
@@ -14,10 +16,13 @@ export class LoginComponent {
 
   form: FormGroup;
   submitted: boolean = false;
+  otpSent: boolean = false;
 
   constructor(
     private authService: AuthService,
-    private formBuilder: FormBuilder
+    private otpService: OtpService,
+    private formBuilder: FormBuilder,
+    private router: Router
   ) {
     this.form = this.formBuilder.group({
       phonenumber: [
@@ -43,14 +48,6 @@ export class LoginComponent {
     if (this.form.invalid) {
       return;
     }
-<<<<<<< HEAD
-    console.log("Form value:", this.form.value.phonenumber);
-    // this.authService.login(this.credentials);
-  }
-
-  signInWithGoogle() {
-    this.authService.signInWithGoogle();
-=======
     const phoneNumber = this.form.value.phonenumber;
     this.isLoaderVisible = true;
     this.otpService.sendOtp(phoneNumber).subscribe({
@@ -72,7 +69,6 @@ export class LoginComponent {
         this.isLoaderVisible = false;
       },
     });
->>>>>>> 4eb2664 (updated)
   }
 
   validatePhoneNumber(control: {

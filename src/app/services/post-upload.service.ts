@@ -1,8 +1,8 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { couponDetails } from '../models/coupon-details';
-import { postDetails } from '../models/post-details';
-import { eventDetails } from '../models/event-details';
+import { CouponDetails } from '../models/coupon-details';
+import { PostDetails } from '../models/post-details';
+import { EventDetails } from '../models/event-details';
 import { PresignedUrl } from '../models/presigned-url';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { environment } from 'src/environments/environment.development';
@@ -11,7 +11,7 @@ import { environment } from 'src/environments/environment.development';
   providedIn: 'root'
 })
 
-export class postUpload {
+export class PostUploadService {
 
   private generatedFileNamesSubject = new BehaviorSubject<string[]>([]);
   generatedFileNames$ = this.generatedFileNamesSubject.asObservable();
@@ -27,7 +27,7 @@ export class postUpload {
     return this.generatedFileNamesSubject.getValue();
   }
 
-  submitCouponData(data: couponDetails): Observable<String> {
+  submitCouponData(data: CouponDetails): Observable<String> {
     return this.http.post(
       `${environment.apiGateway}/content/coupon/create`,
       data,
@@ -42,7 +42,7 @@ export class postUpload {
     );
   }
 
-  submitPostForm(data: postDetails): Observable<String> {
+  submitPostForm(data: PostDetails): Observable<String> {
     return this.http.post(
       `${environment.apiGateway}/content/post/create`,
       data,
@@ -56,7 +56,7 @@ export class postUpload {
     );
   }
 
-  submitEventData(data: eventDetails): Observable<String> {
+  submitEventData(data: EventDetails): Observable<String> {
     return this.http.post(
       `${environment.apiGateway}/content/event/create`,
       data,
@@ -70,7 +70,7 @@ export class postUpload {
     );
   }
 
-  getPresignedUrl(imageFileNames: string[], username: string) : Observable<PresignedUrl> {
+  getPresignedUrl(imageFileNames: string[], username: string): Observable<PresignedUrl> {
     return this.http.post<PresignedUrl>(
       `${environment.apiGateway}/content/generate-presigned-url`,
       { imageFileNames, username },

@@ -1,9 +1,11 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { couponDetails } from 'src/app/models/coupon-details';
+import { CouponDetails } from 'src/app/models/coupon-details';
 import { JwtDecoderService } from 'src/app/services/jwt-decoder.service';
-import { postUpload } from 'src/app/services/post-upload.service';
+import { PostUploadService } from 'src/app/services/post-upload.service';
+import { TextareaUtils } from 'src/app/shared/textarea-utils';
+
 
 @Component({
   selector: 'app-coupon-code-form',
@@ -12,7 +14,7 @@ import { postUpload } from 'src/app/services/post-upload.service';
 })
 export class CouponCodeFormComponent {
   couponCodeFormDetails: FormGroup;
-  couponCodeData: couponDetails = new couponDetails();
+  couponCodeData: CouponDetails = new CouponDetails();
   imageFileNames: string[] = [];
   username:string="";
   businessId:string="";
@@ -20,18 +22,18 @@ export class CouponCodeFormComponent {
   popUpTitle: string = '';
   popUpBody: string = '';
 
-  constructor(private fb: FormBuilder, private postUpload: postUpload,private jwtDecoder : JwtDecoderService) {
+  constructor(private fb: FormBuilder, private postUpload: PostUploadService,private jwtDecoder : JwtDecoderService) {
     this.couponCodeFormDetails = this.fb.group({
-      imageFileNames: [[], Validators.required],
-      couponTitle: ['', Validators.required],
-      username: ['', Validators.required],
-      description: ['', Validators.required],
-      promoBadge: ['', Validators.required],
-      couponCode: ['', Validators.required],
-      businessId: ['', Validators.required],
-      termsAndConditions: ['', Validators.required],
-      stepsToAvailOffer: ['', Validators.required],
-      expiry: [null, Validators.required]
+      imageFileNames: [[]],
+      couponTitle: [''],
+      username: [''],
+      description: [''],
+      promoBadge: [''],
+      couponCode: [''],
+      businessId: [''],
+      termsAndConditions: [''],
+      stepsToAvailOffer: [''],
+      expiry: [null]
     });
   }
 
@@ -47,7 +49,7 @@ export class CouponCodeFormComponent {
     this.couponCodeFormDetails.get('businessId')?.setValue(this.businessId);
 
     
-    this.postUpload.generatedFileNames$.subscribe(fileNames => {
+    this.postUpload.generatedFileNames$.subscribe((fileNames: string[]) => {
       this.imageFileNames = fileNames;
       this.couponCodeFormDetails.get('imageFileNames')?.setValue(this.imageFileNames);
     });
@@ -57,49 +59,32 @@ export class CouponCodeFormComponent {
     if (this.couponCodeFormDetails.valid) {
       this.createRequest(this.couponCodeFormDetails);
     } else {
-      alert('Please fill out the form correctly please');
+      this.popUpTitle = 'Error!';
+      this.popUpBody = 'Please fill out form correctly';
+      this.showPopUp = true;
+      this.couponCodeFormDetails.reset();
     }
   }
 
   createRequest(details: FormGroup) {
-    this.couponCodeData.imageFileNames = this.imageurl;
+    this.couponCodeData.imageFileNames =this.imageFileNames;
     this.couponCodeData.couponTitle = details.value['couponTitle'];
-    this.couponCodeData.username = details.value['username'];
+    this.couponCodeData.username = this.username;
     this.couponCodeData.description = details.value['description'];
     this.couponCodeData.promoBadge = details.value['promoBadge'];
     this.couponCodeData.couponCode = details.value['couponCode'];
-    this.couponCodeData.businessId = details.value['businessId'];
-    this.couponCodeData.termsAndConditions = this.convertTextareaToListWithBulletPoints(details.value['termsAndConditions']);
-    this.couponCodeData.stepsToAvailOffer = this.convertTextareaToListWithBulletPoints(details.value['stepsToAvailOffer']);
+    this.couponCodeData.businessId = this.businessId;
+    this.couponCodeData.termsAndConditions = TextareaUtils.convertTextareaToListWithBulletPoints(details.value['termsAndConditions']);
+    this.couponCodeData.stepsToAvailOffer = TextareaUtils.convertTextareaToListWithBulletPoints(details.value['stepsToAvailOffer']);
     
     this.couponCodeData.expiry = details.value['expiry'];
 
     this.processRequest(this.couponCodeData);
   }
 
-  convertTextareaToListWithBulletPoints(textareaValue: string): string[] {
-    return textareaValue
-      .split('\n')
-      .map(item => item.trim())  
-      .filter(item => item.length > 0)
-      .map(item => (item.startsWith('• ') ? item : `• ${item}`));
-  }
-
-  addBulletPointOnEnter(event: KeyboardEvent, textarea: HTMLTextAreaElement): void {
-    if (event.key === 'Enter') {
-      event.preventDefault();
-      const cursorPosition = textarea.selectionStart;
-      const textBeforeCursor = textarea.value.slice(0, cursorPosition);
-      const textAfterCursor = textarea.value.slice(cursorPosition);
-      const updatedText = `${textBeforeCursor}\n• ${textAfterCursor}`;
-      textarea.value = updatedText;
-      textarea.selectionStart = textarea.selectionEnd = cursorPosition + 3;
-    }
-  }
-
-  processRequest(couponCodeData: couponDetails) {
+  processRequest(couponCodeData: CouponDetails) {
     this.postUpload.submitCouponData(couponCodeData).subscribe({
-      next: (response) => {
+      next: () => {
         this.popUpTitle = 'Success!';
         this.popUpBody = 'Your coupon code form has been submitted successfully.';
         this.showPopUp = true;
@@ -120,5 +105,17 @@ export class CouponCodeFormComponent {
 
   onPopUpClose() {
     this.showPopUp = false; 
+  }
+
+  addBulletPointOnEnter(event: KeyboardEvent, textarea: HTMLTextAreaElement): void {
+    TextareaUtils.addBulletPointOnEnter(event, textarea);
+  }
+
+  addBulletPointOnFocus(textarea: HTMLTextAreaElement): void {
+    TextareaUtils.addBulletPointOnFocus(textarea);
+  }
+
+  resetForm(): void {
+    this.couponCodeFormDetails.reset();
   }
 }

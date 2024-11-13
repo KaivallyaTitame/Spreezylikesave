@@ -42,3 +42,23 @@
   transform: translateY(100%); 
   transition: transform 0.3s ease; 
 }
+
+.sidebar-title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.sidebar-title div {
+  width: 100%; 
+  display: flex;
+  flex-direction: column; 
+  align-items: center;
+  justify-content: center; 
+  text-align: center;
+}
+
+.sidebar-title span {
+  display: block;
+}

@@ -2,8 +2,10 @@
 .date-input,
 .badge-input,
 .enter-coupon-code-input,
-.terms-input{
-    font-size: 12px;
+.terms-input,
+.how-to-redeem-input,
+.offer-details-input{
+    font-size: 14px;
     width: 330px;
     height: 28px;
     margin-top: 5px;
@@ -13,13 +15,13 @@
 }
 
 .offer-details-input,
-.how-to-avail-input,
-.how-to-redeem-input,
-.terms-input {
+.terms-input,
+.how-to-redeem-input {
     height: 81px;
     width: 330px;
     border-color: #ED6A5A;
 }
+
 
 .title-input::placeholder,
 .url-input::placeholder,
@@ -73,4 +75,3 @@
     outline: none;
     box-shadow: 0 0 0 3px rgba(237, 106, 90, 0.4);
 }
-

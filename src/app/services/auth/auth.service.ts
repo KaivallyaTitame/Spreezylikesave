@@ -26,13 +26,14 @@ export class AuthService {
       (error) => {
         console.log(error);
         this.router.navigate(["/login"]);
-        throw new Error("Error occurred while logging in. Try again after sometime.")
-       
+        throw new Error(
+          "Error occurred while logging in. Try again after sometime."
+        );
       }
     );
   }
 
-  private apiUrl = environment.apiUrl;
+  private apiUrl = environment.apiGateway;
 
   logout() {
     let token = localStorage.getItem("token") || "";

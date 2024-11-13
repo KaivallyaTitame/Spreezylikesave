@@ -18,4 +18,3 @@ export class JwtDecoderService {
     }
   }
 }
->>>>>>> 20f3341 (login functinality is working)
