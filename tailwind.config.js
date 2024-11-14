@@ -41,18 +41,11 @@ module.exports = {
       },
       colors:{
         'primarycolor': ['#ED6A5A']
-      colors:{
-        'primarycolor': ['#ED6A5A']
       },
       fontFamily: {
-<<<<<<< HEAD
-        'primary': ["sansita-one", "sans-serif"],
-        'secondary': ["Roboto", "sans-serif"],
-=======
         'sidebar' : ['Roboto'],
         'primary':["sansita-one", "sans-serif"],
         'secondary':["merriweather", "sans-serif"]
->>>>>>> 4c6615d (Added stashed changes)
       }
     },
   },
