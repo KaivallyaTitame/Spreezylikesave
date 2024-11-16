@@ -14,6 +14,6 @@ export class ProfileInfoComponent {
 
   onProfileClick(username: string): void {
     console.log('Navigating to profile:', username);
-    this.router.navigate([`/business-home/profile/${username}`]);
+    this.router.navigate([`/consumer-home/profile/business-profile/${username}`]); //as of now its kept on consumer
   }
 }

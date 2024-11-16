@@ -1,0 +1,28 @@
+.tab-menu button {
+    padding: 8px 16px;
+    border: none;
+    background-color: #f3f3f3;
+    color: #333;
+    cursor: pointer;
+  }
+
+  .tab-menu button.active-tab {
+    background-color: #ED6A5A;
+    color: white;
+  }
+
+  .tab-menu button:not(.active-tab):hover {
+    background-color: #e0e0e0;
+  }
+  .scroll-container {
+    height: 100vh; /* Adjust based on layout */
+    overflow-y: auto;
+  }
+  .grayed-out {
+    opacity: 0.5;
+    pointer-events: none;
+  }
+  .stats.justify-center {
+    justify-content: center;
+  }
+  

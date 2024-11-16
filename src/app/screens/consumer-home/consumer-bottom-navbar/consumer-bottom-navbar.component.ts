@@ -33,7 +33,7 @@ export class ConsumerBottomNavbarComponent implements OnInit {
 
   navigateTo(screen: string) {
     if (screen.toLowerCase() === 'profile') {
-      this.router.navigate([`/consumer-home/profile/${this.currentUser}`]);
+      this.router.navigate([`/consumer-home/profile/consumer-profile/${this.currentUser}`]);
     } else {
       this.router.navigate([`/consumer-home/${screen.toLowerCase()}`]);
     }
