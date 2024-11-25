@@ -6,13 +6,13 @@
       <div class="flex-grow ml-2 text-left">
         <div class="font-bold text-lg mt-2 text-black">{{ postDetails.username }}</div>
         <div class="text-sm text-gray-500">
-          <ng-container *ngIf="isExpired; else notExpired">
-            Expired
-          </ng-container>
-          <ng-template #notExpired>
-            Expires in {{ postDetails.offerExpiry }} days
-          </ng-template>
-        </div>
+  <ng-container *ngIf="isExpired; else notExpired">
+      Expired
+  </ng-container>
+  <ng-template #notExpired>
+      Expires in {{ remainingDays }} days and {{ remainingHours }} hours
+  </ng-template>
+</div>
       </div>
       <button
         class="bg-primary text-white font-medium font-system-ui border-none px-3 py-1 rounded mt-2 mr-1 cursor-pointer">
@@ -25,16 +25,20 @@
       {{ postDetails.offerTitle }}
     </div>
 
-    <div class="flex justify-between items-center m-4">
+    <div class="flex justify-between items-center m-4 mt-10">
       <!-- Left side icons -->
       <div class="flex items-center space-x-4">
-        <button class="bg-none border-none flex items-center cursor-pointer">
-          <fa-icon [icon]="faThumbsUp" class="fa-xl" [ngStyle]="{'color': '#ff6251'}"></fa-icon>
+        <button (click)="likePost()"
+          class="flex items-center cursor-pointer transition-transform duration-500 ease-in-out"
+          [ngClass]="{'scale-125': showLikeAnimation}" aria-label="Like Post">
+          <fa-icon [icon]="isLiked ? faThumbsUp : faThumbsUpOutline" class="fa-xl text-[#ff6251]"></fa-icon>
           <span class="text-black ml-1">{{ postDetails.likes }}</span>
         </button>
-
-        <button class="bg-none border-none flex items-center cursor-pointer">
-          <fa-icon [icon]="faThumbsDown" class="fa-xl" [ngStyle]="{'color': '#ff6251'}"></fa-icon>
+    
+        <button (click)="dislikePost()"
+          class="flex items-center cursor-pointer transition-transform duration-500 ease-in-out"
+          [ngClass]="{'scale-125': showDislikeAnimation}" aria-label="Dislike Post">
+          <fa-icon [icon]="isDisliked ? faThumbsDown : faThumbsDownOutline" class="fa-xl text-[#ff6251]"></fa-icon>
           <span class="text-black ml-1">{{ postDetails.dislikes }}</span>
         </button>
       </div>
@@ -45,24 +49,63 @@
           <fa-icon [icon]="faLocationArrow" class="fa-xl" [ngStyle]="{'color': '#ffb43f'}"></fa-icon>
         </button>
 
-        <button class="bg-none border-none flex items-center cursor-pointer">
-          <fa-icon [icon]="faBookmark" class="fa-xl" [ngStyle]="{'color': '#ffb43f'}"></fa-icon>
-        </button>
+        <!-- Save Button -->
+        <div class="relative">
+          <!-- Display Saved Message -->
+          <span *ngIf="showSavedMessage"
+            class="absolute bottom-full left-1/2 transform -translate-x-1/2 text-black font-bold transition-opacity duration-500">
+            Saved!
+          </span>
 
+          <!-- Save Button -->
+          <button (click)="savePost()" class="bg-transparent border-none flex items-center cursor-pointer">
+            <fa-icon [icon]="faBookmark" class="fa-xl transition-transform duration-300"
+              [ngStyle]="{'color': '#ffb43f', 'transform': isSaved ? 'scale(1.2)' : 'scale(1)'}">
+            </fa-icon>
+          </button>
+        </div>
 
-        <div class="flex items-center space-x-4">
-          <button class="bg-none border-none flex items-center cursor-pointer" >
+        <div class="flex items-center space-x-4 relative">
+          <button class="bg-none border-none flex items-center cursor-pointer" (click)="toggleReportButton()">
             <fa-icon [icon]="faEllipsisVertical" class="fa-xl text-black"></fa-icon>
           </button>
 
+          <!-- Report Button -->
+          <div *ngIf="showReportButton"
+            class="absolute bottom-10 right-0 bg-white border border-gray-300 rounded shadow-lg p-2 z-10">
+            <button (click)="reportPost()" class="text-black font-bold py-2 px-2 rounded">Report</button>
+          </div>
+
+          <!-- Success Message Dialog -->
+          <div *ngIf="showReportSuccess" class="fixed inset-0 z-20 flex items-center ">
+            <!-- Overlay to prevent interaction with background -->
+            <div class="fixed inset-0 bg-black opacity-50 z-10"></div>
+
+            <!-- Dialog box -->
+            <div class="relative z-20 bg-white rounded-lg shadow-lg w-full max-w-xs ml-2 mr-1 text-center p-3">
+              <p class="text-primary text-xl font-bold mb-3">Post reported successfully!</p>
+              <div class="flex justify-center">
+                <button (click)="hideReportSuccess()" class="bg-primary text-white rounded-md px-4 py-2 font-semibold">
+                  Done
+                </button>
+              </div>
+            </div>
+          </div>
+
+
         </div>
       </div>
-
-     
     </div>
+
     <button
-    class="w-full px-2 py-1 text-lg font-bold bg-primary text-white border-none rounded-b-[4px] cursor-pointer text-center">
-    Show Details →
-  </button>
+      class="w-full px-2 py-1 text-lg font-bold bg-primary text-white border-none rounded-b-[4px] cursor-pointer text-center">
+      Show Details →
+    </button>
   </div>
+  <app-pop-up
+  *ngIf="showPopup"
+  [messageTitle]="popupTitle"
+  [messageBody]="popupBody"
+  (close)="showPopup = false">
+</app-pop-up>
 </div>

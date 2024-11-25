@@ -12,7 +12,7 @@ import { BusinessHomeModule } from "./screens/business-home/business-home.module
 import { ConsumerHomeModule } from "./screens/consumer-home/consumer-home.module";
 import { ReactiveFormsModule } from "@angular/forms";
 import { RegisterModule } from "./screens/register/register.module";
-
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 @NgModule({
   declarations: [
@@ -28,7 +28,8 @@ import { RegisterModule } from "./screens/register/register.module";
     BusinessHomeModule,
     ConsumerHomeModule,
     ReactiveFormsModule,
-    RegisterModule
+    RegisterModule,
+    FontAwesomeModule
   ],
   providers: [
     {

@@ -1,25 +1,7 @@
-<div class="flex items-center justify-center h-screen">
-    
-
-<div class="border border-gray-300 bg-gray-200 max-w-sm font-sansita-one shadow-lg flex flex-col overflow-hidden">
-  <header class="flex items-center justify-between bg-primary text-white p-2 h-14">
-      <button class="menu-icon mr-4 ml-4">
-          <fa-icon [icon]="faBars" class="fa-xl" [ngStyle]="{'color': '#ffffff'}"></fa-icon>
-      </button>
-      <h1 class="logo font-bold text-3xl italic text-center flex-grow" style="font-family: Georgia, 'Times New Roman', Times, serif;">Spreezy</h1>
-      <div class="flex items-center space-x-2">
-          <button class="user-icon mr-6">
-              <fa-icon [icon]="faUserGroup" class="fa-lg" [ngStyle]="{'color': '#ffffff'}"></fa-icon>
-          </button>
-          <button class="search-icon">
-              <fa-icon [icon]="faMagnifyingGlass" class="fa-lg" [ngStyle]="{'color': '#ebebeb'}"></fa-icon>
-          </button>
-      </div>
-  </header>
-
-  <div class="flex justify-center p-0">
-      <div class="border border-gray-300 bg-white w-full max-w-md shadow-lg  mt-1 mb-1">
-          <div class="flex items-center justify-between p-2">
+<div class="flex justify-center w-full p-0">
+    <div class="border border-white bg-white w-full shadow-lg mt-1 mb-1">
+  
+      <div class="flex items-center justify-between p-2">
               <img [src]="offerData.profileImageUrl" alt="Profile" class="w-12 h-12 rounded-full mt-2 ml-1">
               <div class="flex-grow ml-2 text-left">
                   <div class="font-bold text-lg mt-2 text-black">{{ offerData.username }}</div>
@@ -70,12 +52,6 @@
                     <fa-icon [icon]="faEllipsisVertical" class="fa-xl" [ngStyle]="{'color': '#000000'}"></fa-icon>
                 </button>
 
-                <!-- Report Button -->
-                <div *ngIf="showReportButton" class="absolute top-3/4 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-                    <button class="bg-white text-black border border-gray-300 px-3 py-1 rounded hover:bg-gray-100 transition duration-150 mt-2" (click)="confirmReport()">
-                        Report
-                    </button>
-                </div>
             </div>
         </div>
           
@@ -119,28 +95,4 @@
           
       </div>
   </div>
-  <footer class="flex justify-around items-center bg-primary text-white p-2 h-14">
-    <img src="assets/Slogo.png" alt="Logo Icon" class="w-8 h-8 cursor-pointer" />
-    <fa-icon [icon]="faLocationDot" class="fa-2xl" [ngStyle]="{'color': '#ffffff'}"></fa-icon>
-    <fa-icon [icon]="faHeart" class="fa-2xl" [ngStyle]="{'color': '#ffffff'}"></fa-icon>
-    <fa-icon [icon]="faBell" class="fa-2xl" [ngStyle]="{'color': '#ffffff'}"></fa-icon>
-    <fa-icon [icon]="faCircleUser" class="fa-2xl" [ngStyle]="{'color': '#ffffff'}"></fa-icon>
-</footer>
-<!-- Report Button -->
-<div *ngIf="showReportButton" class="absolute top-3/4 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-      
-    <button class="bg-white text-black border border-gray-300 px-3 py-1 rounded hover:bg-gray-100 transition duration-150 mt-2" (click)="confirmReport()">
-      Report
-    </button>
-    
-  </div>
 
-  <!-- Report Confirmation Message -->
-  <div *ngIf="reportVisible" class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white border border-gray-300 rounded-lg p-6 shadow-lg z-50">
-    <h2 class="text-primary font-bold">Post Reported Successfully</h2>
-    <button class="bg-primary text-white font-bold px-4 py-2 rounded mt-4 hover:bg-opacity-90" (click)="done()">
-      Done
-    </button>
-  </div>
-</div>
-</div>

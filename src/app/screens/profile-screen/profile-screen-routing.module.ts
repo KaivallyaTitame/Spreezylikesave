@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { ProfileScreenComponent } from './profile-screen.component';
 import { BusinessProfileComponent } from './business-profile/business-profile.component';
 import { ConsumerProfileComponent } from './consumer-profile/consumer-profile.component';
 

@@ -1,4 +1,4 @@
-export class BusinessDetails {
+export class UserDetails {
     name: string = '';
     username: string = '';
     profilePictureUrl: string = '';

@@ -1,17 +1,12 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { AdFeedComponent } from './ad-feed.component';
-import { OfferDescriptionComponent } from './offer-description/offer-description.component';
-import { EventComponent } from './Event/Event.component';
-import { PostComponent } from './Post/Post.component';
-import { CouponComponent } from './Coupon/Coupon.component';
+// import { OfferDescriptionComponent } from './offer-description/offer-description.component'; // Import the component for the new route
+
 
 const routes: Routes = [
   { path: '', component: AdFeedComponent }, // Default route for AdFeed
-  { path: 'offer-description', component: OfferDescriptionComponent }, // Route for OfferDescription
-  { path: 'event', component: EventComponent },
-  { path: 'post', component: PostComponent },
-  {path:'coupon',component:CouponComponent}
+  // { path: 'offer-description', component: OfferDescriptionComponent }
  
  
 ];

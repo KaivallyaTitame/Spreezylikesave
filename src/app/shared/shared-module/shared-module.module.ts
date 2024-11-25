@@ -13,13 +13,11 @@ import { AdFeedModule } from 'src/app/screens/ad-feed/ad-feed.module';
   ],
   imports: [
     CommonModule,
-    AdFeedModule
   ],
   exports: [
     PopUpComponent,
     LoaderComponent,
     ProfileInfoComponent,
-    AdFeedModule
   ]
 })
 export class SharedModule {}

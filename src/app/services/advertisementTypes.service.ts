@@ -1,67 +1,76 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { OfferDescriptionDTO } from '../models/offerdescriptionGet';
-
-
 
 import { AdvertisementDetails } from '../models/ad-details';
-
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AdvertisementDetailsService {
+  private baseUrl = 'https://dummyjson.com/c/c24e-729e-4ebc-a38f';
 
   constructor(private http: HttpClient) {}
 
-  // Updated return type to Observable<OfferDescriptionDTO[]>
-  getOfferDescription(): Observable<OfferDescriptionDTO[]> {
-    return this.http.get<OfferDescriptionDTO[]>('https://72f9-2401-4900-1c45-6dcb-9999-414a-c5aa-94a8.ngrok-free.app/feed/advertisement/post', {
+  getAdvertisementDetailsById(advertisementId: number): Observable<AdvertisementDetails> {
+    return this.http.get<AdvertisementDetails>(`${this.baseUrl}/c/e9c8-5ebd-4f70-a7b5/${advertisementId}`, {
       responseType: 'json',
-      headers: new HttpHeaders({
-        'ngrok-skip-browser-warning': 'true',
-      }),
+      headers: new HttpHeaders(),
     });
   }
 
-  // // Updated return type to Observable<EventDTO[]>
-  // getEvent(): Observable<EventDTO[]> {
-  //   return this.http.get<EventDTO[]>('https://72f9-2401-4900-1c45-6dcb-9999-414a-c5aa-94a8.ngrok-free.app/feed/advertisement/event', {
-  //     responseType: 'json',
-  //     headers: new HttpHeaders({
-  //       'ngrok-skip-browser-warning': 'true',
-  //     }),
-  //   });
-  // }
-
-  // // Updated return type to Observable<PostDTO[]>
-  // getPost(): Observable<PostDTO[]> {
-  //   return this.http.get<PostDTO[]>('https://72f9-2401-4900-1c45-6dcb-9999-414a-c5aa-94a8.ngrok-free.app/feed/advertisement/post', {
-  //     responseType: 'json',
-  //     headers: new HttpHeaders({
-  //       'ngrok-skip-browser-warning': 'true',
-  //     }),
-  //   });
-  // }
-
-  // Updated return type to Observable<CouponCodeDTO[]>
-  // getCoupon(): Observable<CouponCodeDTO[]> {
-  //   return this.http.get<CouponCodeDTO[]>('https://72f9-2401-4900-1c45-6dcb-9999-414a-c5aa-94a8.ngrok-free.app/feed/advertisement/coupon', {
-  //     responseType: 'json',
-  //     headers: new HttpHeaders({
-  //       'ngrok-skip-browser-warning': 'true',
-  //     }),
-  //   });
-  // }
   getAdvertisementDetails(): Observable<AdvertisementDetails[]> {
-    return this.http.get<AdvertisementDetails[]>('https://dummyjson.com/c/e9c8-5ebd-4f70-a7b5', {
+    return this.http.get<AdvertisementDetails[]>(`${this.baseUrl}/c/e9c8-5ebd-4f70-a7b5`, {
       responseType: 'json',
-      headers: new HttpHeaders({
-        'ngrok-skip-browser-warning': 'true',
-      }),
+      headers: new HttpHeaders(),
     });
   }
 
+  updateLikes(advertisementId: number): Observable<AdvertisementDetails> {
+    return this.http.post<AdvertisementDetails>(
+      `${this.baseUrl}/content/advertisement/upvote/${advertisementId}`,
+      {},
+      {
+        responseType: 'json',
+        headers: new HttpHeaders(),
+      }
+    );
+  }
 
+  updateDislikes(advertisementId: number): Observable<AdvertisementDetails> {
+    return this.http.post<AdvertisementDetails>(
+      `${this.baseUrl}/content/advertisement/downvote/${advertisementId}`,
+      {},
+      {
+        responseType: 'json',
+        headers: new HttpHeaders(),
+      }
+    );
+  }
 
+  savePost(username: string, advertisementId: number): Observable<AdvertisementDetails> {
+    return this.http.post<AdvertisementDetails>(
+      `${this.baseUrl}/content/advertisement/save`,
+      {},
+      {
+        responseType: 'json',
+        headers: new HttpHeaders({
+          'X-Username': username,
+          'X-Advertisement-ID': advertisementId.toString(),
+        }),
+      }
+    );
+  }
+
+  calculateExpiry(expiryDate: string): { remainingDays: number; remainingHours: number; isExpired: boolean } {
+    const expiry = new Date(expiryDate);
+    const currentDate = new Date();
+    const timeDiff = expiry.getTime() - currentDate.getTime();
+
+    const remainingDays = Math.floor(timeDiff / (1000 * 3600 * 24));
+    const remainingHours = Math.floor((timeDiff % (1000 * 3600 * 24)) / (1000 * 3600));
+
+    const isExpired = remainingDays < 0 || (remainingDays === 0 && remainingHours <= 0);
+
+    return { remainingDays, remainingHours, isExpired };
+  }
 }

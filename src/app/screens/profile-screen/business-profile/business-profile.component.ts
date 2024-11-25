@@ -1,8 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { BusinessService } from 'src/app/services/business-profile.service';
+import { UserService } from 'src/app/services/user-profile.service';
 import { faPhone, faEnvelope, faShare, faList, faBookmark, faCircleUser } from '@fortawesome/free-solid-svg-icons';
 import { faInstagram, faFacebook } from '@fortawesome/free-brands-svg-icons';
-import { BusinessDetails } from 'src/app/models/BusinessDetails';
+import { UserDetails } from 'src/app/models/UserDetails';
 import { AdvertisementDetails } from 'src/app/models/ad-details';
 import { DecodedToken } from 'src/app/models/decodedToken';
 import { JwtDecoderService } from 'src/app/services/jwtDecoder/jwt-decoder.service';
@@ -14,7 +14,7 @@ import { ActivatedRoute } from '@angular/router';
   styleUrls: ['./business-profile.component.css']
 })
 export class BusinessProfileComponent implements OnInit{
-  businessDetails: BusinessDetails;
+  userDetails: UserDetails;
   @Input() profilePosts!: AdvertisementDetails[];
   @Input() savedPosts!: AdvertisementDetails[];
   visibleProfilePosts: AdvertisementDetails[] = [];
@@ -36,26 +36,22 @@ export class BusinessProfileComponent implements OnInit{
   currentUsername: string = 'tanvi247';
   username: string | null = null;
   userType: string;
-
   showPopup: boolean = false;
   popupTitle: string = 'Error';
   popupBody: string = '';
 
   constructor(
-    private businessService: BusinessService,
+    private UserService: UserService,
     private JwtDecoder: JwtDecoderService,
     private route: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
     // this.currentUsername = this.fetchCurrentUsername();
-    console.log('Current username final is:', this.currentUsername);
-    console.log('User type is:', this.userType);
-
     this.route.paramMap.subscribe(params => {
       this.username = params.get('username');
       if (this.username) {
-        this.fetchBusinessDetails(this.username);
+        this.fetchUserDetails(this.username);
         this.fetchProfilePosts(this.username, this.profilePostPage);
         if(this.currentUsername === this.username){
           this.fetchSavedPosts(this.username, this.savedPostPage);
@@ -71,22 +67,21 @@ export class BusinessProfileComponent implements OnInit{
     return decodedToken.sub;
   }
 
-  fetchBusinessDetails(username: string) {
-    this.businessService.getBusinessDetails(username)
+  fetchUserDetails(username: string) {
+    this.UserService.getUserDetails(username)
       .subscribe({
         next:(data) => {
-          this.businessDetails = data;
+          this.userDetails = data;
         },
         error:(error) => {
-          this.showError('Error fetching business details', 'Please try again later.');
-          console.error('Error fetching business details', error);
+          this.showError(error, 'Please try again later.');
         }
       });
   }
-  
+
   fetchProfilePosts(username: string, page: number) {
     this.loadingProfilePosts = true;
-    this.businessService.getProfilePosts(username, page, this.postsPerPage)
+    this.UserService.getProfilePosts(username, page, this.postsPerPage)
       .subscribe({
         next: (data) => {
           this.visibleProfilePosts.push(...data); // Append new data
@@ -96,16 +91,15 @@ export class BusinessProfileComponent implements OnInit{
           }
         },
         error: (error) => {
-          this.showError('Error fetching profile posts', 'Please check your connection.');
-          console.error('Error fetching profile posts', error);
+          this.showError(error, 'Please check your connection.');
           this.loadingProfilePosts = false;
         }
       });
   }
-  
+
   fetchSavedPosts(username: string, page: number) {
     this.loadingSavedPosts = true;
-    this.businessService.getSavedPosts(username, page, this.postsPerPage)
+    this.UserService.getSavedPosts(username, page, this.postsPerPage)
       .subscribe({
         next: (data) => {
           this.visibleSavedPosts.push(...data); // Append new data
@@ -115,13 +109,12 @@ export class BusinessProfileComponent implements OnInit{
           }
         },
         error: (error) => {
-          this.showError(error, 'Unable to load saved posts.');
-          console.error('Error fetching saved posts', error);
+          this.showError(error, 'Please check your connection.');
           this.loadingSavedPosts = false;
         }
       });
   }
-  
+
   showError(title: string, body: string) {
     this.popupTitle = title;
     this.popupBody = body;
@@ -132,7 +125,7 @@ export class BusinessProfileComponent implements OnInit{
     const scrollContainer = event.target;
     const scrollPosition = scrollContainer.scrollTop + scrollContainer.clientHeight;
     const scrollHeight = scrollContainer.scrollHeight;
-  
+
     if (scrollPosition >= scrollHeight - 100) {
       if (this.selectedTab === 'posts' && !this.loadingProfilePosts) {
         this.fetchProfilePosts(this.username!, this.profilePostPage); // Pass current page
@@ -141,9 +134,7 @@ export class BusinessProfileComponent implements OnInit{
       }
     }
   }
-  
 
-// Properties to store scroll positions for each tab
 private scrollPositions: { [key: string]: number } = {
   posts: 0,
   saved: 0,
@@ -167,54 +158,5 @@ switchTab(tab: string): void {
     }
   }, 0);
 }
-
-// onScroll(event: any) {
-//   const scrollContainer = event.target;
-//   const scrollPosition = scrollContainer.scrollTop + scrollContainer.clientHeight;
-//   const scrollHeight = scrollContainer.scrollHeight;
-
-//   // Check if the user has scrolled near the bottom (e.g., within 100px)
-//   if (scrollPosition >= scrollHeight - 100) {
-//     if (this.selectedTab === 'posts' && !this.loadingProfilePosts) {
-//       this.loadMoreProfilePosts();
-//     } else if (this.selectedTab === 'saved' && !this.loadingSavedPosts) {
-//       this.loadMoreSavedPosts();
-//     }
-//   }
-// }
-
-  loadMoreProfilePosts() {
-    const nextPageStartIndex = this.profilePostPage * this.postsPerPage;
-    const nextPageEndIndex = nextPageStartIndex + this.postsPerPage;
-
-    if (nextPageStartIndex < this.profilePosts.length) {
-      this.loadingProfilePosts = true;
-      setTimeout(() => {
-        this.visibleProfilePosts.push(...this.profilePosts.slice(nextPageStartIndex, nextPageEndIndex));
-        this.profilePostPage++;
-        this.loadingProfilePosts = false;
-      }, 1000);
-    }
-  }
-
-  loadMoreSavedPosts() {
-    const nextPageStartIndex = this.savedPostPage * this.postsPerPage;
-    const nextPageEndIndex = nextPageStartIndex + this.postsPerPage;
-
-    if (nextPageStartIndex < this.savedPosts.length) {
-      this.loadingSavedPosts = true;
-      setTimeout(() => {
-        this.visibleSavedPosts.push(...this.savedPosts.slice(nextPageStartIndex, nextPageEndIndex));
-        this.savedPostPage++;
-        this.loadingSavedPosts = false;
-      }, 1000);
-    }
-  }
-
-  isExpired(offerExpiry: string): boolean {
-    const expiryDate = new Date(offerExpiry);
-    const currentDate = new Date();
-    return expiryDate < currentDate;
-  }
 
 }
