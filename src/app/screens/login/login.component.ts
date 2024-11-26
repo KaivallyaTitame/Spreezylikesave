@@ -1,18 +1,20 @@
-import { Component } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { OtpService } from "src/app/services/otp/otp.service";
 import { AuthService } from "src/app/services/auth/auth.service";
 import { Router } from "@angular/router";
+import { HttpClient } from "@angular/common/http";
 
 @Component({
   selector: "app-login",
   templateUrl: "./login.component.html",
-  styles: []
+  styles: [],
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
   showPopUp: boolean = false;
   popupMessageTitle: string = "";
   popupMessageBody: string = "";
+  countryCodes: { value: string, label: string }[] = []; // Array to hold country codes
 
   form: FormGroup;
   submitted: boolean = false;
@@ -22,9 +24,11 @@ export class LoginComponent {
     private authService: AuthService,
     private otpService: OtpService,
     private formBuilder: FormBuilder,
-    private router: Router
+    private router: Router,
+    private http: HttpClient
   ) {
     this.form = this.formBuilder.group({
+      countryCode: ["", Validators.required], // Country code field
       phonenumber: [
         "",
         [
@@ -35,6 +39,14 @@ export class LoginComponent {
         ],
       ],
     });
+  }
+
+  ngOnInit(): void {
+    // Fetch country codes from JSON file on component initialization
+    this.http.get<{ value: string, label: string }[]>('assets/country-codes.json')
+      .subscribe((data) => {
+        this.countryCodes = data; // Store fetched country codes
+      });
   }
 
   get formControls() {
@@ -49,13 +61,16 @@ export class LoginComponent {
       return;
     }
     const phoneNumber = this.form.value.phonenumber;
+    const selectedCountryCode = this.form.value.countryCode;
+    const fullPhoneNumber = selectedCountryCode + phoneNumber;
+
     this.isLoaderVisible = true;
-    this.otpService.sendOtp(phoneNumber).subscribe({
+    this.otpService.sendOtp(fullPhoneNumber).subscribe({
       next: (response) => {
         this.isLoaderVisible = false;
         this.otpSent = true;
         this.showPopup("Success", "OTP sent successfully.");
-        this.router.navigate(["/otpscreen", phoneNumber]);
+        this.router.navigate(["/otpscreen", fullPhoneNumber]);
       },
       error: (error) => {
         this.isLoaderVisible = false;

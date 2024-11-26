@@ -1,0 +1,23 @@
+[
+    { "value": "+91", "label": "India (+91)" },
+    { "value": "+1", "label": "USA (+1)" },
+    { "value": "+44", "label": "UK (+44)" },
+    { "value": "+61", "label": "Australia (+61)" },
+    { "value": "+81", "label": "Japan (+81)" },
+    { "value": "+49", "label": "Germany (+49)" },
+    { "value": "+33", "label": "France (+33)" },
+    { "value": "+39", "label": "Italy (+39)" },
+    { "value": "+34", "label": "Spain (+34)" },
+    { "value": "+55", "label": "Brazil (+55)" },
+    { "value": "+7", "label": "Russia (+7)" },
+    { "value": "+27", "label": "South Africa (+27)" },
+    { "value": "+52", "label": "Mexico (+52)" },
+    { "value": "+86", "label": "China (+86)" },
+    { "value": "+82", "label": "South Korea (+82)" },
+    { "value": "+44", "label": "Ireland (+44)" },
+    { "value": "+20", "label": "Egypt (+20)" },
+    { "value": "+971", "label": "United Arab Emirates (+971)" },
+    { "value": "+64", "label": "New Zealand (+64)" },
+    { "value": "+66", "label": "Thailand (+66)" },
+    { "value": "+98", "label": "Iran (+98)" }
+  ]  

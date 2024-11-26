@@ -2,79 +2,87 @@
   <app-loader *ngIf="isLoaderVisible"></app-loader>
   <div class="flex justify-center items-center mt-10">
     <div class="logo w-1/3 flex items-center justify-center">
-      <img
-        class="object-contain"
-        width="300px"
-        src="assets/logo.png"
-        alt="Logo"
-      />
+      <img class="object-contain" width="300px" src="assets/logo.png" alt="Logo" />
     </div>
   </div>
   <span class="flex justify-center font-primary text-3xl text-primary mt-3">
     Welcome to Spreezy
   </span>
 
-  <form
-    class="mt-5 flex justify-center"
-    [formGroup]="form"
-    (ngSubmit)="onSubmit()"
-  >
+  <form class="mt-5 flex justify-center" [formGroup]="form" (ngSubmit)="onSubmit()">
     <div class="login-form w-80">
       <div class="form-group email mt-3">
         <label class="form-label text-black font-regular text-3xl font-roboto">
           Sign in
         </label>
       </div>
-      <div class="form-group phonenumber relative mt-2">
-        <label class="form-label font-roboto text-lg text-gray-700">
-          Enter your Registered Mobile number
-        </label>
-        <div class="flex items-center mt-1 border border-primary rounded-md">
-          <div class="flex w-1/4 items-center pl-3 pr-1 text-xl text-primary">
-            +91 |
+
+      <!-- Phone Input Group -->
+      <div class="form-group phone-input flex items-center mt-2 space-x-3">
+        <div class="country-code w-1/4">
+          <label class="form-label font-roboto text-lg text-gray-700">
+            Select a Country 
+          </label>
+          <div class="flex items-center mt-1 border border-primary rounded-md">
+            <select
+              class="form-control py-6 bg-white text-lg text-black placeholder-gray-400 focus:outline-none w-full border-none"
+              formControlName="countryCode"
+            >
+              <option *ngFor="let country of countryCodes" [value]="country.value">
+                {{ country.label }}
+              </option>
+            </select>
           </div>
-          <input
-            #phonenumber
-            class="form-control py-6 input bg-white text-lg text-black placeholder-gray-400 focus:outline-none w-full border-none"
-            placeholder="Enter Number"
-            formControlName="phonenumber"
-          />
         </div>
 
-        <div class="text-sm ml-3 mt-2 text-red-500">
-          <span
-            class="font-roboto"
-            *ngIf="
-              form.controls['phonenumber'].hasError('required') && submitted
-            "
-          >
-            Number is required.
-          </span>
-          <span
-            class="font-roboto"
-            *ngIf="
-              form.controls['phonenumber'].hasError('minlength') && submitted
-            "
-          >
-            Mobile number should not be less than 10 digits.
-          </span>
-          <span
-            class="font-roboto"
-            *ngIf="
-              form.controls['phonenumber'].hasError('maxlength') && submitted
-            "
-          >
-            Mobile number should not be greater than 10 digits.
-          </span>
-          <span
-            class="font-roboto"
-            *ngIf="
-              form.controls['phonenumber'].hasError('invalidPhoneNumber') &&
-              submitted
-            "
-          >
-            Enter a valid mobile number.
-          </span>
+        <div class="phonenumber w-3/4">
+          <label class="form-label font-roboto text-lg text-gray-700">
+            Enter your Registered Mobile number
+          </label>
+          <div class="flex items-center mt-1 border border-primary rounded-md">
+            <input
+              #phonenumber
+              class="form-control py-6 input bg-white text-lg text-black placeholder-gray-400 focus:outline-none w-full border-none"
+              placeholder="Enter Number"
+              formControlName="phonenumber"
+            />
+          </div>
+
+          <div class="text-sm ml-3 mt-2 text-red-500">
+            <span
+              class="font-roboto"
+              *ngIf="
+                form.controls['phonenumber'].hasError('required') && submitted
+              "
+            >
+              Number is required.
+            </span>
+            <span
+              class="font-roboto"
+              *ngIf="
+                form.controls['phonenumber'].hasError('minlength') && submitted
+              "
+            >
+              Mobile number should not be less than 10 digits.
+            </span>
+            <span
+              class="font-roboto"
+              *ngIf="
+                form.controls['phonenumber'].hasError('maxlength') && submitted
+              "
+            >
+              Mobile number should not be greater than 10 digits.
+            </span>
+            <span
+              class="font-roboto"
+              *ngIf="
+                form.controls['phonenumber'].hasError('invalidPhoneNumber') &&
+                submitted
+              "
+            >
+              Enter a valid mobile number.
+            </span>
+          </div>
         </div>
       </div>
 
@@ -115,6 +123,7 @@
       </div>
     </div>
   </form>
+
   <app-pop-up
     *ngIf="showPopUp"
     [messageTitle]="popupMessageTitle"
