@@ -14,7 +14,7 @@ export class LoginComponent implements OnInit {
   showPopUp: boolean = false;
   popupMessageTitle: string = "";
   popupMessageBody: string = "";
-  countryCodes: { value: string, label: string }[] = []; // Array to hold country codes
+  countryCodes: { value: string, label: string }[] = []; 
 
   form: FormGroup;
   submitted: boolean = false;
@@ -28,7 +28,7 @@ export class LoginComponent implements OnInit {
     private http: HttpClient
   ) {
     this.form = this.formBuilder.group({
-      countryCode: ["", Validators.required], // Country code field
+      countryCode: ["", Validators.required], 
       phonenumber: [
         "",
         [
@@ -42,10 +42,9 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // Fetch country codes from JSON file on component initialization
     this.http.get<{ value: string, label: string }[]>('assets/country-codes.json')
       .subscribe((data) => {
-        this.countryCodes = data; // Store fetched country codes
+        this.countryCodes = data; 
       });
   }
 
@@ -100,7 +99,6 @@ export class LoginComponent implements OnInit {
     this.showPopUp = true;
   }
 
-  // Method to handle popup close
   handleClosePopUp() {
     this.showPopUp = false;
   }
