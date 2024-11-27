@@ -8,7 +8,8 @@ import { UserProfileDTO } from '../models/UserProfileDTO';
   providedIn: 'root'
 })
 export class SearchService {
-  private businessesUrl = 'http://localhost:8762/user/search';
+  // private businessesUrl = 'http://localhost:8762/user/search';
+  private businessesUrl = 'https://dummyjson.com/c/da4e-1011-4418-9e94/user/search';
   private imageUrl = "https://images.spreezy.in";
 
   private searchSubject = new Subject<string>();
