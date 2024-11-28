@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { jwtDecode } from 'jwt-decode';
-import { DecodedToken } from 'src/app/models/decoded-token';
+import { DecodedToken } from '../models/decodedToken';
+
 
 @Injectable({
   providedIn: 'root'
