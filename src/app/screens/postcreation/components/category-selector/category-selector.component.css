@@ -1,6 +1,6 @@
 .category-selector {
     margin-left: 15px;
-    margin-top: 15px;
+    margin-top: 70px;
 }
   
 .title {
@@ -18,6 +18,4 @@
     border-radius: 4px;
     border-width: 1.2px;
     font-family: 'Roboto';
-    padding: 4px 12px 4px; 
-    
 }

@@ -6,6 +6,7 @@ export class EventDetails {
   businessId: string;
   bookingUrl: string;
   eventDateAndTime: string;
+  websiteLink: string;
   termsAndConditions: string[];
   stepsToAvailOffer: string[];
   expiry: string;

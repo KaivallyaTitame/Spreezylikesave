@@ -1,5 +1,5 @@
 <app-category-selector></app-category-selector>
-<form [formGroup]="couponCodeFormDetails" (ngSubmit)="handleSubmit()">
+<form [formGroup]="couponCodeFormDetails" (ngSubmit)="handleSubmit()" class="mb-16">
     <div class="font-roboto text-black text-base mt-4 ml-4">
         <label for="couponTitle">Title *</label>
     </div>
@@ -40,6 +40,14 @@
     <div class="ml-4">
         <input formControlName="promoBadge" type="text" name="promoBadge" required class="badge-input w-[330px] h-[28px] mt-1 border border-[#ED6A5A] rounded-md p-2" placeholder="Eg: Upto 30% Off" id="promoBadge">
         <div *ngIf="couponCodeFormDetails.get('promoBadge')?.touched && couponCodeFormDetails.get('promoBadge')?.invalid" class="text-red-500">Offer badge is required</div>
+    </div>
+
+    <div class="font-roboto text-black text-base mt-4 ml-4">
+        <label for="websiteLink">Enter website link</label>
+    </div>
+    <div class="ml-4">
+        <input formControlName="websiteLink" type="text" name="websiteLink" required class="enter-coupon-code-input w-[330px] h-[28px] mt-1 border border-[#ED6A5A] rounded-md p-2" placeholder="Enter websiteLink..." id="websiteLink">
+        <div *ngIf="couponCodeFormDetails.get('websiteLink')?.touched && couponCodeFormDetails.get('websiteLink')?.invalid" class="text-red-500">WebsiteLink is required</div>
     </div>
 
     <div class="font-roboto text-black text-base mt-4 ml-4">

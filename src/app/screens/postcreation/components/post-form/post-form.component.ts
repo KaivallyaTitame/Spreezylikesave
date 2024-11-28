@@ -27,6 +27,7 @@ export class PostFormComponent implements OnInit {
       username: [''],
       postTitle: [''],
       description: [''],
+      websiteLink: [''],
       expiry: [null],
       businessId: [''],
       promoBadge: [''],
@@ -72,6 +73,7 @@ export class PostFormComponent implements OnInit {
     this.postFormData.username = this.postFormDetails.get('username')?.value;
     this.postFormData.postTitle = details.value['postTitle'];
     this.postFormData.description = details.value['description'];
+    this.postFormData.websiteLink=details.value['websiteLink'];
     this.postFormData.expiry = details.value['expiry'];
     this.postFormData.businessId = this.postFormDetails.get('businessId')?.value;
     this.postFormData.promoBadge = details.value['promoBadge'];

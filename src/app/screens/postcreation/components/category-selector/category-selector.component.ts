@@ -22,13 +22,13 @@ export class CategorySelectorComponent implements OnInit {
 
     switch (this.selectedCategory) {
       case 'Post':
-        this.router.navigate(['create/post-form']);
+        this.router.navigate(['/business-home/addpost/post-form']);
         break;
       case 'Coupon Code':
-        this.router.navigate(['create/coupon-code']);
+        this.router.navigate(['/business-home/addpost/coupon-code']);
         break;
       case 'Event':
-        this.router.navigate(['create/events-form']);
+        this.router.navigate(['/business-home/addpost/events-form']);
         break;
       default:
         break;

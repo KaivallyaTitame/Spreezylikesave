@@ -4,6 +4,7 @@ export class PostDetails {
     description: string = ' ';
     promoBadge: string = ' ';
     businessId: string = ' ';
+    websiteLink: string =' ';
     termsAndConditions: string[] = []; 
     stepsToAvailOffer: string[] = []; 
     expiry: Date;

@@ -5,7 +5,8 @@ export class CouponDetails{
     description: string = '';         
     promoBadge: string = '';          
     couponCode: string = '';          
-    businessId: string = '';        
+    businessId: string = '';    
+    websiteLink: string = '';    
     termsAndConditions: string[] = [''];  
     stepsToAvailOffer: string[] = [''];   
     expiry: Date = new Date();

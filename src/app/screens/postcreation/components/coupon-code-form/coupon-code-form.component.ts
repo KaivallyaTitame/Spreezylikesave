@@ -31,6 +31,7 @@ export class CouponCodeFormComponent {
       promoBadge: [''],
       couponCode: [''],
       businessId: [''],
+      websiteLink: [''],
       termsAndConditions: [''],
       stepsToAvailOffer: [''],
       expiry: [null]
@@ -71,6 +72,7 @@ export class CouponCodeFormComponent {
     this.couponCodeData.couponTitle = details.value['couponTitle'];
     this.couponCodeData.username = this.username;
     this.couponCodeData.description = details.value['description'];
+    this.couponCodeData.websiteLink = details.value['websiteLink'];
     this.couponCodeData.promoBadge = details.value['promoBadge'];
     this.couponCodeData.couponCode = details.value['couponCode'];
     this.couponCodeData.businessId = this.businessId;

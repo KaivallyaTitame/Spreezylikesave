@@ -1,5 +1,5 @@
 <app-category-selector></app-category-selector>
-<form [formGroup]="eventFormDetails" (ngSubmit)="handleSubmit()">
+<form [formGroup]="eventFormDetails" (ngSubmit)="handleSubmit()" class="mb-16">
     <div class="font-roboto text-black text-base mt-4 ml-4">
         <label for="eventTitle">Event Title *</label>
     </div>
@@ -30,6 +30,14 @@
         <div *ngIf="eventFormDetails.get('eventDateAndTime')?.touched && eventFormDetails.get('eventDateAndTime')?.invalid" class="text-red-500">
             Event Start Date and Time is required.
         </div>
+    </div>
+
+    <div class="font-roboto text-black text-base mt-4 ml-4">
+        <label for="websiteLink">Enter website link</label>
+    </div>
+    <div class="ml-4">
+        <input formControlName="websiteLink" type="text" name="websiteLink" required class="enter-coupon-code-input w-[330px] h-[28px] mt-1 border border-[#ED6A5A] rounded-md p-2" placeholder="Enter websiteLink..." id="websiteLink">
+        <div *ngIf="eventFormDetails.get('websiteLink')?.touched && eventFormDetails.get('websiteLink')?.invalid" class="text-red-500">WebsiteLink is required</div>
     </div>
 
     <div class="font-roboto text-black text-base mt-4 ml-4">

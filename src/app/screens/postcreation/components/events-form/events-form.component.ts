@@ -28,6 +28,7 @@ export class EventsFormComponent {
       businessId: [''],
       eventTitle: [''],
       description: [''],
+      websiteLink: [''],
       eventDateAndTime: [''],
       promoBadge: [''],
       expiry: [''],
@@ -72,6 +73,7 @@ export class EventsFormComponent {
     this.eventData.description = details.value['description'];
     this.eventData.eventDateAndTime = details.value['eventDateAndTime'].toString();
     this.eventData.promoBadge = details.value['promoBadge'];
+    this.eventData.websiteLink=details.value['websiteLink'];
     this.eventData.expiry = details.value['expiry'].toString();
     this.eventData.bookingUrl = details.value['bookingUrl'];
     this.eventData.termsAndConditions = TextareaUtils.convertTextareaToListWithBulletPoints(details.value['termsAndConditions']);
