@@ -12,7 +12,7 @@ const routes: Routes = [
     loadChildren: () => import("./screens/login/login.module").then(m => m.LoginModule),
     // canActivate: [loginGuard]
   },
-  { path: "register", loadChildren: () => import("./screens/register/register.module") .then(m => m.RegisterModule)},
+  { path: "register", loadChildren: () => import("./screens/register/register.module").then(m => m.RegisterModule) },
 
   {
     path: "business-home",
@@ -21,14 +21,29 @@ const routes: Routes = [
   },
   {
     path: "otpscreen/:mobileNumber",
-    loadChildren: () => import("./screens/otpScreen/otpscreen.module").then(m => m.OtpscreenModule),
+    loadChildren: () => import("./screens/otpScreen/otpscreen.module").then(m => m.OtpScreenModule),
   },
   {
     path: "consumer-home",
     loadChildren: () => import("./screens/consumer-home/consumer-home.module").then(m => m.ConsumerHomeModule),
     // canActivate: [customerGuard]
   },
-  { path: "**", redirectTo: "consumer-home" }
+  {
+    path: "ad-feed",
+    loadChildren: () =>
+      import("./screens/ad-feed/ad-feed.module").then(
+        (module) => module.AdFeedModule
+      ),
+  },
+  {
+    path: "feedback-screen",
+    loadChildren: () =>
+      import("./screens/feedback-screen/feedback-screen.module").then(
+        (module) => module.FeedbackScreenModule
+      ),
+  },
+  // Add a wildcard route for a 404 page if needed
+  { path: '**', redirectTo: 'login' }
 ];
 
 @NgModule({

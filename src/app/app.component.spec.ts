@@ -30,5 +30,6 @@ describe('AppComponent', () => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(1).toBe(1)  });
+    expect(compiled.querySelector('.content span')?.textContent).toContain('spreezy-frontend app is running!');
+  });
 });

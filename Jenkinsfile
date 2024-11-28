@@ -48,22 +48,22 @@ pipeline
         
 
         
-        // stage('Run Tests'){
-        //     steps {
-        //     sh 'npm start &'
+        stage('Run Tests'){
+            steps {
+            sh 'npm start &'
 
-        //     // Wait for Angular application to start
-        //     sh 'npx wait-on http://localhost:4200'
+            // Wait for Angular application to start
+            sh 'npx wait-on http://localhost:4200'
 
-        //     // Run Cypress tests
-        //     sh 'npm run test'
-        //     sh 'npm run test:coverage'
+            // Run Cypress tests
+            sh 'NO_COLOR=1 npm run test'
+            sh 'npm run test:coverage'
 
 
-        //     sh 'pkill -f "npm start"'
+            sh 'pkill -f "npm start"'
 
-        //     }
-        // }
+            }
+        }
 
          stage('sonarQube-analysis') {
     steps {
@@ -138,7 +138,7 @@ pipeline
         always{
             // publishHTML(target: [allowMissing: false, alwaysLinkToLastBuild: false, keepAll: true, reportDir: 'coverage/lcov-report', reportFiles: 'index.html', reportName: 'Code Coverage Report'])
 
-            //slackSend channel: 'devops-jenkins-updates', message: "Please find status of pipeline here Status - ${currentBuild.currentResult}  ${env.JOB_NAME}   Build Number ${env.BUILD_NUMBER}  URL ${env.BUILD_URL}"   
+            // slackSend channel: 'devops-jenkins-updates', message: "Please find status of pipeline here Status - ${currentBuild.currentResult}  ${env.JOB_NAME}   Build Number ${env.BUILD_NUMBER}  URL ${env.BUILD_URL}"   
             //clean workspace after every build
             cleanWs()
         }
