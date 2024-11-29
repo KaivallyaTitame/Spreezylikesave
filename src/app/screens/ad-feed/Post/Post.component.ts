@@ -1,8 +1,12 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { faBars, faUserGroup, faMagnifyingGlass, faThumbsUp, faThumbsDown, faLocationArrow, faBookmark, faEllipsisVertical, faLocationDot, faHeart, faBell, faCircleUser } from '@fortawesome/free-solid-svg-icons';
+
+import { faBars, faUserGroup, faMagnifyingGlass, faThumbsUp, faThumbsDown, faLocationArrow, faEllipsisVertical, faLocationDot, faHeart, faBell, faCircleUser } from '@fortawesome/free-solid-svg-icons';
 import { faThumbsUp as faThumbsUpOutline, faThumbsDown as faThumbsDownOutline } from '@fortawesome/free-regular-svg-icons'; // Import outlined icons
 import { AdvertisementDetailsService } from 'src/app/services/advertisementTypes.service';
 import { AdvertisementDetails } from 'src/app/models/ad-details';
+import { faBookmark as solidBookmark } from '@fortawesome/free-solid-svg-icons';
+import { faBookmark as regularBookmark } from '@fortawesome/free-regular-svg-icons';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-Post',
@@ -15,12 +19,13 @@ export class PostComponent implements OnInit {
   remainingHours: number;
   isExpired: boolean = false;
   showLikeAnimation: boolean = false; 
+  scaleAnimation:boolean=false;
   showDislikeAnimation: boolean = false;
   isSaved: boolean = false; // Track saved state
   showSavedMessage: boolean = false; // Track the display of "Saved" message
   showReportButton: boolean = false; // Track visibility of report button
   showReportSuccess: boolean = false; // Track visibility of success message
-
+  advertisementId: number;
   showPopup: boolean = false;
   popupTitle: string = 'Error';
   popupBody: string = '';
@@ -31,7 +36,8 @@ export class PostComponent implements OnInit {
   faThumbsUp = faThumbsUp;
   faThumbsDown = faThumbsDown;
   faLocationArrow = faLocationArrow;
-  faBookmark = faBookmark;
+  solidBookmark = solidBookmark; // Solid bookmark icon
+  regularBookmark = regularBookmark; // Regular bookmark icon
   faEllipsisVertical = faEllipsisVertical;
   faLocationDot = faLocationDot;
   faHeart = faHeart;
@@ -46,7 +52,9 @@ export class PostComponent implements OnInit {
   isLiked: boolean = false; // State for like
   isDisliked: boolean = false; // State for dislike
 
-  constructor(private advertisementDetailsService: AdvertisementDetailsService) {}
+  constructor(private advertisementDetailsService: AdvertisementDetailsService ,private router:Router) {
+    this.advertisementId = this.postDetails.advertisementId;
+  }
 
   ngOnInit(): void {
     const { remainingDays, remainingHours, isExpired } = this.advertisementDetailsService.calculateExpiry(this.postDetails.offerExpiry);
@@ -70,13 +78,12 @@ export class PostComponent implements OnInit {
         },
         error: (err) => {
           this.showError('Like Error', 'Failed to update likes. Please try again.');
-       
+         
         },
       });
     } else {
       this.isLiked = false;
       this.postDetails.likes -= 1;
-
       this.advertisementDetailsService.updateLikes(advertisementId).subscribe({
         next: (updatedPost) => {
           this.postDetails.likes = updatedPost.likes;
@@ -104,7 +111,7 @@ export class PostComponent implements OnInit {
         },
         error: (err) => {
           this.showError('Dislike Error', 'Failed to update dislikes. Please try again.');
-         
+          
         },
       });
     } else {
@@ -116,7 +123,7 @@ export class PostComponent implements OnInit {
         },
         error: (err) => {
           this.showError('Dislike Error', 'Failed to update dislikes. Please try again.');
-      
+         
         },
       });
     }
@@ -125,25 +132,41 @@ export class PostComponent implements OnInit {
   savePost(): void {
     const advertisementId = this.postDetails.advertisementId;
     const username = this.postDetails.username;
-
+  
+    // Trigger the save animation
     this.triggerAnimation('save');
-    this.showSavedMessage = true;
-
+  
+    // Add scaling effect
+    this.scaleAnimation = true;
+  
+    // Reset the scaling effect after 500ms
     setTimeout(() => {
-      this.showSavedMessage = false;
+      this.scaleAnimation = false;
     }, 500);
-
+  
+    // Toggle the saved state whenever the icon is clicked
+    this.isSaved = !this.isSaved;  // This will toggle the state between saved and not saved
+  
     this.advertisementDetailsService.savePost(username, advertisementId).subscribe({
       next: (response) => {
         console.log('Post saved successfully:', response);
-        this.isSaved = true;
+        // If needed, handle any success logic here. For example, you might want to show a success message.
       },
       error: (err) => {
+        // In case of error, show the error message and revert the saved state
         this.showError('Save Error', 'Failed to save the post. Please try again.');
-
+        this.isSaved = !this.isSaved; // Revert the saved state if there was an error
       },
     });
   }
+  
+  // This method will be called when the "Show Details" button is clicked
+  showDetails(advertisementId: number): void {
+    // Navigate to the offer description or coupon component with the advertisementId
+    this.router.navigate(['/offer-description', advertisementId]);
+  }
+
+  
 
   toggleReportButton(): void {
     this.showReportButton = !this.showReportButton; 
@@ -171,10 +194,10 @@ export class PostComponent implements OnInit {
     } else if (type === 'dislike') {
       this.showDislikeAnimation = true;
     }
+    
     setTimeout(() => {
       this.showLikeAnimation = false;
       this.showDislikeAnimation = false;
     }, 500); 
   }
-
 }  

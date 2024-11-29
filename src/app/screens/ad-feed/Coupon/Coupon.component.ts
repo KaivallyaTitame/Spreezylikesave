@@ -1,8 +1,11 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { faBars, faUserGroup, faMagnifyingGlass, faThumbsUp, faThumbsDown, faLocationArrow, faBookmark, faEllipsisVertical, faLocationDot, faHeart, faBell, faCircleUser } from '@fortawesome/free-solid-svg-icons';
+import { faBars, faUserGroup, faMagnifyingGlass, faThumbsUp, faThumbsDown, faLocationArrow, faEllipsisVertical, faLocationDot, faHeart, faBell, faCircleUser } from '@fortawesome/free-solid-svg-icons';
 import { faThumbsUp as faThumbsUpOutline, faThumbsDown as faThumbsDownOutline } from '@fortawesome/free-regular-svg-icons'; // Import outlined icons
 import { AdvertisementDetailsService } from 'src/app/services/advertisementTypes.service';
 import { AdvertisementDetails } from 'src/app/models/ad-details';
+import { faBookmark as solidBookmark } from '@fortawesome/free-solid-svg-icons';
+import { faBookmark as regularBookmark } from '@fortawesome/free-regular-svg-icons';
+import { IconDefinition } from '@fortawesome/fontawesome-svg-core';  // Import the type
 
 @Component({
   selector: 'app-Coupon',
@@ -17,7 +20,7 @@ export class CouponComponent implements OnInit {
   reportVisible: boolean = false; // Property to control visibility of report modal
   showReportButton: boolean = false;
   remainingHours: number;
-
+  scaleAnimation: boolean = false; 
   showLikeAnimation: boolean = false; 
   showDislikeAnimation: boolean = false;
   isSaved: boolean = false; // Track saved state
@@ -29,23 +32,25 @@ export class CouponComponent implements OnInit {
   popupTitle: string = 'Error';
   popupBody: string = '';
 
-  // Font Awesome icons
-  faBars = faBars;
-  faUserGroup = faUserGroup;
-  faMagnifyingGlass = faMagnifyingGlass;
-  faThumbsUp = faThumbsUp;
-  faThumbsDown = faThumbsDown;
-  faLocationArrow = faLocationArrow;
-  faBookmark = faBookmark;
-  faEllipsisVertical = faEllipsisVertical;
-  faLocationDot = faLocationDot;
-  faHeart = faHeart;
-  faBell = faBell;
-  faCircleUser = faCircleUser;
+  // Font Awesome icons with correct typing
+  faBars: IconDefinition = faBars;
+  faUserGroup: IconDefinition = faUserGroup;
+  solidBookmark: IconDefinition = solidBookmark; // Solid bookmark icon
+  regularBookmark: IconDefinition = regularBookmark; // Regular bookmark icon
+  faMagnifyingGlass: IconDefinition = faMagnifyingGlass;
+  faThumbsUp: IconDefinition = faThumbsUp;
+  faThumbsDown: IconDefinition = faThumbsDown;
+  faLocationArrow: IconDefinition = faLocationArrow;
+
+  faEllipsisVertical: IconDefinition = faEllipsisVertical;
+  faLocationDot: IconDefinition = faLocationDot;
+  faHeart: IconDefinition = faHeart;
+  faBell: IconDefinition = faBell;
+  faCircleUser: IconDefinition = faCircleUser;
 
   // Outlined icons
-  faThumbsUpOutline = faThumbsUpOutline;
-  faThumbsDownOutline = faThumbsDownOutline;
+  faThumbsUpOutline: IconDefinition = faThumbsUpOutline;
+  faThumbsDownOutline: IconDefinition = faThumbsDownOutline;
 
   // Track like/dislike state
   isLiked: boolean = false; 
@@ -133,22 +138,27 @@ export class CouponComponent implements OnInit {
   savePost(): void {
     const advertisementId = this.couponDetails.advertisementId;
     const username = this.couponDetails.username;
-
+  
     this.triggerAnimation('save');
-    this.showSavedMessage = true;
+  
+   
+    this.scaleAnimation = true;
 
     setTimeout(() => {
-      this.showSavedMessage = false;
+      this.scaleAnimation = false;
     }, 500);
-
+  
+    this.isSaved = !this.isSaved; 
+  
     this.advertisementDetailsService.savePost(username, advertisementId).subscribe({
       next: (response) => {
         console.log('Post saved successfully:', response);
-        this.isSaved = true;
+      
       },
       error: (err) => {
+       
         this.showError('Save Error', 'Failed to save the post. Please try again.');
-        
+        this.isSaved = !this.isSaved; 
       },
     });
   }

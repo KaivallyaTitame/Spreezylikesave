@@ -1,9 +1,12 @@
 // src/app/components/post-event/post-event.component.ts
 import { Component, Input, OnInit } from '@angular/core';
-import { faBars, faUserGroup, faMagnifyingGlass, faThumbsUp, faThumbsDown, faLocationArrow, faBookmark, faEllipsisVertical, faLocationDot, faHeart, faBell, faCircleUser } from '@fortawesome/free-solid-svg-icons';
+import { faBars, faUserGroup, faMagnifyingGlass, faThumbsUp, faThumbsDown, faLocationArrow, faEllipsisVertical, faLocationDot, faHeart, faBell, faCircleUser } from '@fortawesome/free-solid-svg-icons';
 import { faThumbsUp as faThumbsUpOutline, faThumbsDown as faThumbsDownOutline } from '@fortawesome/free-regular-svg-icons'; // Import outlined icons
 import { AdvertisementDetailsService } from 'src/app/services/advertisementTypes.service';
 import { AdvertisementDetails } from 'src/app/models/ad-details';
+import { faBookmark as solidBookmark } from '@fortawesome/free-solid-svg-icons';
+import { faBookmark as regularBookmark } from '@fortawesome/free-regular-svg-icons';
+
 @Component({
   selector: 'app-Event',
   templateUrl: './Event.component.html',
@@ -20,6 +23,7 @@ export class EventComponent implements OnInit {
   showReportSuccess: boolean = false; 
   showLikeAnimation: boolean = false; 
   showDislikeAnimation: boolean = false;
+  scaleAnimation:boolean=false;
   isSaved: boolean = false; // Track saved state
   showSavedMessage: boolean = false; // Track the display of "Saved" message
   
@@ -34,7 +38,8 @@ export class EventComponent implements OnInit {
    faThumbsUp = faThumbsUp;
    faThumbsDown = faThumbsDown;
    faLocationArrow = faLocationArrow;
-   faBookmark = faBookmark;
+   solidBookmark = solidBookmark; // Solid bookmark icon
+   regularBookmark = regularBookmark; // Regular bookmark icon
    faEllipsisVertical = faEllipsisVertical;
    faLocationDot = faLocationDot;
    faHeart = faHeart;
@@ -126,26 +131,34 @@ export class EventComponent implements OnInit {
   savePost(): void {
     const advertisementId = this.eventDetails.advertisementId;
     const username = this.eventDetails.username;
-
+  
+    
     this.triggerAnimation('save');
-    this.showSavedMessage = true;
-
+  
+   
+    this.scaleAnimation = true;
+  
+   
     setTimeout(() => {
-      this.showSavedMessage = false;
+      this.scaleAnimation = false;
     }, 500);
+  
 
+    this.isSaved = !this.isSaved;  
+  
     this.advertisementDetailsService.savePost(username, advertisementId).subscribe({
       next: (response) => {
         console.log('Post saved successfully:', response);
-        this.isSaved = true;
+        
       },
       error: (err) => {
-        this.showError('Save Error', 'Failed to save the post. Please try again.');
         
+        this.showError('Save Error', 'Failed to save the post. Please try again.');
+        this.isSaved = !this.isSaved; 
       },
     });
   }
-
+  
   toggleReportButton(): void {
     this.showReportButton = !this.showReportButton; 
   }

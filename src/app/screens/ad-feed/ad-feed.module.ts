@@ -9,13 +9,14 @@ import { PostComponent } from './Post/Post.component';
 import { CouponComponent } from './Coupon/Coupon.component';
 
 
+import { OfferDescriptionComponent } from './offer-description/offer-description.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { SharedModule } from 'src/app/shared/shared-module/shared-module.module';
 
 @NgModule({
   declarations: [
     AdFeedComponent,
-    // OfferDescriptionComponent,
+    OfferDescriptionComponent,
     EventComponent,
     PostComponent,
     CouponComponent

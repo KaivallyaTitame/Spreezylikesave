@@ -70,16 +70,17 @@
         </button>
 
         <div class="relative">
-          <!-- Display Saved Message -->
-          <span *ngIf="showSavedMessage"
-            class="absolute bottom-full left-1/2 transform -translate-x-1/2 text-black font-bold transition-opacity duration-500">
-            Saved!
-          </span>
-
           <!-- Save Button -->
           <button (click)="savePost()" class="bg-transparent border-none flex items-center cursor-pointer">
-            <fa-icon [icon]="faBookmark" class="fa-xl transition-transform duration-300"
-              [ngStyle]="{'color': '#ffb43f', 'transform': isSaved ? 'scale(1.2)' : 'scale(1)'}">
+            <!-- Dynamic Bookmark Icon -->
+            <fa-icon
+              [icon]="isSaved ? solidBookmark : regularBookmark"
+              class="fa-xl transition-all duration-300"
+              [ngClass]="{
+                'text-[#ffb43f]': true,  
+                'scale-125': scaleAnimation,  
+                'scale-100': !scaleAnimation  
+              }">
             </fa-icon>
           </button>
         </div>
