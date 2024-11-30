@@ -33,24 +33,24 @@ export class CouponComponent implements OnInit {
   popupBody: string = '';
 
   // Font Awesome icons with correct typing
-  faBars: IconDefinition = faBars;
-  faUserGroup: IconDefinition = faUserGroup;
-  solidBookmark: IconDefinition = solidBookmark; // Solid bookmark icon
-  regularBookmark: IconDefinition = regularBookmark; // Regular bookmark icon
-  faMagnifyingGlass: IconDefinition = faMagnifyingGlass;
-  faThumbsUp: IconDefinition = faThumbsUp;
-  faThumbsDown: IconDefinition = faThumbsDown;
-  faLocationArrow: IconDefinition = faLocationArrow;
+  faBars = faBars;
+  faUserGroup = faUserGroup;
+  solidBookmark = solidBookmark; // Solid bookmark icon
+  regularBookmark = regularBookmark; // Regular bookmark icon
+  faMagnifyingGlass = faMagnifyingGlass;
+  faThumbsUp = faThumbsUp;
+  faThumbsDown = faThumbsDown;
+  faLocationArrow = faLocationArrow;
 
-  faEllipsisVertical: IconDefinition = faEllipsisVertical;
-  faLocationDot: IconDefinition = faLocationDot;
-  faHeart: IconDefinition = faHeart;
-  faBell: IconDefinition = faBell;
-  faCircleUser: IconDefinition = faCircleUser;
+  faEllipsisVertical = faEllipsisVertical;
+  faLocationDot = faLocationDot;
+  faHeart = faHeart;
+  faBell = faBell;
+  faCircleUser = faCircleUser;
 
   // Outlined icons
-  faThumbsUpOutline: IconDefinition = faThumbsUpOutline;
-  faThumbsDownOutline: IconDefinition = faThumbsDownOutline;
+  faThumbsUpOutline = faThumbsUpOutline;
+  faThumbsDownOutline = faThumbsDownOutline;
 
   // Track like/dislike state
   isLiked: boolean = false; 
