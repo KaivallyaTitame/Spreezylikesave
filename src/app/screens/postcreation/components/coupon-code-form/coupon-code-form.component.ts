@@ -94,6 +94,7 @@ export class CouponCodeFormComponent {
         this.couponCodeFormDetails.reset(); 
       },
       error: (error: HttpErrorResponse) => {
+        console.error('Error Details:', error);
         this.popUpTitle = 'Error!';
         if (error.error && error.error.message) {
           this.popUpBody = `Error: ${error.error.message}`;

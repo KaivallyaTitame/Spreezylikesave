@@ -89,7 +89,7 @@ export class EventsFormComponent {
     this.postUpload.submitEventData(eventData).subscribe({
       next: (response: any) => {
         this.popUpTitle = 'Success!';
-        this.popUpBody = 'Your coupon code form has been submitted successfully.';
+        this.popUpBody = 'Your event form has been submitted successfully.';
         this.showPopUp = true;
         console.log(eventData);
         this.eventFormDetails.reset(); 

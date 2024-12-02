@@ -14,7 +14,7 @@ export class JwtDecoderService {
       "User Type": "guest",
       Token_type: "Bearer",
       iss: "Spreezy",
-      sub: "dummyUser",
+      sub: "test_business",
       iat: Date.now() / 1000, 
       exp: Math.floor(Date.now() / 1000) + 3600 
     };

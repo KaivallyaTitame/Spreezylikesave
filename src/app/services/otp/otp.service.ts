@@ -5,6 +5,7 @@ import { catchError, map, tap } from "rxjs/operators";
 import { OtpResponse } from "../../models/otpResponse";
 import { VerifyOtpResponse } from "../../models/verifyOtpResponse";
 import { environment } from "src/environments/environment.development";
+import { API_CONFIG } from "src/app/api-config";
 
 @Injectable({
   providedIn: "root",

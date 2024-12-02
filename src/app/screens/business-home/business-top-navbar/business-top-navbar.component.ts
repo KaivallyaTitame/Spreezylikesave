@@ -34,6 +34,10 @@ export class BusinessTopNavbarComponent implements OnInit {
     this.router.navigate(['business-home/search']);
   }
 
+  navigateToSettings(): void{
+    this.router.navigate(['business-home/settings']);
+  }
+
   fetchBusinessDetails() {
     this.businessNavigationService.getBusinessDetails().subscribe({
       next: (data: UserProfileDTO[]) => {

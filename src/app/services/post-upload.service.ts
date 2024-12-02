@@ -1,22 +1,20 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { API_CONFIG } from '../api-config';
 import { CouponDetails } from '../models/coupon-details';
 import { PostDetails } from '../models/post-details';
 import { EventDetails } from '../models/event-details';
 import { PresignedUrl } from '../models/presigned-url';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { environment } from 'src/environments/environment.development';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
-
 export class PostUploadService {
-
   private generatedFileNamesSubject = new BehaviorSubject<string[]>([]);
   generatedFileNames$ = this.generatedFileNamesSubject.asObservable();
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   setGeneratedFileNames(fileNames: string[]): void {
     this.generatedFileNamesSubject.next(fileNames);
@@ -27,73 +25,51 @@ export class PostUploadService {
     return this.generatedFileNamesSubject.getValue();
   }
 
-  submitCouponData(data: CouponDetails): Observable<String> {
-    return this.http.post(
-      `${environment.apiGateway}/content/coupon/create`,
-      data,
-      {
-        responseType: 'text',
-        headers: new HttpHeaders({
-          'ngrok-skip-browser-warning': 'true',
-          'Content-Type': 'application/json',
-          'accept': '*/*',
-        }),
-      }
-    );
+  submitCouponData(data: CouponDetails): Observable<string> {
+    return this.http.post<string>(API_CONFIG.POST_CREATION.CREATE_COUPON, data, {
+      headers: this.getHeaders(),
+      responseType: 'text' as 'json',
+    });
   }
 
-  submitPostForm(data: PostDetails): Observable<String> {
-    return this.http.post(
-      `${environment.apiGateway}/content/post/create`,
-      data,
-      {
-        responseType: 'text',
-        headers: new HttpHeaders({
-          'ngrok-skip-browser-warning': 'true',
-          'Content-Type': 'application/json',
-        }),
-      }
-    );
+  submitPostForm(data: PostDetails): Observable<string> {
+    return this.http.post<string>(API_CONFIG.POST_CREATION.CREATE_POST, data, {
+      headers: this.getHeaders(),
+      responseType: 'text' as 'json',
+    });
   }
 
-  submitEventData(data: EventDetails): Observable<String> {
-    return this.http.post(
-      `${environment.apiGateway}/content/event/create`,
-      data,
-      {
-        responseType: 'text',
-        headers: new HttpHeaders({
-          'ngrok-skip-browser-warning': 'true',
-          'Content-Type': 'application/json',
-        }),
-      }
-    );
+  submitEventData(data: EventDetails): Observable<string> {
+    return this.http.post<string>(API_CONFIG.POST_CREATION.CREATE_EVENT, data, {
+      headers: this.getHeaders(),
+      responseType: 'text' as 'json',
+    });
   }
 
   getPresignedUrl(imageFileNames: string[], username: string): Observable<PresignedUrl> {
     return this.http.post<PresignedUrl>(
-      `${environment.apiGateway}/content/generate-presigned-url`,
-      { imageFileNames, username },
+      API_CONFIG.SETTINGS.GENERATE_PRESIGNED_URL,
+      { imageFileNames, username ,headers: this.getHeaders()},
+      
     );
   }
 
-  uploadToS3(file: File, presignedUrl: string){
+  uploadToS3(file: File, presignedUrl: string): void {
     const headers = new HttpHeaders({ 'Content-Type': file.type });
-    return this.http.put(
-      presignedUrl,
-      file,
-      { headers }
-    ).subscribe({
+    this.http.put(presignedUrl, file, { headers }).subscribe({
       next: (response) => {
-        console.log('uploaded sucessfully', response);
+        console.log('Uploaded successfully', response);
       },
-      error: (error:any) => {
+      error: (error: any) => {
         console.error('Error uploading image to S3:', error);
-        console.error('Status:', error.status);
-        console.error('Message:', error.message);
-        console.error('Response:', error.error);
-      }
+      },
     });
   }
-  
+
+  private getHeaders(): HttpHeaders {
+    return new HttpHeaders({
+      'ngrok-skip-browser-warning': 'true',
+      'Content-Type': 'application/json',
+    });
+  }
 }
