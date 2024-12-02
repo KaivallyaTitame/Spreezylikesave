@@ -4,7 +4,8 @@ import { GoogleAuthProvider } from "@angular/fire/auth";
 import { AngularFireAuth } from "@angular/fire/compat/auth";
 import { Router } from "@angular/router";
 import { JwtDecoderService } from "../jwtDecoder/jwt-decoder.service";
-import { environment } from "src/environments/environment.development";
+import { API_CONFIG } from "src/app/api-config";
+
 @Injectable({
   providedIn: "root",
 })
@@ -19,7 +20,7 @@ export class AuthService {
   signInWithGoogle() {
     return this.fireAuth.signInWithPopup(new GoogleAuthProvider()).then(
       (response) => {
-        console.log("response from goggle login: ", response);
+        console.log("response from google login: ", response);
         this.router.navigate(["/homeCustomer"]);
         localStorage.setItem("token", JSON.stringify(response.user?.email));
       },
@@ -33,14 +34,12 @@ export class AuthService {
     );
   }
 
-  private apiUrl = environment.apiGateway;
-
   logout() {
     let token = localStorage.getItem("token") || "";
     let userName = this.jwtDecoder.decodeInfoFromToken(token)["sub"] || "";
     return this.http
       .post(
-        `${this.apiUrl}/auth/${userName}/logout`,
+        API_CONFIG.AUTH_LOGOUT(userName),
         {},
         {
           headers: new HttpHeaders({
@@ -49,7 +48,7 @@ export class AuthService {
         }
       )
       .subscribe({
-        next: (response) => {
+        next: () => {
           localStorage.removeItem("token");
           localStorage.removeItem("refreshToken");
           window.location.reload();
