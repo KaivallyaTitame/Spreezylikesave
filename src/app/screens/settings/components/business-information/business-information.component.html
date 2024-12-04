@@ -112,6 +112,30 @@
     </div>
 
     <div class="font-roboto text-black text-base mt-4 ml-4">
+        <label for="whatsApp">Enter whatsApp Link</label>
+    </div>
+    <div class="ml-4">
+        <input formControlName="whatsApp" type="text" name="whatsApp" required class="username-input w-[330px] h-[28px] mt-1 border border-[#ED6A5A] rounded-md p-2" placeholder="current whatsAppLink" id="whatsApp">
+        <div *ngIf="businessInfo.get('whatsApp')?.touched && businessInfo.get('whatsApp')?.invalid" class="text-red-500">whatsApp link is required</div>
+    </div>
+
+    <div class="font-roboto text-black text-base mt-4 ml-4">
+        <label for="instagram">Enter instagram Link</label>
+    </div>
+    <div class="ml-4">
+        <input formControlName="instagram" type="text" name="instagram" required class="username-input w-[330px] h-[28px] mt-1 border border-[#ED6A5A] rounded-md p-2" placeholder="current instagram" id="instagram">
+        <div *ngIf="businessInfo.get('instagram')?.touched && businessInfo.get('instagram')?.invalid" class="text-red-500">instagram link is required</div>
+    </div>
+
+    <div class="font-roboto text-black text-base mt-4 ml-4">
+        <label for="facebook">Enter facebook Link</label>
+    </div>
+    <div class="ml-4">
+        <input formControlName="facebook" type="text" name="instagram" required class="username-input w-[330px] h-[28px] mt-1 border border-[#ED6A5A] rounded-md p-2" placeholder="current facebook" id="facebook">
+        <div *ngIf="businessInfo.get('facebook')?.touched && businessInfo.get('facebook')?.invalid" class="text-red-500">instagram link is required</div>
+    </div>
+
+    <div class="font-roboto text-black text-base mt-4 ml-4">
         <label for="aadharNumber">Aadhar Number</label>
     </div>
     <div class="ml-4">

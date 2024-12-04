@@ -14,7 +14,7 @@ export class ImageComponentComponent implements OnInit {
   @ViewChild('fileInput', { static: false }) fileInput!: ElementRef;
   imagePreviews: string[] = [];
   selectedFiles: File[] = [];
-  tempusername: string = 'alice_biz04';  
+  tempusername: string = 'tanvi247';  
   username:string='';
   presignedUrl: string | null = null;
   maxImageCount: number = 2; 

@@ -13,5 +13,8 @@ export class BusinessInformation {
     state:string='';
     city:string='';
     pincode:string='';
+    whatsApp:string='';
+    instagram:string='';
+    facebook:string='';
     kycDetails:KycDetails;
 }

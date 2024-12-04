@@ -22,7 +22,7 @@ export class BusinessInformationComponent {
   popUpTitle: string = '';
   popUpBody: string = '';
   username: string='';
-  tempUsername:string='alice_biz04';
+  tempUsername:string='tanvi247';
   loading: boolean = true;
   imageFileName: string = '';
   stateData: StateData;
@@ -42,6 +42,9 @@ export class BusinessInformationComponent {
       state:[''],
       city:[''],
       pincode:[''],
+      whatsApp:[''],
+      instagram:[''],
+      facebook:[''],
       kycDetails: this.fb.group({
         aadharNumber: [''],
         aadharImage: [''],
@@ -101,6 +104,9 @@ export class BusinessInformationComponent {
       state: user.state,
       city: user.city,
       pincode: user.pincode,
+      whatsApp:user.whatsApp,
+      instagram:user.instagram,
+      facebook:user.facebook,
       kycDetails: {
         aadharNumber: user.kycDetails?.aadharNumber,
         aadharImage: user.kycDetails?.aadharImage,
@@ -164,6 +170,9 @@ export class BusinessInformationComponent {
     this.businessInfoData.gender=details.value['gender'];
     this.businessInfoData.bio=details.value['bio'];
     this.businessInfoData.state=details.value['state'];
+    this.businessInfoData.whatsApp=details.value['whatsApp'];
+    this.businessInfoData.instagram=details.value['instagram'];
+    this.businessInfoData.facebook=details.value['facebook'];
     this.businessInfoData.kycDetails = {
       aadharNumber: details.value.kycDetails['aadharNumber'],
       aadharImage: details.value.kycDetails['aadharImage'],
