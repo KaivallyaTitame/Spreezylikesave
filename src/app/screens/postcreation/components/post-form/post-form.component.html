@@ -39,7 +39,15 @@
     <label for="websiteLink">Enter website link</label>
 </div>
 <div class="ml-4">
-    <input formControlName="websiteLink" type="text" name="websiteLink" required class="enter-coupon-code-input w-[330px] h-[28px] mt-1 border border-[#ED6A5A] rounded-md p-2" placeholder="Enter websiteLink..." id="websiteLink">
+    <input 
+        type="text" 
+        formControlName="websiteLink"
+        name="websiteLink" 
+        required 
+        class="enter-coupon-code-input w-[330px] h-[28px] mt-1 border border-[#ED6A5A] rounded-md p-2" 
+        placeholder="Enter website link..." 
+        id="websiteLink"
+        value="https://example.com">
     <div *ngIf="postFormDetails.get('websiteLink')?.touched && postFormDetails.get('websiteLink')?.invalid" class="text-red-500">WebsiteLink is required</div>
 </div>
 

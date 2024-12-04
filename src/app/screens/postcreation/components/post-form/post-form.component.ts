@@ -27,7 +27,7 @@ export class PostFormComponent implements OnInit {
       username: [''],
       postTitle: [''],
       description: [''],
-      websiteLink: [''],
+      websiteLink: ['https://example.com'],
       expiry: [null],
       businessId: [''],
       promoBadge: [''],
@@ -50,6 +50,25 @@ export class PostFormComponent implements OnInit {
     this.postUpload.generatedFileNames$.subscribe(fileNames => {
       this.imageFileNames = fileNames;
       this.postFormDetails.get('imageFileNames')?.setValue(this.imageFileNames);
+    });
+
+    const websiteLinkInput = document.getElementById('websiteLink') as HTMLInputElement;
+
+    // Ensure the input always starts with 'https://'
+    websiteLinkInput.addEventListener('input', (event) => {
+      const input = event.target as HTMLInputElement;
+
+      // Prevent changes to the fixed prefix
+      if (!input.value.startsWith('https://')) {
+        input.value = 'https://' + input.value.replace(/^https?:\/\//, '');
+      }
+    });
+
+    // Optional: Ensure cursor starts after the fixed part
+    websiteLinkInput.addEventListener('focus', () => {
+      setTimeout(() => {
+        websiteLinkInput.setSelectionRange(8, websiteLinkInput.value.length);
+      }, 0);
     });
   }
 
