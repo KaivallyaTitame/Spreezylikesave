@@ -1,0 +1,154 @@
+<div class="mb-1 ml-4 mt-16">
+    <header class="flex items-center mb-2">
+      <button class="icon-btn" aria-label="Back" (click)="handleClick()">
+        <i class="ri-arrow-left-line"></i>
+      </button>
+      <h1 class="text-black font-bold text-xl mb-2  mt-2">Profile Information</h1>
+    </header>
+    <h2 class="text-gray-500 text-sm font-semi-bold mb-1">Update Profile Details</h2>
+</div>
+<form [formGroup]="businessInfo" (ngSubmit)="handleSubmit()">
+    <div class="font-roboto text-black text-base mt-4 ml-4">
+        <app-image-component id="profile" *ngIf="imageFileName" [imageFileName]="imageFileName" (fileUploadSuccess)="patchImageFileName($event)"></app-image-component>
+    </div>
+    
+    <div class="font-roboto text-black text-base mt-4 ml-4">
+        <label for="name">Name*</label>
+    </div>
+    <div class="ml-4">
+        <input formControlName="name" type="text" name="name" required class="name-input w-[330px] h-[28px] mt-1 border border-[#ED6A5A] rounded-md p-2" placeholder="current name" id="name">
+        <div *ngIf="businessInfo.get('name')?.touched && businessInfo.get('name')?.invalid" class="text-red-500">Name is required</div>
+    </div>
+
+    <div class="font-roboto text-black text-base mt-4 ml-4">
+        <label for="username">Username*</label>
+    </div>
+    <div class="ml-4">
+        <input formControlName="businessUsername" type="text" name="username" required class="username-input w-[330px] h-[28px] mt-1 border border-[#ED6A5A] rounded-md p-2" placeholder="current username" id="username" readonly>
+        <div *ngIf="businessInfo.get('businessUsername')?.touched && businessInfo.get('businessUsername')?.invalid" class="text-red-500">Username is required</div>
+    </div>
+    
+    <div class="font-roboto text-black text-base mt-4 ml-4">
+        <label for="contactNumber">Phone Number*</label>
+    </div>
+    <div class="ml-4">
+        <input formControlName="phoneNumber" type="text" name="contactNumber" required class="phone-input w-[330px] h-[28px] mt-1 border border-[#ED6A5A] rounded-md p-2" placeholder="current contact number" id="contactNumber" readonly>
+        <div *ngIf="businessInfo.get('contactNumber')?.touched && businessInfo.get('contactNumber')?.invalid" class="text-red-500">Phone Number is required</div>
+    </div>
+
+    <div class="font-roboto text-black text-base mt-4 ml-4">
+        <label for="emailID">Email ID*</label>
+    </div>
+    <div class="ml-4">
+        <input formControlName="email" type="text" name="emailID" required class="email-input w-[330px] h-[28px] mt-1 border border-[#ED6A5A] rounded-md p-2" placeholder="current emailID" id="emailID">
+        <div *ngIf="businessInfo.get('emailID')?.touched && businessInfo.get('emailID')?.invalid" class="text-red-500">Email ID is required</div>
+    </div>
+
+    <div class="font-roboto text-black text-base mt-4 ml-4">
+        <label for="gender">Gender*</label>
+    </div>
+    <div class="ml-4">
+        <select formControlName="gender" name="gender" required
+            class="gender-input w-[330px] h-[40px] mt-1 border border-[#ED6A5A] rounded-md p-2 bg-white text-black"
+            id="gender">
+            <option value="" disabled selected>Select gender</option>
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+        </select>
+        <div *ngIf="businessInfo.get('gender')?.touched && businessInfo.get('gender')?.invalid" class="text-red-500 mt-1">Gender is required</div>
+    </div>
+
+    <div class="font-roboto text-black text-base mt-4 ml-4">
+        <label for="businessName">Business Name*</label>
+    </div>
+    <div class="ml-4">
+        <input formControlName="businessName" type="text" name="businessName" required class="businessName-input w-[330px] h-[28px] mt-1 border border-[#ED6A5A] rounded-md p-2" placeholder="current businessName" id="businessName">
+        <div *ngIf="businessInfo.get('businessName')?.touched && businessInfo.get('businessName')?.invalid" class="text-red-500">Business name is required</div>
+    </div>
+
+    <div class="font-roboto text-black text-base mt-4 ml-4">
+        <label for="businessType">Business Type*</label>
+    </div>
+    <div class="ml-4">
+        <input formControlName="businessType" type="text" name="businessType" required class="businessType-input w-[330px] h-[28px] mt-1 border border-[#ED6A5A] rounded-md p-2" placeholder="current businessType" id="businessType">
+        <div *ngIf="businessInfo.get('businessType')?.touched && businessInfo.get('businessType')?.invalid" class="text-red-500">Business type is required</div>
+    </div>
+
+    <div class="font-roboto text-black text-base mt-4 ml-4">
+        <label for="bio">Bio*</label>
+    </div>
+    <div class="ml-4">
+        <textarea formControlName="bio" name="bio" required class="bio-input w-[330px] h-[100px] mt-1 border border-[#ED6A5A] rounded-md p-2" placeholder="current bio" id="bio"></textarea>
+        <div *ngIf="businessInfo.get('bio')?.touched && businessInfo.get('bio')?.invalid" class="text-red-500">Bio is required</div>
+    </div>
+
+    
+
+    <div class="font-roboto text-black text-base mt-4 ml-4">
+        <label for="state">State*</label>
+    </div>
+    <div class="ml-4">
+        <input formControlName="state" type="text" name="state" required class="state-input w-[330px] h-[28px] mt-1 border border-[#ED6A5A] rounded-md p-2" placeholder="current state" id="state">
+        <div *ngIf="businessInfo.get('state')?.touched && businessInfo.get('state')?.invalid" class="text-red-500">State is required</div>
+    </div>
+
+    <div class="font-roboto text-black text-base mt-4 ml-4">
+        <label for="city">City*</label>
+    </div>
+    <div class="ml-4">
+        <select formControlName="city" class="city-input w-[330px] h-[36px] mt-1 border border-[#ED6A5A] rounded-md p-2">
+            <option value="" disabled selected>Select City</option>
+            <option *ngFor="let city of getCitiesByState(businessInfo.get('state')?.value)" [value]="city">{{ city }}</option>
+        </select>
+        <div *ngIf="businessInfo.get('city')?.touched && businessInfo.get('city')?.invalid" class="text-red-500">City is required</div>
+    </div>
+
+    <div class="font-roboto text-black text-base mt-4 ml-4">
+        <label for="pincode">Pincode*</label>
+    </div>
+    <div class="ml-4">
+        <input formControlName="pincode" type="text" name="pincode" required class="pincode-input w-[330px] h-[28px] mt-1 border border-[#ED6A5A] rounded-md p-2" placeholder="current pincode" id="pincode">
+        <div *ngIf="businessInfo.get('pincode')?.touched && businessInfo.get('pincode')?.invalid" class="text-red-500">Pincode is required</div>
+    </div>
+
+    <div class="font-roboto text-black text-base mt-4 ml-4">
+        <label for="aadharNumber">Aadhar Number</label>
+    </div>
+    <div class="ml-4">
+        <div formGroupName="kycDetails">
+            <input formControlName="aadharNumber" type="text" name="aadharNumber" required class="aadharNumber-input w-[330px] h-[28px] mt-1 border border-[#ED6A5A] rounded-md p-2" placeholder="Aadhar Number" id="aadharNumber">
+            <div *ngIf="businessInfo.get('kycDetails.aadharNumber')?.touched && businessInfo.get('kycDetails.aadharNumber')?.invalid" class="text-red-500">Aadhar Number is required</div>
+        </div>
+    </div>
+    
+    <div class="font-roboto text-black text-base mt-4 ml-4">
+        <label for="aadharImage">Aadhar Card Image</label>
+    </div>
+    <app-aadhar-pan-image id="aadharImage" (fileUpload)="patchAadhar($event)"></app-aadhar-pan-image>
+    
+    <div class="font-roboto text-black text-base mt-4 ml-4">
+        <label for="pancardNumber">Pancard Number</label>
+    </div>
+    <div class="ml-4">
+        <div formGroupName="kycDetails">
+            <input formControlName="pancardNumber" type="text" name="pancardNumber" required class="pancardNumber-input w-[330px] h-[28px] mt-1 border border-[#ED6A5A] rounded-md p-2" placeholder="Pancard Number" id="pancardNumber">
+            <div *ngIf="businessInfo.get('kycDetails.pancardNumber')?.touched && businessInfo.get('kycDetails.pancardNumber')?.invalid" class="text-red-500">Pancard Number is required</div>
+        </div>
+    </div>
+    
+    <div class="font-roboto text-black text-base mt-4 ml-4">
+        <label for="pancardImage">PanCard Image</label>
+    </div>
+    <app-aadhar-pan-image id="pancardImage" (fileUpload)="patchPancard($event)"></app-aadhar-pan-image>
+
+    <div class="flex items-center ml-10 mt-4 mb-16">
+        <button type="button" class="w-[130px] h-[35px] bg-[#ED6A5A] text-white border border-[#ED6A5A] rounded-md hover:bg-[#f57c6c] focus:outline-none focus:ring-4 focus:ring-[#ED6A5A] mt-2 text-[14px] font-['Roboto']" (click)="resetForm()">RESET DETAILS</button>
+        <button type="submit" class="w-[130px] h-[35px] bg-[#ED6A5A] text-white border border-[#ED6A5A] rounded-md ml-4 hover:bg-[#f57c6c] focus:outline-none focus:ring-4 focus:ring-[#ED6A5A] ml-2 mt-2 text-[14px] font-['Roboto']">UPDATE</button>
+    </div>
+</form>
+<div *ngIf="showPopUp">
+    <app-pop-up [messageTitle]="popUpTitle" [messageBody]="popUpBody" (close)="onPopUpClose()"></app-pop-up>
+</div>
+<div *ngIf="loading">
+    <app-loader></app-loader>
+</div>

@@ -5,7 +5,7 @@ import { businessGuard } from "./authGuards/business/business.guard";
 import { loginGuard } from "./authGuards/login/login.guard";
 
 const routes: Routes = [
-  { path: "", redirectTo: "login", pathMatch: "full" },
+  { path: "", redirectTo: "business-home", pathMatch: "full" },
 
   {
     path: "login",
@@ -28,22 +28,7 @@ const routes: Routes = [
     loadChildren: () => import("./screens/consumer-home/consumer-home.module").then(m => m.ConsumerHomeModule),
     // canActivate: [customerGuard]
   },
-  {
-    path: "ad-feed",
-    loadChildren: () =>
-      import("./screens/ad-feed/ad-feed.module").then(
-        (module) => module.AdFeedModule
-      ),
-  },
-  {
-    path: "feedback-screen",
-    loadChildren: () =>
-      import("./screens/feedback-screen/feedback-screen.module").then(
-        (module) => module.FeedbackScreenModule
-      ),
-  },
-  // Add a wildcard route for a 404 page if needed
-  { path: '**', redirectTo: 'login' }
+  { path: "**", redirectTo: "business-home"}
 ];
 
 @NgModule({

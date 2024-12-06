@@ -12,6 +12,8 @@ import { CouponComponent } from './Coupon/Coupon.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { SharedModule } from 'src/app/shared/shared-module/shared-module.module';
 
+
+
 @NgModule({
   declarations: [
     AdFeedComponent,
@@ -28,7 +30,7 @@ import { SharedModule } from 'src/app/shared/shared-module/shared-module.module'
     CommonModule,
     AdFeedRoutingModule,
     FontAwesomeModule,
-  SharedModule
+    SharedModule
   ]
 })
 export class AdFeedModule { }

@@ -1,0 +1,23 @@
+<div class="p-4">
+  <header class="flex items-center mb-4">
+    <button class="icon-btn" aria-label="Back">
+      <i class="ri-arrow-left-line"></i>
+    </button>
+    <h1 class="font-roboto text-black font-bold text-xl mb-2 ml-2 mt-2">Settings</h1>
+  </header>
+
+  <div class="mb-4">
+    <h2 class="font-roboto text-gray-500 text-sm font-semi-bold mb-2">General Settings</h2>
+    <div class="list-none">
+      <a class="list-item flex justify-between items-center" (click)="navigateToProfileInformation()">
+        <span class="font-roboto text-black">Profile information</span>
+        <i class="ri-arrow-right-s-line text-black ml-2"></i>
+      </a>
+
+      <a class="list-item flex justify-between items-center" [routerLink]="['/settings/password-management']">
+        <span class="font-roboto text-black ">Password management</span>
+        <i class="ri-arrow-right-s-line text-black ml-2"></i>
+      </a>
+    </div>
+  </div>
+</div>

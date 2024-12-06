@@ -29,7 +29,12 @@ export class BusinessTopNavbarComponent implements OnInit {
   ngOnInit(): void {
     this.fetchBusinessDetails();
   }
-
+  
+  navigateToSettings(): void {
+    console.log("clicked");
+    this.router.navigate(['business-home/settings/business-information']);
+  }
+  
   navigateToSearch(): void {
     this.router.navigate(['business-home/search']);
   }
@@ -37,17 +42,23 @@ export class BusinessTopNavbarComponent implements OnInit {
   fetchBusinessDetails() {
     this.businessNavigationService.getBusinessDetails().subscribe({
       next: (data: UserProfileDTO[]) => {
+        console.log('Raw Data:', data);
 
         if (data.length > 0) {
-          this.business = data[0];
+          this.business = data[0]; 
+          console.log('Business Details:', this.business);
         } else {
+          console.warn('No business details found.');
           this.business = {}; 
         }
       },
-      error: (error) => {
+      error: (error:any) => {
+        console.error('Failed to fetch business details', error);
         this.business = {}; 
       },
-      complete: () => {}
+      complete: () => {
+        console.log('Business information fetching completed');
+      }
     });
   }
 }
