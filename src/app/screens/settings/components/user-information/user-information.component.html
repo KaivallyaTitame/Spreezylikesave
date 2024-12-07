@@ -1,0 +1,73 @@
+<div class="mb-2 ml-4 mt-16">
+    <header class="flex items-center mb-2">
+      <button class="icon-btn" aria-label="Back" (click)="handleClick()">
+        <i class="ri-arrow-left-line"></i>
+      </button>
+      <h1 class="text-black font-bold text-xl mb-2 mt-2">Profile Information</h1>
+    </header>
+    <h2 class="text-gray-500 text-sm font-semi-bold mb-1">Update Profile Details</h2>
+</div>
+<form [formGroup]="profileInformation" (ngSubmit)="handleSubmit()">
+
+    <div class="font-roboto text-black text-base mt-4 ml-4">
+        <label for="profile">Profile Picture</label>
+        <app-image-component id="profile" *ngIf="imageFileName" [imageFileName]="imageFileName"></app-image-component>
+    </div>
+
+    <div class="font-roboto text-black text-base mt-4 ml-4">
+        <label for="name">Name*</label>
+    </div>
+    <div class="ml-4">
+        <input formControlName="name" type="text" name="name" required class="name-input w-[330px] h-[28px] mt-1 border border-[#ED6A5A] rounded-md p-2" placeholder="current name" id="name">
+        <div *ngIf="profileInformation.get('name')?.touched && profileInformation.get('name')?.invalid" class="text-red-500">Name is required</div>
+    </div>
+
+    <div class="font-roboto text-black text-base mt-4 ml-4">
+        <label for="username">Username</label>
+    </div>
+    <div class="ml-4">
+        <input formControlName="username" type="text" name="username" required class="username-input w-[330px] h-[28px] mt-1 border border-[#ED6A5A] rounded-md p-2" placeholder="current username" id="username" readonly>
+        <div *ngIf="profileInformation.get('username')?.touched && profileInformation.get('username')?.invalid" class="text-red-500">Username is required</div>
+    </div>
+    
+    <div class="font-roboto text-black text-base mt-4 ml-4">
+        <label for="contactNumber">Phone Number*</label>
+    </div>
+    <div class="ml-4">
+        <input formControlName="contactNumber" type="number" name="contactNumber" required class="phone-input w-[330px] h-[28px] mt-1 border border-[#ED6A5A] rounded-md p-2" placeholder="current contact number" id="contactNumber">
+        <div *ngIf="profileInformation.get('contactNumber')?.touched && profileInformation.get('contactNumber')?.invalid" class="text-red-500">Phone Number is required</div>
+    </div>
+
+    <div class="font-roboto text-black text-base mt-4 ml-4">
+        <label for="emailID">Email ID*</label>
+    </div>
+    <div class="ml-4">
+        <input formControlName="emailID" type="text" name="emailID" required class="email-input w-[330px] h-[28px] mt-1 border border-[#ED6A5A] rounded-md p-2" placeholder="current emailID" id="emailID">
+        <div *ngIf="profileInformation.get('emailID')?.touched && profileInformation.get('emailID')?.invalid" class="text-red-500">Email ID is required</div>
+    </div>
+
+    <div class="font-roboto text-black text-base mt-4 ml-4">
+        <label for="gender">Gender*</label>
+    </div>
+    <div class="ml-4">
+        <select formControlName="gender" name="gender" required
+            class="gender-input w-[330px] h-[40px] mt-1 border border-[#ED6A5A] rounded-md p-2 bg-white text-black"
+            id="gender">
+            <option value="" disabled selected>Select gender</option>
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+        </select>
+        <div *ngIf="profileInformation.get('gender')?.touched && profileInformation.get('gender')?.invalid" class="text-red-500 mt-1">Gender is required</div>
+    </div>
+
+    <div class="flex items-center ml-10 mt-4 mb-16">
+        <button type="button" class="text-[14px] font-['Roboto'] w-[130px] h-[35px] bg-[#ED6A5A] text-white border border-[#ED6A5A] rounded-md hover:bg-[#f57c6c] focus:outline-none focus:ring-4 focus:ring-[#ED6A5A] mt-2" (click)="resetForm()">RESET DETAILS</button>
+        <button type="submit" class="text-[14px] font-['Roboto'] w-[130px] h-[35px] bg-[#ED6A5A] text-white border border-[#ED6A5A] rounded-md ml-4 hover:bg-[#f57c6c] focus:outline-none focus:ring-4 focus:ring-[#ED6A5A] ml-2 mt-2">UPDATE</button>
+    </div>
+</form>
+<div *ngIf="showPopUp">
+    <app-pop-up [messageTitle]="popUpTitle" [messageBody]="popUpBody" (close)="onPopUpClose()"></app-pop-up>
+</div>
+<div *ngIf="loading">
+    <app-loader></app-loader>
+</div>

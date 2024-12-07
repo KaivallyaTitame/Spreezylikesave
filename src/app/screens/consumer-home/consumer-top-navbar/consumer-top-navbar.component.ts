@@ -20,7 +20,7 @@ export class ConsumerTopNavbarComponent implements OnInit {
     arrowRightFromBracket: faArrowRightFromBracket
   };
 
-  consumer: any;  
+  consumer: any;
 
   constructor(private router: Router, private consumernavigationservice: ConsumerNavigationService) {}
 
@@ -31,22 +31,14 @@ export class ConsumerTopNavbarComponent implements OnInit {
   fetchConsumerInformation() {
     this.consumernavigationservice.getConsumerDetails().subscribe({
       next: (data: UserProfileDTO[]) => {
-        console.log('Raw Data:', data); 
-  
         if (data.length > 0) {
-          this.consumer = data[0];  
-          console.log('Consumer Details:', this.consumer);
+          this.consumer = data[0];
         } else {
-          console.warn('No Consumer details found.');
-          this.consumer = {};  
+          this.consumer = {};
         }
       },
-      error: (error) => {
-        console.error('Failed to fetch Consumer details', error);
-        this.consumer = {}; 
-      },
-      complete: () => {
-        console.log('Consumer information fetching completed');
+      error: () => {
+        this.consumer = {};
       }
     });
   }
