@@ -1,7 +1,7 @@
 import { throwError, timeout, catchError, Observable } from 'rxjs';
 import { AdvertisementDetails } from 'src/app/models/ad-details';
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { UserDetails } from '../models/UserDetails';
 
 @Injectable({
@@ -11,11 +11,17 @@ import { UserDetails } from '../models/UserDetails';
 
 export class UserService {
 
-  private userUrl='https://dummyjson.com/c/2c5d-5b3e-4419-b5ee';
+  // private userUrl='https://dummyjson.com/c/2c5d-5b3e-4419-b5ee';
+  private imageUrl ='https://images.spreezy.in';
+  private userUrl='http://192.168.1.2:8762/user/profile';
   private profilePostUrl='http://192.168.1.2:8082/feed-on-profile-page/posts-section';
   private savedPostUrl='http://192.168.1.2:8082/feed-on-profile-page/posts-section';
 
   constructor(private http: HttpClient) { }
+
+  getImageUrl(username: string, imageName: string): string {
+    return `${this.imageUrl}/${username}/${imageName}`;
+  }
 
   getUserDetails(username: string): Observable<UserDetails> {
     return this.http.get<UserDetails>(`${this.userUrl}/${username}`, {

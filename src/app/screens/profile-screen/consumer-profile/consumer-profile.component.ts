@@ -27,7 +27,7 @@ export class ConsumerProfileComponent implements OnInit{
   popupBody: string = '';
 
   constructor(
-    private userService: UserService,
+    private UserService: UserService,
     private route: ActivatedRoute
   ) {}
 
@@ -40,37 +40,54 @@ export class ConsumerProfileComponent implements OnInit{
       }
     });
   }
-
+  
   fetchUserDetails(username: string) {
-    this.userService.getUserDetails(username)
+    this.UserService.getUserDetails(username)
       .subscribe({
-        next:(data) => {
+        next: (data) => {
+          // Map the profile picture URL
+          if (data.profileImageUrl) {
+            data.profileImageUrl = this.UserService.getImageUrl(username, data.profileImageUrl);
+          }
           this.userDetails = data;
         },
-        error:(error) => {
+        error: (error) => {
           this.showError(error, 'Please try again later.');
         }
       });
   }
-
+  
   fetchSavedPosts(username: string, page: number) {
     this.loadingSavedPosts = true;
-    this.userService.getSavedPosts(username, page, this.postsPerPage)
+    this.UserService.getSavedPosts(username, page, this.postsPerPage)
       .subscribe({
         next: (data) => {
-          this.visibleSavedPosts.push(...data); // Append new data
+          // Map image URLs for saved posts
+          data.forEach(post => {
+            // Resolve profileImageUrl
+            if (post.profileImageUrl) {
+              post.profileImageUrl = this.UserService.getImageUrl(username, post.profileImageUrl);
+            }
+            // Resolve imagePaths
+            if (post.imagePaths && post.imagePaths.length > 0) {
+              post.imagePaths = post.imagePaths.map(imagePath =>
+                this.UserService.getImageUrl(username, imagePath)
+              );
+            }
+          });
+          this.visibleSavedPosts.push(...data);
           this.loadingSavedPosts = false;
           if (data.length > 0) {
             this.savedPostPage++; // Increment page if there are more posts
           }
         },
         error: (error) => {
-          this.showError(error, 'Unable to load saved posts.');
+          this.showError(error, 'Please check your connection.');
           this.loadingSavedPosts = false;
         }
       });
   }
-
+  
   showError(title: string, body: string) {
     this.popupTitle = title;
     this.popupBody = body;

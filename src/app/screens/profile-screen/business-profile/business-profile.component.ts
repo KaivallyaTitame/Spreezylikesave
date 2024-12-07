@@ -70,10 +70,14 @@ export class BusinessProfileComponent implements OnInit{
   fetchUserDetails(username: string) {
     this.UserService.getUserDetails(username)
       .subscribe({
-        next:(data) => {
+        next: (data) => {
+          // Map the profile picture URL
+          if (data.profileImageUrl) {
+            data.profileImageUrl = this.UserService.getImageUrl(username, data.profileImageUrl);
+          }
           this.userDetails = data;
         },
-        error:(error) => {
+        error: (error) => {
           this.showError(error, 'Please try again later.');
         }
       });
@@ -84,7 +88,20 @@ export class BusinessProfileComponent implements OnInit{
     this.UserService.getProfilePosts(username, page, this.postsPerPage)
       .subscribe({
         next: (data) => {
-          this.visibleProfilePosts.push(...data); // Append new data
+          // Map image URLs for profile posts
+          data.forEach(post => {
+            // Resolve profileImageUrl
+            if (post.profileImageUrl) {
+              post.profileImageUrl = this.UserService.getImageUrl(username, post.profileImageUrl);
+            }
+            // Resolve imagePaths
+            if (post.imagePaths && post.imagePaths.length > 0) {
+              post.imagePaths = post.imagePaths.map(imagePath =>
+                this.UserService.getImageUrl(username, imagePath)
+              );
+            }
+          });
+          this.visibleProfilePosts.push(...data);
           this.loadingProfilePosts = false;
           if (data.length > 0) {
             this.profilePostPage++; // Increment page if there are more posts
@@ -96,13 +113,26 @@ export class BusinessProfileComponent implements OnInit{
         }
       });
   }
-
+  
   fetchSavedPosts(username: string, page: number) {
     this.loadingSavedPosts = true;
     this.UserService.getSavedPosts(username, page, this.postsPerPage)
       .subscribe({
         next: (data) => {
-          this.visibleSavedPosts.push(...data); // Append new data
+          // Map image URLs for saved posts
+          data.forEach(post => {
+            // Resolve profileImageUrl
+            if (post.profileImageUrl) {
+              post.profileImageUrl = this.UserService.getImageUrl(username, post.profileImageUrl);
+            }
+            // Resolve imagePaths
+            if (post.imagePaths && post.imagePaths.length > 0) {
+              post.imagePaths = post.imagePaths.map(imagePath =>
+                this.UserService.getImageUrl(username, imagePath)
+              );
+            }
+          });
+          this.visibleSavedPosts.push(...data);
           this.loadingSavedPosts = false;
           if (data.length > 0) {
             this.savedPostPage++; // Increment page if there are more posts
@@ -114,6 +144,8 @@ export class BusinessProfileComponent implements OnInit{
         }
       });
   }
+  
+
 
   showError(title: string, body: string) {
     this.popupTitle = title;

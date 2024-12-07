@@ -3,7 +3,7 @@
       <div *ngIf="userDetails" class="profile-container">
   <!-- Consumer Details -->
         <div class="header bg-white p-2 flex items-center" style="font-family: 'Roboto', sans-serif; font-weight: 400; letter-spacing: 0.5px;">
-          <img src="{{ userDetails.profilePictureUrl }}" alt="{{ userDetails.name }}'s Profile Picture" class="rounded-full ml-2 w-24 h-24 border border-red-5">
+          <img src="{{ userDetails.profileImageUrl }}" alt="{{ userDetails.name }}'s Profile Picture" class="rounded-full ml-2 w-24 h-24 border border-red-5">
           <div class="ml-5 mt-2">
             <h2 class="text-black text-lg font-bold tracking-wider truncate max-w-screen-md">{{ userDetails.name }}</h2>
             <p class="text-red-500 mb-2 tracking-wider truncate max-w-screen-md">&#64;{{ userDetails.username }}</p>

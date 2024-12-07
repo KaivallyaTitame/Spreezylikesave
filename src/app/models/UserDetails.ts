@@ -1,7 +1,7 @@
 export class UserDetails {
     name: string = '';
     username: string = '';
-    profilePictureUrl: string = '';
+    profileImageUrl: string = '';
     numberOfAdvertisements: string = '';
     followers: string = '';
     following: string = '';
@@ -9,4 +9,5 @@ export class UserDetails {
     phoneNumber: string = '';
     facebookUrl: string = '';
     instagramUrl: string = '';
+    whatsapp: string = '';
 }
