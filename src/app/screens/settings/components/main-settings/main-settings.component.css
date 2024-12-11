@@ -1,0 +1,12 @@
+.list-item {
+    padding: 16px 0;
+    cursor: pointer;
+}
+  
+.icon-btn {
+    background: none;
+    border: none;
+    font-size: 25px;
+    cursor: pointer;
+}
+  

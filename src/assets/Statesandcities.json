@@ -1,0 +1,175 @@
+{
+  "state": [
+    {
+      "name": "Andhra Pradesh",
+      "cities": [
+        "Visakhapatnam", "Vijayawada", "Guntur", "Amaravati", "Tirupati", "Nellore", 
+        "Kurnool", "Kadapa", "Rajahmundry", "Kakinada", "Anantapur", "Eluru", "Ongole", 
+        "Srikakulam", "Chittoor", "Vizianagaram", "Machilipatnam", "Proddatur", "Adoni", 
+        "Tenali", "Nandyal", "Bhimavaram", "Gudivada", "Hindupur", "Narasaraopet", 
+        "Tadipatri", "Tadepalligudem", "Samalkot", "Dharmavaram", "Madanapalle", 
+        "Tanuku", "Markapur", "Chirala", "Palasa Kasibugga", "Tuni", "Kavali", 
+        "Sullurpeta", "Ponnur", "Bapatla", "Mangalagiri", "Nidadavole", "Rayachoti", 
+        "Srikalahasti", "Yemmiganur", "Jaggayyapeta"
+      ]
+    },
+    {
+      "name": "Arunachal Pradesh",
+      "cities": ["Itanagar", "Naharlagun", "Pasighat", "Tawang", "Ziro", "Aalo", "Bomdila"]
+    },
+    {
+      "name": "Assam",
+      "cities": [
+        "Guwahati", "Silchar", "Dibrugarh", "Jorhat", "Nagaon", "Tinsukia", 
+        "Tezpur", "Sivasagar", "Goalpara", "Dhubri"
+      ]
+    },
+    {
+      "name": "Bihar",
+      "cities": [
+        "Patna", "Gaya", "Bhagalpur", "Muzaffarpur", "Purnia", "Darbhanga", 
+        "Ara", "Begusarai", "Katihar", "Munger", "Chapra", "Sasaram"
+      ]
+    },
+    {
+      "name": "Chhattisgarh",
+      "cities": [
+        "Raipur", "Bhilai", "Bilaspur", "Korba", "Durg", "Rajnandgaon", 
+        "Jagdalpur", "Raigarh", "Ambikapur"
+      ]
+    },
+    {
+      "name": "Goa",
+      "cities": ["Panaji", "Vasco da Gama", "Margao", "Mapusa", "Ponda"]
+    },
+    {
+      "name": "Gujarat",
+      "cities": [
+        "Ahmedabad", "Surat", "Vadodara", "Rajkot", "Bhavnagar", "Jamnagar", 
+        "Junagadh", "Gandhinagar", "Nadiad", "Porbandar", "Morbi", "Surendranagar"
+      ]
+    },
+    {
+      "name": "Haryana",
+      "cities": [
+        "Chandigarh", "Faridabad", "Gurgaon", "Panipat", "Ambala", "Hisar", 
+        "Rohtak", "Karnal", "Yamunanagar", "Panchkula", "Bhiwani", "Sirsa"
+      ]
+    },
+    {
+      "name": "Himachal Pradesh",
+      "cities": ["Shimla", "Manali", "Dharamshala", "Mandi", "Solan", "Kullu", "Chamba"]
+    },
+    {
+      "name": "Jharkhand",
+      "cities": [
+        "Ranchi", "Jamshedpur", "Dhanbad", "Bokaro", "Deoghar", "Hazaribagh", 
+        "Giridih", "Ramgarh"
+      ]
+    },
+    {
+      "name": "Karnataka",
+      "cities": [
+        "Bangalore", "Mysore", "Hubli", "Mangalore", "Belgaum", "Gulbarga", 
+        "Davanagere", "Bellary", "Shimoga", "Tumkur", "Bijapur", "Chitradurga"
+      ]
+    },
+    {
+      "name": "Kerala",
+      "cities": [
+        "Thiruvananthapuram", "Kochi", "Kozhikode", "Thrissur", "Kannur", 
+        "Kollam", "Alappuzha", "Palakkad", "Malappuram", "Pathanamthitta"
+      ]
+    },
+    {
+      "name": "Madhya Pradesh",
+      "cities": [
+        "Bhopal", "Indore", "Jabalpur", "Gwalior", "Ujjain", "Satna", 
+        "Ratlam", "Sagar", "Rewa", "Chhindwara"
+      ]
+    },
+    {
+      "name": "Maharashtra",
+      "cities": [
+        "Mumbai", "Pune", "Nagpur", "Nashik", "Thane", "Aurangabad", 
+        "Solapur", "Amravati", "Kolhapur", "Nanded", "Sangli", "Jalgaon", "Ahmednagar"
+      ]
+    },
+    {
+      "name": "Manipur",
+      "cities": ["Imphal", "Thoubal", "Bishnupur", "Churachandpur", "Kakching", "Ukhrul"]
+    },
+    {
+      "name": "Meghalaya",
+      "cities": ["Shillong", "Tura", "Jowai", "Nongstoin", "Baghmara"]
+    },
+    {
+      "name": "Mizoram",
+      "cities": ["Aizawl", "Lunglei", "Champhai", "Serchhip", "Kolasib"]
+    },
+    {
+      "name": "Nagaland",
+      "cities": ["Kohima", "Dimapur", "Mokokchung", "Tuensang", "Wokha"]
+    },
+    {
+      "name": "Odisha",
+      "cities": [
+        "Bhubaneswar", "Cuttack", "Rourkela", "Sambalpur", "Berhampur", "Balasore", 
+        "Puri", "Jeypore", "Baripada", "Bhadrak"
+      ]
+    },
+    {
+      "name": "Punjab",
+      "cities": [
+        "Chandigarh", "Ludhiana", "Amritsar", "Jalandhar", "Patiala", 
+        "Bathinda", "Hoshiarpur", "Mohali"
+      ]
+    },
+    {
+      "name": "Rajasthan",
+      "cities": [
+        "Jaipur", "Jodhpur", "Udaipur", "Kota", "Ajmer", "Bikaner", "Alwar", "Bharatpur"
+      ]
+    },
+    {
+      "name": "Sikkim",
+      "cities": ["Gangtok", "Namchi", "Gyalshing", "Ravangla", "Mangan"]
+    },
+    {
+      "name": "Tamil Nadu",
+      "cities": [
+        "Chennai", "Coimbatore", "Madurai", "Tiruchirappalli", "Salem", 
+        "Erode", "Tirunelveli", "Vellore", "Thoothukudi"
+      ]
+    },
+    {
+      "name": "Telangana",
+      "cities": [
+        "Hyderabad", "Warangal", "Nizamabad", "Karimnagar", "Khammam", 
+        "Mahbubnagar", "Ramagundam", "Siddipet"
+      ]
+    },
+    {
+      "name": "Tripura",
+      "cities": ["Agartala", "Dharmanagar", "Udaipur", "Kailashahar"]
+    },
+    {
+      "name": "Uttar Pradesh",
+      "cities": [
+        "Lucknow", "Kanpur", "Varanasi", "Agra", "Meerut", "Allahabad", 
+        "Noida", "Ghaziabad", "Bareilly", "Aligarh", "Moradabad"
+      ]
+    },
+    {
+      "name": "Uttarakhand",
+      "cities": ["Dehradun", "Haridwar", "Roorkee", "Haldwani", "Rudrapur"]
+    },
+    {
+      "name": "West Bengal",
+      "cities": [
+        "Kolkata", "Howrah", "Asansol", "Siliguri", "Durgapur", "Kharagpur", 
+        "Darjeeling", "Haldia", "Malda", "Jalpaiguri"
+      ]
+    }
+  ]
+}
