@@ -2,12 +2,12 @@
   <div class="fixed top-0 w-full z-30 flex box-border h-auto">
     <div class="navbar py-1 bg-primarycolor-0 shadow-none">
       <div class="navbar-start flex items-center">
-        <input type="checkbox" id="drawer-left" class="drawer-toggle hidden" />
+        <input type="checkbox" id="drawer-left" #drawerLeft class="drawer-toggle hidden" />
         <label for="drawer-left" class="btn w-9 bg-primarycolor-0 flex items-center justify-center" style="height: 7.3%;">
           <fa-icon class="text-white text-2xl" [icon]="faBars"></fa-icon>
         </label>
 
-        <label class="overlay bg-white h-full" for="drawer-left"></label>
+        <label for="drawer-left" class="overlay fixed top-0 left-0 w-full h-full bg-black opacity-50 z-20 hidden"></label>
         <div class="drawer fixed top-0 left-0 w-4/5 h-full border-r-2 z-40 bg-white" style="margin-top: 56px;">
           <div class="drawer-content pt-2 px-2 mt-1 overflow-y-auto" style="height: 87%;">
             <aside class="sidebar h-full flex flex-col bg-white">
@@ -31,9 +31,17 @@
                         <fa-icon class="pl-0 pr-1 text-lg w-8 h-8 text-primarycolor-0" [icon]="faFilePen"></fa-icon>
                         <span class="pl-1 text-lg font-normal">Share Feedback</span>
                       </li>
-                      <li class="menu-item py-1" (click)="navigateToSettings()">
-                        <fa-icon class="pl-0 pr-1 text-lg w-8 h-8 text-primarycolor-0" [icon]="faGear"></fa-icon>
-                        <span class="pl-1 text-lg font-normal">Settings</span>
+                      <li class="menu-item py-1">
+                        <button
+                          class="w-full flex items-center py-1 px-2 text-left text-lg font-normal"
+                          (click)="navigateToSettings(drawerLeft)"
+                        >
+                          <fa-icon
+                            class="pl-0 pr-1 text-lg w-8 h-8 text-primarycolor-0"
+                            [icon]="faGear"
+                          ></fa-icon>
+                          <span class="pl-1">Settings</span>
+                        </button>
                       </li>
                       <li class="menu-item py-1">
                         <img src="assets/logo.png" alt="Contact Us" class="pl-0 pr-1 w-8 h-8" />

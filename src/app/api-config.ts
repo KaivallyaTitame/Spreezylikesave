@@ -23,6 +23,10 @@ export const API_CONFIG = {
 
   // Search Service Endpoints
   SEARCH_BUSINESSES: (query: string) => `${environment.apiGateway}/user/search/${query}`,
+  FOLLOW_BUSINESS: (sourceUsername: string, targetUsername: string) => 
+    `${environment.apiGateway}/user/follow/${sourceUsername}/${targetUsername}`,
+  UNFOLLOW_BUSINESS: (sourceUsername: string, targetUsername: string) => 
+    `${environment.apiGateway}/user/unfollow/${sourceUsername}/${targetUsername}`,
 
   // Settings Service Endpoints
   SETTINGS: {
