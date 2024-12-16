@@ -14,6 +14,7 @@ export class BusinessNavigationService {
   is_Post:boolean = false;
   is_Notification:boolean = false;
   is_Profile:boolean = false;
+  is_Search:boolean = false;
 
   getBusinessDetails(): Observable<UserProfileDTO[]> { 
     return this.http.get<UserProfileDTO[]>('https://dummyjson.com/c/98c2-5f66-47f6-9292', {

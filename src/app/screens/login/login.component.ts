@@ -14,11 +14,14 @@ export class LoginComponent implements OnInit {
   showPopUp: boolean = false;
   popupMessageTitle: string = "";
   popupMessageBody: string = "";
+  
   countryCodes: { value: string, label: string }[] = []; 
-
+  selectedCountryCode: string = '+91'; 
+  
   form: FormGroup;
   submitted: boolean = false;
   otpSent: boolean = false;
+  isLoaderVisible = false;
 
   constructor(
     private authService: AuthService,
@@ -28,7 +31,7 @@ export class LoginComponent implements OnInit {
     private http: HttpClient
   ) {
     this.form = this.formBuilder.group({
-      countryCode: ["", Validators.required], 
+      countryCode: [this.selectedCountryCode, Validators.required], 
       phonenumber: [
         "",
         [
@@ -52,18 +55,18 @@ export class LoginComponent implements OnInit {
     return this.form.controls;
   }
 
-  isLoaderVisible = false;
-
   onSubmit(): void {
     this.submitted = true;
     if (this.form.invalid) {
       return;
     }
+
     const phoneNumber = this.form.value.phonenumber;
     const selectedCountryCode = this.form.value.countryCode;
     const fullPhoneNumber = selectedCountryCode + phoneNumber;
 
     this.isLoaderVisible = true;
+
     this.otpService.sendOtp(fullPhoneNumber).subscribe({
       next: (response) => {
         this.isLoaderVisible = false;

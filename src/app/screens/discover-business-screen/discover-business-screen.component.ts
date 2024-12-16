@@ -34,7 +34,9 @@ export class DiscoverBusinessScreenComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.decodeToken();
+    // const userTypeForTesting: 'Consumer' | 'Business' = 'Consumer'; // Change this to 'Business' for testing Business user type //use only for apk testing
+    this.decodeToken(); // comment this line when doing apk testing
+    // this.decodeToken(userTypeForTesting); //use only for apk testing 
     this.searchService.businesses$.subscribe({
       next: (businesses) => {
         this.businesses = businesses.map(business => ({
@@ -49,7 +51,20 @@ export class DiscoverBusinessScreenComponent implements OnInit {
   }
 
   decodeToken(): void {
-    const token = localStorage.getItem('token') || '';
+    const token = localStorage.getItem('token') || '';  //comment out for apk testing
+    
+  //  // use below code only for apk testing  
+  //   let token = '';
+
+  // // use appropriate token based on userType for APK testing, ie, 'Consumer' or 'Business'
+  // if (userTypeForTesting === 'Consumer') {
+  //   token = "eyJhbGciOiJIUzI1NiJ9.eyJVc2VyIFR5cGUiOiJDb25zdW1lciIsIlRva2VuX3R5cGUiOiJBY2Nlc3MgVG9rZW4iLCJpc3MiOiJTcHJlZXp5Iiwic3ViIjoidmFpYmhhdkkiLCJpYXQiOjE3MzQwMjczMTcsImV4cCI6MTczNDAzMDkxN30.tVmeFOH7OLUuydmuV2sOQfvf8PI_0IPLsv9Up8zayao";
+  // } else if (userTypeForTesting === 'Business') {
+  //   token = "eyJhbGciOiJIUzI1NiJ9.eyJVc2VyIFR5cGUiOiJCdXNpbmVzcyIsIlRva2VuX3R5cGUiOiJBY2Nlc3MgVG9rZW4iLCJpc3MiOiJTcHJlZXp5Iiwic3ViIjoidkxpUTV0TkJqX0dDYzliRGJfN1ciLCJpYXQiOjE3MzQwMjc1NDAsImV4cCI6MTczNDAzMTE0MH0.s0sz54jxh9rhI0EoNRZeqI3GUoAdEzUqcGoF4EE0uZ0";
+  // }
+
+  // localStorage.setItem('token', token); //use only for apk testing 
+    
     if (token) {
       try {
         this.decodedToken = this.jwtDecoder.decodeInfoFromToken(token);
