@@ -14,7 +14,8 @@ import { ActivatedRoute } from '@angular/router';
   styleUrls: ['./business-profile.component.css']
 })
 export class BusinessProfileComponent implements OnInit{
-  userDetails: UserDetails;
+  userDetails: UserDetails | null = null; // User details fetched from backend
+  loadingUserDetails: boolean = true; // To show skeletons while data is loading
   @Input() profilePosts!: AdvertisementDetails[];
   @Input() savedPosts!: AdvertisementDetails[];
   visibleProfilePosts: AdvertisementDetails[] = [];
@@ -68,33 +69,34 @@ export class BusinessProfileComponent implements OnInit{
   }
 
   fetchUserDetails(username: string) {
+    this.loadingUserDetails = true; // Show skeletons during loading
     this.UserService.getUserDetails(username)
       .subscribe({
         next: (data) => {
-          // Map the profile picture URL
           if (data.profileImageUrl) {
             data.profileImageUrl = this.UserService.getImageUrl(username, data.profileImageUrl);
           }
           this.userDetails = data;
+          this.loadingUserDetails = false; // Hide skeletons after successful fetch
         },
         error: (error) => {
-          this.showError(error, 'Please try again later.');
+          this.userDetails = null; // Reset user details on error
+          this.loadingUserDetails = false; // Stop skeletons even if there's an error
+          this.showError('Error fetching profile', 'Please try again later.');
         }
       });
   }
+
 
   fetchProfilePosts(username: string, page: number) {
     this.loadingProfilePosts = true;
     this.UserService.getProfilePosts(username, page, this.postsPerPage)
       .subscribe({
         next: (data) => {
-          // Map image URLs for profile posts
           data.forEach(post => {
-            // Resolve profileImageUrl
             if (post.profileImageUrl) {
               post.profileImageUrl = this.UserService.getImageUrl(username, post.profileImageUrl);
             }
-            // Resolve imagePaths
             if (post.imagePaths && post.imagePaths.length > 0) {
               post.imagePaths = post.imagePaths.map(imagePath =>
                 this.UserService.getImageUrl(username, imagePath)
@@ -119,13 +121,10 @@ export class BusinessProfileComponent implements OnInit{
     this.UserService.getSavedPosts(username, page, this.postsPerPage)
       .subscribe({
         next: (data) => {
-          // Map image URLs for saved posts
           data.forEach(post => {
-            // Resolve profileImageUrl
             if (post.profileImageUrl) {
               post.profileImageUrl = this.UserService.getImageUrl(username, post.profileImageUrl);
             }
-            // Resolve imagePaths
             if (post.imagePaths && post.imagePaths.length > 0) {
               post.imagePaths = post.imagePaths.map(imagePath =>
                 this.UserService.getImageUrl(username, imagePath)

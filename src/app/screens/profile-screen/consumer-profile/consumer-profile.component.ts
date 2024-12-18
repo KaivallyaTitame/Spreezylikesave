@@ -10,9 +10,9 @@ import { ActivatedRoute } from '@angular/router';
   templateUrl: './consumer-profile.component.html',
   styleUrls: ['./consumer-profile.component.css']
 })
-
-export class ConsumerProfileComponent implements OnInit{
-  userDetails: UserDetails;
+export class ConsumerProfileComponent implements OnInit {
+  userDetails: UserDetails | null = null; // User details fetched from backend
+  loadingUserDetails: boolean = true; // To show skeletons while data is loading
   @Input() savedPosts!: AdvertisementDetails[];
   visibleSavedPosts: AdvertisementDetails[] = [];
   savedPostPage: number = 0;
@@ -40,35 +40,35 @@ export class ConsumerProfileComponent implements OnInit{
       }
     });
   }
-  
+
   fetchUserDetails(username: string) {
+    this.loadingUserDetails = true; // Show skeletons during loading
     this.UserService.getUserDetails(username)
       .subscribe({
         next: (data) => {
-          // Map the profile picture URL
           if (data.profileImageUrl) {
             data.profileImageUrl = this.UserService.getImageUrl(username, data.profileImageUrl);
           }
           this.userDetails = data;
+          this.loadingUserDetails = false; // Hide skeletons after successful fetch
         },
         error: (error) => {
-          this.showError(error, 'Please try again later.');
+          this.userDetails = null; // Reset user details on error
+          this.loadingUserDetails = false; // Stop skeletons even if there's an error
+          this.showError('Error fetching profile', 'Please try again later.');
         }
       });
   }
-  
+
   fetchSavedPosts(username: string, page: number) {
     this.loadingSavedPosts = true;
     this.UserService.getSavedPosts(username, page, this.postsPerPage)
       .subscribe({
         next: (data) => {
-          // Map image URLs for saved posts
           data.forEach(post => {
-            // Resolve profileImageUrl
             if (post.profileImageUrl) {
               post.profileImageUrl = this.UserService.getImageUrl(username, post.profileImageUrl);
             }
-            // Resolve imagePaths
             if (post.imagePaths && post.imagePaths.length > 0) {
               post.imagePaths = post.imagePaths.map(imagePath =>
                 this.UserService.getImageUrl(username, imagePath)
@@ -82,12 +82,12 @@ export class ConsumerProfileComponent implements OnInit{
           }
         },
         error: (error) => {
-          this.showError(error, 'Please check your connection.');
-          this.loadingSavedPosts = false;
+          this.loadingSavedPosts = false; // Stop loading spinner on error
+          this.showError('Error fetching posts', 'Please check your connection.');
         }
       });
   }
-  
+
   showError(title: string, body: string) {
     this.popupTitle = title;
     this.popupBody = body;
@@ -103,10 +103,4 @@ export class ConsumerProfileComponent implements OnInit{
       this.fetchSavedPosts(this.username!, this.savedPostPage); // Load more saved posts
     }
   }
-// Properties to store scroll positions for each tab
-private scrollPositions: { [key: string]: number } = {
-  posts: 0,
-  saved: 0,
-};
-
 }
