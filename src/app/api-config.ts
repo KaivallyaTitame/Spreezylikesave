@@ -1,4 +1,4 @@
-import { environment } from '../environments/environment.production';
+import { environment } from 'src/environments/environment.production';
 
 export const API_CONFIG = {
   // Image Service
@@ -14,9 +14,9 @@ export const API_CONFIG = {
   GET_BUSINESS_DETAILS: (username: string) =>
     `${environment.apiGateway}/user/profile/${username}`,
   GET_PROFILE_POSTS: (username: string) =>
-    `${environment.apiGateway}/feed/business/profile/${username}`,
+    `${environment.apiGateway}/feed-on-profile-page/posts-section/${username}`,
   GET_SAVED_POSTS: (username: string) =>
-    `${environment.apiGateway}/feed/saved/${username}`,
+    `${environment.apiGateway}/feed-on-profile-page/posts-section/${username}`,
 
   // Feedback Service Endpoints
   SAVE_FEEDBACK: `${environment.apiGateway}/feedback/saveFeedback`,

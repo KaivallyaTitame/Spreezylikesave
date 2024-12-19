@@ -3,31 +3,27 @@ import { AdvertisementDetails } from 'src/app/models/ad-details';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { UserDetails } from '../models/UserDetails';
+import { API_CONFIG } from '../api-config';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
-
-
 export class UserService {
+  private imageUrl = API_CONFIG.IMAGE_URL;
 
-  // private userUrl='https://dummyjson.com/c/2c5d-5b3e-4419-b5ee';
-  private imageUrl ='https://images.spreezy.in';
-  private userUrl='http://192.168.1.2:8762/user/profile';
-  private profilePostUrl='http://192.168.1.2:8082/feed-on-profile-page/posts-section';
-  private savedPostUrl='http://192.168.1.2:8082/feed-on-profile-page/posts-section';
-
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   getImageUrl(username: string, imageName: string): string {
     return `${this.imageUrl}/${username}/${imageName}`;
   }
 
   getUserDetails(username: string): Observable<UserDetails> {
-    return this.http.get<UserDetails>(`${this.userUrl}/${username}`, {
-      responseType: 'json'
-    })
-    .pipe(
+    return this.http.get<UserDetails>(
+      API_CONFIG.GET_BUSINESS_DETAILS(username),
+      {
+        responseType: 'json',
+      }
+    ).pipe(
       timeout(15000),
       catchError(error => {
         if (error.name === 'TimeoutError') {
@@ -39,31 +35,32 @@ export class UserService {
   }
 
   getProfilePosts(username: string, page: number, postsPerPage: number): Observable<AdvertisementDetails[]> {
-    return this.http.get<AdvertisementDetails[]>(`${this.profilePostUrl}/${username}?page=${page}&pageSize=${postsPerPage}`,{
-      responseType: 'json'
-    })
-      .pipe(
-        timeout(15000),
-        catchError(error => {
-          if (error.name === 'TimeoutError') {
-            return throwError(() => new Error('Request timed out while fetching profile posts.'));
-          }
-          return throwError(() => new Error('Failed to fetch profile posts.'));
-        })
-      );
+    const url = `${API_CONFIG.GET_PROFILE_POSTS(username)}?page=${page}&pageSize=${postsPerPage}`;
+    return this.http.get<AdvertisementDetails[]>(url, {
+      responseType: 'json',
+    }).pipe(
+      timeout(15000),
+      catchError(error => {
+        if (error.name === 'TimeoutError') {
+          return throwError(() => new Error('Request timed out while fetching profile posts.'));
+        }
+        return throwError(() => new Error('Failed to fetch profile posts.'));
+      })
+    );
   }
+
   getSavedPosts(username: string, page: number, postsPerPage: number): Observable<AdvertisementDetails[]> {
-    return this.http.get<AdvertisementDetails[]>(`${this.savedPostUrl}/${username}?page=${page}&pageSize=${postsPerPage}`,{
-      responseType: 'json'
-    })
-      .pipe(
-        timeout(15000),
-        catchError(error => {
-          if (error.name === 'TimeoutError') {
-            return throwError(() => new Error('Request timed out while fetching saved posts.'));
-          }
-          return throwError(() => new Error('Failed to fetch saved posts.'));
-        })
-      );
+    const url = `${API_CONFIG.GET_SAVED_POSTS(username)}?page=${page}&pageSize=${postsPerPage}`;
+    return this.http.get<AdvertisementDetails[]>(url, {
+      responseType: 'json',
+    }).pipe(
+      timeout(15000),
+      catchError(error => {
+        if (error.name === 'TimeoutError') {
+          return throwError(() => new Error('Request timed out while fetching saved posts.'));
+        }
+        return throwError(() => new Error('Failed to fetch saved posts.'));
+      })
+    );
   }
 }

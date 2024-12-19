@@ -12,22 +12,20 @@ export class ProfileInfoComponent {
   @Input() username!: string;
   @Input() imageUrl!: string;
 
-  userType: string = 'Consumer';
+  userType: string = '';
 
   constructor(private router: Router, private jwtDecoder: JwtDecoderService) { }
 
   ngOnInit(): void {
-    // Decode the token to retrieve the user type
-    // const token = localStorage.getItem('token') || '';
-    // if (token) {
-    //   const decodedToken: DecodedToken = this.jwtDecoder.decodeInfoFromToken(token);
-    //   this.userType = decodedToken['User Type'];
-    // }
+    const token = localStorage.getItem('token') || '';
+    if (token) {
+      const decodedToken: DecodedToken = this.jwtDecoder.decodeInfoFromToken(token);
+      this.userType = decodedToken['User Type'];
+    }
   }
 
   onProfileClick(username: string): void {
     console.log('Navigating to profile:', username);
-    // this.router.navigate([`/consumer-home/profile/business-profile/${username}`]);
     if (this.userType === 'Consumer') {
       this.router.navigate([`/consumer-home/profile/business-profile/${username}`]);
     } else if (this.userType === 'Business') {
