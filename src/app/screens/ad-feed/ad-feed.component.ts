@@ -36,9 +36,11 @@ export class AdFeedComponent implements OnInit {
     this.advertisementDetailsService.getAdvertisementDetails().subscribe({
       next: (response) => {
         this.ads = response;
+        console.log(this.ads)
       },
-      
+     
     });
+    
   }
 
   

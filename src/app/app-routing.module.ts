@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { customerGuard } from "./authGuards/customer/customer.guard";
 import { businessGuard } from "./authGuards/business/business.guard";
 import { loginGuard } from "./authGuards/login/login.guard";
+import { OfferDescriptionComponent } from './screens/ad-feed/offer-description/offer-description.component';
 
 const routes: Routes = [
   { path: "", redirectTo: "login", pathMatch: "full" },
@@ -25,6 +26,9 @@ const routes: Routes = [
     // canActivate: [businessGuard]
   },
   {
+    path: 'offer-description/:id', component: OfferDescriptionComponent 
+  },
+  {
     path: "otpscreen/:mobileNumber",
     loadChildren: () => import("./screens/otpScreen/otpscreen.module").then(m => m.OtpScreenModule),
   },
@@ -33,7 +37,8 @@ const routes: Routes = [
     loadChildren: () => import("./screens/consumer-home/consumer-home.module").then(m => m.ConsumerHomeModule),
     // canActivate: [customerGuard]
   },
-  { path: "**", redirectTo: "login"}
+  { path: "**", redirectTo: "login"},
+ 
 ];
 
 @NgModule({

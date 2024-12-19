@@ -12,7 +12,7 @@ import { faBookmark as regularBookmark } from '@fortawesome/free-regular-svg-ico
   styles: []
 })
 export class OfferDescriptionComponent implements OnInit {
-    @Input() offerData!: AdvertisementDetails  // To store the offer details
+   offerData: AdvertisementDetails  // To store the offer details
     isExpired: boolean = false;  // Example boolean for checking expiry
     remainingDays: number = 0;  // To store the remaining days for the offer
   
@@ -38,29 +38,31 @@ export class OfferDescriptionComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private advertisementDetailsService: AdvertisementDetailsService
+    private advertisementDetailsService: AdvertisementDetailsService,private router:Router
   ) {}
 
   ngOnInit(): void {
-    // Get the advertisementId from the route parameter
-    this.route.params.subscribe(params => {
-      this.advertisementId = +params['id']; // Convert the ID to a number
-      this.getOfferDetails(this.advertisementId); // Fetch offer details based on the ID
+    this.route.paramMap.subscribe(params => {
+      this.advertisementId = +params.get('id')!;  // Get ID from the route
+      this.getOfferDetails(this.advertisementId);
     });
   }
-
+  
   // Fetch offer details from the service based on the ID
   getOfferDetails(advertisementId: number): void {
     this.advertisementDetailsService.getAdvertisementDetailsById(advertisementId)
-      .subscribe(
-        (data: AdvertisementDetails) => {
-          this.offerData = data;
+      .subscribe({
+        next: (response) => {
+          this.offerData = response;
+          console.log(this.offerData);
+          this.checkExpiry(); // Call checkExpiry once the data is received
         },
-        (error) => {
-          console.error('Error fetching offer details:', error);
+        error: (err) => {
+          console.error('Error fetching offer details:', err);
         }
-      );
+      });
   }
+  
 
   // Check if the offer is expired
   checkExpiry(): void {

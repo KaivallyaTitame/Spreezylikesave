@@ -6,7 +6,7 @@ import { AdvertisementDetailsService } from 'src/app/services/advertisementTypes
 import { AdvertisementDetails } from 'src/app/models/ad-details';
 import { faBookmark as solidBookmark } from '@fortawesome/free-solid-svg-icons';
 import { faBookmark as regularBookmark } from '@fortawesome/free-regular-svg-icons';
-
+import { Router } from '@angular/router';
 @Component({
   selector: 'app-Event',
   templateUrl: './Event.component.html',
@@ -52,7 +52,7 @@ export class EventComponent implements OnInit {
   isLiked: boolean = false; // State for like
   isDisliked: boolean = false; // State for dislike
 
-  constructor(private advertisementDetailsService: AdvertisementDetailsService) {}
+  constructor(private advertisementDetailsService: AdvertisementDetailsService,private router:Router) {}
 
   
   ngOnInit(): void {
@@ -196,6 +196,8 @@ export class EventComponent implements OnInit {
     // Replace the URL with the website you want to redirect to
     window.location.href = 'https://www.example.com';
   }
-
+  showDetails(advertisementId: number): void {
+    this.router.navigate(['/offer-description', advertisementId]);
+  }
 
 }

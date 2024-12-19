@@ -25,7 +25,7 @@ export class PostComponent implements OnInit {
   showSavedMessage: boolean = false; // Track the display of "Saved" message
   showReportButton: boolean = false; // Track visibility of report button
   showReportSuccess: boolean = false; // Track visibility of success message
-  advertisementId: number;
+ 
   showPopup: boolean = false;
   popupTitle: string = 'Error';
   popupBody: string = '';
@@ -53,7 +53,7 @@ export class PostComponent implements OnInit {
   isDisliked: boolean = false; // State for dislike
 
   constructor(private advertisementDetailsService: AdvertisementDetailsService ,private router:Router) {
-    this.advertisementId = this.postDetails.advertisementId;
+    
   }
 
   ngOnInit(): void {
@@ -160,11 +160,7 @@ export class PostComponent implements OnInit {
     });
   }
   
-  // This method will be called when the "Show Details" button is clicked
-  showDetails(advertisementId: number): void {
-    // Navigate to the offer description or coupon component with the advertisementId
-    this.router.navigate(['/offer-description', advertisementId]);
-  }
+
 
   
 
@@ -199,5 +195,9 @@ export class PostComponent implements OnInit {
       this.showLikeAnimation = false;
       this.showDislikeAnimation = false;
     }, 500); 
+  }
+
+  showDetails(advertisementId: number): void {
+    this.router.navigate(['/offer-description', advertisementId]);
   }
 }  

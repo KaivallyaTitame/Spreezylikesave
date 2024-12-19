@@ -33,24 +33,23 @@ export class CouponComponent implements OnInit {
   popupBody: string = '';
 
   // Font Awesome icons with correct typing
-  faBars = faBars;
-  faUserGroup = faUserGroup;
-  solidBookmark = solidBookmark; // Solid bookmark icon
-  regularBookmark = regularBookmark; // Regular bookmark icon
-  faMagnifyingGlass = faMagnifyingGlass;
-  faThumbsUp = faThumbsUp;
-  faThumbsDown = faThumbsDown;
-  faLocationArrow = faLocationArrow;
-
-  faEllipsisVertical = faEllipsisVertical;
-  faLocationDot = faLocationDot;
-  faHeart = faHeart;
-  faBell = faBell;
-  faCircleUser = faCircleUser;
+  faBars: IconDefinition = faBars;
+  faUserGroup: IconDefinition = faUserGroup;
+  solidBookmark: IconDefinition = solidBookmark; // Solid bookmark icon
+  regularBookmark: IconDefinition = regularBookmark; // Regular bookmark icon
+  faMagnifyingGlass: IconDefinition = faMagnifyingGlass;
+  faThumbsUp: IconDefinition = faThumbsUp;
+  faThumbsDown: IconDefinition = faThumbsDown;
+  faLocationArrow: IconDefinition = faLocationArrow;
+  faEllipsisVertical: IconDefinition = faEllipsisVertical;
+  faLocationDot: IconDefinition = faLocationDot;
+  faHeart: IconDefinition = faHeart;
+  faBell: IconDefinition = faBell;
+  faCircleUser: IconDefinition = faCircleUser;
 
   // Outlined icons
-  faThumbsUpOutline = faThumbsUpOutline;
-  faThumbsDownOutline = faThumbsDownOutline;
+  faThumbsUpOutline: IconDefinition = faThumbsUpOutline;
+  faThumbsDownOutline: IconDefinition = faThumbsDownOutline;
 
   // Track like/dislike state
   isLiked: boolean = false; 
@@ -84,7 +83,7 @@ export class CouponComponent implements OnInit {
         },
         error: (err) => {
           this.showError('Like Error', 'Failed to update likes. Please try again.');
-          
+
         },
       });
     } else {
@@ -96,7 +95,7 @@ export class CouponComponent implements OnInit {
         },
         error: (err) => {
           this.showError('Like Error', 'Failed to update likes. Please try again.');
-        
+
         },
       });
     }
@@ -117,7 +116,7 @@ export class CouponComponent implements OnInit {
         },
         error: (err) => {
           this.showError('Dislike Error', 'Failed to update dislikes. Please try again.');
-          
+
         },
       });
     } else {
@@ -129,7 +128,7 @@ export class CouponComponent implements OnInit {
         },
         error: (err) => {
           this.showError('Dislike Error', 'Failed to update dislikes. Please try again.');
-          
+
         },
       });
     }
@@ -138,25 +137,25 @@ export class CouponComponent implements OnInit {
   savePost(): void {
     const advertisementId = this.couponDetails.advertisementId;
     const username = this.couponDetails.username;
-  
+
     this.triggerAnimation('save');
-  
-   
+
+
     this.scaleAnimation = true;
 
     setTimeout(() => {
       this.scaleAnimation = false;
     }, 500);
-  
+
     this.isSaved = !this.isSaved; 
-  
+
     this.advertisementDetailsService.savePost(username, advertisementId).subscribe({
       next: (response) => {
         console.log('Post saved successfully:', response);
-      
+
       },
       error: (err) => {
-       
+
         this.showError('Save Error', 'Failed to save the post. Please try again.');
         this.isSaved = !this.isSaved; 
       },
@@ -171,7 +170,7 @@ export class CouponComponent implements OnInit {
       }, 2000);
     }).catch(err => {
       this.showError('Copy Error', 'Failed to copy coupon code. Please try again.');
-     
+
     });
   }
 
