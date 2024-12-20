@@ -53,7 +53,7 @@ export class DiscoverBusinessScreenComponent implements OnInit {
     if (token) {
       try {
         this.decodedToken = this.jwtDecoder.decodeInfoFromToken(token);
-        this.userType = this.decodedToken["User Type"];
+        this.userType = this.decodedToken.userType;
         this.currentUsername = this.decodedToken.sub;
       } catch {
         this.router.navigate(['/login']); 

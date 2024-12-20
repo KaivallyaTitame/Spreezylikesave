@@ -9,6 +9,7 @@ export const API_CONFIG = {
   GENERATE_OTP: `${environment.apiGateway}/auth/generate-otp`,
   RESEND_OTP: `${environment.apiGateway}/auth/resend-otp`,
   VERIFY_OTP: `${environment.apiGateway}/auth/verify-otp`,
+  RECYCLE_TOKEN : `${environment.apiGateway}/auth/refreshToken`,
 
   // Business Service Endpoints
   GET_BUSINESS_DETAILS: (username: string) =>

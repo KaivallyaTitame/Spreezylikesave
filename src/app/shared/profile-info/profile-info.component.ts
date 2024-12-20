@@ -20,7 +20,7 @@ export class ProfileInfoComponent {
     const token = localStorage.getItem('token') || '';
     if (token) {
       const decodedToken: DecodedToken = this.jwtDecoder.decodeInfoFromToken(token);
-      this.userType = decodedToken['User Type'];
+      this.userType = decodedToken['userType'];
     }
   }
 

@@ -1,18 +1,20 @@
-import { Component } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { OtpService } from "src/app/services/otp/otp.service";
-import { AuthService } from "src/app/services/auth/auth.service";
+import { AuthService } from "src/app/services/auth.service";
 import { Router } from "@angular/router";
+import { HttpClient } from "@angular/common/http";
 
 @Component({
   selector: "app-login",
   templateUrl: "./login.component.html",
-  styles: []
+  styles: [],
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
   showPopUp: boolean = false;
   popupMessageTitle: string = "";
   popupMessageBody: string = "";
+  countryCodes: { value: string; label: string }[] = [];
 
   form: FormGroup;
   submitted: boolean = false;
@@ -22,9 +24,11 @@ export class LoginComponent {
     private authService: AuthService,
     private otpService: OtpService,
     private formBuilder: FormBuilder,
-    private router: Router
+    private router: Router,
+    private http: HttpClient
   ) {
     this.form = this.formBuilder.group({
+      countryCode: ["+91", Validators.required],
       phonenumber: [
         "",
         [
@@ -35,6 +39,14 @@ export class LoginComponent {
         ],
       ],
     });
+  }
+
+  ngOnInit(): void {
+    this.http
+      .get<{ value: string; label: string }[]>("assets/country-codes.json")
+      .subscribe((data) => {
+        this.countryCodes = data;
+      });
   }
 
   get formControls() {
@@ -49,13 +61,14 @@ export class LoginComponent {
       return;
     }
     const phoneNumber = this.form.value.phonenumber;
+    const selectedCountryCode = this.form.value.countryCode;
     this.isLoaderVisible = true;
-    this.otpService.sendOtp(phoneNumber).subscribe({
+    this.otpService.sendOtp(selectedCountryCode, phoneNumber).subscribe({
       next: (response) => {
         this.isLoaderVisible = false;
         this.otpSent = true;
         this.showPopup("Success", "OTP sent successfully.");
-        this.router.navigate(["/otpscreen", phoneNumber]);
+        this.router.navigate(["/otpscreen", phoneNumber, selectedCountryCode]);
       },
       error: (error) => {
         this.isLoaderVisible = false;
@@ -85,12 +98,15 @@ export class LoginComponent {
     this.showPopUp = true;
   }
 
-  // Method to handle popup close
   handleClosePopUp() {
     this.showPopUp = false;
   }
 
   signInWithGoogle() {
     this.authService.signInWithGoogle();
+  }
+
+  signup(){
+    this.router.navigate(["/register"])
   }
 }

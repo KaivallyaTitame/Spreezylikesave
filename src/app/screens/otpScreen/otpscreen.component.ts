@@ -20,6 +20,7 @@ export class OtpscreenComponent implements OnInit, OnDestroy {
   otpForm: FormGroup;
   otpFormSubmitted: boolean = false;
   phoneNumber: string;
+  countryCode: string;
   resendOtpSuccess: boolean = false;
   resendOtpMessage: string = "";
   isLoaderVisible = false;
@@ -37,6 +38,7 @@ export class OtpscreenComponent implements OnInit, OnDestroy {
     this.startTimer();
     this.route.paramMap.subscribe((params) => {
       this.phoneNumber = params.get("mobileNumber") || "";
+      this.countryCode = params.get("countryCode") || "";
     });
   }
 
@@ -78,7 +80,7 @@ export class OtpscreenComponent implements OnInit, OnDestroy {
     }
 
     this.isLoaderVisible = true;
-    this.otpService.reSendOtp(this.phoneNumber).subscribe({
+    this.otpService.reSendOtp(this.countryCode, this.phoneNumber).subscribe({
       next: (response) => {
         this.isLoaderVisible = false;
         this.timer = 30;
@@ -116,13 +118,10 @@ export class OtpscreenComponent implements OnInit, OnDestroy {
       next: (response) => {
         const token = response.accessToken;
         localStorage.setItem("token", token);
-        localStorage.setItem(
-          "refreshToken",
-          JSON.stringify(response.refreshToken)
-        );
+        localStorage.setItem("refreshToken", response.refreshToken);
         const decodedInfoFromToken: DecodedToken =
-          this.jwtDecoder.decodeInfoFromToken(token);
-        const userType = decodedInfoFromToken["User Type"];
+        this.jwtDecoder.decodeInfoFromToken(token);
+        const userType = decodedInfoFromToken.userType;
         this.redirectBasedOnUserType(userType);
       },
       error: (error) => {
@@ -142,13 +141,13 @@ export class OtpscreenComponent implements OnInit, OnDestroy {
     this.isLoaderVisible = false;
     switch (userType) {
       case "Business":
-        this.router.navigate(["/homeBusiness"]);
+        this.router.navigate(["/business-home/adfeed"]);
         break;
       case "Admin":
         this.router.navigate(["/admin-route"]);
         break;
       case "Consumer":
-        this.router.navigate(["/homeCustomer"]);
+        this.router.navigate(["/consumer-home/adfeed"]);
         break;
       default:
         setTimeout(() => {
