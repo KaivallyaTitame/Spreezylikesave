@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { faAdd, faBell, faChartColumn, faChartLine, faCirclePlus, faCircleUser, faHome, faUser } from '@fortawesome/free-solid-svg-icons';
 import { BusinessNavigationService } from 'src/app/services/business-navigation.service';
+import { DecodedToken } from'src/app/models/decodedToken';
+import { JwtDecoderService } from 'src/app/services/jwtDecoder/jwt-decoder.service';
 
 @Component({
   selector: 'app-business-bottom-navbar',
@@ -25,15 +27,25 @@ export class BusinessBottomNavbarComponent implements OnInit {
   postScreenActive = false;
   notificationScreenActive = false;
   profileScreenActive = false;
-  currentUser: string = 'tanvi247';
+  currentUser: string = '';
+  userType: string;
 
-  constructor(private router: Router, private navigation: BusinessNavigationService) {}
+  constructor(private router: Router, private navigation: BusinessNavigationService, private JwtDecoder: JwtDecoderService) {}
 
   ngOnInit(): void {
+    this.currentUser = this.fetchCurrentUsername();
     this.updateActiveStates();
     this.router.events.subscribe(() => {
       this.updateActiveStates();
     });
+  }
+
+  fetchCurrentUsername(): string {
+    const token = localStorage.getItem('token') || '';
+    const decodedToken: DecodedToken = this.JwtDecoder.decodeInfoFromToken(token);
+    this.userType = decodedToken["userType"];
+    this.currentUser = decodedToken.sub;
+    return decodedToken.sub;
   }
 
   navigateTo(screen: string) {

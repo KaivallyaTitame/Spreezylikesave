@@ -34,7 +34,7 @@ export class BusinessProfileComponent implements OnInit{
   faBookmark = faBookmark;
   faCircleUser = faCircleUser;
   selectedTab: string = 'posts'; //selected tab by default
-  currentUsername: string = 'tanvi247';
+  currentUsername: string = '';
   username: string | null = null;
   userType: string;
   showPopup: boolean = false;
@@ -48,7 +48,7 @@ export class BusinessProfileComponent implements OnInit{
   ) {}
 
   ngOnInit(): void {
-    // this.currentUsername = this.fetchCurrentUsername();
+    this.currentUsername = this.fetchCurrentUsername();
     this.route.paramMap.subscribe(params => {
       this.username = params.get('username');
       if (this.username) {
@@ -63,7 +63,7 @@ export class BusinessProfileComponent implements OnInit{
   fetchCurrentUsername(): string {
     const token = localStorage.getItem('token') || '';
     const decodedToken: DecodedToken = this.JwtDecoder.decodeInfoFromToken(token);
-    this.userType = decodedToken["User Type"];
+    this.userType = decodedToken["userType"];
     this.currentUsername = decodedToken.sub;
     return decodedToken.sub;
   }
@@ -82,7 +82,8 @@ export class BusinessProfileComponent implements OnInit{
         error: (error) => {
           this.userDetails = null; // Reset user details on error
           this.loadingUserDetails = false; // Stop skeletons even if there's an error
-          this.showError('Error fetching profile', 'Please try again later.');
+          this.showError(error, 'Please try again later.');
+          console.log(JSON.stringify(error));
         }
       });
   }
@@ -110,7 +111,8 @@ export class BusinessProfileComponent implements OnInit{
           }
         },
         error: (error) => {
-          this.showError(error, 'Please check your connection.');
+          console.log(error);
+          // this.showError(error.error.errorCode, 'Please check your connection.');
           this.loadingProfilePosts = false;
         }
       });
@@ -138,7 +140,8 @@ export class BusinessProfileComponent implements OnInit{
           }
         },
         error: (error) => {
-          this.showError(error, 'Please check your connection.');
+          console.log(error);
+          // this.showError(error.error.errorCode, 'Please check your connection.');
           this.loadingSavedPosts = false;
         }
       });

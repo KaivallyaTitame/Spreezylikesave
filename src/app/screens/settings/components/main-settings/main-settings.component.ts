@@ -24,7 +24,7 @@ export class MainSettingsComponent {
   navigateToProfileInformation() {
     if (this.userType === 'user') {
       this.router.navigate(['/business-home/settings/user-information']);
-    } else if (this.userType === 'business') {
+    } else if (this.userType === 'Business') {
       this.router.navigate(['/business-home/settings/business-information']);
     } else {
       console.error('User type is not valid or not found in localStorage');
