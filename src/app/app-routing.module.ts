@@ -10,7 +10,7 @@ const routes: Routes = [
   {
     path: "login",
     loadChildren: () => import("./screens/login/login.module").then(m => m.LoginModule),
-    // canActivate: [loginGuard]
+    canActivate: [loginGuard]
   },
   { path: "register", 
     loadChildren: () => import("./screens/register/register.module").then(m => m.RegisterModule) 
@@ -22,16 +22,16 @@ const routes: Routes = [
   {
     path: "business-home",
     loadChildren: () => import("./screens/business-home/business-home.module").then(m => m.BusinessHomeModule),
-    // canActivate: [businessGuard]
+    canActivate: [businessGuard]
   },
   {
-    path: "otpscreen/:mobileNumber",
+    path: "otpscreen/:mobileNumber/:countryCode",
     loadChildren: () => import("./screens/otpScreen/otpscreen.module").then(m => m.OtpScreenModule),
   },
   {
     path: "consumer-home",
     loadChildren: () => import("./screens/consumer-home/consumer-home.module").then(m => m.ConsumerHomeModule),
-    // canActivate: [customerGuard]
+    canActivate: [customerGuard]
   },
   { path: "**", redirectTo: "login"}
 ];

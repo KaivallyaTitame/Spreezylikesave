@@ -10,8 +10,8 @@ export class JwtDecoderService {
   constructor() { }
   decodeInfoFromToken(token: string): DecodedToken {
     const dummyDecodedToken: DecodedToken = {
-      "User Type": "business",
-      Token_type: "Bearer",
+      userType: "business",
+      tokenType: "Bearer",
       iss: "Spreezy",
       sub: "dummyUser",
       iat: Date.now() / 1000, 

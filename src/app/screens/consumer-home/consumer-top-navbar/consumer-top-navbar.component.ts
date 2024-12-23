@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { faArrowRightFromBracket, faBars, faCircleQuestion, faFileLines, faFilePen, faGear, faSearch } from '@fortawesome/free-solid-svg-icons';
 import { ConsumerNavigationService } from 'src/app/services/consumer-navigation.service';
 import { UserProfileDTO } from 'src/app/models/UserProfileDTO';
+import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
   selector: 'app-consumer-top-navbar',
@@ -22,7 +23,7 @@ export class ConsumerTopNavbarComponent implements OnInit {
 
   consumer: any;
 
-  constructor(private router: Router, private consumernavigationservice: ConsumerNavigationService) {}
+  constructor(private router: Router, private consumernavigationservice: ConsumerNavigationService, private authService : AuthService) {}
 
   ngOnInit(): void {
     this.fetchConsumerInformation();
@@ -41,5 +42,9 @@ export class ConsumerTopNavbarComponent implements OnInit {
         this.consumer = {};
       }
     });
+  }
+
+  logout(){
+    this.authService.logout();
   }
 }

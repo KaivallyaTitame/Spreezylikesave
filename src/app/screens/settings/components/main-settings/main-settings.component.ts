@@ -17,7 +17,7 @@ export class MainSettingsComponent {
     const token = localStorage.getItem('token');
 
     const decodedInfo = token ? this.jwtDecoder.decodeInfoFromToken(token) : this.jwtDecoder.decodeInfoFromToken('');
-    this.userType=decodedInfo['User Type'];
+    this.userType=decodedInfo.userType;
     
   }
 
