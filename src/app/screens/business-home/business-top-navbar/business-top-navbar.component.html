@@ -4,15 +4,13 @@
       <div class="navbar-start flex items-center">
         <input type="checkbox" id="drawer-left" #drawerLeft class="drawer-toggle hidden" />
         <label for="drawer-left" class="btn w-9 bg-primarycolor-0 flex items-center justify-center" style="height: 7.3%;">
-          <fa-icon class="text-white text-2xl" [icon]="faIcons.bars"></fa-icon>
+          <fa-icon class="text-white text-2xl" [icon]="faBars"></fa-icon>
         </label>
 
         <label for="drawer-left" class="overlay fixed top-0 left-0 w-full h-full bg-black opacity-50 z-20 hidden"></label>
-  
         <div class="drawer fixed top-0 left-0 w-4/5 h-full border-r-2 z-40 bg-white" style="margin-top: 56px;">
           <div class="drawer-content pt-2 px-2 mt-1 overflow-y-auto" style="height: 87%;">
             <aside class="sidebar h-full flex flex-col bg-white">
-             
               <section class="sidebar-title p-2 text-center">
                 <div class="flex flex-col w-full">
                   <div class="avatar h-14 w-14 mx-auto">
@@ -25,31 +23,37 @@
 
               <div class="divider my-2"></div>
 
-              <section class="sidebar-content flex-grow overflow-visible pt-1">
+              <section class="sidebar-content flex-grow pt-1">
                 <nav class="menu rounded-md">
                   <section class="menu-section px-2">
                     <ul class="menu-items">
-                      <li class="menu-item py-1 flex items-center">
-                        <fa-icon class="pl-0 pr-1 text-lg w-8 h-8 text-primarycolor-0" [icon]="faIcons.filePen"></fa-icon>
-                        <span class="pl-1 text-lg font-normal text-black dark:text-black">Share Feedback</span>
+                      <li class="menu-item py-1">
+                        <fa-icon class="pl-0 pr-1 text-lg w-8 h-8 text-primarycolor-0" [icon]="faFilePen"></fa-icon>
+                        <span class="pl-1 text-lg font-normal">Share Feedback</span>
                       </li>
-                      <li class="menu-item py-1 flex items-center" [routerLink]="['/consumer-home/settings']">
-                        <fa-icon class="pl-0 pr-1 text-lg w-8 h-8 text-primarycolor-0" [icon]="faIcons.gear"></fa-icon>
-                        <span class="pl-1 text-lg font-normal text-black dark:text-black">
-                          Settings
-                        </span>
+                      <li class="menu-item py-1">
+                        <button
+                          class="w-full flex items-center py-1 px-2 text-left text-lg font-normal"
+                          (click)="navigateToSettings(drawerLeft)"
+                        >
+                          <fa-icon
+                            class="pl-0 pr-1 text-lg w-8 h-8 text-primarycolor-0"
+                            [icon]="faGear"
+                          ></fa-icon>
+                          <span class="pl-1">Settings</span>
+                        </button>
                       </li>
-                      <li class="menu-item py-1 flex items-center">
+                      <li class="menu-item py-1">
                         <img src="assets/logo.png" alt="Contact Us" class="pl-0 pr-1 w-8 h-8" />
-                        <span class="pl-1 text-lg font-normal text-black dark:text-black">Contact Us</span>
+                        <span class="pl-1 text-lg font-normal">Contact Us</span>
                       </li>
-                      <li class="menu-item py-1 flex items-center">
-                        <fa-icon class="pl-0 pr-1 text-lg w-8 h-8 text-primarycolor-0" [icon]="faIcons.circleQuestion"></fa-icon>
-                        <span class="pl-1 text-lg font-normal text-black dark:text-black">Help</span>
+                      <li class="menu-item py-1">
+                        <fa-icon class="pl-0 pr-1 text-lg w-8 h-8 text-primarycolor-0" [icon]="faCircleQuestion"></fa-icon>
+                        <span class="pl-1 text-lg font-normal">Help</span>
                       </li>
-                      <li class="menu-item py-1 flex items-center">
-                        <fa-icon class="pl-0 pr-1 text-lg w-8 h-8 text-primarycolor-0" [icon]="faIcons.fileLines"></fa-icon>
-                        <span class="pl-1 text-lg font-normal text-black dark:text-black">Terms & Conditions</span>
+                      <li class="menu-item py-1">
+                        <fa-icon class="pl-0 pr-1 text-lg w-8 h-8 text-primarycolor-0" [icon]="faFileLines"></fa-icon>
+                        <span class="pl-1 text-lg font-normal">Terms & Conditions</span>
                       </li>
                     </ul>
                   </section>
@@ -71,6 +75,11 @@
         </div>
 
         <a class="navbar-item ml-0 pl-1 font-medium text-2xl text-white font-primary">Spreezy</a>
+      </div>
+      <div class="navbar-end flex items-center">
+        <a class="navbar-item" (click)="navigateToSearch()" title="Search">
+          <fa-icon class="text-white text-2xl hover:opacity-80" [icon]="faSearch"></fa-icon>
+        </a>
       </div>
     </div>
   </div>

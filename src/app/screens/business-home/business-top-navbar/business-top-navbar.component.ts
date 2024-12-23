@@ -10,22 +10,18 @@ import { BusinessNavigationService } from 'src/app/services/business-navigation.
   styleUrls: ['./business-top-navbar.component.css']
 })
 export class BusinessTopNavbarComponent implements OnInit {
-  faIcons = {
-    bars: faBars,
-    search: faSearch,
-    gear: faGear,
-    arrowRightFromBracket: faArrowRightFromBracket,
-    circleQuestion: faCircleQuestion,
-    fileLines: faFileLines,
-    filePen: faFilePen,
-  };
+
+  faBars = faBars;
+  faSearch = faSearch;
+  faGear = faGear;
+  faArrowRightFromBracket = faArrowRightFromBracket;
+  faCircleQuestion = faCircleQuestion;
+  faFileLines = faFileLines;
+  faFilePen = faFilePen;
 
   business: any;
 
-  constructor(
-    private router: Router,
-    private businessNavigationService: BusinessNavigationService
-  ) { }
+  constructor(private router: Router, private businessNavigationService: BusinessNavigationService, private authServcie: AuthService) { }
 
   ngOnInit(): void {
     this.fetchBusinessDetails();
@@ -34,6 +30,10 @@ export class BusinessTopNavbarComponent implements OnInit {
   navigateToSettings(drawerLeft: HTMLInputElement): void {
     drawerLeft.checked = false;
     this.router.navigate(['business-home/settings']);
+  }
+
+  navigateToSearch(): void {
+    this.router.navigate(['business-home/search']);
   }
 
   fetchBusinessDetails() {
@@ -45,7 +45,7 @@ export class BusinessTopNavbarComponent implements OnInit {
           this.business = {};
         }
       },
-      error: () => {
+      error: (error: any) => {
         this.business = {};
       }
     });
