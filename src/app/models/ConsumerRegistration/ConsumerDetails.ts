@@ -4,4 +4,5 @@ export class ConsumerDetails {
     email: string;
     phoneNumber: string;
     gender: string;
+    profilePicture: string;
   }

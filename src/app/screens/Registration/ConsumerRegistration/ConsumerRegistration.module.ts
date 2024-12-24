@@ -4,8 +4,8 @@ import { NgModule, NO_ERRORS_SCHEMA } from "@angular/core";
 import { ReactiveFormsModule } from "@angular/forms";
 // import { NgIconsModule } from "@ng-icons/core";
 // import { ionEye, ionEyeOff } from "@ng-icons/ionicons";
-import { RegisterRoutingModule } from "./Consumerregistration-routing.module";
-import { RegisterComponent } from "./Consumerregistration.component";
+import { RegisterRoutingModule } from "./ConsumerRegistration-routing.module";
+import { RegisterComponent } from "./ConsumerRegistration.component";
 
 @NgModule({
   declarations: [RegisterComponent],
