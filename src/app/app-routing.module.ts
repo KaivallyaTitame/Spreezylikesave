@@ -1,28 +1,37 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { loginGuard } from './authGuards/login/login.guard';
+import { businessGuard } from './authGuards/business/business.guard';
+import { customerGuard } from './authGuards/customer/customer.guard';
 
 const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
 
   {
-    path: 'login',
-    loadChildren: () => import('./screens/login/login.module').then(m => m.LoginModule),
+    path: "login",
+    loadChildren: () => import("./screens/login/login.module").then(m => m.LoginModule),
+    canActivate: [loginGuard]
+  },
+  { path: "register", 
+    loadChildren: () => import("./screens/Registration/register/register.module").then(m => m.RegisterModule) 
   },
   {
     path: 'business-home',
     loadChildren: () => import('./screens/business-home/business-home.module').then(m => m.BusinessHomeModule),
   },
   {
-    path: 'otpscreen/:mobileNumber',
-    loadChildren: () => import('./screens/otpScreen/otpscreen.module').then(m => m.OtpScreenModule),
+    path: "business-home",
+    loadChildren: () => import("./screens/business-home/business-home.module").then(m => m.BusinessHomeModule),
+    canActivate: [businessGuard]
   },
   {
-    path: 'consumer-home',
-    loadChildren: () => import('./screens/consumer-home/consumer-home.module').then(m => m.ConsumerHomeModule),
+    path: "otpscreen/:mobileNumber/:countryCode",
+    loadChildren: () => import("./screens/otpScreen/otpscreen.module").then(m => m.OtpScreenModule),
   },
   {
-    path: 'welcome',
-    loadChildren: () => import('./screens/welcome/welcome.module').then(m => m.WelcomeModule),
+    path: "consumer-home",
+    loadChildren: () => import("./screens/consumer-home/consumer-home.module").then(m => m.ConsumerHomeModule),
+    canActivate: [customerGuard]
   },
   {
     path: 'business1',

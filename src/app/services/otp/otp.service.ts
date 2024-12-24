@@ -5,6 +5,7 @@ import { catchError, map, tap } from "rxjs/operators";
 import { OtpResponse } from "../../models/otpResponse";
 import { VerifyOtpResponse } from "../../models/verifyOtpResponse";
 import { environment } from "src/environments/environment.development";
+import { API_CONFIG } from "src/app/api-config";
 
 @Injectable({
   providedIn: "root",
@@ -13,11 +14,12 @@ export class OtpService {
   private apiUrl = environment.apiGateway;
   constructor(private http: HttpClient) {}
   isOtpSentToMobile = false;
-  sendOtp(mobile: string): Observable<OtpResponse> {
+
+  sendOtp(countrycode: string, mobile: string): Observable<OtpResponse> {
     return this.http
       .post<OtpResponse>(
-        `${this.apiUrl}auth/generate-otp`,
-        { phoneNumber: mobile },
+        API_CONFIG.GENERATE_OTP,
+        { phoneNumber: mobile, countryCode: countrycode },
         { responseType: "json" }
       )
       .pipe(
@@ -33,11 +35,11 @@ export class OtpService {
       );
   }
 
-  reSendOtp(mobile: string): Observable<OtpResponse> {
+  reSendOtp(countrycode: string, mobile: string): Observable<OtpResponse> {
     return this.http
       .post(
-        `${this.apiUrl}/auth/resend-otp`,
-        { phoneNumber: mobile },
+        API_CONFIG.RESEND_OTP,
+        { phoneNumber: mobile, countryCode: countrycode },
         { responseType: "text" }
       )
       .pipe(
@@ -47,7 +49,7 @@ export class OtpService {
         }),
         catchError((error: HttpErrorResponse) => {
           let errorMessage = "Failed to send OTP. Please try again later.";
-          const errorBody = JSON.parse(error?.error);
+          const errorBody = JSON.parse(error?.error || "{}");
           if (errorBody?.errorDescription) {
              errorMessage = errorBody.errorDescription;
           }
