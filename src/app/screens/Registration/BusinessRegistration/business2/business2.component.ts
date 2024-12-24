@@ -192,6 +192,9 @@ export class Business2Component implements OnInit {
     return state ? state.cities : [];
   }
 
+  navigate(){
+    this.router.navigate(["/welcome/business1/business3"]);
+  }
   registerUser() {
     if (this.form.invalid) {
       this.form.markAllAsTouched();

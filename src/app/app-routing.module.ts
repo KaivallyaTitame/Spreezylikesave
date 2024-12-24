@@ -12,9 +12,9 @@ const routes: Routes = [
     loadChildren: () => import("./screens/login/login.module").then(m => m.LoginModule),
     canActivate: [loginGuard]
   },
-  { path: "register", 
-    loadChildren: () => import("./screens/Registration/register/register.module").then(m => m.RegisterModule) 
-  },
+  // { path: "register", 
+  //   loadChildren: () => import("./screens/Registration/register/register.module").then(m => m.RegisterModule) 
+  // },
   {
     path: 'business-home',
     loadChildren: () => import('./screens/business-home/business-home.module').then(m => m.BusinessHomeModule),
@@ -34,8 +34,8 @@ const routes: Routes = [
     canActivate: [customerGuard]
   },
   {
-    path: 'business1',
-    loadChildren: () => import('./screens/Registration/BusinessRegistration/businessRegistration.module').then(m => m.BusinessRegistrationModule),  // Updated path here
+    path: 'welcome',
+    loadChildren: () => import('./screens/Registration/welcome/welcome.module').then(m => m.WelcomeModule),
   },
   { path: '**', redirectTo: 'consumer-home' }
 ];

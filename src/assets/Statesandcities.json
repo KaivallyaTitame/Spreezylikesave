@@ -1,121 +1,201 @@
 {
-    "state": [
-      {
-        "name": "Andhra Pradesh",
-        "cities": ["Visakhapatnam", "Vijayawada", "Guntur",  "Amaravati","Tirupati", "Nellore", 
-        "Kurnool", "Kadapa", "Rajahmundry", "Kakinada", "Anantapur", "Eluru", "Ongole", "Srikakulam", "Chittoor", 
-        "Vizianagaram", "Machilipatnam", "Proddatur", "Adoni", "Tenali", "Nandyal", "Bhimavaram", "Gudivada", "Hindupur", 
-        "Narasaraopet", "Tadipatri", "Tadepalligudem", "Chittoor", "Samalkot", "Dharmavaram", "Madanapalle", "Tanuku", "Markapur",
-         "Chirala", "Palasa Kasibugga", "Tuni", "Kavali", "Sullurpeta", "Ponnur", "Bapatla", "Mangalagiri", "Nidadavole", "Rayachoti", 
-         "Srikalahasti", "Yemmiganur", "Jaggayyapeta", "Mancherial"]
-      },
-      {
-        "name": "Arunachal Pradesh",
-        "cities": ["Itanagar", "Naharlagun", "Pasighat"]
-      },
-      {
-        "name": "Assam",
-        "cities": ["Guwahati", "Silchar", "Dibrugarh"]
-      },
-      {
-        "name": "Bihar",
-        "cities": ["Patna", "Gaya", "Bhagalpur"]
-      },
-      {
-        "name": "Chhattisgarh",
-        "cities": ["Raipur", "Bhilai", "Bilaspur"]
-      },
-      {
-        "name": "Goa",
-        "cities": ["Panaji", "Vasco da Gama", "Margao"]
-      },
-      {
-        "name": "Gujarat",
-        "cities": ["Ahmedabad", "Surat", "Vadodara"]
-      },
-      {
-        "name": "Haryana",
-        "cities": ["Chandigarh", "Faridabad", "Gurgaon"]
-      },
-      {
-        "name": "Himachal Pradesh",
-        "cities": ["Shimla", "Manali", "Dharamshala"]
-      },
-      {
-        "name": "Jharkhand",
-        "cities": ["Ranchi", "Jamshedpur", "Dhanbad"]
-      },
-      {
-        "name": "Karnataka",
-        "cities": ["Bangalore", "Mysore", "Hubli"]
-      },
-      {
-        "name": "Kerala",
-        "cities": ["Thiruvananthapuram", "Kochi", "Kozhikode"]
-      },
-      {
-        "name": "Madhya Pradesh",
-        "cities": ["Bhopal", "Indore", "Jabalpur"]
-      },
-      {
-        "name": "Maharashtra",
-        "cities": ["Mumbai", "Pune", "Nagpur"]
-      },
-      {
-        "name": "Manipur",
-        "cities": ["Imphal", "Thoubal", "Bishnupur"]
-      },
-      {
-        "name": "Meghalaya",
-        "cities": ["Shillong", "Tura", "Jowai"]
-      },
-      {
-        "name": "Mizoram",
-        "cities": ["Aizawl", "Lunglei", "Champhai"]
-      },
-      {
-        "name": "Nagaland",
-        "cities": ["Kohima", "Dimapur", "Mokokchung"]
-      },
-      {
-        "name": "Odisha",
-        "cities": ["Bhubaneswar", "Cuttack", "Rourkela"]
-      },
-      {
-        "name": "Punjab",
-        "cities": ["Chandigarh", "Ludhiana", "Amritsar"]
-      },
-      {
-        "name": "Rajasthan",
-        "cities": ["Jaipur", "Jodhpur", "Udaipur"]
-      },
-      {
-        "name": "Sikkim",
-        "cities": ["Gangtok", "Namchi", "Gyalshing"]
-      },
-      {
-        "name": "Tamil Nadu",
-        "cities": ["Chennai", "Coimbatore", "Madurai"]
-      },
-      {
-        "name": "Telangana",
-        "cities": ["Hyderabad", "Warangal", "Nizamabad"]
-      },
-      {
-        "name": "Tripura",
-        "cities": ["Agartala", "Dharmanagar", "Udaipur"]
-      },
-      {
-        "name": "Uttar Pradesh",
-        "cities": ["Lucknow", "Kanpur", "Varanasi"]
-      },
-      {
-        "name": "Uttarakhand",
-        "cities": ["Dehradun", "Haridwar", "Roorkee"]
-      },
-      {
-        "name": "West Bengal",
-        "cities": ["Kolkata", "Howrah", "Asansol"]
-      }
-    ]
-  }
+  "state": [
+    {
+      "name": "Andhra Pradesh",
+      "cities": ["Visakhapatnam", "Vijayawada", "Guntur", "Amaravati", "Tirupati", "Nellore", 
+        "Kurnool", "Kadapa", "Rajahmundry", "Kakinada", "Anantapur", "Eluru", "Ongole", "Srikakulam", 
+        "Vizianagaram", "Machilipatnam", "Proddatur", "Adoni", "Tenali", "Nandyal", "Bhimavaram", 
+        "Gudivada", "Hindupur", "Narasaraopet", "Tadipatri", "Tadepalligudem", "Samalkot", "Dharmavaram", 
+        "Madanapalle", "Tanuku", "Markapur", "Chirala", "Palasa Kasibugga", "Tuni", "Kavali", "Sullurpeta", 
+        "Ponnur", "Bapatla", "Mangalagiri", "Nidadavole", "Rayachoti", "Srikalahasti", "Yemmiganur", 
+        "Jaggayyapeta", "Mancherial"]
+    },
+    {
+      "name": "Arunachal Pradesh",
+      "cities": ["Itanagar", "Naharlagun", "Pasighat", "Namsai", "Tawang", "Ziro", "Bomdila", "Roing", 
+        "Tezu", "Aalo", "Daporijo", "Seppa", "Anini", "Yingkiong", "Khonsa"]
+    },
+    {
+      "name": "Assam",
+      "cities": ["Guwahati", "Silchar", "Dibrugarh", "Jorhat", "Nagaon", "Tinsukia", "Tezpur", "Bongaigaon", 
+        "Karimganj", "Sivasagar", "North Lakhimpur", "Diphu", "Goalpara", "Barpeta", "Lanka", "Mankachar", 
+        "Marigaon", "Kokrajhar", "Rangia", "Bilasipara", "Golaghat", "Nalbari", "Dhekiajuli", "Chirang", 
+        "Bihpuria", "Dhing", "Duliajan", "Digboi", "Haflong", "Mangaldoi"]
+    },
+    {
+      "name": "Bihar",
+      "cities": ["Patna", "Gaya", "Bhagalpur", "Muzaffarpur", "Purnia", "Darbhanga", "Bihar Sharif", "Arrah", 
+        "Begusarai", "Katihar", "Munger", "Chhapra", "Danapur", "Saharsa", "Samastipur", "Siwan", "Motihari", 
+        "Nawada", "Bettiah", "Supaul", "Sasaram", "Hajipur", "Dehri", "Buxar", "Sitamarhi", "Jehanabad", 
+        "Aurangabad", "Lakhisarai", "Purnea", "Madhubani", "Kishanganj", "Jamalpur", "Barh", "Bihar Sharif", 
+        "Bagaha", "Raxaul Bazar", "Bhabua", "Ramnagar", "Tekari", "Jamui", "Bikramganj"]
+    },
+    {
+      "name": "Chhattisgarh",
+      "cities": ["Raipur", "Bhilai", "Korba", "Bilaspur", "Durg", "Rajnandgaon", "Raigarh", "Jagdalpur", 
+        "Ambikapur", "Dhamtari", "Chirmiri", "Mahasamund", "Dalli-Rajhara", "Naila Janjgir", "Tilda Newra", 
+        "Mungeli", "Bemetra", "Manendragarh", "Sakti", "Dongargarh", "Patan", "Kondagaon", "Surajpur", "Gariaband", 
+        "Bhatapara", "Khairagarh", "Kanker", "Arang", "Simga", "Bhatgaon", "Pandariya", "Narayanpur"]
+    },
+    {
+      "name": "Goa",
+      "cities": ["Panaji", "Margao", "Vasco da Gama", "Ponda", "Mapusa", "Bicholim", "Sanquelim", "Quepem", 
+        "Curchorem", "Valpoi", "Sanguem", "Canacona"]
+    },
+    {
+      "name": "Gujarat",
+      "cities": ["Ahmedabad", "Surat", "Vadodara", "Rajkot", "Bhavnagar", "Jamnagar", "Junagadh", "Anand", 
+        "Navsari", "Morbi", "Mehsana", "Palanpur", "Vapi", "Bhuj", "Gandhidham", "Veraval", "Porbandar", 
+        "Botad", "Nadiad", "Godhra", "Bharuch", "Ankleshwar", "Patan", "Valsad", "Kalol", "Dahod", "Deesa", 
+        "Surendranagar", "Rajpipla", "Khambhat", "Umreth", "Vyara", "Modasa", "Manavadar", "Mandvi", "Siddhpur"]
+    },
+    {
+      "name": "Haryana",
+      "cities": ["Faridabad", "Gurgaon", "Panipat", "Ambala", "Yamunanagar", "Rohtak", "Hisar", "Karnal", 
+        "Sonipat", "Panchkula", "Bhiwani", "Sirsa", "Bahadurgarh", "Jind", "Thanesar", "Kaithal", "Rewari", 
+        "Palwal", "Hansi", "Fatehabad", "Gohana", "Taraori", "Narwana", "Mandi Dabwali", "Ratia", "Sohna"]
+    },
+    {
+      "name": "Himachal Pradesh",
+      "cities": ["Shimla", "Solan", "Dharamshala", "Baddi", "Mandi", "Hamirpur", "Paonta Sahib", "Una", 
+        "Nahan", "Kullu", "Bilaspur", "Chamba", "Rohru", "Manali", "Ner Chowk", "Nalagarh", "Jogindernagar", 
+        "Kangra", "Sundarnagar", "Rampur Bushahr", "Keylong"]
+    },
+    {
+      "name": "Jharkhand",
+      "cities": ["Ranchi", "Dhanbad", "Jamshedpur", "Bokaro Steel City", "Deoghar", "Hazaribagh", "Giridih", 
+        "Ramgarh", "Phusro", "Medininagar", "Chirkunda", "Gumia", "Simdega", "Hazaribagh", "Chaibasa", 
+        "Ghatshila", "Koderma", "Tenu Dam-Cum-Kathhara", "Lohardaga", "Gumia", "Adityapur", "Chakulia", "Chatra", 
+        "Dumka", "Latehar", "Mihijam", "Pakur", "Rajmahal"]
+    },
+    {
+      "name": "Karnataka",
+      "cities": ["Bangalore", "Hubli-Dharwad", "Mysore", "Mangalore", "Belgaum", "Gulbarga", "Davangere", "Bellary", 
+        "Bijapur", "Tumkur", "Shimoga", "Raichur", "Bidar", "Hassan", "Udupi", "Chitradurga", "Gadag-Betigeri", 
+        "Robertson Pet", "Ranebennur", "Bhadravati", "Gokak", "Mandya", "Haveri", "Chikkamagaluru", "Gangavati", 
+        "Bagalkot", "Karwar", "Sira", "Chintamani", "Ramanagaram", "Tiptur", "Arsikere", "Nanjangud", "Sirsi"]
+    },
+    {
+      "name": "Kerala",
+      "cities": ["Thiruvananthapuram", "Kochi", "Kozhikode", "Kollam", "Thrissur", "Alappuzha", "Palakkad", 
+        "Kannur", "Kottayam", "Kasaragod", "Idukki", "Malappuram", "Vatakara", "Ponnani", "Shoranur", 
+        "Changanassery", "Perinthalmanna", "Ottappalam", "Taliparamba", "Varkala"]
+    },
+        {
+          "name": "Madhya Pradesh",
+          "cities": ["Indore", "Bhopal", "Jabalpur", "Gwalior", "Ujjain", "Sagar", "Ratlam", "Rewa", 
+            "Satna", "Murwara", "Dewas", "Hoshangabad", "Katni", "Chhindwara", "Guna", "Shivpuri", 
+            "Mandsaur", "Dhar", "Sehore", "Vidisha", "Singrauli", "Khargone", "Shahdol", "Neemuch", "Pithampur", 
+            "Itarsi", "Seoni", "Chhatarpur", "Betul", "Datia", "Nagda", "Harda", "Dabra", "Tikamgarh", 
+            "Maihar", "Seoni Malwa", "Raisen", "Jhabua", "Bhind", "Shajapur", "Narsinghpur", "Ganjbasoda"]
+        },
+        {
+          "name": "Maharashtra",
+          "cities": ["Mumbai", "Pune", "Nagpur", "Nashik", "Thane", "Aurangabad", "Solapur", "Dhule", 
+            "Jalgaon", "Amravati", "Kolhapur", "Akola", "Latur", "Ulhasnagar", "Nanded", "Sangli", 
+            "Malegaon", "Bhiwandi", "Ahmednagar", "Chandrapur", "Parbhani", "Ichalkaranji", "Jalna", 
+            "Bhusawal", "Navi Mumbai", "Panvel", "Yavatmal", "Sangamner", "Karad", "Baramati", "Wardha"]
+        },
+        {
+          "name": "Manipur",
+          "cities": ["Imphal", "Thoubal", "Kakching", "Mayang Imphal", "Churachandpur", "Lilong", 
+            "Thanga", "Wangoi", "Sugnu", "Moijing", "Nambol", "Yairipok", "Sekmai", "Kumbi", "Wabagai"]
+        },
+        {
+          "name": "Meghalaya",
+          "cities": ["Shillong", "Tura", "Nongstoin", "Jowai", "Nongpoh", "Williamnagar", 
+            "Baghmara", "Resubelpara", "Mairang", "Sohra", "Mawkyrwat", "Ranikor"]
+        },
+        {
+          "name": "Mizoram",
+          "cities": ["Aizawl", "Lunglei", "Saiha", "Champhai", "Kolasib", "Serchhip", 
+            "Lawngtlai", "Mamit", "Biate", "Sairang", "Hnahthial"]
+        },
+        {
+          "name": "Nagaland",
+          "cities": ["Dimapur", "Kohima", "Mokokchung", "Tuensang", "Wokha", "Zunheboto", 
+            "Mon", "Kiphire", "Phek", "Longleng", "Chumukedima"]
+        },
+        {
+          "name": "Odisha",
+          "cities": ["Bhubaneswar", "Cuttack", "Rourkela", "Brahmapur", "Sambalpur", "Puri", 
+            "Balasore", "Baripada", "Bhadrak", "Jharsuguda", "Jeypore", "Bargarh", "Angul", 
+            "Dhenkanal", "Jagatsinghpur", "Paradeep", "Titlagarh", "Choudwar"]
+        },
+        {
+          "name": "Punjab",
+          "cities": ["Ludhiana", "Amritsar", "Jalandhar", "Patiala", "Bathinda", "Hoshiarpur", 
+            "Mohali", "Pathankot", "Moga", "Abohar", "Malerkotla", "Khanna", "Phagwara", 
+            "Barnala", "Firozpur", "Rajpura", "Zirakpur"]
+        },
+        {
+          "name": "Rajasthan",
+          "cities": ["Jaipur", "Jodhpur", "Kota", "Bikaner", "Ajmer", "Udaipur", 
+            "Bhilwara", "Alwar", "Bharatpur", "Sri Ganganagar", "Sikar", "Pali", 
+            "Barmer", "Nagaur", "Tonk", "Beawar", "Kishangarh", "Chittorgarh"]
+        },
+        {
+          "name": "Sikkim",
+          "cities": ["Gangtok", "Namchi", "Gyalshing", "Mangan", "Singtam", "Rangpo", "Jorethang", 
+            "Ravangla", "Chungthang", "Yangyang"]
+        },
+        {
+          "name": "Tamil Nadu",
+          "cities": ["Chennai", "Coimbatore", "Madurai", "Tiruchirappalli", "Salem", "Tiruppur", 
+            "Tirunelveli", "Vellore", "Erode", "Thoothukudi", "Dindigul", "Thanjavur", 
+            "Ranipet", "Karur", "Hosur", "Nagercoil", "Kanchipuram", "Cuddalore"]
+        },
+        {
+          "name": "Telangana",
+          "cities": ["Hyderabad", "Warangal", "Nizamabad", "Khammam", "Karimnagar", "Ramagundam", 
+            "Mahbubnagar", "Nalgonda", "Adilabad", "Suryapet", "Bhadrachalam", "Miryalaguda", 
+            "Jagtial", "Wanaparthy", "Mancherial"]
+        },
+        {
+          "name": "Tripura",
+          "cities": ["Agartala", "Dharmanagar", "Kailasahar", "Udaipur", "Belonia", 
+            "Kumarghat", "Ambassa", "Panisagar", "Sabroom", "Sonamura"]
+        },
+        {
+          "name": "Uttar Pradesh",
+          "cities": ["Lucknow", "Kanpur", "Ghaziabad", "Agra", "Meerut", "Varanasi", "Prayagraj", 
+            "Bareilly", "Aligarh", "Moradabad", "Saharanpur", "Noida", "Firozabad", "Jhansi", 
+            "Muzaffarnagar", "Mathura", "Budaun", "Rampur", "Shahjahanpur", "Etawah", "Mirzapur"]
+        },
+        {
+          "name": "Uttarakhand",
+          "cities": ["Dehradun", "Haridwar", "Roorkee", "Haldwani", "Rudrapur", "Kashipur", 
+            "Rishikesh", "Ramnagar", "Khatima", "Pithoragarh", "Kotdwara", "Nainital"]
+        },
+        {
+          "name": "West Bengal",
+          "cities": ["Kolkata", "Howrah", "Durgapur", "Asansol", "Siliguri", "Malda", 
+            "Kharagpur", "Haldia", "Bardhaman", "Raiganj", "Jalpaiguri", "Berhampore", 
+            "Cooch Behar", "Dinhata", "Kanchrapara", "Bansberia", "Medinipur"]
+        },
+        {
+          "name": "Andaman and Nicobar Islands",
+          "cities": ["Port Blair", "Rangat", "Mayabunder", "Diglipur", "Car Nicobar", "Bombooflat"]
+        },
+        {
+          "name": "Chandigarh",
+          "cities": ["Chandigarh"]
+        },
+        {
+          "name": "Dadra and Nagar Haveli and Daman and Diu",
+          "cities": ["Silvassa", "Daman", "Diu", "Dadri", "Ambach"]
+        },
+        {
+          "name": "Lakshadweep",
+          "cities": ["Kavaratti", "Agatti", "Amini", "Andrott", "Kadmat", "Kalpeni"]
+        },
+        {
+          "name": "Delhi",
+          "cities": ["New Delhi", "Old Delhi", "Dwarka", "Rohini", "Saket", "Vasant Vihar"]
+        },
+        {
+          "name": "Puducherry",
+          "cities": ["Puducherry", "Karaikal", "Yanam", "Mahe"]
+        }
+      ]
+    }

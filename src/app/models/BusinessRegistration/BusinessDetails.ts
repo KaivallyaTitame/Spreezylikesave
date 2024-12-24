@@ -1,7 +1,7 @@
 import { kycDetails } from "./kycDetails";
 
 export class BusinessDetails {
-  ownername: string = ' ';
+  ownerName: string = ' ';
   email: string = ' ';
   gender: string = ' ';
   businessName: string = ' ';

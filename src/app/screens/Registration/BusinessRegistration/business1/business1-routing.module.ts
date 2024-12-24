@@ -6,6 +6,10 @@ const routes: Routes = [
   {
     path: '',
     component: Business1Component
+  },
+  {
+    path: 'business1',
+    component: Business1Component
   }
 ];
 

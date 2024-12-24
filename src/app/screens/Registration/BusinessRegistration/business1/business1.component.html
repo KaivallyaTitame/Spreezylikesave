@@ -68,8 +68,14 @@
         </div>
       </div>
       <div class="buttons flex justify-center mt-5">
-        <button type="submit" [disabled]="form.invalid" class="btn btn-primary btn-md font-secondary w-60"><a routerLink="/business2">NEXT</a></button>
-      </div>
+        <button 
+          (click)="navigate()" 
+          type="submit" 
+          [disabled]="form.invalid" 
+          class="btn btn-primary btn-md font-secondary w-60">
+          NEXT
+        </button>
+      </div>      
     </div>
   </form>
 </div>

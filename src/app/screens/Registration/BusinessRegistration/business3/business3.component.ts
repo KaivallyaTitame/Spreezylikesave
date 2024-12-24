@@ -111,10 +111,3 @@ export class Business3Component implements OnInit {
     return this.form.get("panCardPhoto") as FormControl;
   }
 }
-
-
-
-
-
-
-

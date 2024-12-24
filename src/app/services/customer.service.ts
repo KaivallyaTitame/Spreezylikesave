@@ -15,7 +15,7 @@ export class CustomerService {
   registerNewUser(user: ConsumerDetails) {
     console.log(user);
    
-    return  this.http.post("https://ab97-103-146-1-43.ngrok-free.app/user/register-consumer", user)
+    return  this.http.post("https://localhost:8762/user/register-consumer", user)
     .subscribe(response => {
       console.log('Response:', response);
     }, error => {
@@ -25,7 +25,7 @@ export class CustomerService {
   registerNewBusiness(user: BusinessDetails) {
     console.log(user);
     
-    return this.http.post("https://ab97-103-146-1-43.ngrok-free.app/user/register-business", user)
+    return this.http.post("https://localhost:8762/user/register-business", user)
     .subscribe(response => {
       console.log('Response:', response);
     }, error => {

@@ -14,7 +14,7 @@ export class Business1Component {
 
   Business: BusinessDetails = new BusinessDetails();
   form: FormGroup = new FormGroup({
-    name: new FormControl("", [Validators.required]),
+    ownerName: new FormControl("", [Validators.required]),
     businessUsername: new FormControl("", [
       Validators.required,
       Validators.maxLength(20),
@@ -50,7 +50,7 @@ export class Business1Component {
 
 
   private mapUserData(form: FormGroup): BusinessDetails {
-    this.Business.ownername = form.get("ownerName")?.value;
+    this.Business.ownerName = form.get("ownerName")?.value;
     this.Business.businessName = form.get("businessName")?.value;
     this.Business.businessUsername = form.get("businessUsername")?.value;
     this.Business.email = form.get("email")?.value;
@@ -64,7 +64,9 @@ export class Business1Component {
     return this.Business;
   }
   
-
+navigate(){
+  this.router.navigate(["/welcome/business1/business2"]);
+}
   get name(): FormControl {
     return this.form.get("ownerName") as FormControl;
   }
