@@ -12,9 +12,6 @@ const routes: Routes = [
     loadChildren: () => import("./screens/login/login.module").then(m => m.LoginModule),
     canActivate: [loginGuard]
   },
-  // { path: "register", 
-  //   loadChildren: () => import("./screens/Registration/register/register.module").then(m => m.RegisterModule) 
-  // },
   {
     path: 'business-home',
     loadChildren: () => import('./screens/business-home/business-home.module').then(m => m.BusinessHomeModule),

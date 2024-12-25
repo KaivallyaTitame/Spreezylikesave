@@ -123,6 +123,7 @@ export class RegisterComponent implements OnInit {
   // Call the service to register the user
   registerUser() {
     this.Consumer = this.mapUserData(this.form);
+    console.log(this.Consumer);
     this.customerService.registerNewUser(this.Consumer);
   }
 

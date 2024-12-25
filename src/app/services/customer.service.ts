@@ -15,11 +15,11 @@ export class CustomerService {
   registerNewUser(user: ConsumerDetails) {
     console.log(user);
    
-    return  this.http.post("https://localhost:8762/user/register-consumer", user)
+    return  this.http.post("https://localhost:8083/user/register-consumer", user)
     .subscribe(response => {
       console.log('Response:', response);
     }, error => {
-      console.error('Error:', error);
+      console.log('Error:', error);
     });;
   }
   registerNewBusiness(user: BusinessDetails) {
