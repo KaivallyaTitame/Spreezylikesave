@@ -111,7 +111,6 @@ export class BusinessProfileComponent implements OnInit{
           }
         },
         error: (error) => {
-          console.log(error);
           // this.showError(error.error.errorCode, 'Please check your connection.');
           this.loadingProfilePosts = false;
         }

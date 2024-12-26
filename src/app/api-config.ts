@@ -1,4 +1,4 @@
-import { environment } from 'src/environments/environment.production';
+import { environment } from 'src/environments/environment';
 
 export const API_CONFIG = {
   // Image Service

@@ -15,7 +15,7 @@ module.exports = {
       },
       {
         themeName: "dark",
-        colorScheme: "light",
+        colorScheme: "dark",
         colors: {
           primary: "#ED6A5A",
           backgroundPrimary: "#FFFFFF",
@@ -38,7 +38,8 @@ module.exports = {
         '2xl': '1536px',
       },
       colors:{
-        'primarycolor': ['#ED6A5A']
+        'primarycolor': ['#ED6A5A'],
+        'textcolor': ['#1F2937'], // Globally consistent dark text color
       },
       fontFamily: {
         'sidebar' : ['Roboto'],

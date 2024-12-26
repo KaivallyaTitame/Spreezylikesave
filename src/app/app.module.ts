@@ -22,7 +22,7 @@ import { RegisterModule } from "./screens/register/register.module";
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
-    AngularFireModule.initializeApp(environment.firebase),
+    AngularFireModule.initializeApp(environment.firebase),  // THis functionality is disabled for temporary purpose
     LoginModule,
     LogoutModule,
     BusinessHomeModule,
