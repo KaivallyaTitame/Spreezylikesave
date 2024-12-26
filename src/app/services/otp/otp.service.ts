@@ -35,7 +35,7 @@ export class OtpService {
     return this.http
       .post(
         API_CONFIG.RESEND_OTP,
-        { phoneNumber: mobile },
+        { phoneNumber: mobile, countryCode: countrycode },
         { responseType: "text" }
       )
       .pipe(
@@ -45,7 +45,7 @@ export class OtpService {
         }),
         catchError((error: HttpErrorResponse) => {
           let errorMessage = "Failed to send OTP. Please try again later.";
-          const errorBody = JSON.parse(error?.error || '{}');
+          const errorBody = JSON.parse(error?.error || "{}");
           if (errorBody?.errorDescription) {
             errorMessage = errorBody.errorDescription;
           }

@@ -15,3 +15,5 @@ dist
 coverage
 docker
 package-lock.json
+.vscode/
+/postgres_data
