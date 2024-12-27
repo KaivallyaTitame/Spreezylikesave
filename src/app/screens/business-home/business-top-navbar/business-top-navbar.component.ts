@@ -3,6 +3,8 @@ import { Router } from '@angular/router';
 import { faArrowRightFromBracket, faBars, faCircleQuestion, faFileLines, faFilePen, faGear, faSearch } from '@fortawesome/free-solid-svg-icons';
 import { AuthService } from 'src/app/services/auth.service';
 import { BusinessNavigationService } from 'src/app/services/business-navigation.service';
+import { DecodedToken } from 'src/app/models/decoded-token';
+import { JwtDecoderService } from 'src/app/services/jwtDecoder/jwt-decoder.service';
 
 @Component({
   selector: 'app-business-top-navbar',
@@ -20,11 +22,34 @@ export class BusinessTopNavbarComponent implements OnInit {
   faFilePen = faFilePen;
 
   business: any;
+  
+  currentUsername: string = '';
+  decodedToken: DecodedToken | null = null;
 
-  constructor(private router: Router, private businessNavigationService: BusinessNavigationService, private authServcie: AuthService) { }
+  constructor(
+    private router: Router, 
+    private businessNavigationService: BusinessNavigationService, 
+    private authServcie: AuthService,
+    private jwtDecoder: JwtDecoderService) { }
 
   ngOnInit(): void {
+    this.decodeToken();
     this.fetchBusinessDetails();
+  }
+
+  decodeToken(): void {
+    const token = localStorage.getItem('token') || '';
+    if (token) {
+      try {
+        this.decodedToken = this.jwtDecoder.decodeInfoFromToken(token); 
+        this.currentUsername = this.decodedToken?.sub || ''; 
+      } catch (error) {
+        console.error('Failed to decode token:', error);
+        this.router.navigate(['/login']);
+      }
+    } else {
+      this.router.navigate(['/login']);
+    }
   }
 
   navigateToSettings(drawerLeft: HTMLInputElement): void {
@@ -36,19 +61,18 @@ export class BusinessTopNavbarComponent implements OnInit {
     this.router.navigate(['business-home/search']);
   }
 
-  fetchBusinessDetails() {
-    this.businessNavigationService.getBusinessDetails().subscribe({
-      next: (data: any[]) => {
-        if (data.length > 0) {
-          this.business = data[0];
-        } else {
-          this.business = {};
+  fetchBusinessDetails(): void {
+    if (this.currentUsername) {
+      this.businessNavigationService.getBusinessDetails(this.currentUsername).subscribe({
+        next: (response) => {
+          this.business = response; // Update with the API response
+        },
+        error: (error) => {
+          console.error('Error fetching business details:', error);
+          this.business = {}; // Handle error
         }
-      },
-      error: (error: any) => {
-        this.business = {};
-      }
-    });
+      });
+    }
   }
 
   logout(){

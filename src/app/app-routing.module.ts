@@ -33,6 +33,7 @@ const routes: Routes = [
     loadChildren: () => import("./screens/consumer-home/consumer-home.module").then(m => m.ConsumerHomeModule),
     canActivate: [customerGuard]
   },
+  { path: 'terms-conditions', loadChildren: () => import('./screens/terms-conditions/terms-conditions.module').then(m => m.TermsConditionsModule) },
   { path: "**", redirectTo: "login"}
 ];
 
