@@ -1,7 +1,7 @@
 import { KycDetails } from "./kyc-details";
 
 export class BusinessInformation {
-    name: string='';
+    ownerName: string='';
     businessUsername: string='';
     profilePicture: string='';
     email: string='';
@@ -13,5 +13,8 @@ export class BusinessInformation {
     state:string='';
     city:string='';
     pincode:string='';
+    whatsApp:string='';
+    instagram:string='';
+    facebook:string='';
     kycDetails:KycDetails;
 }

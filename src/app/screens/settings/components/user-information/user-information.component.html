@@ -11,7 +11,7 @@
 
     <div class="font-roboto text-black text-base mt-4 ml-4">
         <label for="profile">Profile Picture</label>
-        <app-image-component id="profile" *ngIf="imageFileName" [imageFileName]="imageFileName"></app-image-component>
+        <app-image-component id="profile" [imageFileName]="imageFileName"></app-image-component>
     </div>
 
     <div class="font-roboto text-black text-base mt-4 ml-4">
@@ -51,13 +51,16 @@
     </div>
     <div class="ml-4">
         <select formControlName="gender" name="gender" required
-            class="gender-input w-[330px] h-[40px] mt-1 border border-[#ED6A5A] rounded-md p-2 bg-white text-black"
+            class="dropdown-input"
             id="gender">
             <option value="" disabled selected>Select gender</option>
             <option value="male">Male</option>
             <option value="female">Female</option>
         </select>
-        <div *ngIf="profileInformation.get('gender')?.touched && profileInformation.get('gender')?.invalid" class="text-red-500 mt-1">Gender is required</div>
+        <div *ngIf="profileInformation.get('gender')?.touched && profileInformation.get('gender')?.invalid" 
+             class="text-red-500 mt-1">
+            Gender is required
+        </div>
     </div>
 
     <div class="flex items-center ml-10 mt-4 mb-16">
