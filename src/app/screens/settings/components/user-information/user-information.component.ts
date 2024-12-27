@@ -19,7 +19,6 @@ export class UserInformationComponent {
   popUpTitle: string = '';
   popUpBody: string = '';
   username: string='';
-  tempUsername:string='john_doe01';
   loading: boolean = true;
   imageFileName: string = '';
 
@@ -50,7 +49,7 @@ export class UserInformationComponent {
     const decodedInfo = token ? this.jwtDecoder.decodeInfoFromToken(token) : this.jwtDecoder.decodeInfoFromToken('');
     this.username = decodedInfo['sub'];
 
-    this.settingsService.getUserDetails(this.tempUsername).subscribe({
+    this.settingsService.getUserDetails(this.username).subscribe({
       next: (response) => {
         try {
           const userData = JSON.parse(response);
@@ -100,7 +99,6 @@ export class UserInformationComponent {
         this.popUpTitle = 'Success!';
         this.popUpBody = 'Your user details has been updated successfully.';
         this.showPopUp = true;
-        console.log(profileInformationData);
         this.profileInformation.reset(); 
       },
       error: (error: HttpErrorResponse) => {
