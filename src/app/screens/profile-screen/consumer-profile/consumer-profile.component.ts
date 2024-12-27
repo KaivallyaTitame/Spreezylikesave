@@ -19,12 +19,18 @@ export class ConsumerProfileComponent implements OnInit {
   postsPerPage: number = 10;
   loadingSavedPosts: boolean = false;
   faBookmark = faBookmark;
-  selectedTab: string = 'saved';
+  selectedTab: string = 'saved'; // Selected tab by default
   username: string | null = null;
 
   showPopup: boolean = false;
   popupTitle: string = 'Error';
   popupBody: string = '';
+
+  hasMoreSavedPosts: boolean = true; // Initially assume there are more saved posts
+
+  private scrollPositions: { [key: string]: number } = {
+    saved: 0
+  };
 
   constructor(
     private UserService: UserService,
@@ -65,21 +71,23 @@ export class ConsumerProfileComponent implements OnInit {
     this.UserService.getSavedPosts(username, page, this.postsPerPage)
       .subscribe({
         next: (data) => {
-          data.forEach(post => {
-            if (post.profileImageUrl) {
-              post.profileImageUrl = this.UserService.getImageUrl(username, post.profileImageUrl);
-            }
-            if (post.imagePaths && post.imagePaths.length > 0) {
-              post.imagePaths = post.imagePaths.map(imagePath =>
-                this.UserService.getImageUrl(username, imagePath)
-              );
-            }
-          });
-          this.visibleSavedPosts.push(...data);
-          this.loadingSavedPosts = false;
           if (data.length > 0) {
+            data.forEach(post => {
+              if (post.profileImageUrl) {
+                post.profileImageUrl = this.UserService.getImageUrl(username, post.profileImageUrl);
+              }
+              if (post.imagePaths && post.imagePaths.length > 0) {
+                post.imagePaths = post.imagePaths.map(imagePath =>
+                  this.UserService.getImageUrl(username, imagePath)
+                );
+              }
+            });
+            this.visibleSavedPosts.push(...data);
             this.savedPostPage++; // Increment page if there are more posts
+          } else {
+            this.hasMoreSavedPosts = false; // No more saved posts to fetch
           }
+          this.loadingSavedPosts = false;
         },
         error: (error) => {
           this.loadingSavedPosts = false; // Stop loading spinner on error
@@ -94,13 +102,32 @@ export class ConsumerProfileComponent implements OnInit {
     this.showPopup = true;
   }
 
-  onScroll(event: any) {
+  onScroll(event: any): void {
     const scrollContainer = event.target;
     const scrollPosition = scrollContainer.scrollTop + scrollContainer.clientHeight;
     const scrollHeight = scrollContainer.scrollHeight;
 
-    if (scrollPosition >= scrollHeight - 100 && !this.loadingSavedPosts) {
+    if (scrollPosition >= scrollHeight - 100 && !this.loadingSavedPosts && this.hasMoreSavedPosts) {
       this.fetchSavedPosts(this.username!, this.savedPostPage); // Load more saved posts
     }
+  }
+
+  switchTab(tab: string): void {
+    // Save the current scroll position for the active tab
+    const scrollContainer = document.querySelector('.scroll-container');
+    if (scrollContainer) {
+      this.scrollPositions[this.selectedTab] = scrollContainer.scrollTop;
+    }
+
+    // Switch the selected tab
+    this.selectedTab = tab;
+
+    // Restore the scroll position for the new tab
+    setTimeout(() => {
+      const newScrollContainer = document.querySelector('.scroll-container');
+      if (newScrollContainer) {
+        newScrollContainer.scrollTop = this.scrollPositions[tab] || 0;
+      }
+    }, 0);
   }
 }

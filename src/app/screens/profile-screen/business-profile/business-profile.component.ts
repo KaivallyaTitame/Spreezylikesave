@@ -40,6 +40,8 @@ export class BusinessProfileComponent implements OnInit{
   showPopup: boolean = false;
   popupTitle: string = 'Error';
   popupBody: string = '';
+  hasMoreProfilePosts: boolean = true; // Initially assume there are more posts
+  hasMoreSavedPosts: boolean = true;  // Initially assume there are more saved posts
 
   constructor(
     private UserService: UserService,
@@ -83,7 +85,6 @@ export class BusinessProfileComponent implements OnInit{
           this.userDetails = null; // Reset user details on error
           this.loadingUserDetails = false; // Stop skeletons even if there's an error
           this.showError(error, 'Please try again later.');
-          console.log(JSON.stringify(error));
         }
       });
   }
@@ -91,59 +92,62 @@ export class BusinessProfileComponent implements OnInit{
 
   fetchProfilePosts(username: string, page: number) {
     this.loadingProfilePosts = true;
-    this.UserService.getProfilePosts(username, page, this.postsPerPage)
-      .subscribe({
-        next: (data) => {
+    this.UserService.getProfilePosts(username, page, this.postsPerPage).subscribe({
+      next: (data) => {
+        if (data.length > 0) {
           data.forEach(post => {
             if (post.profileImageUrl) {
               post.profileImageUrl = this.UserService.getImageUrl(username, post.profileImageUrl);
             }
-            if (post.imagePaths && post.imagePaths.length > 0) {
+            if (post.imagePaths?.length > 0) {
               post.imagePaths = post.imagePaths.map(imagePath =>
                 this.UserService.getImageUrl(username, imagePath)
               );
             }
           });
           this.visibleProfilePosts.push(...data);
-          this.loadingProfilePosts = false;
-          if (data.length > 0) {
-            this.profilePostPage++; // Increment page if there are more posts
-          }
-        },
-        error: (error) => {
-          // this.showError(error.error.errorCode, 'Please check your connection.');
-          this.loadingProfilePosts = false;
+          this.profilePostPage++; // Increment page only if data exists
+        } else {
+          this.hasMoreProfilePosts = false; // No more posts to fetch
         }
-      });
+        this.loadingProfilePosts = false;
+      },
+      error: (error) => {
+        this.showError("Error", "Unable to fetch profile post, please try again later");
+        this.loadingProfilePosts = false;
+      },
+    });
   }
   
   fetchSavedPosts(username: string, page: number) {
     this.loadingSavedPosts = true;
-    this.UserService.getSavedPosts(username, page, this.postsPerPage)
-      .subscribe({
-        next: (data) => {
+    this.UserService.getSavedPosts(username, page, this.postsPerPage).subscribe({
+      next: (data) => {
+        if (data.length > 0) {
           data.forEach(post => {
             if (post.profileImageUrl) {
               post.profileImageUrl = this.UserService.getImageUrl(username, post.profileImageUrl);
             }
-            if (post.imagePaths && post.imagePaths.length > 0) {
+            if (post.imagePaths?.length > 0) {
               post.imagePaths = post.imagePaths.map(imagePath =>
                 this.UserService.getImageUrl(username, imagePath)
               );
             }
           });
           this.visibleSavedPosts.push(...data);
-          this.loadingSavedPosts = false;
-          if (data.length > 0) {
-            this.savedPostPage++; // Increment page if there are more posts
-          }
-        },
-        error: (error) => {
-          console.log(error);
-          // this.showError(error.error.errorCode, 'Please check your connection.');
-          this.loadingSavedPosts = false;
+          console.log('saved posts are ' , this.visibleSavedPosts)
+          this.savedPostPage++; // Increment page only if data exists
+        } else {
+          this.hasMoreSavedPosts = false; // No more saved posts to fetch
         }
-      });
+        this.loadingSavedPosts = false;
+      },
+      error: (error) => {
+        console.error(error);
+        this.showError("Error", "Unable to fetch saved post, please try again later");
+        this.loadingSavedPosts = false;
+      },
+    });
   }
   
 
@@ -154,19 +158,20 @@ export class BusinessProfileComponent implements OnInit{
     this.showPopup = true;
   }
 
-  onScroll(event: any) {
+  onScroll(event: any): void {
     const scrollContainer = event.target;
     const scrollPosition = scrollContainer.scrollTop + scrollContainer.clientHeight;
     const scrollHeight = scrollContainer.scrollHeight;
-
+  
     if (scrollPosition >= scrollHeight - 100) {
-      if (this.selectedTab === 'posts' && !this.loadingProfilePosts) {
-        this.fetchProfilePosts(this.username!, this.profilePostPage); // Pass current page
-      } else if (this.selectedTab === 'saved' && !this.loadingSavedPosts) {
-        this.fetchSavedPosts(this.username!, this.savedPostPage); // Pass current page
+      if (this.selectedTab === 'posts' && !this.loadingProfilePosts && this.hasMoreProfilePosts) {
+        this.fetchProfilePosts(this.username!, this.profilePostPage);
+      } else if (this.selectedTab === 'saved' && !this.loadingSavedPosts && this.hasMoreSavedPosts) {
+        this.fetchSavedPosts(this.username!, this.savedPostPage);
       }
     }
   }
+  
 
 private scrollPositions: { [key: string]: number } = {
   posts: 0,

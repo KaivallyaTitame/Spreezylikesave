@@ -27,18 +27,18 @@ export class UserService {
           "Content-Type": "application/json",
         }),
       })
-      .pipe(
-        timeout(15000),
-        catchError((error) => {
-          console.log(error);
-          if (error.name === "TimeoutError") {
-            return throwError(
-              () => new Error("Request timed out while fetching user details.")
-            );
-          }
-          return throwError(() => new Error(error));
-        })
-      );
+      // .pipe(
+      //   timeout(15000),
+      //   catchError((error) => {
+      //     console.log(error);
+      //     if (error.name === "TimeoutError") {
+      //       return throwError(
+      //         () => new Error("Request timed out while fetching user details.")
+      //       );
+      //     }
+      //     return throwError(() => new Error("error"));
+      //   })
+      // );
   }
 
   getProfilePosts(
@@ -56,17 +56,17 @@ export class UserService {
         responseType: "json",
         headers: headers,
       })
-      .pipe(
-        timeout(15000),
-        catchError((error) => {
-          if (error.name === "TimeoutError") {
-            return throwError(
-              () => new Error("Request timed out while fetching profile posts.")
-            );
-          }
-          return throwError(() => new Error("Failed to fetch profile posts."));
-        })
-      );
+      // .pipe(
+      //   timeout(15000),
+      //   catchError((error) => {
+      //     if (error.name === "TimeoutError") {
+      //       return throwError(
+      //         () => new Error("Request timed out while fetching profile posts.")
+      //       );
+      //     }
+      //     return throwError(() => new Error("Failed to fetch profile posts."));
+      //   })
+      // );
   }
 
   getSavedPosts(
@@ -84,16 +84,16 @@ export class UserService {
         responseType: "json",
         headers: headers,
       })
-      .pipe(
-        timeout(15000),
-        catchError((error) => {
-          if (error.name === "TimeoutError") {
-            return throwError(
-              () => new Error("Request timed out while fetching saved posts.")
-            );
-          }
-          return throwError(() => new Error("Failed to fetch saved posts."));
-        })
-      );
+      // .pipe(
+      //   timeout(15000),
+      //   catchError((error) => {
+      //     if (error.name === "TimeoutError") {
+      //       return throwError(
+      //         () => new Error("Request timed out while fetching saved posts.")
+      //       );
+      //     }
+      //     return throwError(() => new Error("Failed to fetch saved posts."));
+      //   })
+      // );
   }
 }
