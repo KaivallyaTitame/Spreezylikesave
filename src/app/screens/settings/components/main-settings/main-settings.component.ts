@@ -22,8 +22,8 @@ export class MainSettingsComponent {
   }
 
   navigateToProfileInformation() {
-    if (this.userType === 'user') {
-      this.router.navigate(['/business-home/settings/user-information']);
+    if (this.userType === 'Consumer') {
+      this.router.navigate(['/consumer-home/settings/user-information']);
     } else if (this.userType === 'Business') {
       this.router.navigate(['/business-home/settings/business-information']);
     } else {
