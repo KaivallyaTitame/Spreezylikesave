@@ -12,6 +12,7 @@ const routes: Routes = [
       // { path: 'notification', loadChildren: () => import('../notification-screen/notification-screen.module').then(m => m.NotificationScreenModule) },
       { path: 'profile', loadChildren: () => import('../profile-screen/profile-screen.module').then(m => m.ProfileScreenModule) },
       { path: 'settings',loadChildren: () => import('../settings/settings.module').then(m =>m.SettingsModule)},
+      { path: 'feedback', loadChildren: () => import('../feedback-screen/feedback-screen.module').then(m =>m.FeedbackScreenModule)},
       { path: '', redirectTo: 'consumer-home/adfeed', pathMatch: 'full' } 
     ]
   }
