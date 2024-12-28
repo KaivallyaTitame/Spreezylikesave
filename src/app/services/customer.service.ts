@@ -15,7 +15,7 @@ export class CustomerService {
   registerNewUser(user: ConsumerDetails) {
     console.log(user);
    
-    return  this.http.post("https://localhost:8083/user/register-consumer", user)
+    return  this.http.post("http://localhost:8083/user/register-consumer", user)
     .subscribe(response => {
       console.log('Response:', response);
     }, error => {
@@ -24,15 +24,21 @@ export class CustomerService {
   }
   registerNewBusiness(user: BusinessDetails) {
     console.log(user);
-    
-    return this.http.post("https://localhost:8762/user/register-business", user)
-    .subscribe(response => {
-      console.log('Response:', response);
-    }, error => {
-      console.error('Error:', error);
-    });
-
+  
+    return this.http.post("http://localhost:8083/user/register-business", user, { responseType: 'text' })
+      .subscribe(response => {
+        try {
+          const parsedResponse = JSON.parse(response);
+          console.log('Parsed Response:', parsedResponse);
+        } catch (e) {
+          console.log('Plain Text Response:', response);
+        }
+      }, error => {
+        console.error('Error:', error);
+      });
   }
+  
+  
   // registerToFirebase(user: ConsumerDetails) {
   //   let credentials = new Credentials();
   //   credentials.email = user.email;

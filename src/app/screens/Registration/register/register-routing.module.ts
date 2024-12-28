@@ -1,11 +1,11 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { WelcomeComponent } from './welcome.component';
+import { registerComponent } from './register.component';
 
 const routes: Routes = [
   {
     path: '',
-    component: WelcomeComponent,
+    component: registerComponent,
   },
   {
     path: 'business1',
@@ -14,10 +14,10 @@ const routes: Routes = [
         .then(m => m.BusinessRegistrationModule)
   },
   {
-    path: 'register',
+    path: 'consumer',
     loadChildren: () =>
       import('../ConsumerRegistration/ConsumerRegistration.module')
-        .then(m => m.RegisterModule)
+        .then(m => m.ConsumerModule)
   }
 ];
 
@@ -25,4 +25,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
 })
-export class WelcomeRoutingModule { }
+export class registerRoutingModule { }

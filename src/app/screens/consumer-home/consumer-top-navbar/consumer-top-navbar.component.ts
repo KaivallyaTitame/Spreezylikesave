@@ -21,7 +21,7 @@ export class ConsumerTopNavbarComponent implements OnInit {
     arrowRightFromBracket: faArrowRightFromBracket
   };
 
-  consumer: any;  
+  consumer: any;
 
   constructor(private router: Router, private consumernavigationservice: ConsumerNavigationService, private authService : AuthService) {}
 
@@ -32,17 +32,14 @@ export class ConsumerTopNavbarComponent implements OnInit {
   fetchConsumerInformation() {
     this.consumernavigationservice.getConsumerDetails().subscribe({
       next: (data: UserProfileDTO[]) => {
-  
         if (data.length > 0) {
-          this.consumer = data[0];  
+          this.consumer = data[0];
         } else {
-          this.consumer = {};  
+          this.consumer = {};
         }
       },
-      error: (error) => {
-        this.consumer = {}; 
-      },
-      complete: () => {
+      error: () => {
+        this.consumer = {};
       }
     });
   }

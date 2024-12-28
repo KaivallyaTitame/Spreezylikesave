@@ -17,10 +17,5 @@ import { BusinessRegistrationRoutingModule } from './businessRegistration-routin
     ReactiveFormsModule,
     BusinessRegistrationRoutingModule,
   ],
-  // exports: [ 
-  //      Business1Component,
-  //       Business2Component,
-  //      Business3Component,
-  //     ],
 })
 export class BusinessRegistrationModule {}

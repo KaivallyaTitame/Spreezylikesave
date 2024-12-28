@@ -1,113 +1,95 @@
-import { Component, OnInit, Inject } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms";
-import { CustomerService } from "src/app/services/customer.service";
-import { BusinessDetails } from 'src/app/models/BusinessRegistration/BusinessDetails';
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
+import { PostUploadService } from 'src/app/services/post-upload.service';
 import { BusinessData } from 'src/app/services/BusinessData.service';
-import { DOCUMENT } from '@angular/common';
+import { CustomerService } from 'src/app/services/customer.service';
 
 @Component({
   selector: 'app-business3',
   templateUrl: './business3.component.html',
-  styleUrls: ['./business3.component.css']
+  styleUrls: ['./business3.component.css'],
 })
 export class Business3Component implements OnInit {
-  Business: BusinessDetails = this.dataService.getBusinessData();
   form: FormGroup;
   aadharCardPhoto: File | null = null;
   panCardPhoto: File | null = null;
-  aadharCardErrorMessage: string | null = null;
-  panCardErrorMessage: string | null = null;
+  panCardErrorMessage = '';
 
   constructor(
     private fb: FormBuilder,
-    private customerService: CustomerService,
-    private dataService: BusinessData,
-    @Inject(DOCUMENT) private document: Document
+    private router: Router,
+    private postUploadService: PostUploadService,
+    private businessDataService: BusinessData,
+    private customerService: CustomerService
   ) {
     this.form = this.fb.group({
       aadharCardPhoto: [null, Validators.required],
-      panCardPhoto: [null, Validators.required]
+      panCardPhoto: [null, Validators.required],
     });
   }
 
-  ngOnInit(): void {
-    const businessData = this.dataService.getBusinessData();
-    this.Business.kycDetails.aadharNumber = businessData.kycDetails.aadharNumber;
-    this.Business.kycDetails.pancardNumber = businessData.kycDetails.pancardNumber;
-    this.Business.state = businessData.state;
-    this.Business.city = businessData.city;
-    this.Business.bio = businessData.bio;
+  ngOnInit(): void {}
+
+  handleFileUpload(event: Event, type: 'aadharCardPhoto' | 'panCardPhoto'): void {
+    const input = event.target as HTMLInputElement;
+    const file = input?.files?.[0] || null;
+
+    if (file) {
+      if (type === 'aadharCardPhoto') {
+        this.aadharCardPhoto = file;
+        this.form.patchValue({ aadharCardPhoto: file.name }); // Store the file name as a placeholder
+      } else if (type === 'panCardPhoto') {
+        this.panCardPhoto = file;
+        this.form.patchValue({ panCardPhoto: file.name }); // Store the file name as a placeholder
+      }
+    }
   }
 
-  handleFileUpload(event: Event, controlName: string) {
-    const input = event.target as HTMLInputElement;
-    const file = input.files?.[0]; // Safely access the first file
+  triggerFileInput(id: string): void {
+    const fileInput = document.getElementById(id) as HTMLInputElement;
+    fileInput?.click();
+  }
 
-    if (!file) {
-      console.error('No file selected');
+  get aadharCardPhotoControl() {
+    return this.form.get('aadharCardPhoto');
+  }
+
+  get panCardPhotoControl() {
+    return this.form.get('panCardPhoto');
+  }
+
+  registerUser(): void {
+    if (this.form.invalid || !this.aadharCardPhoto || !this.panCardPhoto) {
+      console.error('Form is invalid or files are missing');
       return;
     }
 
-    if (controlName === 'aadharCardPhoto') {
-      this.aadharCardPhoto = file;
-      this.aadharCardErrorMessage = this.validateFile(file);
-    } else if (controlName === 'panCardPhoto') {
-      this.panCardPhoto = file;
-      this.panCardErrorMessage = this.validateFile(file);
-    }
-    
-    // Update the form with the selected file
-    this.form.patchValue({ [controlName]: file });
-  }
+    const businessDetails = this.businessDataService.getBusinessData();
+    const fileNames = [
+      this.aadharCardPhoto?.name || '',
+      this.panCardPhoto?.name || '',
+    ];
 
-  validateFile(file: File | null): string | null {
-    if (!file) {
-      return 'Please select a file to upload.';
-    }
-    if (file.size > 1 * 1024 * 1024) { // Maximum file size limit of 1 MB
-      return 'File size exceeds the maximum limit of 1 MB.';
-    }
-    return null;
-  }
+    console.log("Data being sent to DTO from Business3:", businessDetails); // Log data here
+    console.log("File names being uploaded:", fileNames); // Log file names
 
-  registerUser() {
-    if (this.form.valid && this.aadharCardPhoto && this.panCardPhoto) {
-      const formData = new FormData();
-      formData.append('aadharCardPhoto', this.aadharCardPhoto);
-      formData.append('panCardPhoto', this.panCardPhoto);
+    this.postUploadService.getPresignedUrl(fileNames, businessDetails.email).subscribe({
+      next: (presignedUrls) => {
+        if (this.aadharCardPhoto && presignedUrls.presignedUrls[0]) {
+          this.postUploadService.uploadToS3(this.aadharCardPhoto, presignedUrls.presignedUrls[0]).subscribe();
+        }
+        if (this.panCardPhoto && presignedUrls.presignedUrls[1]) {
+          this.postUploadService.uploadToS3(this.panCardPhoto, presignedUrls.presignedUrls[1]).subscribe();
+        }
 
-      // Map form data to business details
-      this.Business = this.mapUserData(this.form);
-
-      // Call the service without subscribing here
-      this.customerService.registerNewBusiness(this.Business);
-
-      // Optionally reset the form after successful submission
-      this.form.reset();
-    } else {
-      this.form.markAllAsTouched();
-    }
-  }
-
-  mapUserData(form: FormGroup): BusinessDetails {
-    this.Business.kycDetails.aadharImage = "placeholder_for_aadhar_image_url";
-    this.Business.kycDetails.pancardImage = "placeholder_for_pancard_image_url";
-    return this.Business;
-  }
-
-  triggerFileInput(fileInputId: string): void {
-    const fileInputElement = this.document.getElementById(fileInputId) as HTMLInputElement;
-
-    if (fileInputElement) {
-      fileInputElement.click();
-    }
-  }
-
-  get aadharCardPhotoControl(): FormControl {
-    return this.form.get("aadharCardPhoto") as FormControl;
-  }
-
-  get panCardPhotoControl(): FormControl {
-    return this.form.get("panCardPhoto") as FormControl;
+        this.customerService.registerNewBusiness(businessDetails);
+        this.router.navigate(['/business-registration/success']);
+      },
+      error: (err) => {
+        console.error('Error generating presigned URLs:', err);
+      },
+    });
   }
 }
+

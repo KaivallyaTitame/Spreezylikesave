@@ -1,3 +1,4 @@
+
 <div class="bg-white">
   <span class="flex justify-center font-primary text-primary-0 text-3xl mt-5">Let's get you ready...</span>
   <form class="flex justify-center" [formGroup]="form" (ngSubmit)="registerUser()">
@@ -27,6 +28,22 @@
           <span *ngIf="businessUsername.errors?.['maxlength']">Business Username cannot be more than 10 characters.</span>
         </div>
       </div>
+
+      <div class="business-type mt-3">
+        <label class="form-label pb-2 font-secondary">Business Type:</label>
+        <select class="input input-primary max-w-full" formControlName="businessType">
+          <option value="" disabled selected>Select Business Type</option>
+          <option value="retail">Retail</option>
+          <option value="service">Service</option>
+          <option value="manufacturing">Manufacturing</option>
+          <option value="other">Other</option>
+        </select>
+        <div class="form-text text-red-600" *ngIf="businessType.invalid && (businessType.dirty || businessType.touched)">
+          <span *ngIf="businessType.errors?.['required']">Business Type is required.</span>
+        </div>
+        
+      </div>
+
       <div class="email mt-3">
         <label class="form-label pb-2 font-secondary">Email :</label>
         <input type="email" class="input input-primary max-w-full" placeholder="Email" formControlName="email" />
@@ -45,6 +62,7 @@
           <span *ngIf="phoneNumber.errors?.['numeric']">Phone Number must contain only numbers.</span>
         </div>
       </div>
+
 
       <div class="gender mt-3">
         <label class="form-label pb-2 font-secondary">Gender:</label>
@@ -69,7 +87,6 @@
       </div>
       <div class="buttons flex justify-center mt-5">
         <button 
-          (click)="navigate()" 
           type="submit" 
           [disabled]="form.invalid" 
           class="btn btn-primary btn-md font-secondary w-60">

@@ -7,12 +7,16 @@ import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
 import { LoginModule } from "./screens/login/login.module";
 import { LogoutModule } from "./screens/logout/logout.module";
+import { GlobalErrorHandlerService } from "./services/global-error-handler.service";
 import { BusinessHomeModule } from "./screens/business-home/business-home.module";
 import { ConsumerHomeModule } from "./screens/consumer-home/consumer-home.module";
 import { ReactiveFormsModule } from "@angular/forms";
+import { registerModule } from "./screens/Registration/register/register.module";
+
+
 @NgModule({
   declarations: [
-    AppComponent,
+    AppComponent
   ],
   imports: [
     BrowserModule,
@@ -28,6 +32,7 @@ import { ReactiveFormsModule } from "@angular/forms";
   providers: [
     {
       provide: ErrorHandler,
+      useClass: GlobalErrorHandlerService,
     },
   ],
   bootstrap: [AppComponent],

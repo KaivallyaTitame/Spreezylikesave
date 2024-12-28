@@ -4,14 +4,12 @@ import { Observable, throwError } from "rxjs";
 import { catchError, map, tap } from "rxjs/operators";
 import { OtpResponse } from "../../models/otpResponse";
 import { VerifyOtpResponse } from "../../models/verifyOtpResponse";
-import { environment } from "src/environments/environment.development";
 import { API_CONFIG } from "src/app/api-config";
 
 @Injectable({
   providedIn: "root",
 })
 export class OtpService {
-  private apiUrl = environment.apiGateway;
   constructor(private http: HttpClient) {}
   isOtpSentToMobile = false;
 
@@ -23,14 +21,12 @@ export class OtpService {
         { responseType: "json" }
       )
       .pipe(
-        tap((response) => {
+        tap(() => {
           this.isOtpSentToMobile = true;
         }),
         catchError((error) => {
           this.isOtpSentToMobile = false;
-          return throwError(
-            () => new HttpErrorResponse(error)
-          );
+          return throwError(() => new HttpErrorResponse(error));
         })
       );
   }
@@ -45,13 +41,13 @@ export class OtpService {
       .pipe(
         map((response: string) => {
           console.log(response);
-          return {success: true, message: response}
+          return { success: true, message: response };
         }),
         catchError((error: HttpErrorResponse) => {
           let errorMessage = "Failed to send OTP. Please try again later.";
           const errorBody = JSON.parse(error?.error || "{}");
           if (errorBody?.errorDescription) {
-             errorMessage = errorBody.errorDescription;
+            errorMessage = errorBody.errorDescription;
           }
           return throwError(() => new Error(errorMessage));
         })
@@ -59,7 +55,7 @@ export class OtpService {
   }
 
   verifyOtp(mobile: string, otp: string): Observable<VerifyOtpResponse> {
-    return this.http.post<VerifyOtpResponse>(`${this.apiUrl}auth/verify-otp`, {
+    return this.http.post<VerifyOtpResponse>(API_CONFIG.VERIFY_OTP, {
       phoneNumber: mobile,
       otp: otp,
     });

@@ -1,11 +1,11 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { loginGuard } from './authGuards/login/login.guard';
-import { businessGuard } from './authGuards/business/business.guard';
-import { customerGuard } from './authGuards/customer/customer.guard';
+import { customerGuard } from "./authGuards/customer/customer.guard";
+import { businessGuard } from "./authGuards/business/business.guard";
+import { loginGuard } from "./authGuards/login/login.guard";
 
 const routes: Routes = [
-  { path: '', redirectTo: 'login', pathMatch: 'full' },
+  { path: "", redirectTo: "login", pathMatch: "full" },
 
   {
     path: "login",
@@ -13,8 +13,8 @@ const routes: Routes = [
     canActivate: [loginGuard]
   },
   {
-    path: 'business-home',
-    loadChildren: () => import('./screens/business-home/business-home.module').then(m => m.BusinessHomeModule),
+    path: "discover-business-screen",
+    loadChildren: () => import("./screens/discover-business-screen/discover-business-screen.module").then(m => m.DiscoverBusinessScreenModule),
   },
   {
     path: "business-home",
@@ -31,10 +31,10 @@ const routes: Routes = [
     canActivate: [customerGuard]
   },
   {
-    path: 'welcome',
-    loadChildren: () => import('./screens/Registration/welcome/welcome.module').then(m => m.WelcomeModule),
+    path: 'register',
+    loadChildren: () => import('./screens/Registration/register/register.module').then(m => m.registerModule),
   },
-  { path: '**', redirectTo: 'consumer-home' }
+  { path: "**", redirectTo: "login"}
 ];
 
 @NgModule({

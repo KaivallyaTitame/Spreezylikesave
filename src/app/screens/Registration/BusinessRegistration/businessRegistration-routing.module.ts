@@ -9,6 +9,7 @@ const routes: Routes = [
     path: '',
     component: Business1Component
   },
+  
   {
     path: 'business2',
     component: Business2Component,

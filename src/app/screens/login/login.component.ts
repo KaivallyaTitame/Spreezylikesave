@@ -105,12 +105,8 @@ export class LoginComponent implements OnInit {
   signInWithGoogle() {
     this.authService.signInWithGoogle();
   }
-
-  navigateuser(){
-    this.router.navigate(['/welcome']);
-  }
   
   signup(){
-    this.router.navigate(["/welcome"])
+    this.router.navigate(["/register"])
   }
 }
