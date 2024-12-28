@@ -66,9 +66,6 @@ export class Business1Component {
     return this.Business;
   }
   
-
-
-  // Getter methods for easy access to form controls
   get name(): FormControl {
     return this.form.get("ownerName") as FormControl;
   }

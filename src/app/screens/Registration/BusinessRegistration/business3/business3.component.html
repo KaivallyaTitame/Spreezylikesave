@@ -8,7 +8,7 @@
         <img src="../../../../assets/Imagess/images3.jpeg" alt="This is an image" class="mt-5 mb-5">
       </div>
       <div class="text-label-aadharcard">
-        <span class="text-sm">Aadhar Card Photo</span>
+        <span class="flex justify-center font-primary text-primary-0 text-xl mt-5">Aadhar Card Photo</span>
       </div>
       <div class="file-upload-container mt-5 rounded-lg shadow-sm overflow-hidden">
         <label id="adharimage" for="aadharCardPhoto" class="font-secondary text-gray-400 block cursor-pointer">
@@ -17,6 +17,9 @@
         </label>
         <input type="file" id="aadharCardPhoto" (change)="handleFileUpload($event, 'aadharCardPhoto')" class="hidden">
         <button type="button" class="btn btn-primary btn-sm ml-2 ripple" (click)="triggerFileInput('aadharCardPhoto')">Browse File</button>
+      </div>
+      <div class="text-label-aadharcard">
+        <span class="flex justify-center font-primary text-primary-0 text-xl mt-5">Pan Card Photo</span>
       </div>
 
       <div class="file-upload-container mt-5 rounded-lg shadow-sm overflow-hidden">
@@ -39,6 +42,7 @@
       <div class="form-text text-red-600 mt-2" *ngIf="!panCardPhoto && panCardPhotoControl?.touched">
         <span>PAN Card Photo is required.</span>
       </div>      
+      
 
       <div class="signin mt-4">
         <button type="submit" [disabled]="form.invalid" class="btn btn-primary btn-sm ripple">SIGN IN</button>
