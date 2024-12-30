@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { faAdd, faBell, faChartColumn, faChartLine, faCirclePlus, faCircleUser, faHome, faUser } from '@fortawesome/free-solid-svg-icons';
+import { faAdd, faBell, faChartColumn, faChartLine, faCirclePlus, faCircleUser, faHome, faUser, faSearch  } from '@fortawesome/free-solid-svg-icons';
 import { BusinessNavigationService } from 'src/app/services/business-navigation.service';
 import { DecodedToken } from'src/app/models/decodedToken';
 import { JwtDecoderService } from 'src/app/services/jwtDecoder/jwt-decoder.service';
@@ -21,6 +21,7 @@ export class BusinessBottomNavbarComponent implements OnInit {
   faCirclePlus = faCirclePlus;
   faChartColumn = faChartColumn;
   faCircleUser = faCircleUser;
+  faSearch = faSearch;
 
   adFeedScreenActive = false;  
   insightsScreenActive = false;
@@ -29,6 +30,7 @@ export class BusinessBottomNavbarComponent implements OnInit {
   profileScreenActive = false;
   currentUser: string = '';
   userType: string;
+  searchScreenActive = false;
 
   constructor(private router: Router, private navigation: BusinessNavigationService, private JwtDecoder: JwtDecoderService) {}
 
@@ -72,12 +74,14 @@ export class BusinessBottomNavbarComponent implements OnInit {
     this.postScreenActive = false;
     this.notificationScreenActive = false;
     this.profileScreenActive = false;
+    this.searchScreenActive = false;
 
     this.navigation.is_AdFeed = false;  
     this.navigation.is_Insights = false;
     this.navigation.is_Post = false;
     this.navigation.is_Notification = false;
     this.navigation.is_Profile = false;
+    this.navigation.is_Search = false;
   }
 
   private updateActiveState(screen: string) {
@@ -104,6 +108,10 @@ export class BusinessBottomNavbarComponent implements OnInit {
         this.profileScreenActive = true;
         this.navigation.is_Profile = true;
         break;
+        case 'search': 
+        this.searchScreenActive = true;
+        this.navigation.is_Search = true;
+        break;
     }
   }
 
@@ -119,6 +127,8 @@ export class BusinessBottomNavbarComponent implements OnInit {
         return this.notificationScreenActive;
       case 'profile':
         return this.profileScreenActive;
+      case 'search': 
+        return this.searchScreenActive;
       default:
         return false;
     }

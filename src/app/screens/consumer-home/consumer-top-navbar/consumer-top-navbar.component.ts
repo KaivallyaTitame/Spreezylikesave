@@ -4,6 +4,9 @@ import { faArrowRightFromBracket, faBars, faCircleQuestion, faFileLines, faFileP
 import { ConsumerNavigationService } from 'src/app/services/consumer-navigation.service';
 import { UserProfileDTO } from 'src/app/models/UserProfileDTO';
 import { AuthService } from 'src/app/services/auth.service';
+import { JwtDecoderService } from 'src/app/services/jwt-decoder.service';
+import { DecodedToken } from 'src/app/models/decoded-token';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-consumer-top-navbar',
@@ -21,27 +24,56 @@ export class ConsumerTopNavbarComponent implements OnInit {
     arrowRightFromBracket: faArrowRightFromBracket
   };
 
-  consumer: any;
+  consumer: UserProfileDTO | null = null; 
+  currentUsername: string = '';
+ 
 
-  constructor(private router: Router, private consumernavigationservice: ConsumerNavigationService, private authService : AuthService) {}
+  constructor(private router: Router, 
+    private consumernavigationservice: ConsumerNavigationService, 
+    private authService : AuthService,
+    private jwtDecoderService: JwtDecoderService) {}
 
   ngOnInit(): void {
+    this.decodeToken();
     this.fetchConsumerInformation();
+ 
   }
 
-  fetchConsumerInformation() {
-    this.consumernavigationservice.getConsumerDetails().subscribe({
-      next: (data: UserProfileDTO[]) => {
-        if (data.length > 0) {
-          this.consumer = data[0];
-        } else {
-          this.consumer = {};
-        }
-      },
-      error: () => {
-        this.consumer = {};
+  decodeToken(): void {
+    const token = localStorage.getItem('token') || '';
+    if (token) {
+      try {
+        const decodedToken = this.jwtDecoderService.decodeInfoFromToken(token); 
+        this.currentUsername = decodedToken.sub; 
+      } catch (error) {
+        console.error('Error decoding token:', error);
+        this.router.navigate(['/login']); 
       }
-    });
+    } else {
+      this.router.navigate(['/login']); 
+    }
+  }
+
+  fetchConsumerInformation(): void {
+    if (this.currentUsername) {
+      this.consumernavigationservice.getUserDetails(this.currentUsername).subscribe({
+        next: (response) => {
+          try {
+            const userData = JSON.parse(response); 
+            if (userData.length > 0) {
+              this.consumer = Object.assign(new UserProfileDTO(), userData[0]);
+            } else {
+              console.log('No user data found');
+            }
+          } catch (error) {
+            console.error('Error parsing JSON:', error);
+          }
+        },
+        error: (error: HttpErrorResponse) => {
+          console.error('Error fetching user data:', error);
+        }
+      });
+    }
   }
 
   logout(){

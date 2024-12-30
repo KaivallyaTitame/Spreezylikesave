@@ -17,7 +17,7 @@
                     <img *ngIf="business" [src]="business.profilePicture" alt="avatar" class="rounded-full" />
                   </div>
                   <span class="text-xl mt-2 font-sidebar text-primary">{{ business?.name }}</span>
-                  <span class="text-lg font-normal font-sidebar text-content2">{{ business?.username }}</span>
+                  <span class="text-lg font-normal font-sidebar text-content2">{{ currentUsername }}</span>
                 </div>
               </section>
 
@@ -47,10 +47,10 @@
                         <img src="assets/logo.png" alt="Contact Us" class="pl-0 pr-1 w-8 h-8" />
                         <span class="pl-1 text-lg font-normal">Contact Us</span>
                       </li>
-                      <li class="menu-item py-1">
+                      <!-- <li class="menu-item py-1">
                         <fa-icon class="pl-0 pr-1 text-lg w-8 h-8 text-primarycolor-0" [icon]="faCircleQuestion"></fa-icon>
                         <span class="pl-1 text-lg font-normal">Help</span>
-                      </li>
+                      </li> -->
                       <li class="menu-item py-1">
                         <fa-icon class="pl-0 pr-1 text-lg w-8 h-8 text-primarycolor-0" [icon]="faFileLines"></fa-icon>
                         <span class="pl-1 text-lg font-normal">Terms & Conditions</span>

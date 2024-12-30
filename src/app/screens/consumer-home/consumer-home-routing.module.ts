@@ -9,7 +9,7 @@ const routes: Routes = [
     children: [
       { path: 'adfeed', loadChildren: () => import('../ad-feed/ad-feed.module').then(m => m.AdFeedModule) },
       { path: 'search', loadChildren: () => import('../search/search.module').then(m => m.SearchModule) },
-      { path: 'notification', loadChildren: () => import('../notification-screen/notification-screen.module').then(m => m.NotificationScreenModule) },
+      // { path: 'notification', loadChildren: () => import('../notification-screen/notification-screen.module').then(m => m.NotificationScreenModule) },
       { path: 'profile', loadChildren: () => import('../profile-screen/profile-screen.module').then(m => m.ProfileScreenModule) },
       { path: 'settings',loadChildren: () => import('../settings/settings.module').then(m =>m.SettingsModule)},
       { path: '', redirectTo: 'consumer-home/adfeed', pathMatch: 'full' } 
