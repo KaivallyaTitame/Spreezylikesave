@@ -1,6 +1,6 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { BusinessInformation } from 'src/app/models/business-information';
 import { JwtDecoderService } from 'src/app/services/jwt-decoder.service';
@@ -22,7 +22,6 @@ export class BusinessInformationComponent {
   popUpTitle: string = '';
   popUpBody: string = '';
   username: string='';
-  tempUsername:string='alice_biz04';
   loading: boolean = true;
   imageFileName: string = '';
   stateData: StateData;
@@ -30,7 +29,7 @@ export class BusinessInformationComponent {
 
   constructor(private http: HttpClient,private fb:FormBuilder,private router:Router,private jwtDecoder:JwtDecoderService,private settingsService:SettingsService){
     this.businessInfo=this.fb.group({
-      name:[''],
+      ownerName:[''],
       businessUsername:[''],
       profilePicture:[''],
       email:[''],
@@ -42,6 +41,18 @@ export class BusinessInformationComponent {
       state:[''],
       city:[''],
       pincode:[''],
+      whatsApp: [
+        'https://example-whatsapp.com', 
+        [Validators.required, this.urlValidator()]
+      ],
+      instagram: [
+        'https://example-instagram.com', 
+        [Validators.required, this.urlValidator()]
+      ],
+      facebook: [
+        'https://example-facebook.com', 
+        [Validators.required, this.urlValidator()]
+      ],
       kycDetails: this.fb.group({
         aadharNumber: [''],
         aadharImage: [''],
@@ -62,11 +73,10 @@ export class BusinessInformationComponent {
     const decodedInfo = token ? this.jwtDecoder.decodeInfoFromToken(token) : this.jwtDecoder.decodeInfoFromToken('');
     this.username = decodedInfo['sub'];
 
-    this.settingsService.getBusinessDetails(this.tempUsername).subscribe({
+    this.settingsService.getBusinessDetails(this.username).subscribe({
       next: (response) => {
         try {
           const userData = JSON.parse(response);
-          console.log(userData);
           if (userData.length > 0) {
             this.updateFormWithUserData(userData[0]);
           } else {
@@ -89,7 +99,7 @@ export class BusinessInformationComponent {
   
   private updateFormWithUserData(user: BusinessInformation) {
     this.businessInfo.patchValue({
-      name: user.name,
+      ownerName:user.ownerName,
       businessUsername: user.businessUsername,
       profilePicture:user.profilePicture,
       email: user.email,
@@ -101,6 +111,9 @@ export class BusinessInformationComponent {
       state: user.state,
       city: user.city,
       pincode: user.pincode,
+      whatsApp:user.whatsApp,
+      instagram:user.instagram,
+      facebook:user.facebook,
       kycDetails: {
         aadharNumber: user.kycDetails?.aadharNumber,
         aadharImage: user.kycDetails?.aadharImage,
@@ -109,7 +122,7 @@ export class BusinessInformationComponent {
       }
     });
 
-    this.imageFileName = user.profilePicture;
+    this.imageFileName =user.profilePicture;
   }
 
   handleSubmit(){
@@ -124,7 +137,6 @@ export class BusinessInformationComponent {
   }
 
   patchImageFileName(uploadedFileName: string): void {
-    console.log(uploadedFileName);
     const profilePicture = uploadedFileName || this.businessInfo.get('profilePicture')?.value;
     this.businessInfo.patchValue({
       profilePicture: profilePicture
@@ -132,7 +144,6 @@ export class BusinessInformationComponent {
   }
 
   patchAadhar(uploadedFileName:string): void{
-    console.log(uploadedFileName);
     const aadharImage = uploadedFileName || this.businessInfo.get('aadharImage')?.value;
     this.businessInfo.patchValue({
       kycDetails: {
@@ -142,7 +153,6 @@ export class BusinessInformationComponent {
   }
 
   patchPancard(uploadedFileName:string): void{
-    console.log(uploadedFileName);
     const pancardImage = uploadedFileName || this.businessInfo.get('aadharImage')?.value;
     this.businessInfo.patchValue({
       kycDetails: {
@@ -152,7 +162,7 @@ export class BusinessInformationComponent {
   }
 
   createRequest(details:FormGroup){
-    this.businessInfoData.name=details.value['name'];
+    this.businessInfoData.ownerName=details.value['ownerName'];
     this.businessInfoData.businessUsername=details.value['businessUsername'];
     this.businessInfoData.businessName=details.value['businessName'];
     this.businessInfoData.businessType=details.value['businessType'];
@@ -164,14 +174,15 @@ export class BusinessInformationComponent {
     this.businessInfoData.gender=details.value['gender'];
     this.businessInfoData.bio=details.value['bio'];
     this.businessInfoData.state=details.value['state'];
+    this.businessInfoData.whatsApp=details.value['whatsApp'];
+    this.businessInfoData.instagram=details.value['instagram'];
+    this.businessInfoData.facebook=details.value['facebook'];
     this.businessInfoData.kycDetails = {
       aadharNumber: details.value.kycDetails['aadharNumber'],
       aadharImage: details.value.kycDetails['aadharImage'],
       pancardNumber: details.value.kycDetails['pancardNumber'],
       pancardImage: details.value.kycDetails['pancardImage']
     };
-    
-    console.log(this.businessInfoData);
     this.processRequest(this.businessInfoData);
   }
 
@@ -181,7 +192,6 @@ export class BusinessInformationComponent {
         this.popUpTitle = 'Success!';
         this.popUpBody = 'Your business details has been updated successfully.';
         this.showPopUp = true;
-        console.log(data); 
       },
       error: (error: HttpErrorResponse) => {
         this.popUpTitle = 'Error!';
@@ -209,7 +219,17 @@ export class BusinessInformationComponent {
   }
 
   getCitiesByState(selectedState: string): string[] {
+    if (!this.stateData || !this.stateData.state) {
+      return [];
+    }
     const state = this.stateData.state.find((state) => state.name === selectedState);
     return state ? state.cities : [];
+  }
+
+  urlValidator() {
+    return (control: any) => {
+      const urlPattern = /^https:\/\/.+/;
+      return urlPattern.test(control.value) ? null : { invalidUrl: true };
+    };
   }
 }
