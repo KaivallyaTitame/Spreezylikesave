@@ -44,7 +44,7 @@
     "@fortawesome/free-regular-svg-icons": "^6.4.0",
     "@fortawesome/free-solid-svg-icons": "^6.6.0",
     "@mdi/js": "^7.4.47",
-    "@ng-icons/core": "^25.2.0",
+    "@ng-icons/core": "^25.6.1",
     "@ng-icons/ionicons": "^25.2.0",
     "capacitor-resources": "^1.2.1",
     "firebase": "^10.4.0",
@@ -86,5 +86,3 @@
     }
   }
 }
-
-

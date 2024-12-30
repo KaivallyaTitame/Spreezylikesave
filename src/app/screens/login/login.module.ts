@@ -9,6 +9,7 @@ import { LoginComponent } from "./login.component";
 import { BusinessHomeModule } from "../business-home/business-home.module";
 import { SharedModule } from "src/app/shared/shared-module/shared-module.module";
 import { HttpClientModule } from "@angular/common/http";
+import { registerModule } from "../Registration/register/register.module";
 
 @NgModule({
   declarations: [
@@ -20,7 +21,8 @@ import { HttpClientModule } from "@angular/common/http";
     ReactiveFormsModule,
     NgIconsModule.withIcons({ ionEye, ionEyeOff }),
     SharedModule,
-    HttpClientModule
+    HttpClientModule,
+    registerModule
   ],
   schemas: [NO_ERRORS_SCHEMA],
   exports: [

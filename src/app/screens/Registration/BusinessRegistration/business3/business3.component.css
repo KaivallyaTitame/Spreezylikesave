@@ -1,0 +1,200 @@
+
+.bg-white {
+    background-color: white;
+  }
+  
+  
+  .signup-form {
+    display: flex;
+    flex-direction: column; /* Stack elements vertically */
+    width: 400px;
+    margin: 0 auto;
+    padding: 2rem;
+    border: none;
+    border-radius: none;
+  }
+
+  h2 {
+    color: #ED6A5A; /* Use the specified color */
+   /* Assuming some margin from the top */
+    text-align: center; /* Assuming the heading is centered in the image */
+  }
+  
+  .font-secondary { /* Assuming a secondary font is defined elsewhere */
+    font-family: /* Replace with your secondary font family */;
+  }
+  
+  .text-xl {
+    font-size: 1.25rem;
+  }
+  
+  .pb-2 {
+    padding-bottom: 0.5rem;
+  }
+  
+  /* Photo Upload Title (Adjust styles if needed) */
+  .photo-upload-title {
+    /* margin-top: 2rem; */
+    text-align: center; /* Assuming title is centered in the image */
+  }
+  
+  .font-secondary { /* Assuming a secondary font is defined elsewhere */
+    font-family: /* Replace with your secondary font family */;
+  }
+  
+  .text-xl {
+    font-size: 1.25rem;
+  }
+  
+  .pb-2 {
+    padding-bottom: 0.5rem;
+  }
+  
+  /* Image Styling (Adjust based on the image) */
+  .image-container {
+    margin-bottom: 1rem; /* Add margin between image and upload sections */
+  }
+  
+  .photo img{
+    width: 100%;  
+    height: auto;  
+    border-radius: 4px; 
+  }
+  
+  /* File Upload Styling (Refine based on image details) */
+  .file-upload-container {
+    display: flex; 
+    align-items: center; 
+    border: 1.5px solid #ED6A5A;
+    border-radius: 7px;
+    padding: 0.5rem 1rem;
+    margin-bottom: 1rem;
+
+  }
+  
+  .file-upload-container label {
+    flex: 1; /* Allow label to fill remaining space */
+    margin-right: 0.5rem; /* Add some margin for spacing */
+    color: #333; /* Adjust label text color if needed */
+  }
+  .file-upload-container button {
+    background-color: #ED6A5A; 
+    color: white; /* Adjust button text color based on image */
+    border: none; /* Remove default button border */
+    border-radius: 4px; /* Rounded corners */
+    cursor: pointer; /* Indicate hover interaction */
+    padding: 0.5rem 1rem; /* Adjust padding as needed */
+  }
+
+  
+  .file-upload-container input[type="file"] {
+    display: none; /* Hide the default file input element */
+    font-weight: normal; 
+  }
+  
+  .file-upload-container:hover {
+      
+    cursor: pointer; /* Indicate hover interaction */
+  }
+  
+  /* Custom Browse File Button (Adjust styles to match the image's button) */
+  .file-upload-container span {
+    display: inline-block; /* Display button as inline element */
+    padding: 0.5rem 1rem; /* Set button padding */
+    background-color: none; /* Use the specified color */
+    color: #979797; /* Text color for button */
+    border: none; /* Remove default button border */
+    border-radius: 4px; /* Rounded corners */
+    cursor: pointer; /* Indicate hover interaction */
+  
+    /* Potentially adjust font style, font weight, etc. based on the image */
+  }
+  
+  /* Error Message Styling */
+  .error-message { /* Assuming a class for error messages is defined elsewhere */
+    color: red; /* Display errors in red for better visibility */
+  }
+  
+  /* Button Styling (assuming it's a primary button) */
+  button[type="button"] { /* Button state might change later */
+    background-color:#ED6A5A; /* Blue color for primary buttons */
+    color: white;
+    padding: 0.75rem 1.5rem; /* Adjust padding as needed */
+    border: none;
+    border-radius: 4px;
+    cursor: pointer; /* Indicate hover/click interaction */
+    opacity: 0.5; /* Disable button visually (assuming functionality is handled elsewhere) */
+    height: 52px;
+    
+  }
+  
+  /* Enable Button on Specific Condition (adjust selector as needed) */
+  .signup-form button[type="button"]:enabled {
+    opacity: 1; /* Enable button visually */
+   
+   
+  }
+  
+
+
+  .disabled-span {
+    opacity: 0.5; /* or any other visual indication */
+    pointer-events: none; /* to prevent interactions */
+  }
+
+  .dis{
+    display: none;
+  }
+
+  .signin{
+  
+    text-align: center;
+    margin-top: 20px;
+    border-radius: 2px;
+  
+    
+  }
+
+  .signin button{
+    
+    width: 100%;
+  
+    
+  }
+  
+  
+
+  .photo{
+    /* size-adjust: 40px; */
+    align-items: center;
+  
+  }
+
+  .photo img {
+    width: 90%;
+    margin: auto;
+  }
+
+ .text-label-aadharcard
+ {
+    margin-left: 5px;
+    margin-bottom: -15px;
+    margin-top: 25px;
+ }
+
+
+.text-label-aadharcard span
+{
+  color: black;
+}
+
+.text-label-pancard{
+    margin-left: 5px;
+    margin-bottom: -15px;
+   
+}
+
+.text-label-pancard span
+{
+  color: black;
+}

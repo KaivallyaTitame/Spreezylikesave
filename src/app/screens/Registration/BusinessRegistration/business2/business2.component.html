@@ -1,0 +1,67 @@
+<div class="bg-white">
+  <span class="flex justify-center font-primary text-primary-0 text-3xl mt-5">Let's get you ready...</span>
+  <form class="flex justify-center" [formGroup]="form" (ngSubmit)="registerUser()">
+    <div class="signup-form w-80 relative">
+      <div class="aadhar-number mt-3">
+        <label class="form-label pb-2 font-secondary">Aadhar Card Number :</label>
+        <input type="text" class="input input-primary max-w-full" placeholder="Aadhar Card Number" formControlName="aadharNumber" />
+        <div class="form-text text-red-600" *ngIf="aadharNumber.invalid && (aadharNumber.dirty || aadharNumber.touched)">
+          <span *ngIf="aadharNumber.errors?.['required']">Aadhar Number is required.</span>
+          <span *ngIf="aadharNumber.errors?.['maxlength']">Aadhar Number cannot be more than 12 characters.</span>
+        </div>
+      </div>
+      <div class="pancard-number mt-3">
+        <label class="form-label pb-2 font-secondary">PAN Card Number :</label>
+        <input type="text" class="input input-primary max-w-full" placeholder="PAN Card Number" formControlName="pancardNumber" />
+        <div class="form-text text-red-600" *ngIf="pancardNumber.invalid && (pancardNumber.dirty || pancardNumber.touched)">
+          <span *ngIf="pancardNumber.errors?.['required']">PAN Card Number is required.</span>
+          <span *ngIf="pancardNumber.errors?.['maxlength']">PAN Card Number cannot be more than 10 characters.</span>
+        </div>
+      </div>
+      <div class="state mt-3">
+        <label class="form-label pb-2 font-secondary">State :</label>
+        <select class="input input-primary max-w-full" formControlName="state">
+          <option value="" disabled selected>Select State</option>
+          <option *ngFor="let state of stateData?.state" [value]="state?.name">{{ state?.name }}</option>
+        </select>
+        <div class="form-text text-red-600" *ngIf="state.invalid && (state.dirty || state.touched)">
+          <span *ngIf="state.errors?.['required']">State is required.</span>
+        </div>
+      </div>
+      <div class="city mt-3" *ngIf="stateData">
+        <label class="form-label pb-2 font-secondary">City :</label>
+        <select class="input input-primary max-w-full" formControlName="city">
+          <option value="" disabled selected>Select City</option>
+          <option *ngFor="let city of getCitiesByState(form.get('state')?.value)" [value]="city">{{ city }}</option>
+        </select>
+        <div class="form-text text-red-600" *ngIf="city.invalid && (city.dirty || city.touched)">
+          <span *ngIf="city.errors?.['required']">City is required.</span>
+        </div>
+      </div>
+      <div class="pincode mt-3">
+        <label class="form-label pb-2 font-secondary">Pincode :</label>
+        <input type="text" class="input input-primary max-w-full" placeholder="Pincode" formControlName="pincode" />
+        <div class="form-text text-red-600" *ngIf="pincode.invalid && (pincode.dirty || pincode.touched)">
+          <span *ngIf="pincode.errors?.['required']">Pincode is required.</span>
+          <span *ngIf="pincode.errors?.['maxlength']">Pincode cannot be more than 6 characters.</span>
+        </div>
+      </div>
+      <div class="bio mt-3">
+        <label class="form-label pb-2 font-secondary">Bio :</label>
+        <textarea class="input input-primary max-w-full resize-none h-24" placeholder="Enter your bio" formControlName="bio"></textarea>
+        <div class="form-text text-red-600" *ngIf="bio.invalid && (bio.dirty || bio.touched)">
+          <span *ngIf="bio.errors?.['required']">Bio is required.</span>
+          <span *ngIf="bio.errors?.['maxlength']">Bio cannot be more than 80 words.</span>
+        </div>
+      </div>
+      <div class="buttons flex justify-center mt-5">
+        <button 
+          type="submit" 
+          [disabled]="form.invalid" 
+          class="btn btn-primary btn-md font-secondary w-60">
+          NEXT
+        </button>
+      </div>
+    </div>
+  </form>
+</div>
