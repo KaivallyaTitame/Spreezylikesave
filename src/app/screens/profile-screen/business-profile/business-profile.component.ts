@@ -84,7 +84,7 @@ export class BusinessProfileComponent implements OnInit{
         error: (error) => {
           this.userDetails = null; // Reset user details on error
           this.loadingUserDetails = false; // Stop skeletons even if there's an error
-          this.showError(error, 'Please try again later.');
+          this.showError(error.error.errorCode || 'Error fetching profile', error.error.errorDescription || 'Please try again later.');
         }
       });
   }
@@ -113,7 +113,7 @@ export class BusinessProfileComponent implements OnInit{
         this.loadingProfilePosts = false;
       },
       error: (error) => {
-        this.showError("Error", "Unable to fetch profile post, please try again later");
+        this.showError(error.error.errorCode || 'Error fetching profile posts', error.error.errorDescription || 'Unable to fetch profile post, please try again later');
         this.loadingProfilePosts = false;
       },
     });
@@ -135,7 +135,6 @@ export class BusinessProfileComponent implements OnInit{
             }
           });
           this.visibleSavedPosts.push(...data);
-          console.log('saved posts are ' , this.visibleSavedPosts)
           this.savedPostPage++; // Increment page only if data exists
         } else {
           this.hasMoreSavedPosts = false; // No more saved posts to fetch
@@ -143,13 +142,12 @@ export class BusinessProfileComponent implements OnInit{
         this.loadingSavedPosts = false;
       },
       error: (error) => {
-        console.error(error);
-        this.showError("Error", "Unable to fetch saved post, please try again later");
+        this.showError(error.error.errorCode || 'Error fetching saved posts', error.error.errorDescription || 'Unable to fetch saved post, please try again later');
         this.loadingSavedPosts = false;
       },
-    });
-  }
-  
+    });  
+  } 
+     
 
 
   showError(title: string, body: string) {

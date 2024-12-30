@@ -17,7 +17,7 @@ export const API_CONFIG = {
   GET_PROFILE_POSTS: (username: string) =>
     `${environment.apiGateway}/feed-on-profile-page/posts-section/${username}`,
   GET_SAVED_POSTS: (username: string) =>
-    `${environment.apiGateway}/feed-on-profile-page/posts-section/${username}`,
+    `${environment.apiGateway}/feed-on-profile-page/saved-section/${username}`,
 
   // Feedback Service Endpoints
   SAVE_FEEDBACK: `${environment.apiGateway}/feedback/saveFeedback`,
