@@ -10,7 +10,6 @@ import { SharedModule } from 'src/app/shared/shared-module/shared-module.module'
 import { BusinessHomeModule } from '../business-home/business-home.module';
 import { ConsumerHomeModule } from '../consumer-home/consumer-home.module';
 
-
 const routes: Routes = [
   { path: '', component: FeedbackScreenComponent }
 ];
@@ -18,7 +17,7 @@ const routes: Routes = [
 @NgModule({
   declarations: [
     FeedbackScreenComponent
-  ], // Declare both FeedbackScreenComponent and PopUpComponent
+  ], 
   imports: [
     CommonModule,
     FeedbackScreenRoutingModule,

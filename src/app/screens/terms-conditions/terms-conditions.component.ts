@@ -5,6 +5,9 @@ import { Component } from '@angular/core';
   templateUrl: './terms-conditions.component.html',
   styleUrls: ['./terms-conditions.component.css']
 })
-export class TermsConditionsComponent {
+export class TermsConditionsComponent { 
 
+  ngOnInit(): void {
+    console.log('Terms and Conditions Component Loaded');
+  }
 }

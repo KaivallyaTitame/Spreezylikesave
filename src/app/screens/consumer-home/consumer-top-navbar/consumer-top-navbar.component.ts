@@ -36,7 +36,6 @@ export class ConsumerTopNavbarComponent implements OnInit {
   ngOnInit(): void {
     this.decodeToken();
     this.fetchConsumerInformation();
- 
   }
 
   decodeToken(): void {
@@ -46,7 +45,6 @@ export class ConsumerTopNavbarComponent implements OnInit {
         const decodedToken = this.jwtDecoderService.decodeInfoFromToken(token); 
         this.currentUsername = decodedToken.sub; 
       } catch (error) {
-        console.error('Error decoding token:', error);
         this.router.navigate(['/login']); 
       }
     } else {
@@ -62,21 +60,24 @@ export class ConsumerTopNavbarComponent implements OnInit {
             const userData = JSON.parse(response); 
             if (userData.length > 0) {
               this.consumer = Object.assign(new UserProfileDTO(), userData[0]);
-            } else {
-              console.log('No user data found');
             }
           } catch (error) {
-            console.error('Error parsing JSON:', error);
           }
         },
         error: (error: HttpErrorResponse) => {
-          console.error('Error fetching user data:', error);
         }
       });
     }
   }
 
-  logout(){
+  closeDrawer(): void {
+    const drawerToggle = document.getElementById('drawer-left') as HTMLInputElement;
+    if (drawerToggle) {
+      drawerToggle.checked = false;
+    }
+  }  
+
+  logout(): void {
     this.authService.logout();
   }
 }

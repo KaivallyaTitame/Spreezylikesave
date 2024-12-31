@@ -13,6 +13,7 @@ import { JwtDecoderService } from 'src/app/services/jwtDecoder/jwt-decoder.servi
 })
 export class BusinessTopNavbarComponent implements OnInit {
 
+  // FontAwesome Icons
   faBars = faBars;
   faSearch = faSearch;
   faGear = faGear;
@@ -21,14 +22,17 @@ export class BusinessTopNavbarComponent implements OnInit {
   faFileLines = faFileLines;
   faFilePen = faFilePen;
 
+  // Variables for business info and token decoding
   business: any;
-  
   currentUsername: string = '';
   decodedToken: DecodedToken | null = null;
 
+  // settingsDrawer to manage the state of the settings drawer
+  settingsDrawer = { checked: false };  // assuming the default state is false
+  
   constructor(
-    private router: Router, 
-    private businessNavigationService: BusinessNavigationService, 
+    private router: Router,
+    private businessNavigationService: BusinessNavigationService,
     private authServcie: AuthService,
     private jwtDecoder: JwtDecoderService) { }
 
@@ -37,14 +41,14 @@ export class BusinessTopNavbarComponent implements OnInit {
     this.fetchBusinessDetails();
   }
 
+  // Decodes the token to get user info
   decodeToken(): void {
     const token = localStorage.getItem('token') || '';
     if (token) {
       try {
-        this.decodedToken = this.jwtDecoder.decodeInfoFromToken(token); 
-        this.currentUsername = this.decodedToken?.sub || ''; 
+        this.decodedToken = this.jwtDecoder.decodeInfoFromToken(token);
+        this.currentUsername = this.decodedToken?.sub || '';
       } catch (error) {
-        console.error('Failed to decode token:', error);
         this.router.navigate(['/login']);
       }
     } else {
@@ -52,30 +56,38 @@ export class BusinessTopNavbarComponent implements OnInit {
     }
   }
 
+  // Navigates to settings and closes the drawer
   navigateToSettings(drawerLeft: HTMLInputElement): void {
     drawerLeft.checked = false;
     this.router.navigate(['business-home/settings']);
   }
 
+  // Navigates to the search page
   navigateToSearch(): void {
     this.router.navigate(['business-home/search']);
   }
 
+  // Fetches business details using the current username
   fetchBusinessDetails(): void {
     if (this.currentUsername) {
       this.businessNavigationService.getBusinessDetails(this.currentUsername).subscribe({
         next: (response) => {
-          this.business = response; // Update with the API response
+          this.business = response;
         },
-        error: (error) => {
-          console.error('Error fetching business details:', error);
-          this.business = {}; // Handle error
+        error: () => {
+          this.business = {};
         }
       });
     }
   }
 
-  logout(){
-    this.authServcie.logout()
+  // Logs the user out
+  logout(): void {
+    this.authServcie.logout();
+  }
+
+  // Closes the drawer when the user clicks the overlay
+  closeDrawer(drawerLeft: HTMLInputElement): void {
+    drawerLeft.checked = false;
   }
 }

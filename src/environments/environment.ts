@@ -1,6 +1,6 @@
 export const environment = {
     production: false,
-    apiGateway: "http://192.168.1.108:8762",
+    apiGateway: "http://192.168.31.100:8083",
     firebase: {
       apiKey: "AIzaSyAefHwV7r5LaXZHjcE3U0wxxBlQhA3BqwE",
       authDomain: "spreezy-auth.firebaseapp.com",
@@ -11,4 +11,3 @@ export const environment = {
       measurementId: "G-YSTYFGXMMY",
     },
 };
-  

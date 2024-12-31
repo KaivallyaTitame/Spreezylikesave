@@ -14,6 +14,8 @@ const routes: Routes = [
       // { path: 'notification', loadChildren: () => import('../notification-screen/notification-screen.module').then(m => m.NotificationScreenModule) },
       { path: 'profile', loadChildren: () => import('../profile-screen/profile-screen.module').then(m => m.ProfileScreenModule) },
       { path: 'search', loadChildren: () => import('../search/search.module').then(m => m.SearchModule) },
+      { path: 'feedback', loadChildren: () => import('../feedback-screen/feedback-screen.module').then(m => m.FeedbackScreenModule) },
+      { path: 'terms-conditions', loadChildren: () => import('../terms-conditions/terms-conditions.module').then(m => m.TermsConditionsModule) },
       { path: '', redirectTo: 'business-home/adfeed', pathMatch: 'full' } 
     ]
   },

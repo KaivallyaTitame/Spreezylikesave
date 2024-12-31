@@ -3,17 +3,17 @@
     <div class="navbar py-1 bg-primarycolor-0 shadow-none">
       <div class="navbar-start">
         <input type="checkbox" id="drawer-left" class="drawer-toggle hidden" />
-        <label for="drawer-left" class="btn w-9 bg-primarycolor-0" style="height:7.3%">
+        <label for="drawer-left" class="btn w-9 bg-primarycolor-0" style="height: 7.3%;">
           <fa-icon class="text-white text-2xl" [icon]="faIcons.bars"></fa-icon>
         </label>
 
         <div class="drawer fixed top-0 left-0 w-4/5 h-full border-r-2 z-40 bg-white dark:bg-white" style="margin-top: 56px;">
           <div class="drawer-content pt-2 px-2 mt-1 overflow-x-hidden overflow-y-auto bg-white dark:bg-white" style="height: 87%;">
             <aside class="sidebar h-full flex flex-col bg-white dark:bg-white">
-              <section class="sidebar-title p-2 text-center">
-                <div class="flex flex-col w-full items-center justify-center">
-                  <span class="text-xl mt-2 font-sidebar text-primary text-center">{{ consumer?.name }}</span>
-                  <span class="text-lg font-normal font-sidebar text-content2 dark:text-content2 text-center">{{ currentUsername }}</span>
+              <section class="sidebar-title p-2 flex flex-col items-center justify-center text-center">
+                <div class="w-full">
+                  <span class="text-xl mt-2 font-sidebar text-primary block">{{ consumer?.name }}</span>
+                  <span class="text-lg font-normal font-sidebar text-content2 dark:text-content2 block">{{ currentUsername }}</span>
                 </div>
               </section>
 
@@ -23,25 +23,27 @@
                 <nav class="menu rounded-md">
                   <section class="menu-section px-2">
                     <ul class="menu-items">
-                      <li class="menu-item py-1" [routerLink]="['/consumer-home/Feedback']">
+                      <li class="menu-item py-1" [routerLink]="['/consumer-home/feedback']" (click)="closeDrawer()">
                         <fa-icon class="pl-0 pr-1 text-lg w-8 h-8 text-primarycolor-0" [icon]="faIcons.filePen"></fa-icon>
                         <span class="pl-1 text-lg font-normal text-black dark:text-black">Share Feedback</span>
                       </li>
-                      <li class="menu-item py-1" [routerLink]="['/consumer-home/settings']">
+                      
+                      
+                      <li class="menu-item py-1" [routerLink]="['/consumer-home/settings']" (click)="closeDrawer()">
                         <fa-icon class="pl-0 pr-1 text-lg w-8 h-8 text-primarycolor-0" [icon]="faIcons.gear"></fa-icon>
                         <span class="pl-1 text-lg font-normal text-black dark:text-black">Settings</span>
                       </li>
                       <li class="menu-item py-1">
-                        <a href="https://www.brandsparktechnologies.in/" target="_blank" rel="noopener noreferrer" class="flex items-center">
+                        <a href="https://www.brandsparktechnologies.in/" target="_blank" rel="noopener noreferrer" class="flex items-center" (click)="closeDrawer()">
                           <img src="assets/logo.png" alt="Contact Us" class="w-8 h-8" />
                           <span class="pl-3 text-lg font-normal text-black dark:text-black">Contact Us</span>
                         </a>
                       </li>
-                      <li class="menu-item py-1" [routerLink]="['/consumer-home/help']">
+                      <!-- <li class="menu-item py-1" [routerLink]="['/consumer-home/help']" (click)="closeDrawer()">
                         <fa-icon class="pl-0 pr-1 text-lg w-8 h-8 text-primarycolor-0" [icon]="faIcons.circleQuestion"></fa-icon>
                         <span class="pl-1 text-lg font-normal text-black dark:text-black">Help</span>
-                      </li>
-                      <li class="menu-item py-1" [routerLink]="['/consumer-home/terms-conditions']">
+                      </li> -->
+                      <li class="menu-item py-1" [routerLink]="['/consumer-home/terms-conditions']" (click)="closeDrawer()">
                         <fa-icon class="pl-0 pr-1 text-lg w-8 h-8 text-primarycolor-0" [icon]="faIcons.fileLines"></fa-icon>
                         <span class="pl-1 text-lg font-normal text-black dark:text-black">Terms & Conditions</span>
                       </li>
@@ -53,9 +55,9 @@
               <section class="sidebar-footer mt-auto">
                 <div class="divider my-4"></div>
                 <ul class="menu-items">
-                  <li class="menu-item py-1">
+                  <li class="menu-item py-1" (click)="logout(); closeDrawer()">
                     <fa-icon class="pl-1 pr-1 text-lg w-8 h-8 text-primarycolor-0" [icon]="faIcons.arrowRightFromBracket"></fa-icon>
-                    <span class="pl-1 text-lg font-normal text-black dark:text-black" (click)="logout()">Logout</span>
+                    <span class="pl-1 text-lg font-normal text-black dark:text-black">Logout</span>
                   </li>
                 </ul>
               </section>
