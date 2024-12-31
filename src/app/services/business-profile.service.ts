@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { BusinessDetails } from '../models/BusinessDetails';
+import { BusinessDetailfrom } '../models/BusinessDetails';
 import { AdvertisementDetails } from '../models/ad-details';
 import { API_CONFIG } from 'src/app/api-config';
 

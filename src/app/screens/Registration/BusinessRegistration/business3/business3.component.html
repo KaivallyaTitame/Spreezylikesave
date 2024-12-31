@@ -1,3 +1,4 @@
+
 <div class="bg-white">
   <form class="flex justify-center" [formGroup]="form" (ngSubmit)="registerUser()">
     <div class="signup-form w-80 relative">
@@ -7,25 +8,30 @@
       <div class="photo">
         <img src="../../../../assets/Imagess/images3.jpeg" alt="This is an image" class="mt-5 mb-5">
       </div>
+
+      <!-- Aadhar Card Photo Section -->
       <div class="text-label-aadharcard">
         <span class="flex justify-center font-primary text-primary-0 text-xl mt-5">Aadhar Card Photo</span>
       </div>
       <div class="file-upload-container mt-5 rounded-lg shadow-sm overflow-hidden">
         <label id="adharimage" for="aadharCardPhoto" class="font-secondary text-gray-400 block cursor-pointer">
-          <span id="aadharImage">{{ aadharCardPhoto?.name || 'No file selected' }}</span>
-          <span class="text-sm opacity-20 block" id="uploadphoto">Upload Photo</span>
+          <span id="aadharImage">{{ aadharCardPhoto?.name || 'Select Aadhar Card Photo' }}</span>
         </label>
-        <input type="file" id="aadharCardPhoto" (change)="handleFileUpload($event, 'aadharCardPhoto')" class="hidden">
+        <input 
+          type="file" 
+          id="aadharCardPhoto" 
+          (change)="handleFileUpload($event, 'aadharCardPhoto')" 
+          class="hidden">
         <button type="button" class="btn btn-primary btn-sm ml-2 ripple" (click)="triggerFileInput('aadharCardPhoto')">Browse File</button>
       </div>
-      <div class="text-label-aadharcard">
-        <span class="flex justify-center font-primary text-primary-0 text-xl mt-5">Pan Card Photo</span>
-      </div>
 
+      <!-- PAN Card Photo Section -->
+      <div class="text-label-aadharcard">
+        <span class="flex justify-center font-primary text-primary-0 text-xl mt-5">PAN Card Photo</span>
+      </div>
       <div class="file-upload-container mt-5 rounded-lg shadow-sm overflow-hidden">
         <label for="panCardPhoto" class="font-secondary text-gray-400 block cursor-pointer">
-          <span id="panImage">{{ panCardPhoto?.name || 'No file selected' }}</span>
-          <span class="text-sm opacity-20 block hidden" id="uploadPan">Upload Photo</span>
+          <span id="panImage">{{ panCardPhoto?.name || 'Select PAN Card Photo' }}</span>
         </label>
         <input 
           type="file" 
@@ -33,17 +39,28 @@
           (change)="handleFileUpload($event, 'panCardPhoto')" 
           class="hidden">
         <button type="button" class="btn btn-primary btn-sm ml-2 ripple" (click)="triggerFileInput('panCardPhoto')">Browse File</button>
-      </div>      
+      </div>
 
+      <!-- Error Messages -->
       <div class="form-text text-red-600 mt-2" *ngIf="!aadharCardPhoto && aadharCardPhotoControl?.touched">
         <span>Aadhar Card Photo is required.</span>
       </div>
-
       <div class="form-text text-red-600 mt-2" *ngIf="!panCardPhoto && panCardPhotoControl?.touched">
         <span>PAN Card Photo is required.</span>
-      </div>      
-      
+      </div>
 
+      <!-- Terms & Conditions -->
+      <div class="T&C mt-5">
+        <label class="flex cursor-pointer gap-2 font-secondary text-sm">
+          <input type="checkbox" class="checkbox-primary checkbox" formControlName="confirmPolicies" />
+          <span>I accept to the <a href="https://example.com/terms" target="_blank" class="text-primary-0">Terms & Conditions.</a></span>
+        </label>
+        <div class="form-text text-red-600" *ngIf="confirmPolicies.invalid && (confirmPolicies.dirty || confirmPolicies.touched)">
+          <span *ngIf="confirmPolicies.errors?.['requiredTrue']">You must accept the terms and conditions.</span>
+        </div>
+      </div>
+
+      <!-- Submit Button -->
       <div class="signin mt-4">
         <button type="submit" [disabled]="form.invalid" class="btn btn-primary btn-sm ripple">SIGN IN</button>
       </div>

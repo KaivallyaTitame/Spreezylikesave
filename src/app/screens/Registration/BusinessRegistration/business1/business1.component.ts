@@ -20,7 +20,6 @@ export class Business1Component {
     email: new FormControl("", [Validators.required, Validators.email]),
     phoneNumber: new FormControl("", [Validators.required, Validators.maxLength(10), this.numericValidator()]),
     gender: new FormControl("", [Validators.required]),
-    confirmPolicies: new FormControl(false, [Validators.requiredTrue]),
     businessType: new FormControl("", [Validators.required]), // New field added
   });
   
@@ -50,7 +49,7 @@ export class Business1Component {
     const data = this.mapUserData(this.form);
     console.log("Data being sent to DTO from Business1:", data); // Log data here
     this.dataService.setBusinessData(data); // Push data to the shared array
-    this.router.navigate(['/register/business1/business2']);
+    this.router.navigate(['/register/business/business2']);
   }
   
   private mapUserData(form: FormGroup): BusinessDetails {
@@ -84,7 +83,5 @@ export class Business1Component {
   get gender(): FormControl {
     return this.form.get("gender") as FormControl;
   }
-  get confirmPolicies(): FormControl {
-    return this.form.get("confirmPolicies") as FormControl;
-  }
+  
 }
