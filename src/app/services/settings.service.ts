@@ -12,12 +12,12 @@ import { API_CONFIG } from '../api-config';
 export class SettingsService {
   private generatedFileNamesSubject = new BehaviorSubject<string[]>([]);
   generatedFileNames$ = this.generatedFileNamesSubject.asObservable();
-
+  token = localStorage.getItem('token');
+  
   constructor(private http: HttpClient) {}
 
   setGeneratedFileNames(fileNames: string[]): void {
     this.generatedFileNamesSubject.next(fileNames);
-    console.log('Generated file names:', fileNames);
   }
 
   getGeneratedFileNames(): string[] {
@@ -28,10 +28,9 @@ export class SettingsService {
     return this.http.get(API_CONFIG.SETTINGS.GET_CONSUMER_DETAILS(username), {
       responseType: 'text',
       headers: new HttpHeaders({
-        'ngrok-skip-browser-warning': 'true',
-        'Content-Type': 'application/json',
-        accept: '*/*',
-      }),
+        Authorization: `Bearer ${this.token}`,
+        'Content-Type': 'application/json'
+      })
     });
   }
 
@@ -39,22 +38,29 @@ export class SettingsService {
     return this.http.post(API_CONFIG.SETTINGS.UPDATE_CONSUMER_DETAILS, data, {
       responseType: 'text',
       headers: new HttpHeaders({
-        'ngrok-skip-browser-warning': 'true',
-        'Content-Type': 'application/json',
-        accept: '*/*',
-      }),
+        Authorization: `Bearer ${this.token}`,
+        'Content-Type': 'application/json'
+      })
     });
   }
 
   getBusinessDetails(username: string): Observable<any> {
     return this.http.get(API_CONFIG.SETTINGS.GET_BUSINESS_DETAILS(username), {
       responseType: 'text',
+      headers: new HttpHeaders({
+        Authorization: `Bearer ${this.token}`,
+        'Content-Type': 'application/json'
+      })
     });
   }
 
   postBusinessDetails(data: BusinessInformation): Observable<string> {
     return this.http.post(API_CONFIG.SETTINGS.UPDATE_BUSINESS_DETAILS, data, {
       responseType: 'text',
+      headers: new HttpHeaders({
+        Authorization: `Bearer ${this.token}`,
+        'Content-Type': 'application/json'
+      })
     });
   }
 
@@ -77,10 +83,9 @@ export class SettingsService {
     return this.http.get(API_CONFIG.SETTINGS.GET_IMAGE_LINK(imageFileName,username), {
       responseType: 'text',
       headers: new HttpHeaders({
-        'ngrok-skip-browser-warning': 'true',
-        'Content-Type': 'application/json',
-        accept: '*/*',
-      }),
+        Authorization: `Bearer ${this.token}`,
+        'Content-Type': 'application/json'
+      })
     });
   }
 }
