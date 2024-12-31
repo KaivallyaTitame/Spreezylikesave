@@ -1,6 +1,6 @@
 export class DecodedToken {
-    "User Type": string;
-    Token_type: string;
+    userType: string;
+    tokenType: string;
     iss: "Spreezy";
     sub: string;
     iat: number;
