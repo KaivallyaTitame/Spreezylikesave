@@ -4,14 +4,13 @@ import { FeedbackScreenComponent } from "./feedback-screen.component";
 
 const routes: Routes = [
   {
-    path: "",
+    path: '',
     component: FeedbackScreenComponent,
   },
 ];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule],
+  exports: [RouterModule]
 })
-
 export class FeedbackScreenRoutingModule { }
