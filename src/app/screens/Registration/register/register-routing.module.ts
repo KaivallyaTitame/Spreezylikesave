@@ -8,7 +8,7 @@ const routes: Routes = [
     component: registerComponent,
   },
   {
-    path: 'business1',
+    path: 'business',
     loadChildren: () =>
       import('../BusinessRegistration/businessRegistration.module')
         .then(m => m.BusinessRegistrationModule)

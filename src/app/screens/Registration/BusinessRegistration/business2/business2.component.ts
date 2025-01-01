@@ -68,7 +68,7 @@ registerUser() {
   this.Business = this.mapUserData(this.form);
   console.log("Data being sent to DTO from Business2:", this.Business); // Log data here
   this.dataService.setBusinessData(this.Business);
-  this.router.navigate(["/register/business1/business3"]);
+  this.router.navigate(["/register/business/business3"]);
 }
 
 mapUserData(form: FormGroup): BusinessDetails {
