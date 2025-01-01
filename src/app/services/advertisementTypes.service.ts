@@ -7,7 +7,8 @@ import { AdvertisementDetails } from '../models/ad-details';
   providedIn: 'root',
 })
 export class AdvertisementDetailsService {
-  private baseUrl = 'https://dummyjson.com/c/c24e-729e-4ebc-a38f';
+  private baseUrl = "http://13.201.102.68:8082";
+  private baseUrl2 = "http://13.201.102.68:8081";
 
   constructor(private http: HttpClient) {}
 
@@ -19,7 +20,7 @@ export class AdvertisementDetailsService {
   // }
 
   getAdvertisementDetails(): Observable<AdvertisementDetails[]> {
-    return this.http.get<AdvertisementDetails[]>(`${this.baseUrl}`, {
+    return this.http.get<AdvertisementDetails[]>(`${this.baseUrl}/advertisement-feed/suyash`, {
       responseType: 'json',
       headers: new HttpHeaders(),
     });
@@ -27,7 +28,7 @@ export class AdvertisementDetailsService {
 
   updateLikes(advertisementId: number): Observable<AdvertisementDetails> {
     return this.http.post<AdvertisementDetails>(
-      `${this.baseUrl}/content/advertisement/upvote/${advertisementId}`,
+      `${this.baseUrl2}/content/advertisement/upvote/${advertisementId}`,
       {},
       {
         responseType: 'json',
@@ -38,7 +39,7 @@ export class AdvertisementDetailsService {
 
   updateDislikes(advertisementId: number): Observable<AdvertisementDetails> {
     return this.http.post<AdvertisementDetails>(
-      `${this.baseUrl}/content/advertisement/downvote/${advertisementId}`,
+      `${this.baseUrl2}/content/advertisement/downvote/${advertisementId}`,
       {},
       {
         responseType: 'json',
@@ -49,7 +50,7 @@ export class AdvertisementDetailsService {
 
   savePost(username: string, advertisementId: number): Observable<AdvertisementDetails> {
     return this.http.post<AdvertisementDetails>(
-      `${this.baseUrl}/content/advertisement/save`,
+      `${this.baseUrl2}/content/advertisement/save`,
       {},
       {
         responseType: 'json',

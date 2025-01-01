@@ -1,7 +1,7 @@
 <div class="flex justify-center w-full p-0">
   <div class="border border-white bg-white w-full shadow-lg mt-1 mb-1">
       <div class="flex items-center justify-between p-2">
-          <img src="{{couponDetails.profileImageUrl}}" alt="Profile" class="w-12 h-12 rounded-full mt-2 ml-1">
+          <img [src]="baseUrl + couponDetails.profileImageUrl"  alt="Profile" class="w-12 h-12 rounded-full mt-2 ml-1">
           <div class="flex-grow ml-2 text-left">
               <div class="font-bold text-lg mt-2 text-black">{{couponDetails.username}}</div>
               <div class="text-sm text-gray-500">
@@ -20,7 +20,7 @@
       </div>
 
       <!-- Conditionally render the offer image -->
-      <img *ngIf="couponDetails.imageUrl" [src]="couponDetails.imageUrl" alt="Product" class="w-full mt-2 object-cover h-96">
+      <img *ngIf="couponDetails.imagePaths" [src]="baseUrl +couponDetails.imagePaths[0]" alt="Product" class="w-full mt-2 object-cover h-96">
 
       <div class="m-4 text-2xl font-semibold text-gray-900 text-center">
           {{couponDetails.description}}

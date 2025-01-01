@@ -2,7 +2,7 @@
   <div class="border border-white bg-white w-full shadow-lg mt-1 mb-1">
 
     <div class="flex items-center justify-between p-2">
-      <img [src]="postDetails.profileImageUrl" alt="Profile" class="w-12 h-12 rounded-full mt-2 ml-1">
+      <img [src]="baseUrl + postDetails.profileImageUrl" alt="Profile" class="w-12 h-12 rounded-full mt-2 ml-1">
       <div class="flex-grow ml-2 text-left">
         <div class="font-bold text-lg mt-2 text-black">{{ postDetails.username }}</div>
         <div class="text-sm text-gray-500">
@@ -19,7 +19,7 @@
       </button>
     </div>
 
-    <img [src]="postDetails.offerImageUrl" alt="Event" class="w-full mt-2 object-cover h-96">
+    <img [src]="baseUrl + postDetails.imagePaths[0]" alt="Event" class="w-full mt-2 object-cover h-96">
     <div class="m-4 text-lg font-semibold text-gray-700 text-center">
       {{ postDetails.offerTitle }}
     </div>
