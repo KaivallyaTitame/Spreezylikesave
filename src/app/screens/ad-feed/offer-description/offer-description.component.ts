@@ -1,10 +1,12 @@
-import { Component, OnInit,Input } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Component, Input, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { faBars, faUserGroup, faMagnifyingGlass, faThumbsUp, faThumbsDown, faLocationArrow, faEllipsisVertical, faLocationDot, faHeart, faBell, faCircleUser } from '@fortawesome/free-solid-svg-icons';
+import { faThumbsUp as faThumbsUpOutline, faThumbsDown as faThumbsDownOutline } from '@fortawesome/free-regular-svg-icons'; // Import outlined icons
 import { AdvertisementDetailsService } from 'src/app/services/advertisementTypes.service';
 import { AdvertisementDetails } from 'src/app/models/ad-details';
-import { faBars, faUserGroup, faMagnifyingGlass, faThumbsUp, faThumbsDown,faBookmark, faLocationArrow,  faEllipsisVertical, faLocationDot, faHeart, faBell, faCircleUser } from '@fortawesome/free-solid-svg-icons';
-import { faThumbsUp as faThumbsUpOutline, faThumbsDown as faThumbsDownOutline } from '@fortawesome/free-regular-svg-icons'; // Import outlined icons
+import { faBookmark as solidBookmark } from '@fortawesome/free-solid-svg-icons';
 import { faBookmark as regularBookmark } from '@fortawesome/free-regular-svg-icons';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-offer-description',
@@ -12,67 +14,85 @@ import { faBookmark as regularBookmark } from '@fortawesome/free-regular-svg-ico
   styles: []
 })
 export class OfferDescriptionComponent implements OnInit {
-   offerData: AdvertisementDetails  // To store the offer details
-    isExpired: boolean = false;  // Example boolean for checking expiry
-    remainingDays: number = 0;  // To store the remaining days for the offer
+  offerData: AdvertisementDetails | null = null; // Correct the type here
   
-    dropdowns: { [key: string]: boolean } = {
-      howToAvail: false,
-      termsConditions: false
-    };
-    advertisementId: number = 0;
+  dropdowns: { [key: string]: boolean } = {
+    howToAvail: false,
+    termsConditions: false
+  };
 
-  // FontAwesome icons
+  remainingDays: number;
+  remainingHours: number;
+  isExpired: boolean = false;
+  showLikeAnimation: boolean = false;
+  scaleAnimation: boolean = false;
+  showDislikeAnimation: boolean = false;
+  isSaved: boolean = false; // Track saved state
+  showSavedMessage: boolean = false; // Track the display of "Saved" message
+  showReportButton: boolean = false; // Track visibility of report button
+  showReportSuccess: boolean = false; // Track visibility of success message
+
+  showPopup: boolean = false;
+  popupTitle: string = 'Error';
+  popupBody: string = '';
+
+  // Font Awesome icons
   faBars = faBars;
   faUserGroup = faUserGroup;
   faMagnifyingGlass = faMagnifyingGlass;
   faThumbsUp = faThumbsUp;
   faThumbsDown = faThumbsDown;
   faLocationArrow = faLocationArrow;
-  faBookmark = faBookmark;
+  solidBookmark = solidBookmark; // Solid bookmark icon
+  regularBookmark = regularBookmark; // Regular bookmark icon
   faEllipsisVertical = faEllipsisVertical;
   faLocationDot = faLocationDot;
   faHeart = faHeart;
   faBell = faBell;
   faCircleUser = faCircleUser;
 
+  // Outlined icons
+  faThumbsUpOutline = faThumbsUpOutline;
+  faThumbsDownOutline = faThumbsDownOutline;
+
+  // Track like/dislike state
+  isLiked: boolean = false; // State for like
+  isDisliked: boolean = false; // State for dislike
+
   constructor(
     private route: ActivatedRoute,
-    private advertisementDetailsService: AdvertisementDetailsService,private router:Router
+    private advertisementDetailsService: AdvertisementDetailsService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
-    this.route.paramMap.subscribe(params => {
-      this.advertisementId = +params.get('id')!;  // Get ID from the route
-      this.getOfferDetails(this.advertisementId);
-    });
-  }
+    const advertisementId = this.route.snapshot.paramMap.get('advertisementId');
   
-  // Fetch offer details from the service based on the ID
-  getOfferDetails(advertisementId: number): void {
-    this.advertisementDetailsService.getAdvertisementDetailsById(advertisementId)
-      .subscribe({
-        next: (response) => {
-          this.offerData = response;
-          console.log(this.offerData);
-          this.checkExpiry(); // Call checkExpiry once the data is received
-        },
-        error: (err) => {
-          console.error('Error fetching offer details:', err);
+    this.advertisementDetailsService.getAdvertisementDetails().subscribe(
+      (data: AdvertisementDetails[]) => {
+        // Find the advertisement matching the advertisementId
+        this.offerData = data.find((offer) => offer.advertisementId === Number(advertisementId)) || null;
+  
+        if (this.offerData) {
+          const expirationDate = new Date(this.offerData.offerExpiry);
+          const today = new Date();
+          this.remainingDays = Math.ceil((expirationDate.getTime() - today.getTime()) / (1000 * 3600 * 24));
+          this.isExpired = this.remainingDays <= 0;
         }
-      });
+      },
+      (error) => {
+        console.error('Error fetching advertisement details:', error);
+        this.showError('Error', 'Failed to load advertisement details. Please try again.');
+      }
+    );
   }
-  
 
-  // Check if the offer is expired
-  checkExpiry(): void {
-    if (this.offerData) {
-      const currentDate = new Date();
-      const offerExpiryDate = new Date(this.offerData.offerExpiry);
-      this.isExpired = currentDate > offerExpiryDate;
-      const timeDiff = offerExpiryDate.getTime() - currentDate.getTime();
-      this.remainingDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
+  // Check if offerData is not null before using it
+  get offerDataSafe(): AdvertisementDetails {
+    if (!this.offerData) {
+      throw new Error('offerData is null');
     }
+    return this.offerData;
   }
 
   // Toggle dropdown for "How to avail"
@@ -87,8 +107,130 @@ export class OfferDescriptionComponent implements OnInit {
     }
   }
 
-  // Handle "Report" button click (optional functionality)
-  showReport(): void {
-    console.log('Report clicked');
+  likePost(): void {
+    const advertisementId = this.offerDataSafe.advertisementId; // Safe access with null check
+    this.triggerAnimation('like');
+
+    if (!this.isLiked) {
+      this.isLiked = true;
+      this.isDisliked = false;
+      this.offerDataSafe.likes += 1;
+
+      this.advertisementDetailsService.updateLikes(advertisementId).subscribe({
+        next: (updatedPost) => {
+          this.offerDataSafe.likes = updatedPost.likes;
+        },
+        error: (err) => {
+          this.showError('Like Error', 'Failed to update likes. Please try again.');
+        },
+      });
+    } else {
+      this.isLiked = false;
+      this.offerDataSafe.likes -= 1;
+      this.advertisementDetailsService.updateLikes(advertisementId).subscribe({
+        next: (updatedPost) => {
+          this.offerDataSafe.likes = updatedPost.likes;
+        },
+        error: (err) => {
+          this.showError('Like Error', 'Failed to update likes. Please try again.');
+        },
+      });
+    }
+  }
+
+  dislikePost(): void {
+    const advertisementId = this.offerDataSafe.advertisementId; // Safe access with null check
+    this.triggerAnimation('dislike');
+
+    if (!this.isDisliked) {
+      this.isDisliked = true;
+      this.isLiked = false;
+      this.offerDataSafe.dislikes += 1;
+
+      this.advertisementDetailsService.updateDislikes(advertisementId).subscribe({
+        next: (updatedPost) => {
+          this.offerDataSafe.dislikes = updatedPost.dislikes;
+        },
+        error: (err) => {
+          this.showError('Dislike Error', 'Failed to update dislikes. Please try again.');
+        },
+      });
+    } else {
+      this.isDisliked = false;
+      this.offerDataSafe.dislikes -= 1;
+      this.advertisementDetailsService.updateDislikes(advertisementId).subscribe({
+        next: (updatedPost) => {
+          this.offerDataSafe.dislikes = updatedPost.dislikes;
+        },
+        error: (err) => {
+          this.showError('Dislike Error', 'Failed to update dislikes. Please try again.');
+        },
+      });
+    }
+  }
+
+  savePost(): void {
+    const advertisementId = this.offerDataSafe.advertisementId; // Safe access with null check
+    const username = this.offerDataSafe.username;
+
+    // Trigger the save animation
+    this.triggerAnimation('save');
+
+    // Add scaling effect
+    this.scaleAnimation = true;
+
+    // Reset the scaling effect after 500ms
+    setTimeout(() => {
+      this.scaleAnimation = false;
+    }, 500);
+
+    // Toggle the saved state whenever the icon is clicked
+    this.isSaved = !this.isSaved;  // This will toggle the state between saved and not saved
+
+    this.advertisementDetailsService.savePost(username, advertisementId).subscribe({
+      next: (response) => {
+        console.log('Post saved successfully:', response);
+        // If needed, handle any success logic here. For example, you might want to show a success message.
+      },
+      error: (err) => {
+        // In case of error, show the error message and revert the saved state
+        this.showError('Save Error', 'Failed to save the post. Please try again.');
+        this.isSaved = !this.isSaved; // Revert the saved state if there was an error
+      },
+    });
+  }
+
+  toggleReportButton(): void {
+    this.showReportButton = !this.showReportButton;
+  }
+
+  reportPost(): void {
+    this.showReportSuccess = true;
+    this.showReportButton = false;
+    document.body.style.overflow = 'hidden';
+  }
+
+  hideReportSuccess(): void {
+    this.showReportSuccess = false;
+    document.body.style.overflow = 'auto';
+  }
+
+  showError(title: string, body: string) {
+    this.popupTitle = title;
+    this.popupBody = body;
+    this.showPopup = true;
+  }
+
+  private triggerAnimation(type: 'like' | 'dislike' | 'save') {
+    if (type === 'like') {
+      this.showLikeAnimation = true;
+    } else if (type === 'dislike') {
+      this.showDislikeAnimation = true;
+    }
+
+    setTimeout(() => {
+      this.showLikeAnimation = false;
+      this.showDislikeAnimation = false;
+    }, 500);
   }
 }

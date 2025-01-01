@@ -6,6 +6,7 @@ import { AdvertisementDetails } from 'src/app/models/ad-details';
 import { faBookmark as solidBookmark } from '@fortawesome/free-solid-svg-icons';
 import { faBookmark as regularBookmark } from '@fortawesome/free-regular-svg-icons';
 import { IconDefinition } from '@fortawesome/fontawesome-svg-core';  // Import the type
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-Coupon',
@@ -55,7 +56,7 @@ export class CouponComponent implements OnInit {
   isLiked: boolean = false; 
   isDisliked: boolean = false; 
 
-  constructor(private advertisementDetailsService: AdvertisementDetailsService) {}
+  constructor(private advertisementDetailsService: AdvertisementDetailsService,private router:Router) {}
 
   ngOnInit(): void {
     try {
@@ -205,5 +206,8 @@ export class CouponComponent implements OnInit {
       this.showLikeAnimation = false;
       this.showDislikeAnimation = false;
     }, 500); 
+  }
+  showDetails(advertisementId: number): void {
+    this.router.navigate(['/offer-description', advertisementId]);
   }
 }

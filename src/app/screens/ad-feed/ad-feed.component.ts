@@ -2,7 +2,7 @@ import { AuthService } from "src/app/services/auth.service";
 import { Component, OnInit } from '@angular/core';
 import { forkJoin } from 'rxjs'; // Ensure this is imported
 import { AdvertisementDetailsService } from 'src/app/services/advertisementTypes.service'; 
-// import { OfferDescriptionDTO } from 'src/app/models/offerdescriptionGet';
+
 
 import { AdvertisementDetails } from 'src/app/models/ad-details';
 import { PopUpComponent } from "src/app/components/pop-up/pop-up.component";

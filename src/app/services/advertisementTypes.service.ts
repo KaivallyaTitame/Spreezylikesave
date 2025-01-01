@@ -11,12 +11,12 @@ export class AdvertisementDetailsService {
 
   constructor(private http: HttpClient) {}
 
-  getAdvertisementDetailsById(advertisementId: number): Observable<AdvertisementDetails> {
-    return this.http.get<AdvertisementDetails>(`${this.baseUrl}/${advertisementId}`, {
-      responseType: 'json',
-      headers: new HttpHeaders(),
-    });
-  }
+  // getAdvertisementDetailsById(advertisementId: number): Observable<AdvertisementDetails> {
+  //   return this.http.get<AdvertisementDetails>(`${this.baseUrl}/${advertisementId}`, {
+  //     responseType: 'json',
+  //     headers: new HttpHeaders(),
+  //   });
+  // }
 
   getAdvertisementDetails(): Observable<AdvertisementDetails[]> {
     return this.http.get<AdvertisementDetails[]>(`${this.baseUrl}`, {
