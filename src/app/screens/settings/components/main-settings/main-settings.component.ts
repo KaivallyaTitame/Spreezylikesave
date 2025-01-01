@@ -17,14 +17,14 @@ export class MainSettingsComponent {
     const token = localStorage.getItem('token');
 
     const decodedInfo = token ? this.jwtDecoder.decodeInfoFromToken(token) : this.jwtDecoder.decodeInfoFromToken('');
-    this.userType=decodedInfo['User Type'];
+    this.userType=decodedInfo.userType;
     
   }
 
   navigateToProfileInformation() {
-    if (this.userType === 'user') {
-      this.router.navigate(['/business-home/settings/user-information']);
-    } else if (this.userType === 'business') {
+    if (this.userType === 'Consumer') {
+      this.router.navigate(['/consumer-home/settings/user-information']);
+    } else if (this.userType === 'Business') {
       this.router.navigate(['/business-home/settings/business-information']);
     } else {
       console.error('User type is not valid or not found in localStorage');

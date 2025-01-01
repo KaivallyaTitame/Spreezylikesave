@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { faArrowRightFromBracket, faBars, faCircleQuestion, faFileLines, faFilePen, faGear, faSearch } from '@fortawesome/free-solid-svg-icons';
+import { AuthService } from 'src/app/services/auth.service';
 import { BusinessNavigationService } from 'src/app/services/business-navigation.service';
 
 @Component({
@@ -20,7 +21,7 @@ export class BusinessTopNavbarComponent implements OnInit {
 
   business: any;
 
-  constructor(private router: Router, private businessNavigationService: BusinessNavigationService) { }
+  constructor(private router: Router, private businessNavigationService: BusinessNavigationService, private authServcie: AuthService) { }
 
   ngOnInit(): void {
     this.fetchBusinessDetails();
@@ -48,5 +49,9 @@ export class BusinessTopNavbarComponent implements OnInit {
         this.business = {};
       }
     });
+  }
+
+  logout(){
+    this.authServcie.logout()
   }
 }

@@ -9,42 +9,48 @@ import { SettingsService } from 'src/app/services/settings.service';
   styleUrls: ['./image-component.component.css']
 })
 export class ImageComponentComponent implements OnInit {
-  @Input() imageFileName: string;
+  @Input() imageFileName: string | null = null;
   @Output() fileUploadSuccess: EventEmitter<string> = new EventEmitter<string>();
   @ViewChild('fileInput', { static: false }) fileInput!: ElementRef;
+
   imagePreviews: string[] = [];
-  selectedFiles: File[] = [];
-  tempusername: string = 'alice_biz04';  
-  username:string='';
-  presignedUrl: string | null = null;
-  maxImageCount: number = 2; 
+  selectedFiles: File[] = []; 
+  username: string = '';
+  presignedUrls: string[] = [];
   isUploadCompleted: boolean = false; 
   showPopUp: boolean = false;
   popUpTitle: string = '';
   popUpBody: string = '';
-  showButton: boolean=false;
+  showButton: boolean = false;
   currentProfilePhotoUrl: string | null = null;
-  imageFileNameArray: string[]=[];
-  presignedUrls: string[] = [];
-  deleted: boolean=false;
+  defaultProfileImage: string = 'assets/default-pic.png';
 
-  constructor(private settingsService: SettingsService,private jwtDecoder: JwtDecoderService) {}
+  constructor(private settingsService: SettingsService, private jwtDecoder: JwtDecoderService) {}
 
   ngOnInit(): void {
-    console.log('Received imageFileName:', this.imageFileName);
     const token = localStorage.getItem('token');
     const decodedInfo = token ? this.jwtDecoder.decodeInfoFromToken(token) : this.jwtDecoder.decodeInfoFromToken('');
     this.username = decodedInfo['sub'];
 
-    this.settingsService.getImageLink(this.tempusername, this.imageFileName).subscribe({
-      next: (imageLink: string) => {
-        this.currentProfilePhotoUrl = imageLink;
-        this.createImagePreviewFromLink(imageLink);
-      },
-      error: (err) => {
-        console.error('Error fetching image link', err);
-      }
-    });
+    if (this.imageFileName) {
+      this.settingsService.getImageLink(this.username, this.imageFileName).subscribe({
+        next: (imageLink: string) => {
+          this.currentProfilePhotoUrl = imageLink;
+          this.createImagePreviewFromLink(imageLink);
+        },
+        error: (err) => {
+          console.error('Error fetching image link', err);
+          this.setDefaultImage();
+        }
+      });
+    } else {
+      this.setDefaultImage();
+    }
+  }
+
+  private setDefaultImage(): void {
+    this.imagePreviews = [this.defaultProfileImage];
+    this.currentProfilePhotoUrl = this.defaultProfileImage;
   }
 
   private createImagePreviewFromLink(imageLink: string): void {
@@ -58,16 +64,14 @@ export class ImageComponentComponent implements OnInit {
 
   onImageUpload(event: Event): void {
     const input = event.target as HTMLInputElement;
-  
     if (input.files) {
       const newFiles = Array.from(input.files);
-  
       newFiles.forEach((file: File) => {
         this.selectedFiles.push(file); 
         this.createImagePreview(file); 
       });
     }
-    this.showButton=true;
+    this.showButton = true;
   }
 
   uploadImages(): void {
@@ -80,17 +84,13 @@ export class ImageComponentComponent implements OnInit {
 
     const fileNames = this.selectedFiles.map(file => file.name);
 
-    this.settingsService.getPresignedUrl(fileNames, this.tempusername).subscribe({
+    this.settingsService.getPresignedUrl(fileNames, this.username).subscribe({
       next: (presignedUrl: PresignedUrl) => {
-        console.log(presignedUrl);
         this.presignedUrls = presignedUrl.presignedUrls;
-
         this.settingsService.setGeneratedFileNames(presignedUrl.generatedFileNames);
-        
+
         this.selectedFiles.forEach((file, index) => {
           const url = this.presignedUrls[index];
-          console.log(url);
-          console.log(file);
           this.settingsService.uploadToS3(file, url).subscribe({
             next: () => {
               const uploadedFileName = presignedUrl.generatedFileNames[index];
@@ -110,8 +110,7 @@ export class ImageComponentComponent implements OnInit {
         console.error('Error retrieving presigned URLs:', error);
       }
     });
-      
-    console.log("Image uploaded");
+
     this.isUploadCompleted = true;
   }
 

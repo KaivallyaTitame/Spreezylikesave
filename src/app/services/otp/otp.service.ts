@@ -13,11 +13,11 @@ export class OtpService {
   constructor(private http: HttpClient) {}
   isOtpSentToMobile = false;
 
-  sendOtp(mobile: string): Observable<OtpResponse> {
+  sendOtp(countrycode: string, mobile: string): Observable<OtpResponse> {
     return this.http
       .post<OtpResponse>(
         API_CONFIG.GENERATE_OTP,
-        { phoneNumber: mobile },
+        { phoneNumber: mobile, countryCode: countrycode },
         { responseType: "json" }
       )
       .pipe(
@@ -31,11 +31,11 @@ export class OtpService {
       );
   }
 
-  reSendOtp(mobile: string): Observable<OtpResponse> {
+  reSendOtp(countrycode: string, mobile: string): Observable<OtpResponse> {
     return this.http
       .post(
         API_CONFIG.RESEND_OTP,
-        { phoneNumber: mobile },
+        { phoneNumber: mobile, countryCode: countrycode },
         { responseType: "text" }
       )
       .pipe(
@@ -45,7 +45,7 @@ export class OtpService {
         }),
         catchError((error: HttpErrorResponse) => {
           let errorMessage = "Failed to send OTP. Please try again later.";
-          const errorBody = JSON.parse(error?.error || '{}');
+          const errorBody = JSON.parse(error?.error || "{}");
           if (errorBody?.errorDescription) {
             errorMessage = errorBody.errorDescription;
           }

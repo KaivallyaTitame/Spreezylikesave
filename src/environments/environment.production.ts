@@ -1,6 +1,6 @@
 export const environment = {
   production: true,
-  apiGateway: "http://192.168.1.108:8762",
+  apiGateway: "http://192.168.202.104:8083",
   firebase: {
     apiKey: "",
     authDomain: "",
