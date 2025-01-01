@@ -179,7 +179,7 @@ export class Business3Component implements OnInit {
     const businessDetails = this.businessDataService.getBusinessData();
     const fileNames = [this.aadharCardPhoto?.name || '', this.panCardPhoto?.name || ''];
 
-    this.postUploadService.getPresignedUrl(fileNames, businessDetails.email).subscribe({
+    this.postUploadService.getPresignedUrl(fileNames, businessDetails.businessUsername).subscribe({
       next: (presignedUrls) => {
         if (this.aadharCardPhoto && presignedUrls.presignedUrls[0]) {
           this.postUploadService.uploadToS3(this.aadharCardPhoto, presignedUrls.presignedUrls[0]).subscribe();
