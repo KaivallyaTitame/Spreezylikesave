@@ -14,6 +14,7 @@ import { JwtDecoderService } from 'src/app/services/jwtDecoder/jwt-decoder.servi
 export class BusinessTopNavbarComponent implements OnInit {
 
   // FontAwesome Icons
+  defaultProfileImage: string = 'assets/default-pic.png';
   faBars = faBars;
   faSearch = faSearch;
   faGear = faGear;
@@ -61,6 +62,15 @@ export class BusinessTopNavbarComponent implements OnInit {
     drawerLeft.checked = false;
     this.router.navigate(['business-home/settings']);
   }
+  navigateToFeedback(drawerLeft: HTMLInputElement): void {
+    drawerLeft.checked = false;
+    this.router.navigate(['business-home/feedback']);
+  }
+  
+  navigateToTermsConditions(drawerLeft: HTMLInputElement): void {
+    drawerLeft.checked = false;
+    this.router.navigate(['business-home/terms-conditions']);
+  }
 
   // Navigates to the search page
   navigateToSearch(): void {
@@ -73,6 +83,7 @@ export class BusinessTopNavbarComponent implements OnInit {
       this.businessNavigationService.getBusinessDetails(this.currentUsername).subscribe({
         next: (response) => {
           this.business = response;
+          console.log(this.business)
         },
         error: () => {
           this.business = {};
@@ -89,5 +100,10 @@ export class BusinessTopNavbarComponent implements OnInit {
   // Closes the drawer when the user clicks the overlay
   closeDrawer(drawerLeft: HTMLInputElement): void {
     drawerLeft.checked = false;
+  }
+
+  onImageError(event: Event){
+    const target = event.target as HTMLImageElement;
+    target.src = this.defaultProfileImage;
   }
 }

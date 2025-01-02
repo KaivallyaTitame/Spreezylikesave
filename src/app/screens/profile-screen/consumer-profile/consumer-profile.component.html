@@ -1,19 +1,43 @@
 <div>
-  <div class="mt-16 mb-16 test1:w-full" style="max-height: 2400px;">
+  <div class="mt-16 mb-16 test1:w-full" style="max-height: 2400px">
     <div class="profile-container">
       <!-- Consumer Details -->
-      <div 
+      <div
         class="header bg-white p-2 flex items-center"
-        style="font-family: 'Roboto', sans-serif; font-weight: 400; letter-spacing: 0.5px;">
-
+        style="
+          font-family: 'Roboto', sans-serif;
+          font-weight: 400;
+          letter-spacing: 0.5px;
+        "
+      >
         <!-- Skeleton Component -->
-        <app-profile-skeleton *ngIf="loadingUserDetails || !userDetails"></app-profile-skeleton>
+        <app-profile-skeleton
+          *ngIf="loadingUserDetails || !userDetails"
+        ></app-profile-skeleton>
 
-        <img *ngIf="!loadingUserDetails && userDetails" src="{{ userDetails.profileImageUrl }}" alt="{{ userDetails.name }}'s Profile Picture" class="rounded-full ml-2 w-24 h-24 border border-red-500">
+        <img
+          *ngIf="!loadingUserDetails && userDetails"
+          src="{{ userDetails.profileImageUrl }}"
+          alt="{{ userDetails.name }}'s Profile Picture"
+          class="rounded-full ml-2 w-24 h-24 border border-red-500"
+          (error)="onProfileImageError($event)"
+        />
         <div class="ml-5 mt-2">
-          <h2 *ngIf="!loadingUserDetails && userDetails" class="text-black text-lg font-bold tracking-wider truncate max-w-screen-md">{{ userDetails.name }}</h2>
-          <p *ngIf="!loadingUserDetails && userDetails" class="text-red-500 mb-2 tracking-wider truncate max-w-screen-md">&#64;{{ userDetails.username }}</p>
-          <p *ngIf="!loadingUserDetails && userDetails" class="font-bold">Following: {{ userDetails.following }}</p>
+          <h2
+            *ngIf="!loadingUserDetails && userDetails"
+            class="text-black text-lg font-bold tracking-wider truncate max-w-screen-md"
+          >
+            {{ userDetails.name }}
+          </h2>
+          <p
+            *ngIf="!loadingUserDetails && userDetails"
+            class="text-red-500 mb-2 tracking-wider truncate max-w-screen-md"
+          >
+            &#64;{{ userDetails.username }}
+          </p>
+          <p *ngIf="!loadingUserDetails && userDetails" class="font-bold">
+            Following: {{ userDetails.following }}
+          </p>
         </div>
       </div>
 
@@ -21,7 +45,8 @@
       <div class="tab-menu mt-4 flex justify-center space-x-0">
         <button
           [class.active-tab]="selectedTab === 'saved'"
-          class="flex-1 p-4 flex items-center justify-center rounded-sm bg-gray-100 hover:bg-gray-200 transition-colors">
+          class="flex-1 p-4 flex items-center justify-center rounded-sm bg-gray-100 hover:bg-gray-200 transition-colors"
+        >
           <fa-icon [icon]="faBookmark" class="text-2xl"></fa-icon>
         </button>
       </div>
@@ -53,6 +78,7 @@
     *ngIf="showPopup"
     [messageTitle]="popupTitle"
     [messageBody]="popupBody"
-    (close)="showPopup = false">
+    (close)="showPopup = false"
+  >
   </app-pop-up>
 </div>

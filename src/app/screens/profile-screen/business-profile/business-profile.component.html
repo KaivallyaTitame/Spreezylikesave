@@ -1,120 +1,196 @@
 <div>
-    <div class="mt-16 mb-16 test1:w-full" style="max-height: 2400px;">
-      <div class="profile-container">
+  <div class="mt-16 mb-16 test1:w-full" style="max-height: 2400px">
+    <div class="profile-container">
+      <!-- Business Details -->
+      <div
+        class="header bg-white p-2 flex items-center"
+        style="
+          font-family: 'Roboto', sans-serif;
+          font-weight: 400;
+          letter-spacing: 0.5px;
+        "
+      >
+        <!-- Skeleton Component -->
+        <app-profile-skeleton
+          *ngIf="loadingUserDetails || !userDetails"
+        ></app-profile-skeleton>
 
-  <!-- Business Details -->
-        <div class="header bg-white p-2 flex items-center" style="font-family: 'Roboto', sans-serif; font-weight: 400; letter-spacing: 0.5px;">
-
-          <!-- Skeleton Component -->
-          <app-profile-skeleton *ngIf="loadingUserDetails || !userDetails"></app-profile-skeleton>
-
-          <!-- Actual Profile Content -->
-          <div *ngIf="!loadingUserDetails && userDetails" class="flex items-center">
-            <img src="{{ userDetails.profileImageUrl }}" alt="{{ userDetails.name }}'s Profile Picture" class="rounded-full ml-2 w-24 h-24 border border-red-500">
-            <div class="ml-5 mt-2">
-              <h2 class="text-black text-lg font-bold tracking-wider truncate max-w-screen-md">{{ userDetails.name }}</h2>
-              <p class="text-red-500 mb-2 tracking-wider truncate max-w-screen-md">&#64;{{ userDetails.username }}</p>
-              <div class="social-links flex justify-start items-center">
-                <a [href]="userDetails.phoneNumber" class="text-red-500" target="_blank">
-                  <fa-icon [icon]="faPhone" class="text-2xl px-1"></fa-icon>
-                </a>
-                <a [href]="userDetails.email" class="text-red-500 px-2" target="_blank">
-                  <fa-icon [icon]="faEnvelope" class="text-2xl px-1"></fa-icon>
-                </a>
-                <a [href]="userDetails.instagramUrl" class="text-red-500 px-1" target="_blank">
-                  <fa-icon [icon]="faInstagram" class="text-2xl px-1"></fa-icon>
-                </a>
-                <a [href]="userDetails.facebookUrl" class="text-red-500 px-1" target="_blank">
-                  <fa-icon [icon]="faFacebook" class="text-2xl px-1"></fa-icon>
-                </a>
-                <a [href]="userDetails.facebookUrl" class="text-red-500" target="_blank">
-                  <fa-icon [icon]="faShare" class="text-2xl px-2"></fa-icon>
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Stats Section -->
-        <div class="stats bg-white flex justify-between mt-2 px-12 text-center" style="font-family: 'Roboto', sans-serif; font-weight: 400; letter-spacing: 0.5px;">
-          <ng-container *ngIf="!loadingUserDetails && userDetails">
-            <div>
-              <p class="font-bold">{{ userDetails.numberOfAdvertisements }}</p>
-              <p>Posts</p>
-            </div>
-            <div>
-              <p class="font-bold">{{ userDetails.followers }}</p>
-              <p>Followers</p>
-            </div>
-            <div>
-              <p class="font-bold">{{ userDetails.following }}</p>
-              <p>Following</p>
-            </div>
-          </ng-container>
-        </div>
-
-  <!-- Post and Saved Tabs -->
-        <div class="tab-menu mt-4 flex justify-center space-x-0">
-          <button
-            (click)="switchTab('posts')"
-            [class.active-tab]="selectedTab === 'posts'"
-            class="flex-1 p-4 flex items-center justify-center rounded-sm bg-gray-100 hover:bg-gray-200 transition-colors">
-            <fa-icon [icon]="faList" class="text-2xl" [ngClass]="{'text-white': selectedTab === 'posts', 'text-primarycolor-0': selectedTab !== 'posts'}"></fa-icon>
-          </button>
-           <!-- Saved posts only visible when logged in user is the searched user -->
-          <button *ngIf="currentUsername === username"
-            (click)="switchTab('saved')"
-            [class.active-tab]="selectedTab === 'saved'"
-            class="flex-1 p-4 flex items-center justify-center rounded-sm bg-gray-100 hover:bg-gray-200 transition-colors">
-            <fa-icon [icon]="faBookmark" class="text-2xl" [ngClass]="{'text-white': selectedTab === 'saved', 'text-primarycolor-0': selectedTab !== 'saved'}"></fa-icon>
-          </button>
-        </div>
-
-  <!-- Profile Posts Section -->
-        <div class="scroll-container posts-container" (scroll)="onScroll($event)" *ngIf="selectedTab === 'posts'">
-          <div class="post-section grid grid-cols-1 gap-2 py-2">
-            <div *ngFor="let post of visibleProfilePosts" class="ad-item">
-              <ng-container *ngIf="post.advertisementType == 'Post'">
-                <app-Post [postDetails]="post"></app-Post>
-              </ng-container>
-              <ng-container *ngIf="post.advertisementType == 'Event'">
-                <app-Event [eventDetails]="post"></app-Event>
-              </ng-container>
-              <ng-container *ngIf="post.advertisementType == 'Coupon'">
-                <app-Coupon [couponDetails]="post"></app-Coupon>
-              </ng-container>
-            </div>
-            <div *ngIf="loadingProfilePosts" class="text-center py-4">
-               <app-loader></app-loader>
-            </div>
-          </div>
-        </div>
-
-  <!-- Saved Posts Section -->
-        <div class="scroll-container saved-container" (scroll)="onScroll($event)" *ngIf="selectedTab === 'saved'">
-          <div class="saved-section grid grid-cols-1 gap-2 py-2">
-            <div *ngFor="let post of visibleSavedPosts" class="ad-item">
-              <ng-container *ngIf="post.advertisementType == 'Post'">
-                <app-Post [postDetails]="post"></app-Post>
-              </ng-container>
-              <ng-container *ngIf="post.advertisementType == 'Event'">
-                <app-Event [eventDetails]="post"></app-Event>
-              </ng-container>
-              <ng-container *ngIf="post.advertisementType == 'Coupon'">
-                <app-Coupon [couponDetails]="post"></app-Coupon>
-              </ng-container>
-            </div>
-            <div *ngIf="loadingSavedPosts" class="text-center py-4">
-              <app-loader></app-loader>
+        <!-- Actual Profile Content -->
+        <div
+          *ngIf="!loadingUserDetails && userDetails"
+          class="flex items-center"
+        >
+          <img
+            src="{{ userDetails.profileImageUrl }}"
+            alt="{{ userDetails.name }}'s Profile Picture"
+            class="rounded-full ml-2 w-24 h-24 border border-red-500"
+            (error)="onProfileImageError($event)"
+          />
+          <div class="ml-5 mt-2">
+            <h2
+              class="text-black text-lg font-bold tracking-wider truncate max-w-screen-md"
+            >
+              {{ userDetails.name }}
+            </h2>
+            <p
+              class="text-red-500 mb-2 tracking-wider truncate max-w-screen-md"
+            >
+              &#64;{{ userDetails.username }}
+            </p>
+            <div class="social-links flex justify-start items-center">
+              <a
+                [href]="userDetails.phoneNumber"
+                class="text-red-500"
+                target="_blank"
+              >
+                <fa-icon [icon]="faPhone" class="text-2xl px-1"></fa-icon>
+              </a>
+              <a
+                [href]="userDetails.email"
+                class="text-red-500 px-2"
+                target="_blank"
+              >
+                <fa-icon [icon]="faEnvelope" class="text-2xl px-1"></fa-icon>
+              </a>
+              <a
+                [href]="userDetails.instagramUrl"
+                class="text-red-500 px-1"
+                target="_blank"
+              >
+                <fa-icon [icon]="faInstagram" class="text-2xl px-1"></fa-icon>
+              </a>
+              <a
+                [href]="userDetails.facebookUrl"
+                class="text-red-500 px-1"
+                target="_blank"
+              >
+                <fa-icon [icon]="faFacebook" class="text-2xl px-1"></fa-icon>
+              </a>
+              <a
+                [href]="userDetails.facebookUrl"
+                class="text-red-500"
+                target="_blank"
+              >
+                <fa-icon [icon]="faShare" class="text-2xl px-2"></fa-icon>
+              </a>
             </div>
           </div>
         </div>
       </div>
+
+      <!-- Stats Section -->
+      <div
+        class="stats bg-white flex justify-between mt-2 px-12 text-center"
+        style="
+          font-family: 'Roboto', sans-serif;
+          font-weight: 400;
+          letter-spacing: 0.5px;
+        "
+      >
+        <ng-container *ngIf="!loadingUserDetails && userDetails">
+          <div>
+            <p class="font-bold">{{ userDetails.numberOfAdvertisements }}</p>
+            <p>Posts</p>
+          </div>
+          <div>
+            <p class="font-bold">{{ userDetails.followers }}</p>
+            <p>Followers</p>
+          </div>
+          <div>
+            <p class="font-bold">{{ userDetails.following }}</p>
+            <p>Following</p>
+          </div>
+        </ng-container>
+      </div>
+
+      <!-- Post and Saved Tabs -->
+      <div class="tab-menu mt-4 flex justify-center space-x-0">
+        <button
+          (click)="switchTab('posts')"
+          [class.active-tab]="selectedTab === 'posts'"
+          class="flex-1 p-4 flex items-center justify-center rounded-sm bg-gray-100 hover:bg-gray-200 transition-colors"
+        >
+          <fa-icon
+            [icon]="faList"
+            class="text-2xl"
+            [ngClass]="{
+              'text-white': selectedTab === 'posts',
+              'text-primarycolor-0': selectedTab !== 'posts'
+            }"
+          ></fa-icon>
+        </button>
+        <!-- Saved posts only visible when logged in user is the searched user -->
+        <button
+          *ngIf="currentUsername === username"
+          (click)="switchTab('saved')"
+          [class.active-tab]="selectedTab === 'saved'"
+          class="flex-1 p-4 flex items-center justify-center rounded-sm bg-gray-100 hover:bg-gray-200 transition-colors"
+        >
+          <fa-icon
+            [icon]="faBookmark"
+            class="text-2xl"
+            [ngClass]="{
+              'text-white': selectedTab === 'saved',
+              'text-primarycolor-0': selectedTab !== 'saved'
+            }"
+          ></fa-icon>
+        </button>
+      </div>
+
+      <!-- Profile Posts Section -->
+      <div
+        class="scroll-container posts-container"
+        (scroll)="onScroll($event)"
+        *ngIf="selectedTab === 'posts'"
+      >
+        <div class="post-section grid grid-cols-1 gap-2 py-2">
+          <div *ngFor="let post of visibleProfilePosts" class="ad-item">
+            <ng-container *ngIf="post.advertisementType == 'Post'">
+              <app-Post [postDetails]="post"></app-Post>
+            </ng-container>
+            <ng-container *ngIf="post.advertisementType == 'Event'">
+              <app-Event [eventDetails]="post"></app-Event>
+            </ng-container>
+            <ng-container *ngIf="post.advertisementType == 'Coupon'">
+              <app-Coupon [couponDetails]="post"></app-Coupon>
+            </ng-container>
+          </div>
+          <div *ngIf="loadingProfilePosts" class="text-center py-4">
+            <app-loader></app-loader>
+          </div>
+        </div>
+      </div>
+
+      <!-- Saved Posts Section -->
+      <div
+        class="scroll-container saved-container"
+        (scroll)="onScroll($event)"
+        *ngIf="selectedTab === 'saved'"
+      >
+        <div class="saved-section grid grid-cols-1 gap-2 py-2">
+          <div *ngFor="let post of visibleSavedPosts" class="ad-item">
+            <ng-container *ngIf="post.advertisementType == 'Post'">
+              <app-Post [postDetails]="post"></app-Post>
+            </ng-container>
+            <ng-container *ngIf="post.advertisementType == 'Event'">
+              <app-Event [eventDetails]="post"></app-Event>
+            </ng-container>
+            <ng-container *ngIf="post.advertisementType == 'Coupon'">
+              <app-Coupon [couponDetails]="post"></app-Coupon>
+            </ng-container>
+          </div>
+          <div *ngIf="loadingSavedPosts" class="text-center py-4">
+            <app-loader></app-loader>
+          </div>
+        </div>
+      </div>
     </div>
-    <app-pop-up
+  </div>
+  <app-pop-up
     *ngIf="showPopup"
     [messageTitle]="popupTitle"
     [messageBody]="popupBody"
-    (close)="showPopup = false">
+    (close)="showPopup = false"
+  >
   </app-pop-up>
 </div>

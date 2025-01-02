@@ -147,4 +147,10 @@ export class ConsumerProfileComponent implements OnInit {
       }
     }, 0);
   }
+
+  defaultProfileImage = "assets/default-pic.png";
+  onProfileImageError(event: Event) {
+    const target = event.target as HTMLImageElement;
+    target.src = this.defaultProfileImage;
+  }
 }

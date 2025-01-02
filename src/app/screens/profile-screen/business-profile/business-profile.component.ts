@@ -1,19 +1,26 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { UserService } from 'src/app/services/user-profile.service';
-import { faPhone, faEnvelope, faShare, faList, faBookmark, faCircleUser } from '@fortawesome/free-solid-svg-icons';
-import { faInstagram, faFacebook } from '@fortawesome/free-brands-svg-icons';
-import { UserDetails } from 'src/app/models/UserDetails';
-import { AdvertisementDetails } from 'src/app/models/ad-details';
-import { DecodedToken } from 'src/app/models/decodedToken';
-import { JwtDecoderService } from 'src/app/services/jwtDecoder/jwt-decoder.service';
-import { ActivatedRoute } from '@angular/router';
+import { Component, Input, OnInit } from "@angular/core";
+import { UserService } from "src/app/services/user-profile.service";
+import {
+  faPhone,
+  faEnvelope,
+  faShare,
+  faList,
+  faBookmark,
+  faCircleUser,
+} from "@fortawesome/free-solid-svg-icons";
+import { faInstagram, faFacebook } from "@fortawesome/free-brands-svg-icons";
+import { UserDetails } from "src/app/models/UserDetails";
+import { AdvertisementDetails } from "src/app/models/ad-details";
+import { DecodedToken } from "src/app/models/decodedToken";
+import { JwtDecoderService } from "src/app/services/jwtDecoder/jwt-decoder.service";
+import { ActivatedRoute } from "@angular/router";
 
 @Component({
-  selector: 'app-business-profile',
-  templateUrl: './business-profile.component.html',
-  styleUrls: ['./business-profile.component.css']
+  selector: "app-business-profile",
+  templateUrl: "./business-profile.component.html",
+  styleUrls: ["./business-profile.component.css"],
 })
-export class BusinessProfileComponent implements OnInit{
+export class BusinessProfileComponent implements OnInit {
   userDetails: UserDetails | null = null; // User details fetched from backend
   loadingUserDetails: boolean = true; // To show skeletons while data is loading
   @Input() profilePosts!: AdvertisementDetails[];
@@ -33,15 +40,15 @@ export class BusinessProfileComponent implements OnInit{
   faList = faList;
   faBookmark = faBookmark;
   faCircleUser = faCircleUser;
-  selectedTab: string = 'posts'; //selected tab by default
-  currentUsername: string = '';
+  selectedTab: string = "posts"; //selected tab by default
+  currentUsername: string = "";
   username: string | null = null;
   userType: string;
   showPopup: boolean = false;
-  popupTitle: string = 'Error';
-  popupBody: string = '';
+  popupTitle: string = "Error";
+  popupBody: string = "";
   hasMoreProfilePosts: boolean = true; // Initially assume there are more posts
-  hasMoreSavedPosts: boolean = true;  // Initially assume there are more saved posts
+  hasMoreSavedPosts: boolean = true; // Initially assume there are more saved posts
 
   constructor(
     private UserService: UserService,
@@ -51,20 +58,21 @@ export class BusinessProfileComponent implements OnInit{
 
   ngOnInit(): void {
     this.currentUsername = this.fetchCurrentUsername();
-    this.route.paramMap.subscribe(params => {
-      this.username = params.get('username');
+    this.route.paramMap.subscribe((params) => {
+      this.username = params.get("username");
       if (this.username) {
         this.fetchUserDetails(this.username);
         this.fetchProfilePosts(this.username, this.profilePostPage);
-        if(this.currentUsername === this.username){
+        if (this.currentUsername === this.username) {
           this.fetchSavedPosts(this.username, this.savedPostPage);
         }
       }
     });
   }
   fetchCurrentUsername(): string {
-    const token = localStorage.getItem('token') || '';
-    const decodedToken: DecodedToken = this.JwtDecoder.decodeInfoFromToken(token);
+    const token = localStorage.getItem("token") || "";
+    const decodedToken: DecodedToken =
+      this.JwtDecoder.decodeInfoFromToken(token);
     this.userType = decodedToken["userType"];
     this.currentUsername = decodedToken.sub;
     return decodedToken.sub;
@@ -72,35 +80,46 @@ export class BusinessProfileComponent implements OnInit{
 
   fetchUserDetails(username: string) {
     this.loadingUserDetails = true; // Show skeletons during loading
-    this.UserService.getUserDetails(username)
-      .subscribe({
-        next: (data) => {
-          if (data.profileImageUrl) {
-            data.profileImageUrl = this.UserService.getImageUrl(username, data.profileImageUrl);
-          }
-          this.userDetails = data;
-          this.loadingUserDetails = false; // Hide skeletons after successful fetch
-        },
-        error: (error) => {
-          this.userDetails = null; // Reset user details on error
-          this.loadingUserDetails = false; // Stop skeletons even if there's an error
-          this.showError(error.error.errorCode || 'Error fetching profile', error.error.errorDescription || 'Please try again later.');
+    this.UserService.getUserDetails(username).subscribe({
+      next: (data) => {
+        if (data.profileImageUrl) {
+          data.profileImageUrl = this.UserService.getImageUrl(
+            username,
+            data.profileImageUrl
+          );
         }
-      });
+        this.userDetails = data;
+        this.loadingUserDetails = false; // Hide skeletons after successful fetch
+      },
+      error: (error) => {
+        this.userDetails = null; // Reset user details on error
+        this.loadingUserDetails = false; // Stop skeletons even if there's an error
+        this.showError(
+          error.error.errorCode || "Error fetching profile",
+          error.error.errorDescription || "Please try again later."
+        );
+      },
+    });
   }
-
 
   fetchProfilePosts(username: string, page: number) {
     this.loadingProfilePosts = true;
-    this.UserService.getProfilePosts(username, page, this.postsPerPage).subscribe({
+    this.UserService.getProfilePosts(
+      username,
+      page,
+      this.postsPerPage
+    ).subscribe({
       next: (data) => {
         if (data.length > 0) {
-          data.forEach(post => {
+          data.forEach((post) => {
             if (post.profileImageUrl) {
-              post.profileImageUrl = this.UserService.getImageUrl(username, post.profileImageUrl);
+              post.profileImageUrl = this.UserService.getImageUrl(
+                username,
+                post.profileImageUrl
+              );
             }
             if (post.imagePaths?.length > 0) {
-              post.imagePaths = post.imagePaths.map(imagePath =>
+              post.imagePaths = post.imagePaths.map((imagePath) =>
                 this.UserService.getImageUrl(username, imagePath)
               );
             }
@@ -113,42 +132,53 @@ export class BusinessProfileComponent implements OnInit{
         this.loadingProfilePosts = false;
       },
       error: (error) => {
-        this.showError(error.error.errorCode || 'Error fetching profile posts', error.error.errorDescription || 'Unable to fetch profile post, please try again later');
+        this.showError(
+          error.error.errorCode || "Error fetching profile posts",
+          error.error.errorDescription ||
+            "Unable to fetch profile post, please try again later"
+        );
         this.loadingProfilePosts = false;
       },
     });
   }
-  
+
   fetchSavedPosts(username: string, page: number) {
     this.loadingSavedPosts = true;
-    this.UserService.getSavedPosts(username, page, this.postsPerPage).subscribe({
-      next: (data) => {
-        if (data.length > 0) {
-          data.forEach(post => {
-            if (post.profileImageUrl) {
-              post.profileImageUrl = this.UserService.getImageUrl(username, post.profileImageUrl);
-            }
-            if (post.imagePaths?.length > 0) {
-              post.imagePaths = post.imagePaths.map(imagePath =>
-                this.UserService.getImageUrl(username, imagePath)
-              );
-            }
-          });
-          this.visibleSavedPosts.push(...data);
-          this.savedPostPage++; // Increment page only if data exists
-        } else {
-          this.hasMoreSavedPosts = false; // No more saved posts to fetch
-        }
-        this.loadingSavedPosts = false;
-      },
-      error: (error) => {
-        this.showError(error.error.errorCode || 'Error fetching saved posts', error.error.errorDescription || 'Unable to fetch saved post, please try again later');
-        this.loadingSavedPosts = false;
-      },
-    });  
-  } 
-     
-
+    this.UserService.getSavedPosts(username, page, this.postsPerPage).subscribe(
+      {
+        next: (data) => {
+          if (data.length > 0) {
+            data.forEach((post) => {
+              if (post.profileImageUrl) {
+                post.profileImageUrl = this.UserService.getImageUrl(
+                  username,
+                  post.profileImageUrl
+                );
+              }
+              if (post.imagePaths?.length > 0) {
+                post.imagePaths = post.imagePaths.map((imagePath) =>
+                  this.UserService.getImageUrl(username, imagePath)
+                );
+              }
+            });
+            this.visibleSavedPosts.push(...data);
+            this.savedPostPage++; // Increment page only if data exists
+          } else {
+            this.hasMoreSavedPosts = false; // No more saved posts to fetch
+          }
+          this.loadingSavedPosts = false;
+        },
+        error: (error) => {
+          this.showError(
+            error.error.errorCode || "Error fetching saved posts",
+            error.error.errorDescription ||
+              "Unable to fetch saved post, please try again later"
+          );
+          this.loadingSavedPosts = false;
+        },
+      }
+    );
+  }
 
   showError(title: string, body: string) {
     this.popupTitle = title;
@@ -158,41 +188,54 @@ export class BusinessProfileComponent implements OnInit{
 
   onScroll(event: any): void {
     const scrollContainer = event.target;
-    const scrollPosition = scrollContainer.scrollTop + scrollContainer.clientHeight;
+    const scrollPosition =
+      scrollContainer.scrollTop + scrollContainer.clientHeight;
     const scrollHeight = scrollContainer.scrollHeight;
-  
+
     if (scrollPosition >= scrollHeight - 100) {
-      if (this.selectedTab === 'posts' && !this.loadingProfilePosts && this.hasMoreProfilePosts) {
+      if (
+        this.selectedTab === "posts" &&
+        !this.loadingProfilePosts &&
+        this.hasMoreProfilePosts
+      ) {
         this.fetchProfilePosts(this.username!, this.profilePostPage);
-      } else if (this.selectedTab === 'saved' && !this.loadingSavedPosts && this.hasMoreSavedPosts) {
+      } else if (
+        this.selectedTab === "saved" &&
+        !this.loadingSavedPosts &&
+        this.hasMoreSavedPosts
+      ) {
         this.fetchSavedPosts(this.username!, this.savedPostPage);
       }
     }
   }
-  
 
-private scrollPositions: { [key: string]: number } = {
-  posts: 0,
-  saved: 0,
-};
+  private scrollPositions: { [key: string]: number } = {
+    posts: 0,
+    saved: 0,
+  };
 
-switchTab(tab: string): void {
-  // Save the current scroll position for the active tab
-  const scrollContainer = document.querySelector('.scroll-container');
-  if (scrollContainer) {
-    this.scrollPositions[this.selectedTab] = scrollContainer.scrollTop;
+  switchTab(tab: string): void {
+    // Save the current scroll position for the active tab
+    const scrollContainer = document.querySelector(".scroll-container");
+    if (scrollContainer) {
+      this.scrollPositions[this.selectedTab] = scrollContainer.scrollTop;
+    }
+
+    // Switch the selected tab
+    this.selectedTab = tab;
+
+    // Restore the scroll position for the new tab
+    setTimeout(() => {
+      const newScrollContainer = document.querySelector(".scroll-container");
+      if (newScrollContainer) {
+        newScrollContainer.scrollTop = this.scrollPositions[tab] || 0;
+      }
+    }, 0);
   }
 
-  // Switch the selected tab
-  this.selectedTab = tab;
-
-  // Restore the scroll position for the new tab
-  setTimeout(() => {
-    const newScrollContainer = document.querySelector('.scroll-container');
-    if (newScrollContainer) {
-      newScrollContainer.scrollTop = this.scrollPositions[tab] || 0;
-    }
-  }, 0);
-}
-
+  defaultProfileImage = "assets/default-pic.png";
+  onProfileImageError(event: Event) {
+    const target = event.target as HTMLImageElement;
+    target.src = this.defaultProfileImage;
+  }
 }

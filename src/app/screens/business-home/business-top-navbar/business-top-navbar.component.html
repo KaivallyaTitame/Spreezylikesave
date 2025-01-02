@@ -2,25 +2,54 @@
   <div class="fixed top-0 w-full z-30 flex box-border h-auto">
     <div class="navbar py-1 bg-primarycolor-0 shadow-none mt-0">
       <div class="navbar-start flex items-center">
-        <input type="checkbox" id="drawer-left" #drawerLeft class="drawer-toggle hidden" />
-        <label for="drawer-left" class="btn w-9 bg-primarycolor-0 flex items-center justify-center" style="height: 7.3%;">
+        <input
+          type="checkbox"
+          id="drawer-left"
+          #drawerLeft
+          class="drawer-toggle hidden"
+        />
+        <label
+          for="drawer-left"
+          class="btn w-9 bg-primarycolor-0 flex items-center justify-center"
+          style="height: 7.3%"
+        >
           <fa-icon class="text-white text-2xl" [icon]="faBars"></fa-icon>
         </label>
 
-        <label for="drawer-left" class="overlay fixed top-0 left-0 w-full h-full bg-black opacity-50 z-20" 
-               [class.hidden]="!drawerLeft.checked"></label>
+        <label
+          for="drawer-left"
+          class="overlay fixed top-0 left-0 w-full h-full bg-black opacity-50 z-20"
+          [class.hidden]="!drawerLeft.checked"
+        ></label>
 
-        <div class="drawer fixed top-0 left-0 w-4/5 h-full border-r-2 z-40 bg-white" 
-             [class.hidden]="!drawerLeft.checked" style="margin-top: 56px;">
-          <div class="drawer-content pt-2 px-2 mt-1 overflow-y-auto" style="height: 87%;">
+        <div
+          class="drawer fixed top-0 left-0 w-4/5 h-full border-r-2 z-40 bg-white"
+          [class.hidden]="!drawerLeft.checked"
+          style="margin-top: 56px"
+        >
+          <div
+            class="drawer-content pt-2 px-2 mt-1 overflow-y-auto"
+            style="height: 87%"
+          >
             <aside class="sidebar h-full flex flex-col bg-white">
               <section class="sidebar-title p-2 text-center">
                 <div class="flex flex-col w-full">
                   <div class="avatar h-14 w-14 mx-auto">
-                    <img *ngIf="business" [src]="business.profilePicture" alt="avatar" class="rounded-full" />
+                    <img
+                      *ngIf="business"
+                      [src]="business[0]?.profilePicture || defaultProfileImage"
+                      alt="avatar"
+                      class="rounded-full"
+                      (error)="onImageError($event)"
+                    />
                   </div>
-                  <span class="text-xl mt-2 font-sidebar text-primary">{{ business?.name }}</span>
-                  <span class="text-lg font-normal font-sidebar text-content2">{{ currentUsername }}</span>
+                  <span class="text-xl mt-2 font-sidebar text-primary">{{
+                    business[0]?.ownerName
+                  }}</span>
+                  <span
+                    class="text-lg font-normal font-sidebar text-content2"
+                    >{{ currentUsername }}</span
+                  >
                 </div>
               </section>
 
@@ -30,36 +59,67 @@
                 <nav class="menu rounded-md">
                   <section class="menu-section px-2">
                     <ul class="menu-items">
-                      <li class="menu-item py-2 flex items-center" routerLink="/business-home/feedback">
-                        <fa-icon class="text-lg w-6 h-6 text-primarycolor-0 mr-3 flex-shrink-0" [icon]="faFilePen"></fa-icon>
-                        <span class="text-lg font-normal">Share Feedback</span>
+                      <li
+                        class="menu-item py-2 flex items-center"
+                        (click)="navigateToFeedback(drawerLeft)"
+                      >
+                        <fa-icon
+                          class="text-lg  h-6 text-primarycolor-0 mr-1 flex-shrink-0"
+                          [icon]="faFilePen"
+                        ></fa-icon>
+                        <span  class="text-lg font-normal">Share Feedback</span>
                       </li>
 
                       <li class="menu-item py-2 flex items-center">
                         <button
-                          class="w-full flex items-center py-2 px-2 text-left text-lg font-normal"
+                          class="w-full flex items-center py-2  text-left text-lg font-normal"
                           (click)="navigateToSettings(drawerLeft)"
                         >
-                          <fa-icon class="text-lg w-6 h-6 text-primarycolor-0 mr-3 flex-shrink-0" [icon]="faGear"></fa-icon>
-                          <span class="text-lg font-normal">Settings</span>
+                          <fa-icon
+                            class="text-lg h-6 text-primarycolor-0 pl-0  flex-shrink-0"
+                            [icon]="faGear"
+                          ></fa-icon>
+                          <span class="text-lg pl-3 font-normal">Settings</span>
                         </button>
                       </li>
 
                       <li class="menu-item py-2 flex items-center">
-                        <a href="https://www.brandsparktechnologies.in/" target="_blank" rel="noopener noreferrer" class="flex items-center w-full">
-                          <img src="assets/logo.png" alt="Contact Us" class="w-6 h-6 mr-3 flex-shrink-0" />
-                          <span class="pl-1 text-lg font-normal">Contact Us</span>
+                        <a
+                          href="https://www.brandsparktechnologies.in/"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          class="flex items-center w-full"
+                        >
+                          <img
+                            src="assets/logo.png"
+                            alt="Contact Us"
+                            class="w-6 h-6 mr-3 flex-shrink-0"
+                          />
+                          <span class="pl-1 text-lg font-normal"
+                            >Contact Us</span
+                          >
                         </a>
                       </li>
 
                       <li class="menu-item py-2 flex items-center">
-                        <fa-icon class="text-lg w-6 h-6 text-primarycolor-0 mr-3 flex-shrink-0" [icon]="faCircleQuestion"></fa-icon>
+                        <fa-icon
+                          class="text-lg w-6 h-6 text-primarycolor-0 mr-3 flex-shrink-0"
+                          [icon]="faCircleQuestion"
+                        ></fa-icon>
                         <span class="text-lg font-normal">Help</span>
                       </li>
 
-                      <li class="menu-item py-2 flex items-center" [routerLink]="['/business-home/terms-conditions']">
-                        <fa-icon class="text-lg w-6 h-6 text-primarycolor-0 mr-3 flex-shrink-0" [icon]="faFileLines"></fa-icon>
-                        <span class="text-lg font-normal">Terms & Conditions</span>
+                      <li
+                        class="menu-item py-2 flex items-center"
+                        (click)="navigateToTermsConditions(drawerLeft)"
+                      >
+                        <fa-icon
+                          class="text-lg w-6 h-6 text-primarycolor-0 mr-3 flex-shrink-0"
+                          [icon]="faFileLines"
+                        ></fa-icon>
+                        <span class="text-lg font-normal"
+                          >Terms & Conditions</span
+                        >
                       </li>
                     </ul>
                   </section>
@@ -71,8 +131,13 @@
               <section class="sidebar-footer">
                 <ul class="menu-items">
                   <li class="menu-item py-2 flex items-center">
-                    <fa-icon class="pl-1 pr-2 text-lg w-6 h-6 text-primarycolor-0 mr-3 flex-shrink-0" [icon]="faArrowRightFromBracket"></fa-icon>
-                    <span class="pl-1 text-lg font-normal" (click)="logout()">Logout</span>
+                    <fa-icon
+                      class="pl-1 pr-2 text-lg w-6 h-6 text-primarycolor-0 mr-3 flex-shrink-0"
+                      [icon]="faArrowRightFromBracket"
+                    ></fa-icon>
+                    <span class="pl-1 text-lg font-normal" (click)="logout()"
+                      >Logout</span
+                    >
                   </li>
                 </ul>
               </section>
@@ -80,7 +145,10 @@
           </div>
         </div>
 
-        <a class="navbar-item ml-0 pl-1 font-medium text-2xl text-white font-primary">Spreezy</a>
+        <a
+          class="navbar-item ml-0 pl-1 font-medium text-2xl text-white font-primary"
+          >Spreezy</a
+        >
       </div>
     </div>
   </div>
