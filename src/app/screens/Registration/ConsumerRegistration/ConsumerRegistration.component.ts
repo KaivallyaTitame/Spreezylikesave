@@ -1,10 +1,9 @@
-
-
 import { Component, OnInit } from "@angular/core";
 import { FormControl, FormGroup, Validators, AbstractControl, ValidatorFn, ValidationErrors } from "@angular/forms";
 import { CustomerService } from "src/app/services/customer.service";
 import { ConsumerDetails } from "src/app/models/ConsumerRegistration/ConsumerDetails";
 import { Router } from "@angular/router";
+import Swal from "sweetalert2"; // SweetAlert2 for popups
 
 @Component({
   selector: "app-register",
@@ -12,21 +11,19 @@ import { Router } from "@angular/router";
   styleUrls: []
 })
 export class ConsumerRegistration implements OnInit {
-  Consumer: ConsumerDetails = new ConsumerDetails();
-  form: FormGroup;
+  public Consumer: ConsumerDetails = new ConsumerDetails();
+  public form: FormGroup;
 
   constructor(private customerService: CustomerService, private router: Router) {}
 
-  // Custom validator for numeric values
-  numericValidator(): ValidatorFn {
+  private numericValidator(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
-      const isValid = /^[0-9]*$/.test(control.value);
+      const isValid = /^\d{10}$/.test(control.value);
       return isValid ? null : { numeric: true };
     };
   }
 
-  // Initialize the form group with required fields and validation
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.form = new FormGroup({
       name: new FormControl("", [Validators.required, Validators.maxLength(20)]),
       username: new FormControl("", [Validators.required, Validators.maxLength(10)]),
@@ -42,63 +39,75 @@ export class ConsumerRegistration implements OnInit {
     });
   }
 
-  // Get all the form controls for easier access in the template
-  get formControls(): { [key: string]: AbstractControl } {
+  public get formControls(): { [key: string]: AbstractControl } {
     return this.form.controls;
   }
 
-  // Handle form submission
-  onSubmit() {
+  public onSubmit(): void {
     if (this.form.valid) {
       this.registerUser();
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: "Invalid Form",
+        text: "Please fill out all fields correctly."
+      });
     }
   }
 
-  // Call the service to register the user
-  registerUser() {
+  private registerUser(): void {
     this.Consumer = this.mapUserData(this.form);
-    console.log(this.Consumer);
+
+    // Call the service function and let the service handle the subscription and error
     this.customerService.registerNewUser(this.Consumer);
+
+    // Optionally show a success message if desired before service response
+    Swal.fire({
+      icon: "info",
+      title: "Success",
+      text: "Successfully Regestered.",
+      allowOutsideClick: true
+    });
+    this.router.navigate(['/login']);
+
   }
 
-  // Map form data to the ConsumerDetails object
-  mapUserData(form: FormGroup): ConsumerDetails {
+  private mapUserData(form: FormGroup): ConsumerDetails {
     return {
-      name: form.get("name")?.value,
-      username: form.get("username")?.value,
-      email: form.get("email")?.value,
-      phoneNumber: form.get("phoneNumber")?.value,
-      gender: form.get("gender")?.value,
-      profilePicture: form.get("profilePicture")?.value // Accepts profilePicture as string
+      name: form.get("name")?.value || "",
+      username: form.get("username")?.value || "",
+      email: form.get("email")?.value || "",
+      phoneNumber: form.get("phoneNumber")?.value || "",
+      gender: form.get("gender")?.value || "",
+      profilePicture: form.get("profilePicture")?.value || ""
     } as ConsumerDetails;
   }
 
-  // Getter methods for form controls
-  get name(): FormControl {
+  public get name(): FormControl {
     return this.form.get("name") as FormControl;
   }
 
-  get email(): FormControl {
+  public get email(): FormControl {
     return this.form.get("email") as FormControl;
   }
 
-  get username(): FormControl {
+  public get username(): FormControl {
     return this.form.get("username") as FormControl;
   }
 
-  get phoneNumber(): FormControl {
+  public get phoneNumber(): FormControl {
     return this.form.get("phoneNumber") as FormControl;
   }
 
-  get gender(): FormControl {
+  public get gender(): FormControl {
     return this.form.get("gender") as FormControl;
   }
 
-  get profilePicture(): FormControl {
+  public get profilePicture(): FormControl {
     return this.form.get("profilePicture") as FormControl;
   }
 
-  get confirmPolicies(): FormControl {
+  public get confirmPolicies(): FormControl {
     return this.form.get("confirmPolicies") as FormControl;
   }
 }
