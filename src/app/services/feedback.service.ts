@@ -18,7 +18,7 @@ export class FeedbackService {
     const headers = new HttpHeaders({ 'ngrok-skip-browser-warning': 'true' });
 
     this.http
-      .post<FeedbackResponse>(API_CONFIG.SAVE_FEEDBACK, feedbackRequest, { headers })
+      .post<FeedbackResponse>(API_CONFIG.SAVE_FEEDBACK, feedbackRequest)
       .subscribe({
         next: onSuccess,
         error: onError,
