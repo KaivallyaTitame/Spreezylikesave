@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, of, Subject, BehaviorSubject } from 'rxjs';
 import { catchError, debounceTime, distinctUntilChanged, switchMap, map } from 'rxjs/operators';
 import { UserProfileDTO } from '../models/UserProfileDTO';
@@ -9,9 +9,6 @@ import { API_CONFIG } from 'src/app/api-config';
   providedIn: 'root'
 })
 export class SearchService {
-  private businessesUrl = 'http://localhost:8762/user/search';
-  // private businessesUrl = 'https://dummyjson.com/c/da4e-1011-4418-9e94/user/search';
-  private imageUrl = "https://images.spreezy.in";
 
   private searchSubject = new Subject<string>();
   private businessesSubject = new BehaviorSubject<UserProfileDTO[]>([]);
@@ -42,7 +39,7 @@ export class SearchService {
 
   private fetchBusinesses(searchQuery: string): Observable<UserProfileDTO[]> {
     const url = API_CONFIG.SEARCH_BUSINESSES(searchQuery);
-    return this.http.get<UserProfileDTO[]>(url).pipe(
+    return this.http.get<UserProfileDTO[]>(url, { headers: this.getAuthHeaders() }).pipe(
       catchError(() => of([]))
     );
   }
@@ -54,7 +51,7 @@ export class SearchService {
   
     const method = isFollowing ? 'post' : 'delete';  
 
-    return this.http.request(method, url).pipe(
+    return this.http.request(method, url, { headers: this.getAuthHeaders() }).pipe(
       map(() => true),
       catchError(() => of(false))
     );
@@ -69,4 +66,16 @@ export class SearchService {
     }
     return `${API_CONFIG.IMAGE_URL}/${profilePicture}`;
   }
+
+  private getAuthHeaders(): HttpHeaders {
+    const token = localStorage.getItem('token'); // Retrieve the token from local storage
+    if (!token) {
+      console.error('No token found. Please log in again.');
+    }
+    return new HttpHeaders({
+      Authorization: `Bearer ${token}`, // Correctly formatted Authorization header
+      'Content-Type': 'application/json' // Optional: Include Content-Type if needed
+    });
+  }
+  
 }

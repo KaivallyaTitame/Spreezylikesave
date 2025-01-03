@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { faArrowRightFromBracket, faBars, faCircleQuestion, faFileLines, faFilePen, faGear, faSearch } from '@fortawesome/free-solid-svg-icons';
+import { faAddressBook, faArrowRightFromBracket, faBars, faCircleQuestion, faFileLines, faFilePen, faGear, faSearch } from '@fortawesome/free-solid-svg-icons';
 import { AuthService } from 'src/app/services/auth.service';
 import { BusinessNavigationService } from 'src/app/services/business-navigation.service';
 import { DecodedToken } from 'src/app/models/decoded-token';
@@ -22,6 +22,7 @@ export class BusinessTopNavbarComponent implements OnInit {
   faCircleQuestion = faCircleQuestion;
   faFileLines = faFileLines;
   faFilePen = faFilePen;
+  addressBook = faAddressBook
 
   // Variables for business info and token decoding
   business: any;

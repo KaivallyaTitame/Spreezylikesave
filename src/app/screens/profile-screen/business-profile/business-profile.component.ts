@@ -95,8 +95,8 @@ export class BusinessProfileComponent implements OnInit {
         this.userDetails = null; // Reset user details on error
         this.loadingUserDetails = false; // Stop skeletons even if there's an error
         this.showError(
-          error.error.errorCode || "Error fetching profile",
-          error.error.errorDescription || "Please try again later."
+          error?.error?.errorCode || "Error fetching profile",
+          error?.error?.errorDescription || "Please try again later."
         );
       },
     });
@@ -133,8 +133,8 @@ export class BusinessProfileComponent implements OnInit {
       },
       error: (error) => {
         this.showError(
-          error.error.errorCode || "Error fetching profile posts",
-          error.error.errorDescription ||
+          error?.error?.errorCode || "Error while fetching profile posts",
+          error?.error?.errorDescription ||
             "Unable to fetch profile post, please try again later"
         );
         this.loadingProfilePosts = false;
@@ -170,8 +170,8 @@ export class BusinessProfileComponent implements OnInit {
         },
         error: (error) => {
           this.showError(
-            error.error.errorCode || "Error fetching saved posts",
-            error.error.errorDescription ||
+            error?.error?.errorCode || "Error fetching saved posts",
+            error?.error?.errorDescription ||
               "Unable to fetch saved post, please try again later"
           );
           this.loadingSavedPosts = false;

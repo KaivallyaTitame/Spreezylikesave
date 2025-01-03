@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { faArrowRightFromBracket, faBars, faCircleQuestion, faFileLines, faFilePen, faGear, faSearch } from '@fortawesome/free-solid-svg-icons';
+import { faAddressBook, faArrowRightFromBracket, faBars, faCircleQuestion, faFileLines, faFilePen, faGear, faSearch } from '@fortawesome/free-solid-svg-icons';
 import { ConsumerNavigationService } from 'src/app/services/consumer-navigation.service';
 import { UserProfileDTO } from 'src/app/models/UserProfileDTO';
 import { AuthService } from 'src/app/services/auth.service';
@@ -21,8 +21,10 @@ export class ConsumerTopNavbarComponent implements OnInit {
     filePen: faFilePen,
     fileLines: faFileLines,
     circleQuestion: faCircleQuestion,
-    arrowRightFromBracket: faArrowRightFromBracket
+    arrowRightFromBracket: faArrowRightFromBracket,
+    addressBook : faAddressBook
   };
+
 
   consumer: UserProfileDTO | null = null; 
   currentUsername: string = '';

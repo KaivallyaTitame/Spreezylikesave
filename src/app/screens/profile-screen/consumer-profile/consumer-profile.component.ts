@@ -64,8 +64,8 @@ export class ConsumerProfileComponent implements OnInit {
         this.userDetails = null; // Reset user details on error
         this.loadingUserDetails = false; // Stop skeletons even if there's an error
         this.showError(
-          error.error.errorCode || "Error fetching profile",
-          error.error.errorDescription || "Please try again later."
+          error?.error?.errorCode || "Error fetching profile",
+          error?.error?.errorDescription || "Please try again later."
         );
       },
     });
@@ -100,8 +100,8 @@ export class ConsumerProfileComponent implements OnInit {
         error: (error) => {
           this.loadingSavedPosts = false; // Stop loading spinner on error
           this.showError(
-            error.error.errorCode || "Error fetching posts",
-            error.error.errorDescription || "Please check your connection."
+            error?.error?.errorCode || "Error while fetching posts",
+            error?.error?.errorDescription || "Please try again later."
           );
         },
       }
