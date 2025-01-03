@@ -3,7 +3,7 @@ import { FormControl, FormGroup, Validators, AbstractControl, ValidatorFn, Valid
 import { CustomerService } from "src/app/services/customer.service";
 import { ConsumerDetails } from "src/app/models/ConsumerRegistration/ConsumerDetails";
 import { Router } from "@angular/router";
-import Swal from "sweetalert2"; // SweetAlert2 for popups
+import Swal from "sweetalert2"; 
 
 @Component({
   selector: "app-register",

@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { PostUploadService } from 'src/app/services/post-upload.service';
 import { BusinessData } from 'src/app/services/BusinessData.service';
 import { CustomerService } from 'src/app/services/customer.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-business3',
@@ -50,11 +51,19 @@ export class Business3Component implements OnInit {
 
   validateFile(file: File): boolean {
     if (!file.type.startsWith('image/')) {
-      console.error('Invalid file type. Only images are allowed.');
+      Swal.fire({
+        icon: 'error',
+        title: 'Invalid File',
+        text: 'Invalid file type. Only images are allowed.',
+      });
       return false;
     }
     if (file.size > 5 * 1024 * 1024) {
-      console.error('File size exceeds the maximum allowed limit of 5MB.');
+      Swal.fire({
+        icon: 'error',
+        title: 'File Too Large',
+        text: 'File size exceeds the maximum allowed limit of 5MB.',
+      });
       return false;
     }
     return true;
@@ -73,29 +82,60 @@ export class Business3Component implements OnInit {
     return this.form.get('panCardPhoto');
   }
 
-  registerUser(): void {
+  async registerUser(): Promise<void> {
     if (this.form.invalid || !this.aadharCardPhoto || !this.panCardPhoto) {
-      console.error('Form is invalid or files are missing');
+      Swal.fire({
+        icon: 'error',
+        title: 'Invalid Form',
+        text: 'Form is invalid or files are missing.',
+      });
       return;
     }
+
+    Swal.fire({
+      icon: 'info',
+      title: 'Processing',
+      text: 'Uploading files and registering business. Please wait...',
+      allowOutsideClick: false,
+      showConfirmButton: false,
+    });
 
     const businessDetails = this.businessDataService.getBusinessData();
     const fileNames = [this.aadharCardPhoto?.name || '', this.panCardPhoto?.name || ''];
 
     this.postUploadService.getPresignedUrl(fileNames, businessDetails.businessUsername).subscribe({
-      next: (presignedUrls) => {
-        if (this.aadharCardPhoto && presignedUrls.presignedUrls[0]) {
-          this.postUploadService.uploadToS3(this.aadharCardPhoto, presignedUrls.presignedUrls[0]).subscribe();
-        }
-        if (this.panCardPhoto && presignedUrls.presignedUrls[1]) {
-          this.postUploadService.uploadToS3(this.panCardPhoto, presignedUrls.presignedUrls[1]).subscribe();
-        }
+      next: async (presignedUrls) => {
+        try {
+          // Upload files to S3
+          if (this.aadharCardPhoto && presignedUrls.presignedUrls[0]) {
+            await this.postUploadService.uploadToS3(this.aadharCardPhoto, presignedUrls.presignedUrls[0]);
+          }
+          if (this.panCardPhoto && presignedUrls.presignedUrls[1]) {
+            await this.postUploadService.uploadToS3(this.panCardPhoto, presignedUrls.presignedUrls[1]);
+          }
 
-        this.customerService.registerNewBusiness(businessDetails);
-        this.router.navigate(['/business-registration/success']);
+          // Register the business
+          await this.customerService.registerNewBusiness(businessDetails);
+
+          Swal.fire({
+            icon: 'success',
+            title: 'Registration Successful',
+            text: 'Business registration completed successfully!',
+          }).then(() => this.router.navigate(['/login']));
+        } catch (err: any) {
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: err.message || 'An error occurred during the process.',
+          });
+        }
       },
       error: (err) => {
-        console.error('Error generating presigned URLs:', err);
+        Swal.fire({
+          icon: 'error',
+          title: 'Error while Uploading images',
+          text: 'Please Try Again later!',
+        });
       },
     });
   }
@@ -104,4 +144,3 @@ export class Business3Component implements OnInit {
     return this.form.get('confirmPolicies') as FormControl;
   }
 }
-
