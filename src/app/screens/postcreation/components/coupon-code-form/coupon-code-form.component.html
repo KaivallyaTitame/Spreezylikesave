@@ -8,7 +8,7 @@
         <div *ngIf="couponCodeFormDetails.get('couponTitle')?.touched && couponCodeFormDetails.get('couponTitle')?.invalid" class="text-red-500">Title is required</div>
     </div>
 
-    <app-image-selector></app-image-selector>
+    <app-image-selector [imageFileNamesUpdated]="imageFileNamesUpdated"></app-image-selector>
 
     <div class="font-roboto text-black text-base mt-4 ml-4">
         <label for="description">Offer Details*</label>

@@ -8,6 +8,14 @@ export class TextareaUtils {
         .map(item => (item.startsWith('• ') ? item : `• ${item}`));
     }
   
+    static removeBulletPoints(textareaValue: string): string[] {
+      return textareaValue
+        .split('\n')
+        .map(item => item.trim())
+        .filter(item => item.length > 0)
+        .map(item => item.startsWith('• ') ? item.slice(2) : item); // Remove '• ' if it exists
+    }
+    
     static addBulletPointOnEnter(event: KeyboardEvent, textarea: HTMLTextAreaElement): void {
       if (event.key === 'Enter') {
         event.preventDefault();

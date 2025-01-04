@@ -13,6 +13,7 @@ import { TextareaUtils } from 'src/app/shared/textarea-utils';
 })
 export class EventsFormComponent {
   eventFormDetails: FormGroup;
+  imageFileNamesUpdated: boolean=false;
   eventData: EventDetails = new EventDetails();
   username: string = '';
   businessId: string = '';
@@ -30,7 +31,7 @@ export class EventsFormComponent {
       description: [''],
       websiteLink: ['https://example.com'],
       eventDateAndTime: [''],
-      promoBadge: [''],
+      promoBadge: ['',[Validators.maxLength(10)]],
       expiry: [''],
       bookingUrl: [''],
       termsAndConditions: [''],
@@ -88,15 +89,15 @@ export class EventsFormComponent {
 
   createRequest(details: FormGroup) {
     this.eventData.imageFileNames = this.imageFileNames;
-    this.eventData.eventTitle = details.value['eventTitle'];
-    this.eventData.description = details.value['description'];
-    this.eventData.eventDateAndTime = details.value['eventDateAndTime'].toString();
-    this.eventData.promoBadge = details.value['promoBadge'];
-    this.eventData.websiteLink=details.value['websiteLink'];
-    this.eventData.expiry = details.value['expiry'].toString();
-    this.eventData.bookingUrl = details.value['bookingUrl'];
-    this.eventData.termsAndConditions = TextareaUtils.convertTextareaToListWithBulletPoints(details.value['termsAndConditions']);
-    this.eventData.stepsToAvailOffer = TextareaUtils.convertTextareaToListWithBulletPoints(details.value['stepsToAvailOffer']);
+    this.eventData.eventTitle = details.value['eventTitle'].trim() ;
+    this.eventData.description = details.value['description'].trim() ;
+    this.eventData.eventDateAndTime = details.value['eventDateAndTime'].toString().trim() ;
+    this.eventData.promoBadge = details.value['promoBadge'].trim() ;
+    this.eventData.websiteLink=details.value['websiteLink'].trim() ;
+    this.eventData.expiry = details.value['expiry'].toString().trim() ;
+    this.eventData.bookingUrl = details.value['bookingUrl'].trim();
+    this.eventData.termsAndConditions = TextareaUtils.removeBulletPoints(details.value['termsAndConditions']?.trim() || '');
+    this.eventData.stepsToAvailOffer = TextareaUtils.removeBulletPoints(details.value['stepsToAvailOffer']?.trim() || '');
     this.eventData.businessId=this.businessId;
     this.eventData.username=this.username;
 
@@ -104,13 +105,11 @@ export class EventsFormComponent {
   }
   
   processRequest(eventData: EventDetails) {
-    console.log(eventData);
     this.postUpload.submitEventData(eventData).subscribe({
       next: (response: any) => {
         this.popUpTitle = 'Success!';
         this.popUpBody = 'Your event form has been submitted successfully.';
         this.showPopUp = true;
-        console.log(eventData);
         this.eventFormDetails.reset(); 
       },
       error: (error: HttpErrorResponse) => {
@@ -139,5 +138,6 @@ export class EventsFormComponent {
 
   resetForm(): void {
     this.eventFormDetails.reset();
+    this.imageFileNamesUpdated=true;
   }
 }

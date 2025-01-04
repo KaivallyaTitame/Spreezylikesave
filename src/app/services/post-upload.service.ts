@@ -13,6 +13,7 @@ import { PresignedUrl } from '../models/presigned-url';
 export class PostUploadService {
   private generatedFileNamesSubject = new BehaviorSubject<string[]>([]);
   generatedFileNames$ = this.generatedFileNamesSubject.asObservable();
+  token = localStorage.getItem('token');
 
   constructor(private http: HttpClient) {}
 
@@ -68,8 +69,8 @@ export class PostUploadService {
 
   private getHeaders(): HttpHeaders {
     return new HttpHeaders({
-      'ngrok-skip-browser-warning': 'true',
-      'Content-Type': 'application/json',
-    });
+      Authorization: `Bearer ${this.token}`,
+      'Content-Type': 'application/json'
+    })
   }
 }

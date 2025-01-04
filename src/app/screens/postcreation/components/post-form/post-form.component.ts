@@ -20,6 +20,7 @@ export class PostFormComponent implements OnInit {
   showPopUp: boolean = false;
   popUpTitle: string = '';
   popUpBody: string = '';
+  imageFileNamesUpdated: boolean=false;
 
   constructor(private fb: FormBuilder, private postUpload: PostUploadService,private jwtDecoder: JwtDecoderService){
     this.postFormDetails = this.fb.group({
@@ -30,7 +31,7 @@ export class PostFormComponent implements OnInit {
       websiteLink: ['https://example.com'],
       expiry: [null],
       businessId: [''],
-      promoBadge: [''],
+      promoBadge: ['',[Validators.maxLength(10)]],
       termsAndConditions: [''],
       stepsToAvailOffer: ['']
     });
@@ -96,13 +97,12 @@ export class PostFormComponent implements OnInit {
     this.postFormData.expiry = details.value['expiry'];
     this.postFormData.businessId = this.postFormDetails.get('businessId')?.value;
     this.postFormData.promoBadge = details.value['promoBadge'];
-    this.postFormData.termsAndConditions = TextareaUtils.convertTextareaToListWithBulletPoints(details.value['termsAndConditions']);
-    this.postFormData.stepsToAvailOffer = TextareaUtils.convertTextareaToListWithBulletPoints(details.value['stepsToAvailOffer']);
+    this.postFormData.termsAndConditions = TextareaUtils.removeBulletPoints(details.value['termsAndConditions']?.trim() || '');
+    this.postFormData.stepsToAvailOffer = TextareaUtils.removeBulletPoints(details.value['stepsToAvailOffer']?.trim() || '');
     this.processRequest(this.postFormData);
   }
 
   processRequest(postFormData: PostDetails) {
-    console.log(postFormData);
     this.postUpload.submitPostForm(postFormData).subscribe({
       next: (response) => {
         this.popUpTitle = 'Success!';
@@ -137,5 +137,6 @@ export class PostFormComponent implements OnInit {
 
   resetForm(): void {
     this.postFormDetails.reset();
+    this.imageFileNamesUpdated=true;
   }
 }

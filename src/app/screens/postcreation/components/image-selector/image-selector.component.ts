@@ -1,4 +1,4 @@
-import { Component, ViewChild, ElementRef, OnInit } from '@angular/core';
+import { Component, ViewChild, ElementRef, OnInit, Input, SimpleChanges } from '@angular/core';
 import { PresignedUrl } from 'src/app/models/presigned-url';
 import { JwtDecoderService } from 'src/app/services/jwt-decoder.service';
 import { PostUploadService } from 'src/app/services/post-upload.service';
@@ -10,6 +10,7 @@ import { PostUploadService } from 'src/app/services/post-upload.service';
 })
 export class ImageSelectorComponent implements OnInit {
   @ViewChild('fileInput', { static: false }) fileInput!: ElementRef;
+  @Input() imageFileNamesUpdated: boolean = false;
   imagePreviews: string[] = [];
   selectedFiles: File[] = [];
   username: string = '';  
@@ -33,6 +34,12 @@ export class ImageSelectorComponent implements OnInit {
     this.fileInput.nativeElement.click();
   }
 
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['imageFileNamesUpdated'] && changes['imageFileNamesUpdated'].currentValue === true) {
+      this.resetArrays();
+    }
+  }
+  
   onImageUpload(event: Event): void {
     const input = event.target as HTMLInputElement;
 
@@ -71,7 +78,6 @@ export class ImageSelectorComponent implements OnInit {
 
     this.postUpload.getPresignedUrl(fileNames, this.username).subscribe({
       next: (presignedUrl: PresignedUrl) => {
-        console.log(presignedUrl);
         this.presignedUrls = presignedUrl.presignedUrls;
 
         this.postUpload.setGeneratedFileNames(presignedUrl.generatedFileNames);
@@ -110,5 +116,13 @@ export class ImageSelectorComponent implements OnInit {
 
   onPopUpClose() {
     this.showPopUp = false; 
+  }
+  
+  private resetArrays(): void {
+    this.imagePreviews = [];
+    this.selectedFiles = [];
+    this.presignedUrls = [];
+    this.uploadImageCount = 0;
+    this.isUploadCompleted = false;
   }
 }

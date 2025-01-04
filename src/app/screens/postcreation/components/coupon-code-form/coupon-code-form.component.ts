@@ -13,6 +13,7 @@ import { TextareaUtils } from 'src/app/shared/textarea-utils';
   styleUrls: ['./coupon-code-form.component.css']
 })
 export class CouponCodeFormComponent {
+  imageFileNamesUpdated: boolean=false;
   couponCodeFormDetails: FormGroup;
   couponCodeData: CouponDetails = new CouponDetails();
   imageFileNames: string[] = [];
@@ -28,7 +29,7 @@ export class CouponCodeFormComponent {
       couponTitle: [''],
       username: [''],
       description: [''],
-      promoBadge: [''],
+      promoBadge: ['',[Validators.maxLength(10)]],
       couponCode: [''],
       businessId: [''],
       websiteLink: ['https://example.com'],
@@ -89,15 +90,15 @@ export class CouponCodeFormComponent {
 
   createRequest(details: FormGroup) {
     this.couponCodeData.imageFileNames =this.imageFileNames;
-    this.couponCodeData.couponTitle = details.value['couponTitle'];
+    this.couponCodeData.couponTitle = details.value['couponTitle'].trim() ;
     this.couponCodeData.username = this.username;
-    this.couponCodeData.description = details.value['description'];
-    this.couponCodeData.websiteLink = details.value['websiteLink'];
-    this.couponCodeData.promoBadge = details.value['promoBadge'];
-    this.couponCodeData.couponCode = details.value['couponCode'];
+    this.couponCodeData.description = details.value['description'].trim() ;
+    this.couponCodeData.websiteLink = details.value['websiteLink'].trim() ;
+    this.couponCodeData.promoBadge = details.value['promoBadge'].trim();
+    this.couponCodeData.couponCode = details.value['couponCode'].trim();
     this.couponCodeData.businessId = this.businessId;
-    this.couponCodeData.termsAndConditions = TextareaUtils.convertTextareaToListWithBulletPoints(details.value['termsAndConditions']);
-    this.couponCodeData.stepsToAvailOffer = TextareaUtils.convertTextareaToListWithBulletPoints(details.value['stepsToAvailOffer']);
+    this.couponCodeData.termsAndConditions = TextareaUtils.removeBulletPoints(details.value['termsAndConditions']?.trim() || '');
+    this.couponCodeData.stepsToAvailOffer = TextareaUtils.removeBulletPoints(details.value['stepsToAvailOffer']?.trim() || '');
     
     this.couponCodeData.expiry = details.value['expiry'];
 
@@ -110,8 +111,7 @@ export class CouponCodeFormComponent {
         this.popUpTitle = 'Success!';
         this.popUpBody = 'Your coupon code form has been submitted successfully.';
         this.showPopUp = true;
-        console.log(couponCodeData);
-        this.couponCodeFormDetails.reset(); 
+        this.resetForm();
       },
       error: (error: HttpErrorResponse) => {
         console.error('Error Details:', error);
@@ -140,5 +140,6 @@ export class CouponCodeFormComponent {
 
   resetForm(): void {
     this.couponCodeFormDetails.reset();
+    this.imageFileNamesUpdated=true;
   }
 }
