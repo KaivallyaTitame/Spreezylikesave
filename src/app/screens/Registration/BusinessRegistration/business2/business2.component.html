@@ -1,5 +1,5 @@
 <div class="bg-white">
-  <span class="flex justify-center font-primary text-primary-0 text-3xl mt-5">Let's get you ready...</span>
+  <span class="flex justify-center font-primary text-primary text-3xl mt-5">Let's get you ready...</span>
   <form class="flex justify-center" [formGroup]="form" (ngSubmit)="registerUser()">
     <div class="signup-form w-80 relative">
       <div class="aadhar-number mt-3">
@@ -12,10 +12,16 @@
       </div>
       <div class="pancard-number mt-3">
         <label class="form-label pb-2 font-secondary">PAN Card Number :</label>
-        <input type="text" class="input input-primary max-w-full" placeholder="PAN Card Number" formControlName="pancardNumber" />
+        <input
+          type="text"
+          class="input input-primary max-w-full"
+          placeholder="PAN Card Number"
+          formControlName="pancardNumber"
+        />
         <div class="form-text text-red-600" *ngIf="pancardNumber.invalid && (pancardNumber.dirty || pancardNumber.touched)">
           <span *ngIf="pancardNumber.errors?.['required']">PAN Card Number is required.</span>
           <span *ngIf="pancardNumber.errors?.['maxlength']">PAN Card Number cannot be more than 10 characters.</span>
+          <span *ngIf="pancardNumber.errors?.['pancardFormat']">PAN Card format is invalid. Example: UJIKU3334R.</span>
         </div>
       </div>
       <div class="state mt-3">

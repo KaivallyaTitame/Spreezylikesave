@@ -1,9 +1,10 @@
+
 import { Component, OnInit } from "@angular/core";
 import { FormControl, FormGroup, Validators, AbstractControl, ValidatorFn, ValidationErrors } from "@angular/forms";
-import { CustomerService } from "src/app/services/customer.service";
 import { ConsumerDetails } from "src/app/models/ConsumerRegistration/ConsumerDetails";
 import { Router } from "@angular/router";
-import Swal from "sweetalert2"; 
+import { CustomerService } from "src/app/services/customer.service";
+import { finalize } from "rxjs";
 
 @Component({
   selector: "app-register",
@@ -13,6 +14,12 @@ import Swal from "sweetalert2";
 export class ConsumerRegistration implements OnInit {
   public Consumer: ConsumerDetails = new ConsumerDetails();
   public form: FormGroup;
+
+  // Popup state variables
+  showPopUp: boolean = false;
+  popupMessageTitle: string = "";
+  popupMessageBody: string = "";
+  isLoading: boolean = false;
 
   constructor(private customerService: CustomerService, private router: Router) {}
 
@@ -34,7 +41,7 @@ export class ConsumerRegistration implements OnInit {
         this.numericValidator()
       ]),
       gender: new FormControl("", [Validators.required]),
-      profilePicture: new FormControl("", [Validators.required]),
+      profilePicture: new FormControl("abc"),
       confirmPolicies: new FormControl(false, [Validators.requiredTrue])
     });
   }
@@ -47,29 +54,30 @@ export class ConsumerRegistration implements OnInit {
     if (this.form.valid) {
       this.registerUser();
     } else {
-      Swal.fire({
-        icon: "error",
-        title: "Invalid Form",
-        text: "Please fill out all fields correctly."
-      });
+      this.showPopup("Invalid Form", "Please fill out all fields correctly.");
     }
   }
 
   private registerUser(): void {
     this.Consumer = this.mapUserData(this.form);
-
-    // Call the service function and let the service handle the subscription and error
-    this.customerService.registerNewUser(this.Consumer);
-
-    // Optionally show a success message if desired before service response
-    Swal.fire({
-      icon: "info",
-      title: "Success",
-      text: "Successfully Regestered.",
-      allowOutsideClick: true
-    });
-    this.router.navigate(['/login']);
-
+  
+    this.showPopup("Processing", "Your registration request is being processed.");
+  
+    this.customerService.registerNewUser(this.Consumer)
+      .pipe(
+        finalize(() => this.isLoading = false)
+      )
+      .subscribe({
+        next: () => {
+          this.showPopup("Success", "Registration successful!");
+          this.router.navigate(["/login"]); 
+        },
+        error: (err: any) => { 
+          const errorCode = err?.error?.errorCode || "Unknown Error";
+          const errorDescription = err?.error?.errorDescription || "An unexpected error occurred.";
+          this.showPopup(`Error (${errorCode})`, errorDescription);
+        }
+      });
   }
 
   private mapUserData(form: FormGroup): ConsumerDetails {
@@ -79,9 +87,21 @@ export class ConsumerRegistration implements OnInit {
       email: form.get("email")?.value || "",
       phoneNumber: form.get("phoneNumber")?.value || "",
       gender: form.get("gender")?.value || "",
-      profilePicture: form.get("profilePicture")?.value || ""
+      profilePicture: form.get("profilePicture")?.value || "abc"
     } as ConsumerDetails;
   }
+
+  
+  showPopup(title: string, body: string): void {
+    this.popupMessageTitle = title;
+    this.popupMessageBody = body;
+    this.showPopUp = true; 
+  }
+
+  handleClosePopUp(): void {
+    this.showPopUp = false; 
+  }
+
 
   public get name(): FormControl {
     return this.form.get("name") as FormControl;
@@ -103,9 +123,9 @@ export class ConsumerRegistration implements OnInit {
     return this.form.get("gender") as FormControl;
   }
 
-  public get profilePicture(): FormControl {
-    return this.form.get("profilePicture") as FormControl;
-  }
+  // public get profilePicture(): FormControl {
+  //   return this.form.get("profilePicture") as FormControl;
+  // }
 
   public get confirmPolicies(): FormControl {
     return this.form.get("confirmPolicies") as FormControl;
