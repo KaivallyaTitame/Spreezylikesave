@@ -24,25 +24,37 @@ export class Business2Component implements OnInit {
   stateData: StateData;
 
 
-constructor(
-  private http: HttpClient,
-  private dataService: BusinessData,
-  private router: Router
-) {
-  this.form = new FormGroup({
-    aadharNumber: new FormControl("", [Validators.required, Validators.maxLength(12), this.numericValidator()]),
-    pancardNumber: new FormControl("", [Validators.required, Validators.maxLength(10)]),
-    state: new FormControl("", [Validators.required]),
-    city: new FormControl("", [Validators.required]),
-    pincode: new FormControl("", [Validators.required, Validators.maxLength(6), this.numericValidator()]),
-    bio: new FormControl("", [Validators.required, Validators.maxLength(80)]),
-  });
-
-  this.http.get<StateData>("assets/Statesandcities.json")
-    .subscribe((data) => {
+  pancardValidator(): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      const isValid = /^[A-Z]{5}[0-9]{4}[A-Z]$/.test(control.value);
+      return isValid ? null : { pancardFormat: true };
+    };
+  }
+  
+  // Add the pancardValidator to the pancardNumber FormControl
+  constructor(
+    private http: HttpClient,
+    private dataService: BusinessData,
+    private router: Router
+  ) {
+    this.form = new FormGroup({
+      aadharNumber: new FormControl("", [Validators.required, Validators.maxLength(12), this.numericValidator()]),
+      pancardNumber: new FormControl("", [
+        Validators.required,
+        Validators.maxLength(10),
+        this.pancardValidator(), // Add the validator here
+      ]),
+      state: new FormControl("", [Validators.required]),
+      city: new FormControl("", [Validators.required]),
+      pincode: new FormControl("", [Validators.required, Validators.maxLength(6), this.numericValidator()]),
+      bio: new FormControl("", [Validators.required, Validators.maxLength(80)]),
+    });
+  
+    this.http.get<StateData>("assets/Statesandcities.json").subscribe((data) => {
       this.stateData = data;
     });
-}
+  }
+  
 numericValidator(): ValidatorFn {
   return (control: AbstractControl): ValidationErrors | null => {
     const isValid = /^[0-9]*$/.test(control.value);

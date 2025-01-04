@@ -1,10 +1,10 @@
+
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { PostUploadService } from 'src/app/services/post-upload.service';
 import { BusinessData } from 'src/app/services/BusinessData.service';
 import { CustomerService } from 'src/app/services/customer.service';
-import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-business3',
@@ -15,6 +15,11 @@ export class Business3Component implements OnInit {
   form: FormGroup;
   aadharCardPhoto: File | null = null;
   panCardPhoto: File | null = null;
+
+  // Popup state variables
+  showPopUp: boolean = false;
+  popupMessageTitle: string = '';
+  popupMessageBody: string = '';
 
   constructor(
     private fb: FormBuilder,
@@ -51,19 +56,11 @@ export class Business3Component implements OnInit {
 
   validateFile(file: File): boolean {
     if (!file.type.startsWith('image/')) {
-      Swal.fire({
-        icon: 'error',
-        title: 'Invalid File',
-        text: 'Invalid file type. Only images are allowed.',
-      });
+      this.showPopup('Invalid File', 'Invalid file type. Only images are allowed.');
       return false;
     }
     if (file.size > 5 * 1024 * 1024) {
-      Swal.fire({
-        icon: 'error',
-        title: 'File Too Large',
-        text: 'File size exceeds the maximum allowed limit of 5MB.',
-      });
+      this.showPopup('File Too Large', 'File size exceeds the maximum allowed limit of 5MB.');
       return false;
     }
     return true;
@@ -84,21 +81,11 @@ export class Business3Component implements OnInit {
 
   async registerUser(): Promise<void> {
     if (this.form.invalid || !this.aadharCardPhoto || !this.panCardPhoto) {
-      Swal.fire({
-        icon: 'error',
-        title: 'Invalid Form',
-        text: 'Form is invalid or files are missing.',
-      });
+      this.showPopup('Invalid Form', 'Form is invalid or files are missing.');
       return;
     }
 
-    Swal.fire({
-      icon: 'info',
-      title: 'Processing',
-      text: 'Uploading files and registering business. Please wait...',
-      allowOutsideClick: false,
-      showConfirmButton: false,
-    });
+    this.showPopup('Processing', 'Uploading files and registering business. Please wait...');
 
     const businessDetails = this.businessDataService.getBusinessData();
     const fileNames = [this.aadharCardPhoto?.name || '', this.panCardPhoto?.name || ''];
@@ -106,7 +93,6 @@ export class Business3Component implements OnInit {
     this.postUploadService.getPresignedUrl(fileNames, businessDetails.businessUsername).subscribe({
       next: async (presignedUrls) => {
         try {
-          // Upload files to S3
           if (this.aadharCardPhoto && presignedUrls.presignedUrls[0]) {
             await this.postUploadService.uploadToS3(this.aadharCardPhoto, presignedUrls.presignedUrls[0]);
           }
@@ -114,33 +100,34 @@ export class Business3Component implements OnInit {
             await this.postUploadService.uploadToS3(this.panCardPhoto, presignedUrls.presignedUrls[1]);
           }
 
-          // Register the business
           await this.customerService.registerNewBusiness(businessDetails);
 
-          Swal.fire({
-            icon: 'success',
-            title: 'Registration Successful',
-            text: 'Business registration completed successfully!',
-          }).then(() => this.router.navigate(['/login']));
+          this.showPopup('Success', 'Business registration completed successfully!');
+          this.router.navigate(['/login']);
         } catch (err: any) {
-          Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: err.message || 'An error occurred during the process.',
-          });
+          this.showPopup('Error', err.message || 'An error occurred during the process.');
         }
       },
-      error: (err) => {
-        Swal.fire({
-          icon: 'error',
-          title: 'Error while Uploading images',
-          text: 'Please Try Again later!',
-        });
-      },
+      error: (err: any) => { 
+        const errorCode = err?.error?.errorCode || "Unknown Error";
+        const errorDescription = err?.error?.errorDescription || "An unexpected error occurred.";
+        this.showPopup(`Error (${errorCode})`, errorDescription);
+      }
     });
   }
 
   get confirmPolicies(): FormControl {
     return this.form.get('confirmPolicies') as FormControl;
+  }
+
+  
+  showPopup(title: string, body: string): void {
+    this.popupMessageTitle = title;
+    this.popupMessageBody = body;
+    this.showPopUp = true;
+  }
+
+  handleClosePopUp(): void {
+    this.showPopUp = false;
   }
 }

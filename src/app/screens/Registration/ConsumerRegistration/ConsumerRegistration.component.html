@@ -1,73 +1,81 @@
 <div class="bg-white">
-    <span class="flex justify-center font-primary text-primary-0 text-3xl mt-5">Let's get you ready...</span>
-    <form class="flex justify-center" [formGroup]="form" (ngSubmit)="onSubmit()">
-      <div class="signup-form w-80 relative">
-        <div class="mt-3">
-          <label class="form-label pb-2 font-secondary">Name :</label>
-          <input type="text" class="input input-primary max-w-full" placeholder="name" formControlName="name">
-          <div class="form-text text-red-600" *ngIf="name.invalid && (name.dirty || name.touched)">
-            <span *ngIf="name.errors?.['required']">Name is required.</span>
-          </div>
-        </div>
-        <div class="mt-3">
-          <label class="form-label pb-2 font-secondary">Username :</label>
-          <input type="text" class="input input-primary max-w-full" placeholder="Username" formControlName="username">
-          <div class="form-text text-red-600" *ngIf="username.invalid && (username.dirty || username.touched)">
-            <span *ngIf="username.errors?.['required']">Username is required.</span>
-            <span *ngIf="username.errors?.['maxlength']">Username cannot be more than 10 characters.</span>
-          </div>
-        </div>
-        <div class="email mt-3">
-          <label class="form-label pb-2 font-secondary">Email :</label>
-          <input type="email" class="input input-primary max-w-full" placeholder="Email" formControlName="email">
-          <div class="form-text text-red-600" *ngIf="email.invalid && (email.dirty || email.touched)">
-            <span *ngIf="email.errors?.['required']">Email is required.</span>
-            <span *ngIf="email.errors?.['email']">Invalid email format.</span>
-          </div>
-        </div>
-        <div class="mt-3">
-          <label class="form-label pb-2 font-secondary">Phone Number :</label>
-          <input type="text" class="input input-primary max-w-full" placeholder="Phone Number" formControlName="phoneNumber">
-          <div class="form-text text-red-600" *ngIf="phoneNumber.invalid && (phoneNumber.dirty || phoneNumber.touched)">
-            <span *ngIf="phoneNumber.errors?.['required']">Phone Number is required.</span>
-            <span *ngIf="phoneNumber.errors?.['maxlength']">Phone Number cannot be more than 10 characters.</span>
-            <span *ngIf="phoneNumber.errors?.['numeric']">Phone Number must contain only numbers.</span>
-          </div>
-        </div>
-
-        <div class="mt-3">
-          <label class="form-label pb-2 font-secondary">Profile Picture (URL):</label>
-          <input type="text" class="input input-primary max-w-full" placeholder="Enter profile picture URL" formControlName="profilePicture">
-          <div class="form-text text-red-600" *ngIf="profilePicture.invalid && (profilePicture.dirty || profilePicture.touched)">
-            <span *ngIf="profilePicture.errors?.['required']">Profile picture is required.</span>
-          </div>
-        </div>
-        
-      
-        <div class="gender mt-3">
-          <label class="form-label pb-2 font-secondary">Gender:</label>
-          <select class="input input-primary max-w-full" formControlName="gender">
-            <option value="" disabled>Select Gender</option>
-            <option value="female">Female</option>
-            <option value="male">Male</option>
-            <option value="others">Others</option>
-          </select>
-          <div class="form-text text-red-600" *ngIf="gender.invalid && (gender.dirty || gender.touched)">
-            <span *ngIf="gender.errors?.['required']">Gender is required.</span>
-          </div>
-        </div>
-        <div class="T&C mt-5">
-          <label class="flex cursor-pointer gap-2 font-secondary text-sm">
-            <input type="checkbox" class="checkbox-primary checkbox" formControlName="confirmPolicies">
-            <span>I accept the <a href="#" class="text-primary-0">Terms & Conditions.</a></span>
-          </label>
-          <div class="form-text text-red-600" *ngIf="confirmPolicies.invalid && (confirmPolicies.dirty || confirmPolicies.touched)">
-            <span *ngIf="confirmPolicies.errors?.['requiredTrue']">You must accept the terms and conditions.</span>
-          </div>
-        </div>
-        <div class="buttons flex justify-center mt-5">
-          <button type="submit" class="btn btn-primary btn-md font-secondary w-30 mr-10" [disabled]="form.invalid">SIGN UP</button>
+  <span class="flex justify-center font-primary text-primary text-3xl mt-5">Let's get you ready...</span>
+  <form class="flex justify-center" [formGroup]="form" (ngSubmit)="onSubmit()">
+    <div class="signup-form w-80 relative">
+      <div class="mt-3">
+        <label class="form-label pb-2 font-secondary">Name :</label>
+        <input type="text" class="input input-primary max-w-full" placeholder="name" formControlName="name">
+        <div class="form-text text-red-600" *ngIf="name.invalid && (name.dirty || name.touched)">
+          <span *ngIf="name.errors?.['required']">Name is required.</span>
         </div>
       </div>
-    </form>
+      <div class="mt-3">
+        <label class="form-label pb-2 font-secondary">Username :</label>
+        <input type="text" class="input input-primary max-w-full" placeholder="Username" formControlName="username">
+        <div class="form-text text-red-600" *ngIf="username.invalid && (username.dirty || username.touched)">
+          <span *ngIf="username.errors?.['required']">Username is required.</span>
+          <span *ngIf="username.errors?.['maxlength']">Username cannot be more than 10 characters.</span>
+        </div>
+      </div>
+      <div class="email mt-3">
+        <label class="form-label pb-2 font-secondary">Email :</label>
+        <input type="email" class="input input-primary max-w-full" placeholder="Email" formControlName="email">
+        <div class="form-text text-red-600" *ngIf="email.invalid && (email.dirty || email.touched)">
+          <span *ngIf="email.errors?.['required']">Email is required.</span>
+          <span *ngIf="email.errors?.['email']">Invalid email format.</span>
+        </div>
+      </div>
+      <div class="mt-3">
+        <label class="form-label pb-2 font-secondary">Phone Number :</label>
+        <input type="text" class="input input-primary max-w-full" placeholder="Phone Number" formControlName="phoneNumber">
+        <div class="form-text text-red-600" *ngIf="phoneNumber.invalid && (phoneNumber.dirty || phoneNumber.touched)">
+          <span *ngIf="phoneNumber.errors?.['required']">Phone Number is required.</span>
+          <span *ngIf="phoneNumber.errors?.['maxlength']">Phone Number cannot be more than 10 characters.</span>
+          <span *ngIf="phoneNumber.errors?.['numeric']">Phone Number must contain only numbers.</span>
+        </div>
+      </div>
+      <!-- <div class="mt-3">
+        <label class="form-label pb-2 font-secondary">Profile Picture (URL):</label>
+        <input type="text" class="input input-primary max-w-full" placeholder="Enter profile picture URL" formControlName="profilePicture">
+        <div class="form-text text-red-600" *ngIf="profilePicture.invalid && (profilePicture.dirty || profilePicture.touched)">
+          <span *ngIf="profilePicture.errors?.['required']">Profile picture is required.</span>
+        </div>
+      </div> -->
+      <div class="gender mt-3">
+        <label class="form-label pb-2 font-secondary">Gender:</label>
+        <select class="input input-primary max-w-full" formControlName="gender">
+          <option value="" disabled>Select Gender</option>
+          <option value="female">Female</option>
+          <option value="male">Male</option>
+          <option value="others">Others</option>
+        </select>
+        <div class="form-text text-red-600" *ngIf="gender.invalid && (gender.dirty || gender.touched)">
+          <span *ngIf="gender.errors?.['required']">Gender is required.</span>
+        </div>
+      </div>
+      <div class="T&C mt-5">
+        <label class="flex cursor-pointer gap-2 font-secondary text-sm">
+          <input type="checkbox" class="checkbox-primary checkbox" formControlName="confirmPolicies">
+          <span>I accept to the <a href="https://example.com/terms" target="_blank" class="text-primary-0">Terms & Conditions.</a></span>
+        </label>
+        <div class="form-text text-red-600" *ngIf="confirmPolicies.invalid && (confirmPolicies.dirty || confirmPolicies.touched)">
+          <span *ngIf="confirmPolicies.errors?.['requiredTrue']">You must accept the terms and conditions.</span>
+        </div>
+      </div>
+      <div class="buttons flex justify-center mt-5">
+        <button type="submit" class="btn btn-primary btn-md font-secondary w-30 mr-10" [disabled]="form.invalid">SIGN UP</button>
+      </div>
+    </div>
+  </form>
+
+  <!-- Pop-Up Modal -->
+  <div *ngIf="showPopUp" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+    <div class="bg-white rounded-lg shadow-lg p-5 w-90">
+      <h2 class="text-xl font-semibold text-center text-gray-800">{{ popupMessageTitle }}</h2>
+      <p class="mt-4 text-center text-gray-600">{{ popupMessageBody }}</p>
+      <div class="flex justify-center mt-6">
+        <button class="btn btn-primary" (click)="handleClosePopUp()">OK</button>
+      </div>
+    </div>
   </div>
+</div>
