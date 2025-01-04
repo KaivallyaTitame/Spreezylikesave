@@ -41,4 +41,11 @@ export const API_CONFIG = {
     GET_IMAGE_LINK: (imageFileName: string,username: string) =>
       `${environment.apiGateway}/settings/get-image/${imageFileName}`,
   },
+
+  // Post Creation Endpoints
+  POST_CREATION: {
+    CREATE_COUPON: `${environment.apiGateway}/content/coupon/create`,
+    CREATE_POST: `${environment.apiGateway}/content/post/create`,
+    CREATE_EVENT: `${environment.apiGateway}/content/event/create`,
+  },
 };
