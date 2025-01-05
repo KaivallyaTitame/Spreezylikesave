@@ -1,0 +1,21 @@
+.category-selector {
+    margin-left: 15px;
+    margin-top: 70px;
+}
+  
+.title {
+    font-size: 14px;
+    font-weight: 500;
+}
+  
+.select {
+    font-size: 12px;
+    border-color: #ED6A5A;
+    width: 400px;
+    height: 28px;
+    color: #979797;
+    background-color: white;
+    border-radius: 4px;
+    border-width: 1.2px;
+    font-family: 'Roboto';
+}
