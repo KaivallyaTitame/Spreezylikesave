@@ -11,7 +11,7 @@ const routes: Routes = [
   {
     path: "login",
     loadChildren: () => import("./screens/login/login.module").then(m => m.LoginModule),
-    // canActivate: [loginGuard]
+    canActivate: [loginGuard]
   },
   { path: "register", 
     loadChildren: () => import("./screens/register/register.module").then(m => m.RegisterModule) 
@@ -35,7 +35,7 @@ const routes: Routes = [
   {
     path: "consumer-home",
     loadChildren: () => import("./screens/consumer-home/consumer-home.module").then(m => m.ConsumerHomeModule),
-    // canActivate: [customerGuard]
+    canActivate: [customerGuard]
   },
   { path: "**", redirectTo: "login"},
  
