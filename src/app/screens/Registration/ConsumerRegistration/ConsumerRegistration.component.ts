@@ -1,10 +1,8 @@
-
 import { Component, OnInit } from "@angular/core";
 import { FormControl, FormGroup, Validators, AbstractControl, ValidatorFn, ValidationErrors } from "@angular/forms";
 import { ConsumerDetails } from "src/app/models/ConsumerRegistration/ConsumerDetails";
 import { Router } from "@angular/router";
 import { CustomerService } from "src/app/services/customer.service";
-import { finalize } from "rxjs";
 
 @Component({
   selector: "app-register",
@@ -41,44 +39,66 @@ export class ConsumerRegistration implements OnInit {
         this.numericValidator()
       ]),
       gender: new FormControl("", [Validators.required]),
-      profilePicture: new FormControl("abc"),
+      profilePicture: new FormControl("abc"), // Optional field
       confirmPolicies: new FormControl(false, [Validators.requiredTrue])
     });
   }
 
-  public get formControls(): { [key: string]: AbstractControl } {
-    return this.form.controls;
-  }
-
   public onSubmit(): void {
-    if (this.form.valid) {
+    if (this.isFormValidWithoutProfilePicture()) {
       this.registerUser();
     } else {
-      this.showPopup("Invalid Form", "Please fill out all fields correctly.");
+      this.showPopup("Invalid Form", "Please fill out all required fields correctly.");
     }
+  }
+
+  private isFormValidWithoutProfilePicture(): boolean {
+    const { profilePicture, ...restControls } = this.form.controls;
+    return Object.values(restControls).every(control => control.valid);
   }
 
   private registerUser(): void {
     this.Consumer = this.mapUserData(this.form);
   
     this.showPopup("Processing", "Your registration request is being processed.");
+    this.isLoading = true;
   
-    this.customerService.registerNewUser(this.Consumer)
-      .pipe(
-        finalize(() => this.isLoading = false)
-      )
-      .subscribe({
-        next: () => {
-          this.showPopup("Success", "Registration successful!");
-          this.router.navigate(["/login"]); 
-        },
-        error: (err: any) => { 
-          const errorCode = err?.error?.errorCode || "Unknown Error";
-          const errorDescription = err?.error?.errorDescription || "An unexpected error occurred.";
-          this.showPopup(`Error (${errorCode})`, errorDescription);
+    this.customerService.registerNewUser(this.Consumer).subscribe({
+      next: (response: any) => {
+        this.isLoading = false;
+        
+        this.showPopup("Success", "Registration successful! Redirecting to login...");
+        setTimeout(() => {
+          this.handleClosePopUp();
+          this.router.navigate(["/login"]);
+        }, 2000);
+      },
+      error: (err: any) => {
+        this.isLoading = false;
+        
+        if (err.status === 400 || err.status === 500) {
+          let errorMessage = "An unexpected error occurred.";
+          if (err.error?.message) {
+            errorMessage = err.error.message;
+          } else if (err.error?.errorDescription) {
+            errorMessage = err.error.errorDescription;
+          }
+          this.showPopup("Error", errorMessage);
+        } else {
+          
+          this.showPopup("Success", "Registration successful! Redirecting to login...");
+          setTimeout(() => {
+            this.handleClosePopUp();
+            this.router.navigate(["/login"]);
+          }, 2000);
         }
-      });
+      },
+      complete: () => {
+        this.isLoading = false;
+      }
+    });
   }
+  
 
   private mapUserData(form: FormGroup): ConsumerDetails {
     return {
@@ -91,17 +111,15 @@ export class ConsumerRegistration implements OnInit {
     } as ConsumerDetails;
   }
 
-  
-  showPopup(title: string, body: string): void {
+  public showPopup(title: string, body: string): void {
     this.popupMessageTitle = title;
     this.popupMessageBody = body;
-    this.showPopUp = true; 
+    this.showPopUp = true;
   }
 
-  handleClosePopUp(): void {
-    this.showPopUp = false; 
+  public handleClosePopUp(): void {
+    this.showPopUp = false;
   }
-
 
   public get name(): FormControl {
     return this.form.get("name") as FormControl;
@@ -123,9 +141,9 @@ export class ConsumerRegistration implements OnInit {
     return this.form.get("gender") as FormControl;
   }
 
-  // public get profilePicture(): FormControl {
-  //   return this.form.get("profilePicture") as FormControl;
-  // }
+  public get profilePicture(): FormControl {
+    return this.form.get("profilePicture") as FormControl;
+  }
 
   public get confirmPolicies(): FormControl {
     return this.form.get("confirmPolicies") as FormControl;

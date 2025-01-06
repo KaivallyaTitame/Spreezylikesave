@@ -35,5 +35,8 @@ const routes: Routes = [
     BusinessHomeModule,
     ConsumerHomeModule
   ],
+  exports: [
+    ImageComponentComponent, 
+  ],
 })
 export class SettingsModule { }
