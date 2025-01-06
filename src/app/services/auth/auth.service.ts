@@ -5,6 +5,8 @@ import { AngularFireAuth } from "@angular/fire/compat/auth";
 import { Router } from "@angular/router";
 import { JwtDecoderService } from "../jwtDecoder/jwt-decoder.service";
 import { environment } from "src/environments/environment.development";
+import { API_CONFIG } from "src/app/api-config";
+
 @Injectable({
   providedIn: "root",
 })
@@ -33,14 +35,12 @@ export class AuthService {
     );
   }
 
-  private apiUrl = environment.apiGateway;
-
   logout() {
     let token = localStorage.getItem("token") || "";
     let userName = this.jwtDecoder.decodeInfoFromToken(token)["sub"] || "";
     return this.http
       .post(
-        `${this.apiUrl}/auth/${userName}/logout`,
+        API_CONFIG.AUTH_LOGOUT(userName),
         {},
         {
           headers: new HttpHeaders({
@@ -49,7 +49,7 @@ export class AuthService {
         }
       )
       .subscribe({
-        next: (response) => {
+        next: () => {
           localStorage.removeItem("token");
           localStorage.removeItem("refreshToken");
           window.location.reload();
