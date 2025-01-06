@@ -65,7 +65,9 @@
       <div class="T&C mt-5">
         <label class="flex cursor-pointer gap-2 font-secondary text-sm">
           <input type="checkbox" class="checkbox-primary checkbox" formControlName="confirmPolicies">
-          <span>I accept to the <a href="https://example.com/terms" target="_blank" class="text-primary-0">Terms & Conditions.</a></span>
+          <span>I accept to the 
+            <a (click)="goToTermsAndConditions()" class="text-primary-0">Terms & Conditions.</a>
+          </span>
         </label>
         <div class="form-text text-red-600" *ngIf="confirmPolicies.invalid && (confirmPolicies.dirty || confirmPolicies.touched)">
           <span *ngIf="confirmPolicies.errors?.['requiredTrue']">You must accept the terms and conditions.</span>
