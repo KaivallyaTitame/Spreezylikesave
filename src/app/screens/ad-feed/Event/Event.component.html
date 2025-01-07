@@ -1,7 +1,7 @@
 <div class="flex justify-center w-full p-0">
   <div class="border border-white bg-white w-full shadow-lg mt-1 mb-1">
     <div class="flex items-center justify-between p-2">
-      <img [src]="eventDetails.profileImageUrl" alt="Profile" class="w-12 h-12 rounded-full mt-2 ml-1">
+      <img [src]="baseUrl + eventDetails.profileImageUrl" alt="Profile" class="w-12 h-12 rounded-full mt-2 ml-1">
       <div class="flex-grow ml-2 text-left">
         <div class="font-bold text-lg mt-2 text-black">{{ eventDetails.username }}</div>
         <div class="text-sm text-gray-500">
@@ -22,7 +22,7 @@
 
     <div>
 
-      <img [src]="eventDetails.offerImageUrl" alt="Event" class="w-full mt-2 object-cover h-96">
+      <img [src]="baseUrl + eventDetails.imagePaths[0]" alt="Event" class="w-full mt-2 object-cover h-96">
 
       <div class="w-full px-2 py-1 text-xl font-bold bg-primary text-white border-none cursor-pointer text-center">
         {{ eventDetails.eventDateAndTime | date:'dd MMM hh:mm a' }}

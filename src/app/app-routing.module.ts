@@ -26,10 +26,10 @@ const routes: Routes = [
     // canActivate: [businessGuard]
   },
   {
-    path: 'offer-description/:id', component: OfferDescriptionComponent 
+    path: 'offer-description/:id', component: OfferDescriptionComponent
   },
   {
-    path: "otpscreen/:mobileNumber",
+    path: "otpscreen/:mobileNumber/:countryCode",
     loadChildren: () => import("./screens/otpScreen/otpscreen.module").then(m => m.OtpScreenModule),
   },
   {
@@ -38,7 +38,7 @@ const routes: Routes = [
     canActivate: [customerGuard]
   },
   { path: "**", redirectTo: "login"},
- 
+
 ];
 
 @NgModule({

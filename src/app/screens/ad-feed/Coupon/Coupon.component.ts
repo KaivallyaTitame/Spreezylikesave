@@ -16,6 +16,8 @@ import { Router } from '@angular/router';
 export class CouponComponent implements OnInit {
   @Input() couponDetails!: AdvertisementDetails;
 
+    baseUrl="https://images.spreezy.in/";
+
   remainingDays: number;
   isExpired: boolean = false;
   reportVisible: boolean = false; // Property to control visibility of report modal

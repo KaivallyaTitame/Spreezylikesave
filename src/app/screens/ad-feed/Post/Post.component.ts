@@ -15,6 +15,10 @@ import { Router } from '@angular/router';
 })
 export class PostComponent implements OnInit {
   @Input() postDetails!: AdvertisementDetails;
+
+   baseUrl="https://images.spreezy.in/";
+
+
   remainingDays: number;
   remainingHours: number;
   isExpired: boolean = false;

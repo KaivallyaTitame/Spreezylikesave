@@ -22,7 +22,7 @@
         </div>
 
         <!-- Offer Image -->
-        <img [src]="offerData?.offerImageUrl" alt="Event" class="w-full mt-2 object-cover h-96">
+        <img [src]="offerData?.imagePaths" alt="Event" class="w-full mt-2 object-cover h-96">
 
         <!-- Offer Title and Subtitle -->
         <div class="m-4 text-lg font-semibold text-gray-700 text-center">
@@ -102,8 +102,8 @@
 
         <!-- Offer Description -->
         <div class="offer-description mt-4 ml-4 mr-2">
-            <h3 class="font-bold text-black ml-1">{{ offerData?.descriptionTitle }}</h3>
-            <p class="text-gray-500">{{ offerData?.descriptionContent }}</p>
+            <h3 class="font-bold text-black ml-1">{{ offerData?.promoBadge }}</h3>
+            <p class="text-gray-500">{{ offerData?.description }}</p>
         </div>
 
         <!-- Dropdowns -->
