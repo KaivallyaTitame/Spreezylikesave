@@ -61,7 +61,27 @@ export class AdvertisementDetailsService {
       }
     );
   }
+  followUser(sourceUsername: string, username: string): Observable<any> {
+    return this.http.post(
+      `http://localhost/user/follow/${sourceUsername}/${username}`,
+      {},
+      {
+        responseType: 'json',
+        headers: new HttpHeaders(),
+      }
+    );
+  }
 
+  unfollowUser(sourceUsername: string, username: string): Observable<any> {
+    return this.http.post(
+      `http://localhost/user/unfollow/${sourceUsername}/${username}`,
+      {},
+      {
+        responseType: 'json',
+        headers: new HttpHeaders(),
+      }
+    );
+  }
   calculateExpiry(expiryDate: string): { remainingDays: number; remainingHours: number; isExpired: boolean } {
     const expiry = new Date(expiryDate);
     const currentDate = new Date();

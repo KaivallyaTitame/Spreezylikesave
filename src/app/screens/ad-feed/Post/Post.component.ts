@@ -56,6 +56,8 @@ export class PostComponent implements OnInit {
   isLiked: boolean = false; // State for like
   isDisliked: boolean = false; // State for dislike
 
+  isFollowing: boolean = false;
+
   constructor(private advertisementDetailsService: AdvertisementDetailsService ,private router:Router) {
     
   }
@@ -65,8 +67,45 @@ export class PostComponent implements OnInit {
     this.remainingDays = remainingDays;
     this.remainingHours = remainingHours;
     this.isExpired = isExpired;
+    this.checkIfFollowing();
+  }
+  toggleFollow(): void {//not comfirm if it works please make changes if required and as per dto end user or target user is 'username'
+    const sourceUsername = 'currentUser';  // Replace with the actual logged-in user
+    const targetUsername = this.postDetails.username;
+
+    if (this.isFollowing) {
+      this.advertisementDetailsService.unfollowUser(sourceUsername, targetUsername).subscribe(
+        (response) => {
+          console.log('Unfollowed successfully:', response);
+          this.isFollowing = false;  // Toggle follow state
+        },
+        (error) => {
+          console.error('Error unfollowing:', error);
+        }
+      );
+    } else {
+      this.advertisementDetailsService.followUser(sourceUsername, targetUsername).subscribe(
+        (response) => {
+          console.log('Followed successfully:', response);
+          this.isFollowing = true;  // Toggle follow state
+        },
+        (error) => {
+          console.error('Error following:', error);
+        }
+      );
+    }
   }
 
+  // Optionally, check if the user is already following
+  checkIfFollowing(): void {
+    const sourceUsername = 'currentUser';  // Replace with the actual logged-in user
+    const targetUsername = this.postDetails.username;
+    
+    // Check if the current user is following the post
+    // This could involve a service method to check follow status.
+    // For simplicity, we're assuming this logic is already in place.
+    this.isFollowing = false;  // Replace this with actual check
+  }
   likePost(): void {
     const advertisementId = this.postDetails.advertisementId;
     this.triggerAnimation('like');
@@ -78,6 +117,7 @@ export class PostComponent implements OnInit {
 
       this.advertisementDetailsService.updateLikes(advertisementId).subscribe({
         next: (updatedPost) => {
+          this.postDetails.likes += 1;
           this.postDetails.likes = updatedPost.likes;
         },
         error: (err) => {
@@ -90,6 +130,7 @@ export class PostComponent implements OnInit {
       this.postDetails.likes -= 1;
       this.advertisementDetailsService.updateLikes(advertisementId).subscribe({
         next: (updatedPost) => {
+          this.postDetails.likes -= 1;
           this.postDetails.likes = updatedPost.likes;
         },
         error: (err) => {
@@ -111,6 +152,7 @@ export class PostComponent implements OnInit {
 
       this.advertisementDetailsService.updateDislikes(advertisementId).subscribe({
         next: (updatedPost) => {
+          this.postDetails.dislikes += 1;
           this.postDetails.dislikes = updatedPost.dislikes;
         },
         error: (err) => {
@@ -123,6 +165,7 @@ export class PostComponent implements OnInit {
       this.postDetails.dislikes -= 1;
       this.advertisementDetailsService.updateDislikes(advertisementId).subscribe({
         next: (updatedPost) => {
+          this.postDetails.dislikes -= 1;
           this.postDetails.dislikes = updatedPost.dislikes;
         },
         error: (err) => {

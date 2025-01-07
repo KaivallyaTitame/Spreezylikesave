@@ -15,8 +15,7 @@ export interface AdvertisementDetails {
   offerTitle: string;
   websiteLink: string;
   bookingLink: string;
-  eventDateAndTime: string;
-
-
-      offerSubtitle: string;
+  eventDateAndTime: string
+  offerSubtitle: string;
+  isFollowing: boolean;  
 }
