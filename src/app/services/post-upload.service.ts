@@ -62,16 +62,8 @@ export class PostUploadService {
   }
 
   uploadToS3(file: File, presignedUrl: string): Observable<void> {
-    const headers = new HttpHeaders({ "Content-Type": file.type });
-    return this.http.put<void>(presignedUrl, file, { headers }); // Corrected for returning an Observable }    const headers = new HttpHeaders({ 'Content-Type': file.type });
-    // this.http.put(presignedUrl, file, { headers }).subscribe({
-    //   next: (response) => {
-    //     console.log('Uploaded successfully', response);
-    //   },
-    //   error: (error: any) => {
-    //     console.error('Error uploading image to S3:', error);
-    //   },
-    // });
+    const headers = new HttpHeaders({ 'Content-Type': file.type });
+    return this.http.put<void>(presignedUrl, file, { headers }); 
   }
 
   private getHeaders(): HttpHeaders {

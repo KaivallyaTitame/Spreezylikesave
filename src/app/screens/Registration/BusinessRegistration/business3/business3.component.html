@@ -1,74 +1,44 @@
-
-<div class="bg-white p-6">
-  <form class="max-w-2xl mx-auto" [formGroup]="form" (ngSubmit)="registerUser()">
-    <div class="space-y-6">
-      <h2 class="text-2xl font-bold text-center mb-6">Upload Documents</h2>
-
-      <!-- Aadhar Card Upload -->
-      <div class="space-y-4">
-        <label class="block text-xl font-medium text-center">Aadhar Card Photo</label>
-        <div 
-          (click)="triggerFileInput('aadharCardPhoto')"
-          class="border-2 border-dashed rounded-lg p-4 hover:border-blue-500 cursor-pointer transition-colors"
-        >
-          <div *ngIf="!aadharPreview" class="h-48 flex flex-col items-center justify-center text-gray-500">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-12 h-12 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-            </svg>
-            <span>Click to upload Aadhar Card</span>
-          </div>
-          <img 
-            *ngIf="aadharPreview" 
-            [src]="aadharPreview" 
-            alt="Aadhar Preview" 
-            class="w-full h-48 object-contain"
-          >
-        </div>
-        <input
-          type="file"
-          id="aadharCardPhoto"
-          accept="image/*"
-          class="hidden"
-          (change)="handleFileUpload($event, 'aadharCardPhoto')"
-        >
-        <div class="text-red-600 text-sm" *ngIf="!aadharCardPhoto && aadharCardPhotoControl?.touched">
-          Aadhar Card Photo is required
-        </div>
+<div class="bg-white">
+  <form class="flex justify-center" [formGroup]="form" (ngSubmit)="registerUser()">
+    <div class="signup-form w-80 relative">
+      <div class="photo-upload-title mt-5">
+        <h2 class="flex justify-center font-primary text-primary-0 text-3xl mt-5">Upload Documents</h2>
+      </div>
+      <div class="photo">
+        <img src="../../../../assets/Imagess/images3.jpeg" alt="This is an image" class="mt-5 mb-5">
       </div>
 
-      <!-- PAN Card Upload -->
-      <div class="space-y-4">
-        <label class="block text-xl font-medium text-center">PAN Card Photo</label>
-        <div 
-          (click)="triggerFileInput('panCardPhoto')"
-          class="border-2 border-dashed rounded-lg p-4 hover:border-blue-500 cursor-pointer transition-colors"
-        >
-          <div *ngIf="!panPreview" class="h-48 flex flex-col items-center justify-center text-gray-500">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-12 h-12 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-            </svg>
-            <span>Click to upload PAN Card</span>
-          </div>
-          <img 
-            *ngIf="panPreview" 
-            [src]="panPreview" 
-            alt="PAN Preview" 
-            class="w-full h-48 object-contain"
-          >
-        </div>
-        <input
-          type="file"
-          id="panCardPhoto"
-          accept="image/*"
-          class="hidden"
-          (change)="handleFileUpload($event, 'panCardPhoto')"
-        >
-        <div class="text-red-600 text-sm" *ngIf="!panCardPhoto && panCardPhotoControl?.touched">
-          PAN Card Photo is required
-        </div>
+      <div class="text-label-aadharcard">
+        <span class="flex justify-center font-primary text-primary-0 text-xl mt-5">Aadhar Card Photo</span>
+      </div>
+      <div class="file-upload-container mt-5 rounded-lg shadow-sm overflow-hidden">
+        <label id="adharimage" for="aadharCardPhoto" class="font-secondary text-gray-400 block cursor-pointer">
+          <span id="aadharImage">{{ aadharCardPhoto?.name || 'No file selected' }}</span>
+          <span class="text-sm opacity-20 block" id="uploadphoto">Upload Photo</span>
+        </label>
+        <input type="file" id="aadharCardPhoto" (change)="handleFileUpload($event, 'aadharCardPhoto')" class="hidden">
+        <button type="button" class="btn btn-primary btn-sm ml-2 ripple" (click)="triggerFileInput('aadharCardPhoto')">Browse File</button>
       </div>
 
-      <!-- Terms & Conditions -->
+      <div class="text-label-aadharcard">
+        <span class="flex justify-center font-primary text-primary-0 text-xl mt-5">PAN Card Photo</span>
+      </div>
+      <div class="file-upload-container mt-5 rounded-lg shadow-sm overflow-hidden">
+        <label for="panCardPhoto" class="font-secondary text-gray-400 block cursor-pointer">
+          <span id="panImage">{{ panCardPhoto?.name || 'No file selected' }}</span>
+          <span class="text-sm opacity-20 block hidden" id="uploadPan">Upload Photo</span>
+        </label>
+        <input type="file" id="panCardPhoto" (change)="handleFileUpload($event, 'panCardPhoto')" class="hidden">
+        <button type="button" class="btn btn-primary btn-sm ml-2 ripple" (click)="triggerFileInput('panCardPhoto')">Browse File</button>
+      </div>
+
+      <div class="form-text text-red-600 mt-2" *ngIf="!aadharCardPhoto && aadharCardPhotoControl?.touched">
+        <span>Aadhar Card Photo is required.</span>
+      </div>
+      <div class="form-text text-red-600 mt-2" *ngIf="!panCardPhoto && panCardPhotoControl?.touched">
+        <span>PAN Card Photo is required.</span>
+      </div>
+
       <div class="flex items-center gap-2">
         <input 
           type="checkbox" 
@@ -76,29 +46,27 @@
           formControlName="confirmPolicies"
         >
         <label class="text-sm">
-          I accept the <a href="https://example.com/terms" target="_blank" class="text-blue-600 hover:underline">Terms & Conditions</a>
+          I accept the 
+          <a [routerLink]="['/terms-and-conditions']" class="text-blue-600 hover:underline">
+            Terms & Conditions
+          </a>
         </label>
       </div>
       <div class="text-red-600 text-sm" *ngIf="confirmPolicies.invalid && (confirmPolicies.dirty || confirmPolicies.touched)">
         You must accept the terms and conditions
       </div>
 
-      <!-- Submit Button -->
-      <div class="flex justify-center items-center ">
-        <button
-          type="submit"
-          [disabled]="form.invalid || isSubmitting"
-          class="btn btn-primary btn-md font-secondary w-30"
-        >
-          {{ isSubmitting ? 'Processing...' : 'Submit Documents' }}
-        </button>
+      <div class="signin mt-4">
+        <button type="submit" [disabled]="form.invalid" class="btn btn-primary btn-sm ripple">Register</button>
       </div>
     </div>
   </form>
 
-  <!-- Popup -->
-  <div *ngIf="showPopUp" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-    <div class="bg-white rounded-lg shadow-lg p-5 w-90">
+  <div 
+    *ngIf="showPopUp" 
+    class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 px-4"
+  >
+    <div class="bg-white rounded-lg shadow-lg p-5 w-full max-w-lg">
       <h2 class="text-xl font-semibold text-center text-gray-800">{{ popupMessageTitle }}</h2>
       <p class="mt-4 text-center text-gray-600">{{ popupMessageBody }}</p>
       <div class="flex justify-center mt-6">

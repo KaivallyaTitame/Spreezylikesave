@@ -2,12 +2,19 @@
   <span class="flex justify-center font-primary text-primary text-3xl mt-5">Let's get you ready...</span>
   <form class="flex justify-center" [formGroup]="form" (ngSubmit)="registerUser()">
     <div class="signup-form w-80 relative">
+      
       <div class="aadhar-number mt-3">
         <label class="form-label pb-2 font-secondary">Aadhar Card Number :</label>
-        <input type="text" class="input input-primary max-w-full" placeholder="Aadhar Card Number" formControlName="aadharNumber" />
+        <input
+          type="text"
+          class="input input-primary max-w-full"
+          placeholder="Enter your 12-digit Aadhar Number"
+          formControlName="aadharNumber"
+        />
         <div class="form-text text-red-600" *ngIf="aadharNumber.invalid && (aadharNumber.dirty || aadharNumber.touched)">
           <span *ngIf="aadharNumber.errors?.['required']">Aadhar Number is required.</span>
-          <span *ngIf="aadharNumber.errors?.['maxlength']">Aadhar Number cannot be more than 12 characters.</span>
+          <span *ngIf="aadharNumber.errors?.['maxlength']">Aadhar Number cannot exceed 12 digits.</span>
+          <span *ngIf="aadharNumber.errors?.['aadharFormat']">Aadhar format is invalid. Example: 123456789012.</span>
         </div>
       </div>
       <div class="pancard-number mt-3">

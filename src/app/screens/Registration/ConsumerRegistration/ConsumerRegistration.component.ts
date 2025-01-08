@@ -13,7 +13,6 @@ export class ConsumerRegistration implements OnInit {
   public Consumer: ConsumerDetails = new ConsumerDetails();
   public form: FormGroup;
 
-  // Popup state variables
   showPopUp: boolean = false;
   popupMessageTitle: string = "";
   popupMessageBody: string = "";
@@ -52,11 +51,15 @@ export class ConsumerRegistration implements OnInit {
     }
   }
 
+  goToTermsAndConditions() {
+    this.router.navigate(['/terms-and-conditions']);
+  }
+  
+
   private isFormValidWithoutProfilePicture(): boolean {
     const { profilePicture, ...restControls } = this.form.controls;
     return Object.values(restControls).every(control => control.valid);
   }
-
   private registerUser(): void {
     this.Consumer = this.mapUserData(this.form);
   
@@ -67,11 +70,7 @@ export class ConsumerRegistration implements OnInit {
       next: (response: any) => {
         this.isLoading = false;
         
-        this.showPopup("Success", "Registration successful! Redirecting to login...");
-        setTimeout(() => {
-          this.handleClosePopUp();
-          this.router.navigate(["/login"]);
-        }, 2000);
+        this.showPopup("Success", "Registration successful!");
       },
       error: (err: any) => {
         this.isLoading = false;
@@ -85,12 +84,7 @@ export class ConsumerRegistration implements OnInit {
           }
           this.showPopup("Error", errorMessage);
         } else {
-          
-          this.showPopup("Success", "Registration successful! Redirecting to login...");
-          setTimeout(() => {
-            this.handleClosePopUp();
-            this.router.navigate(["/login"]);
-          }, 2000);
+          this.showPopup("Success", "Registration successful!");
         }
       },
       complete: () => {
@@ -119,6 +113,7 @@ export class ConsumerRegistration implements OnInit {
 
   public handleClosePopUp(): void {
     this.showPopUp = false;
+  this.router.navigate(["/login"]);
   }
 
   public get name(): FormControl {
