@@ -12,11 +12,12 @@ import { ConsumerDetails } from "../models/ConsumerRegistration/ConsumerDetails"
 export class CustomerService {
   constructor(private http: HttpClient, private authService: AuthService) {
   }
-  
   registerNewUser(user: ConsumerDetails) {
-    return this.http.post("http://localhost:8083/user/register-consumer", user);
+    console.log(user);
+   
+    return  this.http.post("http://localhost:8083/user/register-consumer", user)
+    
   }
-  
   registerNewBusiness(user: BusinessDetails) {
     console.log(user);
   

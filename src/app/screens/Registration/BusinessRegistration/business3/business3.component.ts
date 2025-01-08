@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { PostUploadService } from 'src/app/services/post-upload.service';
 import { BusinessData } from 'src/app/services/BusinessData.service';
 import { CustomerService } from 'src/app/services/customer.service';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-business3',
@@ -15,11 +16,12 @@ export class Business3Component implements OnInit {
   form: FormGroup;
   aadharCardPhoto: File | null = null;
   panCardPhoto: File | null = null;
-
-  // Popup state variables
+  aadharPreview: string | null = null;
+  panPreview: string | null = null;
   showPopUp: boolean = false;
   popupMessageTitle: string = '';
   popupMessageBody: string = '';
+  isSubmitting: boolean = false;
 
   constructor(
     private fb: FormBuilder,
@@ -37,37 +39,58 @@ export class Business3Component implements OnInit {
 
   ngOnInit(): void {}
 
-  handleFileUpload(event: Event, type: 'aadharCardPhoto' | 'panCardPhoto'): void {
+  async handleFileUpload(event: Event, type: 'aadharCardPhoto' | 'panCardPhoto'): Promise<void> {
     const input = event.target as HTMLInputElement;
     const file = input?.files?.[0] || null;
 
     if (file) {
-      if (!this.validateFile(file)) return;
+      if (!this.validateFile(file)) {
+        input.value = '';
+        return;
+      }
 
+      // Create preview
+      const preview = await this.createImagePreview(file);
+      
       if (type === 'aadharCardPhoto') {
         this.aadharCardPhoto = file;
-        this.form.patchValue({ aadharCardPhoto: file.name });
-      } else if (type === 'panCardPhoto') {
+        this.aadharPreview = preview;
+        this.form.patchValue({ aadharCardPhoto: file });
+      } else {
         this.panCardPhoto = file;
-        this.form.patchValue({ panCardPhoto: file.name });
+        this.panPreview = preview;
+        this.form.patchValue({ panCardPhoto: file });
       }
     }
   }
 
+  private createImagePreview(file: File): Promise<string> {
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result as string);
+      reader.readAsDataURL(file);
+    });
+  }
+
   validateFile(file: File): boolean {
-    if (!file.type.startsWith('image/')) {
-      this.showPopup('Invalid File', 'Invalid file type. Only images are allowed.');
+    const validTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+    const maxSize = 5 * 1024 * 1024; // 5MB
+
+    if (!validTypes.includes(file.type)) {
+      this.showPopup('Invalid File Type', 'Please upload only JPG, JPEG or PNG images');
       return false;
     }
-    if (file.size > 5 * 1024 * 1024) {
-      this.showPopup('File Too Large', 'File size exceeds the maximum allowed limit of 5MB.');
+
+    if (file.size > maxSize) {
+      this.showPopup('File Too Large', 'File size should not exceed 5MB');
       return false;
     }
+
     return true;
   }
 
-  triggerFileInput(id: string): void {
-    const fileInput = document.getElementById(id) as HTMLInputElement;
+  triggerFileInput(type: 'aadharCardPhoto' | 'panCardPhoto'): void {
+    const fileInput = document.getElementById(type) as HTMLInputElement;
     fileInput?.click();
   }
 
@@ -79,48 +102,52 @@ export class Business3Component implements OnInit {
     return this.form.get('panCardPhoto');
   }
 
-  async registerUser(): Promise<void> {
-    if (this.form.invalid || !this.aadharCardPhoto || !this.panCardPhoto) {
-      this.showPopup('Invalid Form', 'Form is invalid or files are missing.');
-      return;
-    }
-
-    this.showPopup('Processing', 'Uploading files and registering business. Please wait...');
-
-    const businessDetails = this.businessDataService.getBusinessData();
-    const fileNames = [this.aadharCardPhoto?.name || '', this.panCardPhoto?.name || ''];
-
-    this.postUploadService.getPresignedUrl(fileNames, businessDetails.businessUsername).subscribe({
-      next: async (presignedUrls) => {
-        try {
-          if (this.aadharCardPhoto && presignedUrls.presignedUrls[0]) {
-            await this.postUploadService.uploadToS3(this.aadharCardPhoto, presignedUrls.presignedUrls[0]);
-          }
-          if (this.panCardPhoto && presignedUrls.presignedUrls[1]) {
-            await this.postUploadService.uploadToS3(this.panCardPhoto, presignedUrls.presignedUrls[1]);
-          }
-
-          await this.customerService.registerNewBusiness(businessDetails);
-
-          this.showPopup('Success', 'Business registration completed successfully!');
-          this.router.navigate(['/login']);
-        } catch (err: any) {
-          this.showPopup('Error', err.message || 'An error occurred during the process.');
-        }
-      },
-      error: (err: any) => { 
-        const errorCode = err?.error?.errorCode || "Unknown Error";
-        const errorDescription = err?.error?.errorDescription || "An unexpected error occurred.";
-        this.showPopup(`Error (${errorCode})`, errorDescription);
-      }
-    });
-  }
-
   get confirmPolicies(): FormControl {
     return this.form.get('confirmPolicies') as FormControl;
   }
 
-  
+  async registerUser(): Promise<void> {
+    if (this.form.invalid || !this.aadharCardPhoto || !this.panCardPhoto) {
+      this.showPopup('Incomplete Form', 'Please upload both documents and accept the terms');
+      return;
+    }
+
+    this.isSubmitting = true;
+    
+    try {
+      const businessDetails = this.businessDataService.getBusinessData();
+      const fileNames = [this.aadharCardPhoto.name, this.panCardPhoto.name];
+
+      // Get presigned URLs
+      const presignedUrls = await firstValueFrom(
+        this.postUploadService.getPresignedUrl(fileNames, businessDetails.businessUsername)
+      );
+
+      if (presignedUrls) {
+        // Upload both files
+        await Promise.all([
+          firstValueFrom(this.postUploadService.uploadToS3(this.aadharCardPhoto, presignedUrls.presignedUrls[0])),
+          firstValueFrom(this.postUploadService.uploadToS3(this.panCardPhoto, presignedUrls.presignedUrls[1]))
+        ]);
+
+        // Register new business
+        await new Promise((resolve, reject) => {
+          this.customerService.registerNewBusiness(businessDetails);
+          resolve(true);
+        });
+        
+        this.showPopup('Success', 'Documents uploaded and registration completed successfully!');
+        setTimeout(() => this.router.navigate(['/login']), 2000);
+      }
+    } catch (error: any) {
+      console.error('Registration error:', error);
+      const errorMessage = error?.error?.message || error?.message || 'An error occurred during registration';
+      this.showPopup('Error', errorMessage);
+    } finally {
+      this.isSubmitting = false;
+    }
+  }
+
   showPopup(title: string, body: string): void {
     this.popupMessageTitle = title;
     this.popupMessageBody = body;
