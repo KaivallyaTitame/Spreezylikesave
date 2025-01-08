@@ -1,5 +1,12 @@
 import { Component, OnInit } from "@angular/core";
-import { FormControl, FormGroup, Validators, AbstractControl, ValidatorFn, ValidationErrors } from "@angular/forms";
+import {
+  FormControl,
+  FormGroup,
+  Validators,
+  AbstractControl,
+  ValidatorFn,
+  ValidationErrors,
+} from "@angular/forms";
 import { ConsumerDetails } from "src/app/models/ConsumerRegistration/ConsumerDetails";
 import { Router } from "@angular/router";
 import { CustomerService } from "src/app/services/customer.service";
@@ -7,7 +14,7 @@ import { CustomerService } from "src/app/services/customer.service";
 @Component({
   selector: "app-register",
   templateUrl: "./ConsumerRegistration.component.html",
-  styleUrls: []
+  styleUrls: [],
 })
 export class ConsumerRegistration implements OnInit {
   public Consumer: ConsumerDetails = new ConsumerDetails();
@@ -18,7 +25,10 @@ export class ConsumerRegistration implements OnInit {
   popupMessageBody: string = "";
   isLoading: boolean = false;
 
-  constructor(private customerService: CustomerService, private router: Router) {}
+  constructor(
+    private customerService: CustomerService,
+    private router: Router
+  ) {}
 
   private numericValidator(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
@@ -29,17 +39,23 @@ export class ConsumerRegistration implements OnInit {
 
   public ngOnInit(): void {
     this.form = new FormGroup({
-      name: new FormControl("", [Validators.required, Validators.maxLength(20)]),
-      username: new FormControl("", [Validators.required, Validators.maxLength(10)]),
+      name: new FormControl("", [
+        Validators.required,
+        Validators.maxLength(20),
+      ]),
+      username: new FormControl("", [
+        Validators.required,
+        Validators.maxLength(10),
+      ]),
       email: new FormControl("", [Validators.required, Validators.email]),
       phoneNumber: new FormControl("", [
         Validators.required,
         Validators.maxLength(10),
-        this.numericValidator()
+        this.numericValidator(),
       ]),
       gender: new FormControl("", [Validators.required]),
       profilePicture: new FormControl("abc"), // Optional field
-      confirmPolicies: new FormControl(false, [Validators.requiredTrue])
+      confirmPolicies: new FormControl(false, [Validators.requiredTrue]),
     });
   }
 
@@ -47,34 +63,35 @@ export class ConsumerRegistration implements OnInit {
     if (this.isFormValidWithoutProfilePicture()) {
       this.registerUser();
     } else {
-      this.showPopup("Invalid Form", "Please fill out all required fields correctly.");
+      this.showPopup(
+        "Invalid Form",
+        "Please fill out all required fields correctly."
+      );
     }
   }
 
-  goToTermsAndConditions() {
-    this.router.navigate(['/terms-and-conditions']);
-  }
-  
-
   private isFormValidWithoutProfilePicture(): boolean {
     const { profilePicture, ...restControls } = this.form.controls;
-    return Object.values(restControls).every(control => control.valid);
+    return Object.values(restControls).every((control) => control.valid);
   }
   private registerUser(): void {
     this.Consumer = this.mapUserData(this.form);
-  
-    this.showPopup("Processing", "Your registration request is being processed.");
+
+    this.showPopup(
+      "Processing",
+      "Your registration request is being processed."
+    );
     this.isLoading = true;
-  
+
     this.customerService.registerNewUser(this.Consumer).subscribe({
       next: (response: any) => {
         this.isLoading = false;
-        
+
         this.showPopup("Success", "Registration successful!");
       },
       error: (err: any) => {
         this.isLoading = false;
-        
+
         if (err.status === 400 || err.status === 500) {
           let errorMessage = "An unexpected error occurred.";
           if (err.error?.message) {
@@ -89,10 +106,9 @@ export class ConsumerRegistration implements OnInit {
       },
       complete: () => {
         this.isLoading = false;
-      }
+      },
     });
   }
-  
 
   private mapUserData(form: FormGroup): ConsumerDetails {
     return {
@@ -101,7 +117,7 @@ export class ConsumerRegistration implements OnInit {
       email: form.get("email")?.value || "",
       phoneNumber: form.get("phoneNumber")?.value || "",
       gender: form.get("gender")?.value || "",
-      profilePicture: form.get("profilePicture")?.value || "abc"
+      profilePicture: form.get("profilePicture")?.value || "abc",
     } as ConsumerDetails;
   }
 
@@ -113,7 +129,7 @@ export class ConsumerRegistration implements OnInit {
 
   public handleClosePopUp(): void {
     this.showPopUp = false;
-  this.router.navigate(["/login"]);
+    this.router.navigate(["/login"]);
   }
 
   public get name(): FormControl {
