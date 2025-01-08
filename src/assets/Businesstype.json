@@ -1,0 +1,7 @@
+[
+    { "id": 1, "name": "Retail" },
+    { "id": 2, "name": "Service" },
+    { "id": 3, "name": "Manufacturing" },
+    { "id": 4, "name": "Other" }
+  ]
+  

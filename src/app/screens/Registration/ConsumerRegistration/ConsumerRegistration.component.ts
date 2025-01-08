@@ -13,7 +13,6 @@ export class ConsumerRegistration implements OnInit {
   public Consumer: ConsumerDetails = new ConsumerDetails();
   public form: FormGroup;
 
-  // Popup state variables
   showPopUp: boolean = false;
   popupMessageTitle: string = "";
   popupMessageBody: string = "";
@@ -53,7 +52,7 @@ export class ConsumerRegistration implements OnInit {
   }
 
   goToTermsAndConditions() {
-    this.router.navigate(['/terms-and-conditions']); // Update '/terms-and-conditions' with the actual route
+    this.router.navigate(['/terms-and-conditions']);
   }
   
 

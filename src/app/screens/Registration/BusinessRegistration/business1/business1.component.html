@@ -41,16 +41,14 @@
       <div class="business-type mt-3">
         <label class="form-label pb-2 font-secondary">Business Type:</label>
         <select class="input input-primary max-w-full" formControlName="businessType">
-          <option value="" disabled selected>Select Business Type</option>
-          <option value="retail">Retail</option>
-          <option value="service">Service</option>
-          <option value="manufacturing">Manufacturing</option>
-          <option value="other">Other</option>
+          <option value="" disabled>Select Business Type</option>
+          <option *ngFor="let type of businessTypes" [value]="type.name">{{ type.name }}</option>
         </select>
         <div class="form-text text-red-600" *ngIf="businessType.invalid && (businessType.dirty || businessType.touched)">
           <span *ngIf="businessType.errors?.['required']">Business Type is required.</span>
         </div>
       </div>
+      
 
       <!-- Email -->
       <div class="email mt-3">

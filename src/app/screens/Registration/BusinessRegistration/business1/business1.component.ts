@@ -4,6 +4,7 @@ import { BusinessDetails } from "src/app/models/BusinessRegistration/BusinessDet
 import { BusinessData } from "src/app/services/BusinessData.service";
 import { CustomerService } from "src/app/services/customer.service";
 import { Router } from "@angular/router";
+import { HttpClient } from "@angular/common/http";
 
 @Component({
   selector: 'app-business1',
@@ -13,47 +14,71 @@ import { Router } from "@angular/router";
 export class Business1Component {
   Business: BusinessDetails = new BusinessDetails();
 
+  businessTypes: { id: number; name: string }[] = [];
+
   form: FormGroup = new FormGroup({
-    ownerName: new FormControl("", [Validators.required, Validators.pattern(/^[a-zA-Z ]+$/), Validators.maxLength(50)]), // Alphabets only, max length 50
+    ownerName: new FormControl("", [Validators.required, Validators.pattern(/^[a-zA-Z ]+$/), Validators.maxLength(50)]),
     businessUsername: new FormControl("", [
       Validators.required,
-      Validators.pattern(/^[a-zA-Z0-9_]+$/), // Alphanumeric and underscores
-      Validators.minLength(3), // Minimum length of 3
-      Validators.maxLength(20) // Maximum length of 20
+      Validators.pattern(/^[a-zA-Z0-9_]+$/), 
+      Validators.minLength(3), 
+      Validators.maxLength(20) 
     ]),
-    businessName: new FormControl("", [Validators.required, Validators.pattern(/^[a-zA-Z0-9 ]+$/), Validators.maxLength(50)]), // Alphanumeric, spaces allowed, max length 50
+    businessName: new FormControl("", [Validators.required, Validators.pattern(/^[a-zA-Z0-9 ]+$/), Validators.maxLength(50)]), 
     email: new FormControl("", [
       Validators.required,
-      Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/) // Strict email format
+      Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/) 
     ]),
     phoneNumber: new FormControl("", [
       Validators.required,
-      Validators.pattern(/^[0-9]{10}$/) // Numeric only, exactly 10 digits
+      Validators.pattern(/^[0-9]{10}$/) 
     ]),
-    gender: new FormControl("", [Validators.required]), // Must be selected
-    businessType: new FormControl("", [Validators.required]), // Must be selected
+    gender: new FormControl("", [Validators.required]), 
+    businessType: new FormControl("", [Validators.required]), 
   });
 
-  constructor(private customerService: CustomerService, private dataService: BusinessData, private router: Router) {}
+  constructor(
+    private customerService: CustomerService,
+    private dataService: BusinessData,
+    private router: Router,
+    private http: HttpClient 
+  ) {}
+
+  
+  ngOnInit(): void {
+    this.loadBusinessTypes();
+  }
+
+  
+  private loadBusinessTypes(): void {
+    this.http.get<{ id: number; name: string }[]>('/assets/Businesstype.json')
+      .subscribe(
+        data => {
+          this.businessTypes = data;
+        },
+        error => {
+          console.error("Error loading business types:", error);
+        }
+      );
+  }
 
   get formControls(): { [key: string]: AbstractControl } {
     return this.form.controls;
   }
 
-  // Submit handler
+ 
   registerUser() {
     if (this.form.invalid) {
-      this.form.markAllAsTouched(); // Trigger validation for all controls
-      return;
+      this.form.markAllAsTouched(); 
     }
 
     const data = this.mapUserData(this.form);
-    console.log("Data being sent to DTO from Business1:", data); // Log data here
-    this.dataService.setBusinessData(data); // Push data to the shared array
+    console.log("Data being sent to DTO from Business1:", data); 
+    this.dataService.setBusinessData(data); 
     this.router.navigate(['/register/business/business2']);
   }
 
-  // Map user data
+ 
   private mapUserData(form: FormGroup): BusinessDetails {
     this.Business.ownerName = form.get("ownerName")?.value;
     this.Business.businessName = form.get("businessName")?.value;
@@ -62,11 +87,11 @@ export class Business1Component {
     this.Business.phoneNumber = form.get("phoneNumber")?.value;
     this.Business.gender = form.get("gender")?.value;
     this.Business.businessType = form.get("businessType")?.value;
-    console.log("Mapped BusinessDetails in Business1:", this.Business); // Log mapped data
+    console.log("Mapped BusinessDetails in Business1:", this.Business); 
     return this.Business;
   }
 
-  // Getters for form controls
+  
   get name(): FormControl {
     return this.form.get("ownerName") as FormControl;
   }

@@ -141,7 +141,7 @@ export class Business3Component implements OnInit {
       }
     } catch (error: any) {
       console.error('Registration error:', error);
-      const errorMessage = error?.message || error?.message || 'An error occurred during registration';
+      const errorMessage = 'An error occurred during registration';
       this.showPopup('Error', errorMessage);
     } finally {
       this.isSubmitting = false;
