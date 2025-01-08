@@ -35,6 +35,10 @@ const routes: Routes = [
     path: 'register',
     loadChildren: () => import('./screens/Registration/register/register.module').then(m => m.registerModule),
   },
+  {
+    path: '/terms-and-condition',
+    loadChildren: () => import('./screens/terms-conditions/terms-conditions.module').then(m => m.TermsConditionsModule),
+  },
   { path: "**", redirectTo: "login"}
 ];
 

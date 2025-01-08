@@ -1,6 +1,6 @@
 export const environment = {
   production: false,
-  apiGateway: "http://localhost:8083",
+  apiGateway: "https://uat.spreezy.in",
   firebase: {
     apiKey: "AIzaSyAefHwV7r5LaXZHjcE3U0wxxBlQhA3BqwE",
     authDomain: "spreezy-auth.firebaseapp.com",
