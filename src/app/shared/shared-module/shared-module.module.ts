@@ -3,12 +3,14 @@ import { CommonModule } from '@angular/common';
 import { PopUpComponent } from 'src/app/components/pop-up/pop-up.component';
 import { LoaderComponent } from 'src/app/components/loader/loader.component';
 import { ProfileInfoComponent } from 'src/app/shared/profile-info/profile-info.component';
+import { ProfileSkeletonComponent } from '../profile-skeleton/profile-skeleton.component';
 
 @NgModule({
   declarations: [
     PopUpComponent,
     LoaderComponent,
-    ProfileInfoComponent,  // Declare here
+    ProfileInfoComponent,
+    ProfileSkeletonComponent
   ],
   imports: [
     CommonModule,
@@ -16,7 +18,8 @@ import { ProfileInfoComponent } from 'src/app/shared/profile-info/profile-info.c
   exports: [
     PopUpComponent,
     LoaderComponent,
-    ProfileInfoComponent  // Export it so other modules can use it
+    ProfileInfoComponent,
+    ProfileSkeletonComponent
   ]
 })
 export class SharedModule {}

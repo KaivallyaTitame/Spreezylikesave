@@ -1,12 +1,9 @@
-
-
 export interface AdvertisementDetails {
   advertisementId: number;
     advertisementType:string;
     profileImageUrl: string;
     username: string;
     offerExpiry: string;
-    offerImageUrl: string;
     offerTitle: string;
     offerSubtitle: string;
     likes: number;
@@ -17,8 +14,7 @@ export interface AdvertisementDetails {
     termsConditions: string[];
     websiteLink:string;
     couponCode:string;
-    imageUrl:string;
+    imagePaths: string[];
     description: string;
     eventDateAndTime:string;
-    
   }

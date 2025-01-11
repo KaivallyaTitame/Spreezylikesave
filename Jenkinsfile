@@ -87,7 +87,7 @@ pipeline
 
         stage('Build Project') {
             steps {
-                sh 'npm run build-prod'
+                sh 'npm run build-uat'
             }
         }
         

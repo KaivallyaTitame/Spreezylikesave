@@ -19,6 +19,7 @@ export class LoginComponent implements OnInit {
   form: FormGroup;
   submitted: boolean = false;
   otpSent: boolean = false;
+  isLoaderVisible = false;
 
   constructor(
     private authService: AuthService,
@@ -53,13 +54,12 @@ export class LoginComponent implements OnInit {
     return this.form.controls;
   }
 
-  isLoaderVisible = false;
-
   onSubmit(): void {
     this.submitted = true;
     if (this.form.invalid) {
       return;
     }
+
     const phoneNumber = this.form.value.phonenumber;
     const selectedCountryCode = this.form.value.countryCode;
     this.isLoaderVisible = true;
@@ -105,7 +105,7 @@ export class LoginComponent implements OnInit {
   signInWithGoogle() {
     this.authService.signInWithGoogle();
   }
-
+  
   signup(){
     this.router.navigate(["/register"])
   }

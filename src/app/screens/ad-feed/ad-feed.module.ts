@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+
 import { AdFeedRoutingModule } from './ad-feed-routing.module';
 import { AdFeedComponent } from './ad-feed.component';
 
@@ -30,7 +31,15 @@ import { SharedModule } from 'src/app/shared/shared-module/shared-module.module'
     CommonModule,
     AdFeedRoutingModule,
     FontAwesomeModule,
-    SharedModule
+  SharedModule
+  ],
+  exports: [
+    AdFeedComponent,
+    // OfferDescriptionComponent,
+    EventComponent,
+    PostComponent,
+    CouponComponent
   ]
+
 })
 export class AdFeedModule { }

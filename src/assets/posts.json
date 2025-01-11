@@ -1,0 +1,56 @@
+[
+    {
+      "advertisementType": "Post",
+      "profileImageUrl": "https://images.spreezy.in/arts_crafts/business-profile-picture.png",
+      "username": "test_user",
+      "offerExpiry": "2024-09-28T03:47:43.317",
+      "offerTitle": "Test Post 2",
+      "offerImageUrl": "https://images.spreezy.in/arts_crafts/offer-image.jpeg",
+      "offerSubtitle": "testpost2",
+      "descriptionTitle": "description title",
+      "descriptionContent": "This is a test post",
+      "likes": 498,
+      "dislikes": 45,
+      "howToAvailSteps": [
+        "steps to avail"
+      ],
+      "termsConditions": [
+        "terms and conditions"
+      ],
+      "websiteLink": "www.offer-test-link.com"
+    },
+    {
+      "advertisementType": "Event",
+      "profileImageUrl": "https://sdn.signalhire.co/storage/company/0c8f/ea5d/e6e7/c68e/6627/8201/e3ff/03e6.webp",
+      "username": "test_user",
+      "offerExpiry": "2024-10-25T03:49:15.922",
+      "offerTitle": "Test event 1",
+      "offerImageUrl": "https://images.spreezy.in/arts_crafts/offer-image.jpeg",
+      "bookingLink": "test-event1.com",
+      "likes": 564,
+      "dislikes": 56,
+      "howToAvailSteps": [
+        "steps to avail"
+      ],
+      "termsConditions": [
+        "terms and conditions"
+      ]
+    },
+    {
+      "advertisementType": "Coupon",
+      "profileImageUrl": "https://images.spreezy.in/arts_crafts/business-profile-picture.png",
+      "username": "test_user",
+      "offerExpiry": "2024-09-30T03:50:58.135",
+      "offerTitle": "Test Coupon 2",
+      "imageUrl": "https://images.spreezy.in/arts_crafts/offer-image.jpeg",
+      "couponCode": "coupon2",
+      "likes": 35,
+      "dislikes": 5,
+      "howToAvailSteps": [
+        "steps to avail"
+      ],
+      "termsConditions": [
+        "terms and conditions"
+      ]
+    }
+  ]
