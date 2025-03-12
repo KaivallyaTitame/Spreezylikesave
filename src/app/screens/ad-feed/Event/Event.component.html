@@ -18,35 +18,22 @@
         FOLLOW
       </button>
     </div>
-
-
     <div>
-
       <img [src]="baseUrl + eventDetails.imagePaths[0]" alt="Event" class="w-full mt-2 object-cover h-96">
-
       <div class="w-full px-2 py-1 text-xl font-bold bg-primary text-white border-none cursor-pointer text-center">
         {{ eventDetails.eventDateAndTime | date:'dd MMM hh:mm a' }}
       </div>
       <div class="m-4 font-bold text-xl text-gray-500 text-center">
         {{ eventDetails.offerTitle }}-Book Your tickets Now
       </div>
-
-
-
     </div>
-
-    <!-- Book Now Button -->
     <div class="text-center mb-4">
       <button (click)="bookNow()"
         class="mx-auto py-3 px-6 bg-primary text-white font-bold text-lg rounded-full flex items-center justify-center cursor-pointer shadow-md transition duration-150 ease-in-out hover:bg-opacity-90">
         Book Now →
-        
       </button>
     </div>
-
-
     <div class="flex justify-between items-center m-4 mt-10">
-      <!-- Left side icons -->
       <div class="flex items-center space-x-4">
         <button (click)="likePost()"
           class="flex items-center cursor-pointer transition-transform duration-500 ease-in-out"
@@ -54,7 +41,6 @@
           <fa-icon [icon]="isLiked ? faThumbsUp : faThumbsUpOutline" class="fa-xl text-[#ff6251]"></fa-icon>
           <span class="text-black ml-1">{{ eventDetails.likes }}</span>
         </button>
-    
         <button (click)="dislikePost()"
           class="flex items-center cursor-pointer transition-transform duration-500 ease-in-out"
           [ngClass]="{'scale-125': showDislikeAnimation}" aria-label="Dislike Post">
@@ -62,17 +48,13 @@
           <span class="text-black ml-1">{{ eventDetails.dislikes }}</span>
         </button>
       </div>
-
-      <!-- Right side icons -->
       <div class="flex items-center space-x-4 ">
         <button class="bg-none border-none flex items-center cursor-pointer">
           <fa-icon [icon]="faLocationArrow" class="fa-xl" [ngStyle]="{'color': '#ffb43f'}"></fa-icon>
         </button>
 
         <div class="relative">
-          <!-- Save Button -->
           <button (click)="savePost()" class="bg-transparent border-none flex items-center cursor-pointer">
-            <!-- Dynamic Bookmark Icon -->
             <fa-icon
               [icon]="isSaved ? solidBookmark : regularBookmark"
               class="fa-xl transition-all duration-300"
@@ -84,25 +66,17 @@
             </fa-icon>
           </button>
         </div>
-
-
         <div class="flex items-center space-x-4 relative">
           <button class="bg-none border-none flex items-center cursor-pointer" (click)="toggleReportButton()">
             <fa-icon [icon]="faEllipsisVertical" class="fa-xl text-black"></fa-icon>
           </button>
-
-          <!-- Report Button -->
           <div *ngIf="showReportButton"
             class="absolute bottom-10 right-0 bg-white border border-gray-300 rounded shadow-lg p-2 z-10">
             <button (click)="reportPost()" class="text-black font-bold py-2 px-2 rounded">Report</button>
           </div>
-
-          <!-- Success Message Dialog -->
           <div *ngIf="showReportSuccess" class="fixed inset-0 z-20 flex items-center ">
-            <!-- Overlay to prevent interaction with background -->
             <div class="fixed inset-0 bg-black opacity-50 z-10"></div>
 
-            <!-- Dialog box -->
             <div class="relative z-20 bg-white rounded-lg shadow-lg w-full max-w-xs ml-2 mr-1 text-center p-3">
               <p class="text-primary text-xl font-bold mb-3">Post reported successfully!</p>
               <div class="flex justify-center">
@@ -116,9 +90,7 @@
         </div>
       </div>
     </div>
-
-
-
+    
     <button
       class="w-full px-2 py-1 text-lg font-bold bg-primary text-white border-none rounded-b-[4px] cursor-pointer text-center"(click)="showDetails(eventDetails.advertisementId)">
       Show Details →

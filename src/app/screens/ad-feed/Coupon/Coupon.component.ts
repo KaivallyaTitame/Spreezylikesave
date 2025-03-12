@@ -15,31 +15,28 @@ import { Router } from '@angular/router';
 })
 export class CouponComponent implements OnInit {
   @Input() couponDetails!: AdvertisementDetails;
-
-    baseUrl="https://images.spreezy.in/";
-
+    // baseUrl="https://images.spreezy.in/";
+    baseUrl="";
   remainingDays: number;
   isExpired: boolean = false;
-  reportVisible: boolean = false; // Property to control visibility of report modal
+  reportVisible: boolean = false;
   showReportButton: boolean = false;
   remainingHours: number;
   scaleAnimation: boolean = false; 
   showLikeAnimation: boolean = false; 
   showDislikeAnimation: boolean = false;
-  isSaved: boolean = false; // Track saved state
-  showSavedMessage: boolean = false; // Track the display of "Saved" message
+  isSaved: boolean = false; 
+  showSavedMessage: boolean = false; 
   copyButtonText: string = 'Copy';
-  showReportSuccess: boolean = false; // Track visibility of success message
+  showReportSuccess: boolean = false; 
 
   showPopup: boolean = false;
   popupTitle: string = 'Error';
   popupBody: string = '';
-
-  // Font Awesome icons with correct typing
   faBars: IconDefinition = faBars;
   faUserGroup: IconDefinition = faUserGroup;
-  solidBookmark: IconDefinition = solidBookmark; // Solid bookmark icon
-  regularBookmark: IconDefinition = regularBookmark; // Regular bookmark icon
+  solidBookmark: IconDefinition = solidBookmark; 
+  regularBookmark: IconDefinition = regularBookmark; 
   faMagnifyingGlass: IconDefinition = faMagnifyingGlass;
   faThumbsUp: IconDefinition = faThumbsUp;
   faThumbsDown: IconDefinition = faThumbsDown;
@@ -50,11 +47,9 @@ export class CouponComponent implements OnInit {
   faBell: IconDefinition = faBell;
   faCircleUser: IconDefinition = faCircleUser;
 
-  // Outlined icons
   faThumbsUpOutline: IconDefinition = faThumbsUpOutline;
   faThumbsDownOutline: IconDefinition = faThumbsDownOutline;
 
-  // Track like/dislike state
   isLiked: boolean = false; 
   isDisliked: boolean = false; 
 
@@ -166,6 +161,8 @@ export class CouponComponent implements OnInit {
   }
 
   copyToClipboard(couponCode: string): void {
+    console.log(this.couponDetails)
+    console.log(couponCode)
     navigator.clipboard.writeText(couponCode).then(() => {
       this.copyButtonText = 'Copied';
       setTimeout(() => {
@@ -210,6 +207,8 @@ export class CouponComponent implements OnInit {
     }, 500); 
   }
   showDetails(advertisementId: number): void {
-    this.router.navigate(['/offer-description', advertisementId]);
+    this.router.navigate(['/offer-description', advertisementId ] ,  {
+      queryParams: { data: JSON.stringify(this.couponDetails) },
+    });
   }
 }

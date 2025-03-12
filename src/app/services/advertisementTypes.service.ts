@@ -12,15 +12,16 @@ export class AdvertisementDetailsService {
 
   constructor(private http: HttpClient) {}
 
-  // getAdvertisementDetailsById(advertisementId: number): Observable<AdvertisementDetails> {
-  //   return this.http.get<AdvertisementDetails>(`${this.baseUrl}/${advertisementId}`, {
-  //     responseType: 'json',
-  //     headers: new HttpHeaders(),
-  //   });
-  // }
+  getAdvertisementDetailsById(advertisementId: number): Observable<AdvertisementDetails> {
+    return this.http.get<AdvertisementDetails>(`${this.baseUrl}/${advertisementId}`, {
+      responseType: 'json',
+      headers: new HttpHeaders(),
+    });
+  }
 
   getAdvertisementDetails(): Observable<AdvertisementDetails[]> {
-    return this.http.get<AdvertisementDetails[]>(`${this.baseUrl}/advertisement-feed/suyash`, {
+    // return this.http.get<AdvertisementDetails[]>(`${this.baseUrl}/advertisement-feed/suyash`, {
+    return this.http.get<AdvertisementDetails[]>(`https://dummyjson.com/c/57b9-038d-47a8-8bd4`, {
       responseType: 'json',
       headers: new HttpHeaders(),
     });
@@ -40,8 +41,7 @@ export class AdvertisementDetailsService {
   updateDislikes(advertisementId: number): Observable<AdvertisementDetails> {
     return this.http.post<AdvertisementDetails>(
       `${this.baseUrl2}/content/advertisement/downvote/${advertisementId}`,
-      {},
-      {
+      {},{
         responseType: 'json',
         headers: new HttpHeaders(),
       }
@@ -51,8 +51,7 @@ export class AdvertisementDetailsService {
   savePost(username: string, advertisementId: number): Observable<AdvertisementDetails> {
     return this.http.post<AdvertisementDetails>(
       `${this.baseUrl2}/content/advertisement/save`,
-      {},
-      {
+      {},{
         responseType: 'json',
         headers: new HttpHeaders({
           'X-Username': username,
@@ -64,8 +63,7 @@ export class AdvertisementDetailsService {
   followUser(sourceUsername: string, username: string): Observable<any> {
     return this.http.post(
       `http://localhost/user/follow/${sourceUsername}/${username}`,
-      {},
-      {
+      {},{
         responseType: 'json',
         headers: new HttpHeaders(),
       }

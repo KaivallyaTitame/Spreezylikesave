@@ -1,7 +1,5 @@
 <div class="flex justify-center w-full p-0">
     <div class="border border-white bg-white w-full shadow-lg mt-1 mb-1">
-
-        <!-- Header Section -->
         <div class="flex items-center justify-between p-2">
             <img [src]="offerData?.profileImageUrl" alt="Profile" class="w-12 h-12 rounded-full mt-2 ml-1">
             <div class="flex-grow ml-2 text-left">
@@ -20,19 +18,12 @@
                 FOLLOW
             </button>
         </div>
-
-        <!-- Offer Image -->
         <img [src]="offerData?.imagePaths" alt="Event" class="w-full mt-2 object-cover h-96">
-
-        <!-- Offer Title and Subtitle -->
         <div class="m-4 text-lg font-semibold text-gray-700 text-center">
             {{ offerData?.offerTitle }}
             <p class="text-gray-500">{{ offerData?.offerSubtitle }}</p>
         </div>
-
-        <!-- Interaction Buttons -->
         <div class="flex justify-between items-center m-4 mb-4 mt-4">
-            <!-- Left Side Icons -->
             <div class="flex items-center space-x-4">
                 <button (click)="likePost()"
                     class="flex items-center cursor-pointer transition-transform duration-500 ease-in-out"
@@ -49,8 +40,6 @@
                     <span class="text-black ml-1">{{ offerData?.dislikes }}</span>
                 </button>
             </div>
-
-            <!-- Right Side Icons -->
             <div class="flex items-center space-x-4">
                 <button class="bg-none border-none flex items-center cursor-pointer">
                     <fa-icon [icon]="faLocationArrow" class="fa-xl" [ngStyle]="{'color': '#ffb43f'}"></fa-icon>
@@ -63,17 +52,14 @@
                             [ngClass]="{'text-[#ffb43f]': true, 'scale-125': scaleAnimation, 'scale-100': !scaleAnimation}"></fa-icon>
                     </button>
                 </div>
-
                 <div class="flex items-center space-x-4 relative">
                     <button class="bg-none border-none flex items-center cursor-pointer" (click)="toggleReportButton()">
                         <fa-icon [icon]="faEllipsisVertical" class="fa-xl text-black"></fa-icon>
                     </button>
-                    <!-- Report Button -->
                     <div *ngIf="showReportButton"
                         class="absolute bottom-10 right-0 bg-white border border-gray-300 rounded shadow-lg p-2 z-10">
                         <button (click)="reportPost()" class="text-black font-bold py-2 px-2 rounded">Report</button>
                     </div>
-                    <!-- Success Message -->
                     <div *ngIf="showReportSuccess" class="fixed inset-0 z-20 flex items-center">
                         <div class="fixed inset-0 bg-black opacity-50 z-10"></div>
                         <div
@@ -88,25 +74,19 @@
                 </div>
             </div>
         </div>
-
-        <!-- Offer Button -->
-        <div class="button-container text-center mt-5">
-            <button
-                class="view-on-website-btn w-10/12 py-2 bg-primary text-white border-none rounded-full cursor-pointer text-lg"
-                (click)="viewOnWebsite()">View on Website</button>
-        </div>
-        <div class="redirect-info mt-1 text-xs text-gray-600 text-center">
-            You will be redirected to this business website. <a href="#" class="text-blue-500"
-                (click)="viewOnWebsite()">Learn more</a>
-        </div>
-
-        <!-- Offer Description -->
-        <div class="offer-description mt-4 ml-4 mr-2">
-            <h3 class="font-bold text-black ml-1">{{ offerData?.promoBadge }}</h3>
-            <p class="text-gray-500">{{ offerData?.description }}</p>
-        </div>
-
-        <!-- Dropdowns -->
+          
+          <div class="button-container text-center mt-5">
+              <button class="view-on-website-btn w-10/12 py-2 bg-primary text-white border-none rounded-full cursor-pointer text-lg" (click)="viewOnWebsite()">View on Website</button>
+          </div>
+  
+          <div class="redirect-info mt-1 text-xs text-gray-600 text-center">
+              You will be redirected to this business website. <a href="#" class="text-blue-500" (click)="viewOnWebsite()">Learn more</a>
+          </div>
+  
+          <div class="offer-description mt-4 ml-4 mr-2">
+              <h3 class="font-bold text-black ml-1">{{ offerData?.offerTitle }}</h3>
+              <p class="text-gray-500">{{ offerData?.description }}</p>
+          </div>
         <div class="dropdown w-full mt-4 border border-primary cursor-pointer" (click)="toggleDropdown('howToAvail')">
             <h4 class="bg-white py-3 px-4 flex justify-between items-center text-gray-700">
                 How to avail your offer?

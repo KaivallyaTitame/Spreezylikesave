@@ -6,7 +6,11 @@ import { loginGuard } from "./authGuards/login/login.guard";
 import { OfferDescriptionComponent } from './screens/ad-feed/offer-description/offer-description.component';
 
 const routes: Routes = [
-  { path: "", redirectTo: "login", pathMatch: "full" },
+  // { path: "", redirectTo: "login", pathMatch: "full" },
+  {
+    path : "",
+    loadChildren: () => import("./screens/ad-feed/ad-feed.module").then(m => m.AdFeedModule)
+  },
 
   {
     path: "login",

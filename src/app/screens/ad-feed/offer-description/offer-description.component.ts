@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { faBars, faUserGroup, faMagnifyingGlass, faThumbsUp, faThumbsDown, faLocationArrow, faEllipsisVertical, faLocationDot, faHeart, faBell, faCircleUser } from '@fortawesome/free-solid-svg-icons';
-import { faThumbsUp as faThumbsUpOutline, faThumbsDown as faThumbsDownOutline } from '@fortawesome/free-regular-svg-icons'; // Import outlined icons
+import { faThumbsUp as faThumbsUpOutline, faThumbsDown as faThumbsDownOutline } from '@fortawesome/free-regular-svg-icons'; 
 import { AdvertisementDetailsService } from 'src/app/services/advertisementTypes.service';
 import { AdvertisementDetails } from 'src/app/models/ad-details';
 import { faBookmark as solidBookmark } from '@fortawesome/free-solid-svg-icons';
@@ -14,8 +14,8 @@ import { Router } from '@angular/router';
   styles: []
 })
 export class OfferDescriptionComponent implements OnInit {
-  offerData: AdvertisementDetails | null = null; // Correct the type here
-  
+  offerData: AdvertisementDetails | null = null;
+  details : AdvertisementDetails
   dropdowns: { [key: string]: boolean } = {
     howToAvail: false,
     termsConditions: false
@@ -27,37 +27,31 @@ export class OfferDescriptionComponent implements OnInit {
   showLikeAnimation: boolean = false;
   scaleAnimation: boolean = false;
   showDislikeAnimation: boolean = false;
-  isSaved: boolean = false; // Track saved state
-  showSavedMessage: boolean = false; // Track the display of "Saved" message
-  showReportButton: boolean = false; // Track visibility of report button
-  showReportSuccess: boolean = false; // Track visibility of success message
-
+  isSaved: boolean = false; 
+  showSavedMessage: boolean = false; 
+  showReportButton: boolean = false;
+  showReportSuccess: boolean = false; 
   showPopup: boolean = false;
   popupTitle: string = 'Error';
   popupBody: string = '';
 
-  // Font Awesome icons
   faBars = faBars;
   faUserGroup = faUserGroup;
   faMagnifyingGlass = faMagnifyingGlass;
   faThumbsUp = faThumbsUp;
   faThumbsDown = faThumbsDown;
   faLocationArrow = faLocationArrow;
-  solidBookmark = solidBookmark; // Solid bookmark icon
-  regularBookmark = regularBookmark; // Regular bookmark icon
+  solidBookmark = solidBookmark; 
+  regularBookmark = regularBookmark; 
   faEllipsisVertical = faEllipsisVertical;
   faLocationDot = faLocationDot;
   faHeart = faHeart;
   faBell = faBell;
   faCircleUser = faCircleUser;
-
-  // Outlined icons
   faThumbsUpOutline = faThumbsUpOutline;
   faThumbsDownOutline = faThumbsDownOutline;
-
-  // Track like/dislike state
-  isLiked: boolean = false; // State for like
-  isDisliked: boolean = false; // State for dislike
+  isLiked: boolean = false; 
+  isDisliked: boolean = false; 
 
   constructor(
     private route: ActivatedRoute,
@@ -67,27 +61,21 @@ export class OfferDescriptionComponent implements OnInit {
 
   ngOnInit(): void {
     const advertisementId = this.route.snapshot.paramMap.get('advertisementId');
-  
-    this.advertisementDetailsService.getAdvertisementDetails().subscribe(
-      (data: AdvertisementDetails[]) => {
-        // Find the advertisement matching the advertisementId
-        this.offerData = data.find((offer) => offer.advertisementId === Number(advertisementId)) || null;
-  
-        if (this.offerData) {
-          const expirationDate = new Date(this.offerData.offerExpiry);
-          const today = new Date();
-          this.remainingDays = Math.ceil((expirationDate.getTime() - today.getTime()) / (1000 * 3600 * 24));
-          this.isExpired = this.remainingDays <= 0;
-        }
-      },
-      (error) => {
-        console.error('Error fetching advertisement details:', error);
-        this.showError('Error', 'Failed to load advertisement details. Please try again.');
+    this.route.queryParams.subscribe((params) => {
+      if (params['data']) {
+        this.details = JSON.parse(params['data']);
+        console.log("Received Details:", this.details);
+        this.offerData = this.details
       }
-    );
+    });
+    if (this.offerData) {
+      const expirationDate = new Date(this.offerData.offerExpiry);
+      const today = new Date();
+      this.remainingDays = Math.ceil((expirationDate.getTime() - today.getTime()) / (1000 * 3600 * 24));
+      this.isExpired = this.remainingDays <= 0;
+    }
   }
 
-  // Check if offerData is not null before using it
   get offerDataSafe(): AdvertisementDetails {
     if (!this.offerData) {
       throw new Error('offerData is null');
@@ -95,12 +83,10 @@ export class OfferDescriptionComponent implements OnInit {
     return this.offerData;
   }
 
-  // Toggle dropdown for "How to avail"
   toggleDropdown(key: string): void {
     this.dropdowns[key] = !this.dropdowns[key];
   }
 
-  // Handle the "View on Website" button click
   viewOnWebsite(): void {
     if (this.offerData && this.offerData.websiteLink) {
       window.open(this.offerData.websiteLink, '_blank');
@@ -108,14 +94,12 @@ export class OfferDescriptionComponent implements OnInit {
   }
 
   likePost(): void {
-    const advertisementId = this.offerDataSafe.advertisementId; // Safe access with null check
+    const advertisementId = this.offerDataSafe.advertisementId; 
     this.triggerAnimation('like');
-
     if (!this.isLiked) {
       this.isLiked = true;
       this.isDisliked = false;
       this.offerDataSafe.likes += 1;
-
       this.advertisementDetailsService.updateLikes(advertisementId).subscribe({
         next: (updatedPost) => {
           this.offerDataSafe.likes = updatedPost.likes;
@@ -132,6 +116,7 @@ export class OfferDescriptionComponent implements OnInit {
           this.offerDataSafe.likes = updatedPost.likes;
         },
         error: (err) => {
+          console.log(err)
           this.showError('Like Error', 'Failed to update likes. Please try again.');
         },
       });
@@ -139,9 +124,8 @@ export class OfferDescriptionComponent implements OnInit {
   }
 
   dislikePost(): void {
-    const advertisementId = this.offerDataSafe.advertisementId; // Safe access with null check
+    const advertisementId = this.offerDataSafe.advertisementId; 
     this.triggerAnimation('dislike');
-
     if (!this.isDisliked) {
       this.isDisliked = true;
       this.isLiked = false;
@@ -152,6 +136,7 @@ export class OfferDescriptionComponent implements OnInit {
           this.offerDataSafe.dislikes = updatedPost.dislikes;
         },
         error: (err) => {
+          console.log(err)
           this.showError('Dislike Error', 'Failed to update dislikes. Please try again.');
         },
       });
@@ -163,6 +148,7 @@ export class OfferDescriptionComponent implements OnInit {
           this.offerDataSafe.dislikes = updatedPost.dislikes;
         },
         error: (err) => {
+          console.log(err)
           this.showError('Dislike Error', 'Failed to update dislikes. Please try again.');
         },
       });
@@ -170,32 +156,21 @@ export class OfferDescriptionComponent implements OnInit {
   }
 
   savePost(): void {
-    const advertisementId = this.offerDataSafe.advertisementId; // Safe access with null check
+    const advertisementId = this.offerDataSafe.advertisementId; 
     const username = this.offerDataSafe.username;
-
-    // Trigger the save animation
     this.triggerAnimation('save');
-
-    // Add scaling effect
     this.scaleAnimation = true;
-
-    // Reset the scaling effect after 500ms
     setTimeout(() => {
       this.scaleAnimation = false;
     }, 500);
-
-    // Toggle the saved state whenever the icon is clicked
-    this.isSaved = !this.isSaved;  // This will toggle the state between saved and not saved
-
+    this.isSaved = !this.isSaved; 
     this.advertisementDetailsService.savePost(username, advertisementId).subscribe({
       next: (response) => {
         console.log('Post saved successfully:', response);
-        // If needed, handle any success logic here. For example, you might want to show a success message.
       },
       error: (err) => {
-        // In case of error, show the error message and revert the saved state
         this.showError('Save Error', 'Failed to save the post. Please try again.');
-        this.isSaved = !this.isSaved; // Revert the saved state if there was an error
+        this.isSaved = !this.isSaved;
       },
     });
   }
@@ -227,7 +202,6 @@ export class OfferDescriptionComponent implements OnInit {
     } else if (type === 'dislike') {
       this.showDislikeAnimation = true;
     }
-
     setTimeout(() => {
       this.showLikeAnimation = false;
       this.showDislikeAnimation = false;

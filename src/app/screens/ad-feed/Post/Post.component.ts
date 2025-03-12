@@ -16,54 +16,48 @@ import { Router } from '@angular/router';
 export class PostComponent implements OnInit {
   @Input() postDetails!: AdvertisementDetails;
 
-   baseUrl="https://images.spreezy.in/";
-
-
+  baseUrl="";
+  // baseUrl="https://images.spreezy.in/";
   remainingDays: number;
   remainingHours: number;
   isExpired: boolean = false;
   showLikeAnimation: boolean = false; 
   scaleAnimation:boolean=false;
   showDislikeAnimation: boolean = false;
-  isSaved: boolean = false; // Track saved state
-  showSavedMessage: boolean = false; // Track the display of "Saved" message
-  showReportButton: boolean = false; // Track visibility of report button
-  showReportSuccess: boolean = false; // Track visibility of success message
+  isSaved: boolean = false; 
+  showSavedMessage: boolean = false; 
+  showReportButton: boolean = false; 
+  showReportSuccess: boolean = false;
  
   showPopup: boolean = false;
   popupTitle: string = 'Error';
   popupBody: string = '';
-  // Font Awesome icons
   faBars = faBars;
   faUserGroup = faUserGroup;
   faMagnifyingGlass = faMagnifyingGlass;
   faThumbsUp = faThumbsUp;
   faThumbsDown = faThumbsDown;
   faLocationArrow = faLocationArrow;
-  solidBookmark = solidBookmark; // Solid bookmark icon
-  regularBookmark = regularBookmark; // Regular bookmark icon
+  solidBookmark = solidBookmark; 
+  regularBookmark = regularBookmark; 
   faEllipsisVertical = faEllipsisVertical;
   faLocationDot = faLocationDot;
   faHeart = faHeart;
   faBell = faBell;
   faCircleUser = faCircleUser;
-
-  // Outlined icons
   faThumbsUpOutline = faThumbsUpOutline;
   faThumbsDownOutline = faThumbsDownOutline;
-
-  // Track like/dislike state
-  isLiked: boolean = false; // State for like
-  isDisliked: boolean = false; // State for dislike
-
+  isLiked: boolean = false;
+  isDisliked: boolean = false;
   isFollowing: boolean = false;
 
-  constructor(private advertisementDetailsService: AdvertisementDetailsService ,private router:Router) {
-    
-  }
+  constructor(private advertisementDetailsService: AdvertisementDetailsService ,private router:Router) {}
 
   ngOnInit(): void {
     const { remainingDays, remainingHours, isExpired } = this.advertisementDetailsService.calculateExpiry(this.postDetails.offerExpiry);
+
+    console.log("POST DETAILS",this.postDetails)
+
     this.remainingDays = remainingDays;
     this.remainingHours = remainingHours;
     this.isExpired = isExpired;
@@ -72,12 +66,11 @@ export class PostComponent implements OnInit {
   toggleFollow(): void {//not comfirm if it works please make changes if required and as per dto end user or target user is 'username'
     const sourceUsername = 'currentUser';  // Replace with the actual logged-in user
     const targetUsername = this.postDetails.username;
-
     if (this.isFollowing) {
       this.advertisementDetailsService.unfollowUser(sourceUsername, targetUsername).subscribe(
         (response) => {
           console.log('Unfollowed successfully:', response);
-          this.isFollowing = false;  // Toggle follow state
+          this.isFollowing = false;
         },
         (error) => {
           console.error('Error unfollowing:', error);
@@ -87,7 +80,7 @@ export class PostComponent implements OnInit {
       this.advertisementDetailsService.followUser(sourceUsername, targetUsername).subscribe(
         (response) => {
           console.log('Followed successfully:', response);
-          this.isFollowing = true;  // Toggle follow state
+          this.isFollowing = true;  
         },
         (error) => {
           console.error('Error following:', error);
@@ -100,12 +93,12 @@ export class PostComponent implements OnInit {
   checkIfFollowing(): void {
     const sourceUsername = 'currentUser';  // Replace with the actual logged-in user
     const targetUsername = this.postDetails.username;
-    
     // Check if the current user is following the post
     // This could involve a service method to check follow status.
     // For simplicity, we're assuming this logic is already in place.
     this.isFollowing = false;  // Replace this with actual check
   }
+
   likePost(): void {
     const advertisementId = this.postDetails.advertisementId;
     this.triggerAnimation('like');
@@ -122,7 +115,6 @@ export class PostComponent implements OnInit {
         },
         error: (err) => {
           this.showError('Like Error', 'Failed to update likes. Please try again.');
-         
         },
       });
     } else {
@@ -135,7 +127,6 @@ export class PostComponent implements OnInit {
         },
         error: (err) => {
           this.showError('Like Error', 'Failed to update likes. Please try again.');
-          
         },
       });
     }
@@ -157,7 +148,6 @@ export class PostComponent implements OnInit {
         },
         error: (err) => {
           this.showError('Dislike Error', 'Failed to update dislikes. Please try again.');
-          
         },
       });
     } else {
@@ -169,8 +159,7 @@ export class PostComponent implements OnInit {
           this.postDetails.dislikes = updatedPost.dislikes;
         },
         error: (err) => {
-          this.showError('Dislike Error', 'Failed to update dislikes. Please try again.');
-         
+          this.showError('Dislike Error', 'Failed to update dislikes. Please try again.'); 
         },
       });
     }
@@ -179,38 +168,24 @@ export class PostComponent implements OnInit {
   savePost(): void {
     const advertisementId = this.postDetails.advertisementId;
     const username = this.postDetails.username;
-  
-    // Trigger the save animation
     this.triggerAnimation('save');
-  
-    // Add scaling effect
     this.scaleAnimation = true;
-  
-    // Reset the scaling effect after 500ms
     setTimeout(() => {
       this.scaleAnimation = false;
     }, 500);
-  
-    // Toggle the saved state whenever the icon is clicked
-    this.isSaved = !this.isSaved;  // This will toggle the state between saved and not saved
+    this.isSaved = !this.isSaved;  
   
     this.advertisementDetailsService.savePost(username, advertisementId).subscribe({
       next: (response) => {
         console.log('Post saved successfully:', response);
-        // If needed, handle any success logic here. For example, you might want to show a success message.
       },
       error: (err) => {
-        // In case of error, show the error message and revert the saved state
         this.showError('Save Error', 'Failed to save the post. Please try again.');
-        this.isSaved = !this.isSaved; // Revert the saved state if there was an error
+        this.isSaved = !this.isSaved; 
       },
     });
   }
   
-
-
-  
-
   toggleReportButton(): void {
     this.showReportButton = !this.showReportButton; 
   }
@@ -245,6 +220,8 @@ export class PostComponent implements OnInit {
   }
 
   showDetails(advertisementId: number): void {
-    this.router.navigate(['/offer-description', advertisementId]);
+    this.router.navigate(['/offer-description', advertisementId] ,  {
+      queryParams: { data: JSON.stringify(this.postDetails) },
+    })
   }
 }  
