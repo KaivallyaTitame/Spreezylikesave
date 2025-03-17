@@ -15,8 +15,8 @@ import { Router } from '@angular/router';
 })
 export class CouponComponent implements OnInit {
   @Input() couponDetails!: AdvertisementDetails;
-    // baseUrl="https://images.spreezy.in/";
-    baseUrl="";
+  // baseUrl="https://images.spreezy.in/";
+  baseUrl="";
   remainingDays: number;
   isExpired: boolean = false;
   reportVisible: boolean = false;
@@ -29,7 +29,6 @@ export class CouponComponent implements OnInit {
   showSavedMessage: boolean = false; 
   copyButtonText: string = 'Copy';
   showReportSuccess: boolean = false; 
-
   showPopup: boolean = false;
   popupTitle: string = 'Error';
   popupBody: string = '';
@@ -81,7 +80,6 @@ export class CouponComponent implements OnInit {
         },
         error: (err) => {
           this.showError('Like Error', 'Failed to update likes. Please try again.');
-
         },
       });
     } else {
@@ -93,7 +91,6 @@ export class CouponComponent implements OnInit {
         },
         error: (err) => {
           this.showError('Like Error', 'Failed to update likes. Please try again.');
-
         },
       });
     }
@@ -114,7 +111,6 @@ export class CouponComponent implements OnInit {
         },
         error: (err) => {
           this.showError('Dislike Error', 'Failed to update dislikes. Please try again.');
-
         },
       });
     } else {
@@ -135,25 +131,17 @@ export class CouponComponent implements OnInit {
   savePost(): void {
     const advertisementId = this.couponDetails.advertisementId;
     const username = this.couponDetails.username;
-
     this.triggerAnimation('save');
-
-
     this.scaleAnimation = true;
-
     setTimeout(() => {
       this.scaleAnimation = false;
     }, 500);
-
     this.isSaved = !this.isSaved; 
-
     this.advertisementDetailsService.savePost(username, advertisementId).subscribe({
       next: (response) => {
         console.log('Post saved successfully:', response);
-
       },
       error: (err) => {
-
         this.showError('Save Error', 'Failed to save the post. Please try again.');
         this.isSaved = !this.isSaved; 
       },
@@ -170,7 +158,6 @@ export class CouponComponent implements OnInit {
       }, 2000);
     }).catch(err => {
       this.showError('Copy Error', 'Failed to copy coupon code. Please try again.');
-
     });
   }
 
@@ -206,6 +193,7 @@ export class CouponComponent implements OnInit {
       this.showDislikeAnimation = false;
     }, 500); 
   }
+
   showDetails(advertisementId: number): void {
     this.router.navigate(['/offer-description', advertisementId ] ,  {
       queryParams: { data: JSON.stringify(this.couponDetails) },
