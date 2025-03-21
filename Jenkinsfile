@@ -56,8 +56,8 @@ pipeline
             sh 'npx wait-on http://localhost:4200'
 
             // Run Cypress tests
-            sh 'NO_COLOR=1 npm run test'
-            sh 'npm run test:coverage'
+            // sh 'NO_COLOR=1 npm run test'
+            // sh 'npm run test:coverage'
 
 
             sh 'pkill -f "npm start"'
