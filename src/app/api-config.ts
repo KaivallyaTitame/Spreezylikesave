@@ -4,6 +4,13 @@ export const API_CONFIG = {
   // Image Service
   IMAGE_URL: 'https://images.spreezy.in',
 
+
+  //Register Service Endpoints
+ 
+  REGISTER_CONSUMER: `${environment.apiGateway}/user/register-consumer`,
+  REGISTER_BUSINESS: `${environment.apiGateway}/user/register-business`,
+  
+
   // Auth Service Endpoints
   AUTH_LOGOUT: (userName: string) => `${environment.apiGateway}/auth/${userName}/logout`,
   GENERATE_OTP: `${environment.apiGateway}/auth/generate-otp`,
@@ -48,4 +55,7 @@ export const API_CONFIG = {
     CREATE_POST: `${environment.apiGateway}/content/post/create`,
     CREATE_EVENT: `${environment.apiGateway}/content/event/create`,
   },
+
+
+ 
 };

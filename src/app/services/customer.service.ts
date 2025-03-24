@@ -1,50 +1,52 @@
-import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { HttpClient, HttpErrorResponse } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { environment } from "src/environments/environment";
-import { Credentials } from "../models/credentials";
+import { Observable, throwError } from "rxjs";
+import { catchError, map } from "rxjs/operators";
 import { BusinessDetails } from "../models/BusinessRegistration/BusinessDetails";
-import { AuthService } from "./auth.service";
-import { Observable } from "rxjs";
 import { ConsumerDetails } from "../models/ConsumerRegistration/ConsumerDetails";
+import { API_CONFIG } from "../api-config";
+
+// Define response types for better type safety
+interface RegistrationResponse {
+  success: boolean;
+  message: string;
+}
+
 @Injectable({
   providedIn: "root",
 })
 export class CustomerService {
-  constructor(private http: HttpClient, private authService: AuthService) {
+  constructor(private http: HttpClient) {}
+
+  registerNewUser(user: ConsumerDetails): Observable<RegistrationResponse> {
+    return this.http
+      .post(API_CONFIG.REGISTER_CONSUMER, user, { responseType: "json" })
+      .pipe(
+        map((response) => response as RegistrationResponse),
+        catchError((error) => this.handleError(error))
+      );
   }
-  registerNewUser(user: ConsumerDetails) {
-    console.log(user);
-   
-    return  this.http.post("http://localhost:8083/user/register-consumer", user)
-    
+
+  registerNewBusiness(user: BusinessDetails): Observable<RegistrationResponse> {
+    return this.http
+      .post(API_CONFIG.REGISTER_BUSINESS, user, { responseType: "json" })
+      .pipe(
+        map((response) => response as RegistrationResponse),
+        catchError((error) => this.handleError(error))
+      );
   }
-  registerNewBusiness(user: BusinessDetails) {
-    console.log(user);
-  
-    return this.http.post("http://localhost:8083/user/register-business", user, { responseType: 'text' })
-      .subscribe(response => {
-        try {
-          const parsedResponse = JSON.parse(response);
-          console.log('Parsed Response:', parsedResponse);
-        } catch (e) {
-          console.log('Plain Text Response:', response);
-        }
-      }, error => {
-        console.error('Error:', error);
-      });
-  }
-  
-  
-  // registerToFirebase(user: ConsumerDetails) {
-  //   let credentials = new Credentials();
-  //   credentials.email = user.email;
-  //   this.authService.registerWithCredentials(credentials);
-  // }
-  persistUserData(user: ConsumerDetails) {
-    // this.http.post(environment.apiGateway+"/registerUser").pipe();
+
+  //error handling
+  private handleError(error: HttpErrorResponse): Observable<never> {
+    let errorMessage = "Registration failed. Please try again.";
+    if (error.error) {
+      try {
+        const errorBody = JSON.parse(error.error);
+        errorMessage = errorBody.errorDescription || errorMessage;
+      } catch (e) {
+        errorMessage = error.error || errorMessage;
+      }
+    }
+    return throwError(() => new Error(errorMessage));
   }
 }
-
-
-
-
