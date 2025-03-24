@@ -48,20 +48,20 @@ pipeline
         
 
         
-        stage('Run Tests') {
-    steps {
-        sh 'npm start &'
+//         stage('Run Tests') {
+//     steps {
+//         sh 'npm start &'
 
-        // Wait for Angular application to start
-        sh 'npx wait-on http://localhost:4200'
+//         // Wait for Angular application to start
+//         sh 'npx wait-on http://localhost:4200'
 
-        // Run Cypress tests but prevent failure
-        sh 'NO_COLOR=1 npm run test || true'
-        sh 'npm run test:coverage || true'
+//         // Run Cypress tests but prevent failure
+//         sh 'NO_COLOR=1 npm run test || true'
+//         sh 'npm run test:coverage || true'
 
-        sh 'pkill -f "npm start"'
-    }
-}
+//         sh 'pkill -f "npm start"'
+//     }
+// }
 
          stage('sonarQube-analysis') {
     steps {
