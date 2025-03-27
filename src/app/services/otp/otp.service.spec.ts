@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 
-import { OtpService } from './services/otp.service';
+import { OtpService } from './otp.service';
 
 describe('OtpService', () => {
   let service: OtpService;

@@ -7,6 +7,7 @@ import { AdvertisementDetails } from 'src/app/models/ad-details';
 import { faBookmark as solidBookmark } from '@fortawesome/free-solid-svg-icons';
 import { faBookmark as regularBookmark } from '@fortawesome/free-regular-svg-icons';
 import { Router } from '@angular/router';
+import { JwtDecoderService } from 'src/app/services/jwt-decoder.service';
 
 @Component({
   selector: 'app-Post',
@@ -51,7 +52,7 @@ export class PostComponent implements OnInit {
   isDisliked: boolean = false;
   isFollowing: boolean = false;
 
-  constructor(private advertisementDetailsService: AdvertisementDetailsService ,private router:Router) {}
+  constructor(private advertisementDetailsService: AdvertisementDetailsService ,private router:Router ) {}
 
   ngOnInit(): void {
     const { remainingDays, remainingHours, isExpired } = this.advertisementDetailsService.calculateExpiry(this.postDetails.offerExpiry);
@@ -64,6 +65,8 @@ export class PostComponent implements OnInit {
     this.checkIfFollowing();
   }
   toggleFollow(): void {//not comfirm if it works please make changes if required and as per dto end user or target user is 'username'
+    // const userDetails = this.jwtDecoderService.decodeInfoFromToken(localStorage.getItem('token') || "");
+    // console.log("USER DETAILS",userDetails)
     const sourceUsername = 'currentUser';  // Replace with the actual logged-in user
     const targetUsername = this.postDetails.username;
     if (this.isFollowing) {
@@ -200,6 +203,7 @@ export class PostComponent implements OnInit {
     this.showReportSuccess = false; 
     document.body.style.overflow = 'auto';  
   }
+
   showError(title: string, body: string) {
     this.popupTitle = title;
     this.popupBody = body;

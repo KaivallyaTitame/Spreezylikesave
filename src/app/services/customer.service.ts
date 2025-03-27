@@ -15,8 +15,12 @@ export class CustomerService {
   registerNewUser(user: ConsumerDetails) {
     console.log(user);
    
-    return  this.http.post("http://localhost:8083/user/register-consumer", user)
-    
+    return  this.http.post("http://localhost:8083/user/register-consumer", user ,{
+      headers : new HttpHeaders({
+        'Content-Type': 'application/json',
+        responseType: 'text'
+      })
+    })
   }
   registerNewBusiness(user: BusinessDetails) {
     console.log(user);

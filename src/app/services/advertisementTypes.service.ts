@@ -3,14 +3,15 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 import { AdvertisementDetails } from '../models/ad-details';
+import { JwtDecoderService } from './jwt-decoder.service';
 @Injectable({
   providedIn: 'root',
 })
 export class AdvertisementDetailsService {
-  private baseUrl = "http://13.201.102.68:8082";
-  private baseUrl2 = "http://13.201.102.68:8081";
+  private baseUrl = "http:/localhost:8082";
+  private baseUrl2 = "http:/localhost:8762";
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient , private jwtDecoderService : JwtDecoderService) {}
 
   getAdvertisementDetailsById(advertisementId: number): Observable<AdvertisementDetails> {
     return this.http.get<AdvertisementDetails>(`${this.baseUrl}/${advertisementId}`, {
@@ -20,8 +21,10 @@ export class AdvertisementDetailsService {
   }
 
   getAdvertisementDetails(): Observable<AdvertisementDetails[]> {
+    const userDetails = this.jwtDecoderService.decodeInfoFromToken(localStorage.getItem('token') || "");
     // return this.http.get<AdvertisementDetails[]>(`${this.baseUrl}/advertisement-feed/suyash`, {
-    return this.http.get<AdvertisementDetails[]>(`https://dummyjson.com/c/57b9-038d-47a8-8bd4`, {
+    return this.http.get<AdvertisementDetails[]>(`https://dummyjson.com/c/3144-37bd-44be-b7a9`, {
+    // return this.http.get<AdvertisementDetails[]>(`https://dummyjson.com/c/57b9-038d-47a8-8bd4`, {
       responseType: 'json',
       headers: new HttpHeaders(),
     });
@@ -29,7 +32,7 @@ export class AdvertisementDetailsService {
 
   updateLikes(advertisementId: number): Observable<AdvertisementDetails> {
     return this.http.post<AdvertisementDetails>(
-      `${this.baseUrl2}/content/advertisement/upvote/${advertisementId}`,
+      `${this.baseUrl}/content/advertisement/upvote/${advertisementId}`,
       {},
       {
         responseType: 'json',
@@ -40,7 +43,7 @@ export class AdvertisementDetailsService {
 
   updateDislikes(advertisementId: number): Observable<AdvertisementDetails> {
     return this.http.post<AdvertisementDetails>(
-      `${this.baseUrl2}/content/advertisement/downvote/${advertisementId}`,
+      `${this.baseUrl}/content/advertisement/downvote/${advertisementId}`,
       {},{
         responseType: 'json',
         headers: new HttpHeaders(),
@@ -60,9 +63,10 @@ export class AdvertisementDetailsService {
       }
     );
   }
+
   followUser(sourceUsername: string, username: string): Observable<any> {
     return this.http.post(
-      `http://localhost/user/follow/${sourceUsername}/${username}`,
+      `${this.baseUrl}/user/follow/${sourceUsername}/${username}`,
       {},{
         responseType: 'json',
         headers: new HttpHeaders(),
@@ -72,7 +76,7 @@ export class AdvertisementDetailsService {
 
   unfollowUser(sourceUsername: string, username: string): Observable<any> {
     return this.http.post(
-      `http://localhost/user/unfollow/${sourceUsername}/${username}`,
+      `${this.baseUrl}/user/unfollow/${sourceUsername}/${username}`,
       {},
       {
         responseType: 'json',
@@ -80,6 +84,7 @@ export class AdvertisementDetailsService {
       }
     );
   }
+
   calculateExpiry(expiryDate: string): { remainingDays: number; remainingHours: number; isExpired: boolean } {
     const expiry = new Date(expiryDate);
     const currentDate = new Date();

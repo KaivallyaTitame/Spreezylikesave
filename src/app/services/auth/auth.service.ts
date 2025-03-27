@@ -33,45 +33,20 @@ export class AuthService {
     );
   }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
   private apiUrl = environment.apiGateway;
-
-=======
->>>>>>> 885dbf4f27b3e4566896d5ecffe2c2c8c124a96d
-=======
->>>>>>> 84b425a0ed7581ad99096295956e1fb49aa38ed1
   logout() {
     let token = localStorage.getItem("token") || "";
     let userName = this.jwtDecoder.decodeInfoFromToken(token)["sub"] || "";
     return this.http
-      .post(
-<<<<<<< HEAD
-<<<<<<< HEAD
-        `${this.apiUrl}/auth/${userName}/logout`,
-=======
-        API_CONFIG.AUTH_LOGOUT(userName),
->>>>>>> 885dbf4f27b3e4566896d5ecffe2c2c8c124a96d
-=======
-        API_CONFIG.AUTH_LOGOUT(userName),
->>>>>>> 84b425a0ed7581ad99096295956e1fb49aa38ed1
-        {},
-        {
+      .post(`${this.apiUrl}/auth/${userName}/logout`,
+        API_CONFIG.AUTH_LOGOUT(userName),{
           headers: new HttpHeaders({
             Authorization: `Bearer ${token}`,
           }),
         }
       )
       .subscribe({
-<<<<<<< HEAD
-<<<<<<< HEAD
         next: (response) => {
-=======
-        next: () => {
->>>>>>> 885dbf4f27b3e4566896d5ecffe2c2c8c124a96d
-=======
-        next: () => {
->>>>>>> 84b425a0ed7581ad99096295956e1fb49aa38ed1
           localStorage.removeItem("token");
           localStorage.removeItem("refreshToken");
           window.location.reload();

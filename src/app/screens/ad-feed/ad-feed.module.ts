@@ -1,20 +1,14 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
 import { AdFeedRoutingModule } from './ad-feed-routing.module';
 import { AdFeedComponent } from './ad-feed.component';
-
 // import { OfferDescriptionComponent } from './offer-description/offer-description.component';
 import { EventComponent } from './Event/Event.component';
 import { PostComponent } from './Post/Post.component';
 import { CouponComponent } from './Coupon/Coupon.component';
-
-
 import { OfferDescriptionComponent } from './offer-description/offer-description.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { SharedModule } from 'src/app/shared/shared-module/shared-module.module';
-
-
 
 @NgModule({
   declarations: [
@@ -23,10 +17,6 @@ import { SharedModule } from 'src/app/shared/shared-module/shared-module.module'
     EventComponent,
     PostComponent,
     CouponComponent
-
-    
-  
-   
   ],
   imports: [
     CommonModule,
@@ -36,7 +26,6 @@ import { SharedModule } from 'src/app/shared/shared-module/shared-module.module'
   ],
   exports: [
     AdFeedComponent,
-    // OfferDescriptionComponent,
     EventComponent,
     PostComponent,
     CouponComponent

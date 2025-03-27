@@ -26,6 +26,7 @@ export class AdFeedComponent implements OnInit {
 
   isExpired(offerExpiry: string): boolean {
     const expiryDate = new Date(offerExpiry);
+    console.log(expiryDate)
     const currentDate = new Date();
     return expiryDate < currentDate;
   }
@@ -40,8 +41,5 @@ export class AdFeedComponent implements OnInit {
         console.log(err)
       }
     });
-    
   }
-
-  
 }

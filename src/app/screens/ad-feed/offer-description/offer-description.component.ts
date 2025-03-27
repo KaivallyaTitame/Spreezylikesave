@@ -20,7 +20,6 @@ export class OfferDescriptionComponent implements OnInit {
     howToAvail: false,
     termsConditions: false
   };
-
   remainingDays: number;
   remainingHours: number;
   isExpired: boolean = false;
