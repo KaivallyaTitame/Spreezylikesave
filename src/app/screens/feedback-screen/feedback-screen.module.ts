@@ -4,17 +4,29 @@ import { FeedbackScreenRoutingModule } from './feedback-screen-routing.module';
 import { FeedbackScreenComponent } from './feedback-screen.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { ReactiveFormsModule } from '@angular/forms';
-import { PopUpComponent } from 'src/app/components/pop-up/pop-up.component'; // Import the PopUpComponent directly
+import { RouterModule, Routes } from '@angular/router';
+import { PopUpComponent } from 'src/app/components/pop-up/pop-up.component'; 
 import { SharedModule } from 'src/app/shared/shared-module/shared-module.module';
+import { BusinessHomeModule } from '../business-home/business-home.module';
+import { ConsumerHomeModule } from '../consumer-home/consumer-home.module';
+
+const routes: Routes = [
+  { path: '', component: FeedbackScreenComponent }
+];
 
 @NgModule({
-  declarations: [FeedbackScreenComponent], // Declare both FeedbackScreenComponent and PopUpComponent
+  declarations: [
+    FeedbackScreenComponent
+  ], 
   imports: [
     CommonModule,
     FeedbackScreenRoutingModule,
     FontAwesomeModule,
     ReactiveFormsModule,
-    SharedModule
+    SharedModule,
+    BusinessHomeModule,
+    ConsumerHomeModule,
+    RouterModule.forChild(routes)
   ],
 })
 export class FeedbackScreenModule {}

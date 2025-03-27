@@ -5,7 +5,6 @@ import { AuthService } from "src/app/services/auth.service";
 import { JwtDecoderService } from "src/app/services/jwtDecoder/jwt-decoder.service";
 
 export const customerGuard: CanActivateFn = (route, state) => {
-  console.log("in customer guard");
   const router = inject(Router);
   const jwtDecoder = inject(JwtDecoderService);
   const authService = inject(AuthService);

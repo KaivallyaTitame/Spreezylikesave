@@ -11,7 +11,7 @@ import { GlobalErrorHandlerService } from "./services/global-error-handler.servi
 import { BusinessHomeModule } from "./screens/business-home/business-home.module";
 import { ConsumerHomeModule } from "./screens/consumer-home/consumer-home.module";
 import { ReactiveFormsModule } from "@angular/forms";
-import { RegisterModule } from "./screens/register/register.module";
+import { registerModule } from "./screens/Registration/register/register.module";
 
 
 @NgModule({
@@ -22,13 +22,12 @@ import { RegisterModule } from "./screens/register/register.module";
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
-    AngularFireModule.initializeApp(environment.firebase),
+    AngularFireModule.initializeApp(environment.firebase),  // THis functionality is disabled for temporary purpose
     LoginModule,
     LogoutModule,
     BusinessHomeModule,
     ConsumerHomeModule,
     ReactiveFormsModule,
-    RegisterModule
   ],
   providers: [
     {

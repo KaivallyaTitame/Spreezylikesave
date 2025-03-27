@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { faSearch, faBell, faHome, faCircleUser } from '@fortawesome/free-solid-svg-icons';
+import { DecodedToken } from 'src/app/models/decodedToken';
 import { ConsumerNavigationService } from 'src/app/services/consumer-navigation.service';
+import { JwtDecoderService } from 'src/app/services/jwtDecoder/jwt-decoder.service';
 
 @Component({
   selector: 'app-consumer-bottom-navbar',
@@ -20,21 +22,28 @@ export class ConsumerBottomNavbarComponent implements OnInit {
   Search_screen_active = false;
   Notification_screen_active = false;
   Profile_screen_active = false;
+  currentUser: string = 'tanvi247';
 
-  constructor(private router: Router, private _navigation: ConsumerNavigationService) {}
+  constructor(private router: Router, private _navigation: ConsumerNavigationService, private jwtDecoderServcie : JwtDecoderService) {}
 
   ngOnInit(): void {
     this.updateActiveStates();
     this.router.events.subscribe(() => {
       this.updateActiveStates();
     });
+    const token = localStorage.getItem("token") || "";
+    const decodedInfoFromToken: DecodedToken = this.jwtDecoderServcie.decodeInfoFromToken(token);
+    this.currentUser = decodedInfoFromToken.sub
   }
 
   navigateTo(screen: string) {
-    this.router.navigate([`/consumer-home/${screen.toLowerCase()}`]);
-    this.updateActiveState(screen); 
+    if (screen.toLowerCase() === 'profile') {
+      this.router.navigate([`/consumer-home/profile/consumer-profile/${this.currentUser}`]);
+    } else {
+      this.router.navigate([`/consumer-home/${screen.toLowerCase()}`]);
+    }
+    this.updateActiveState(screen);
   }
-
   private updateActiveStates() {
     const currentRoute = this.router.url.split('/').pop(); 
     this.resetActiveStates();

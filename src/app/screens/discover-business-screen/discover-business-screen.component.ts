@@ -34,7 +34,7 @@ export class DiscoverBusinessScreenComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.decodeToken();
+    this.decodeToken(); 
     this.searchService.businesses$.subscribe({
       next: (businesses) => {
         this.businesses = businesses.map(business => ({
@@ -49,7 +49,8 @@ export class DiscoverBusinessScreenComponent implements OnInit {
   }
 
   decodeToken(): void {
-    const token = localStorage.getItem('token') || '';
+    const token = localStorage.getItem('token') || '';  
+    
     if (token) {
       try {
         this.decodedToken = this.jwtDecoder.decodeInfoFromToken(token);

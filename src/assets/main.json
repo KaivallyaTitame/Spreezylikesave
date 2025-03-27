@@ -1,0 +1,54 @@
+[
+    {
+        "name": "Test Account",
+        "username": "test_user",
+        "profilePictureUrl": "https://images.spreezy.in/arts_crafts/business-profile-picture.png",
+        "numberOfAdvertisements": 10,
+        "followers": 200,
+        "following": 8000,
+        "socialLinks": {
+            "email": "mailto:techwave@gmail.com",
+            "instagram": "https://www.instagram.com/techwave_consulting/?hl=en",
+            "facebook": "https://www.instagram.com/techwave_consulting/?hl=en"
+      }
+    },
+    {
+        "name": "Test Account 2",
+        "username": "test_user2",
+        "profilePictureUrl": "https://images.spreezy.in/arts_crafts/business-profile-picture.png",
+        "numberOfAdvertisements": 20,
+        "followers": 300,
+        "following": 9000,
+        "socialLinks": {
+            "email": "mailto:techwave@gmail.com",
+            "instagram": "https://www.instagram.com/techwave_consulting/?hl=en",
+            "facebook": "https://www.instagram.com/techwave_consulting/?hl=en"
+      }
+    },
+    {
+        "name": "Test Account 3",
+        "username": "test_user3",
+        "profilePictureUrl": "https://images.spreezy.in/arts_crafts/business-profile-picture.png",
+        "numberOfAdvertisements": 30,
+        "followers": 400,
+        "following": 10000,
+        "socialLinks": {
+            "email": "mailto:techwave@gmail.com",
+            "instagram": "https://www.instagram.com/techwave_consulting/?hl=en",
+            "facebook": "https://www.instagram.com/techwave_consulting/?hl=en"
+      }
+    },
+    {
+        "name": "Test Account 4",
+        "username": "test_user4",
+        "profilePictureUrl": "https://images.spreezy.in/arts_crafts/business-profile-picture.png",
+        "numberOfAdvertisements": 30,
+        "followers": 400,
+        "following": 10000,
+        "socialLinks": {
+            "email": "mailto:techwave@gmail.com",
+            "instagram": "https://www.instagram.com/techwave_consulting/?hl=en",
+            "facebook": "https://www.instagram.com/techwave_consulting/?hl=en"
+      }
+    }
+]
