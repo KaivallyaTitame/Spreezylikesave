@@ -41,7 +41,11 @@ pipeline
             steps{
                 
                 withCredentials([file(credentialsId: 'nexus_npm_credentials', variable: 'npm_nexus_credentials')]) {
-                 sh "npm install --userconfig ${npm_nexus_credentials} --registry https://nexus.spreezy.in/repository/npm-group/ --loglevel verbose"
+                 sh '''
+                    npm config set fetch-timeout 60000
+                    npm config set fetch-retries 2
+                    npm install --userconfig ${npm_nexus_credentials} --registry https://nexus.spreezy.in/repository/npm-group/ --loglevel verbose
+                '''
                 }
             }
         }
