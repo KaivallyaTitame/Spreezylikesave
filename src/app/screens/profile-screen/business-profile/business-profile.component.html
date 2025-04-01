@@ -144,15 +144,15 @@
         *ngIf="selectedTab === 'posts'"
       >
         <div class="post-section grid grid-cols-1 gap-2 py-2">
-          <div *ngFor="let post of visibleProfilePosts" class="ad-item">
+          <div *ngFor="let post of visibleProfilePosts; let i = index" class="ad-item">
             <ng-container *ngIf="post.advertisementType == 'Post'">
-              <app-Post [postDetails]="post"></app-Post>
+              <app-Post (setActiveIndex)="toggleInsight(i)" [activeIndex]="activeIndex" [index]="i"  [postDetails]="post"></app-Post>
             </ng-container>
             <ng-container *ngIf="post.advertisementType == 'Event'">
-              <app-Event [eventDetails]="post"></app-Event>
+              <app-Event (setActiveIndex)="toggleInsight(i)" [activeIndex]="activeIndex" [index]="i"  [eventDetails]="post"></app-Event>
             </ng-container>
             <ng-container *ngIf="post.advertisementType == 'Coupon'">
-              <app-Coupon [couponDetails]="post"></app-Coupon>
+              <app-Coupon (setActiveIndex)="toggleInsight(i)" [activeIndex]="activeIndex" [index]="i"  [couponDetails]="post"></app-Coupon>
             </ng-container>
           </div>
           <div *ngIf="loadingProfilePosts" class="text-center py-4">

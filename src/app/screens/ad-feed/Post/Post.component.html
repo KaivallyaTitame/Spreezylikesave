@@ -3,16 +3,16 @@
 
     <div class="flex items-center justify-between p-2">
       <img [src]="postDetails.profileImageUrl" alt="Profile" class="w-12 h-12 rounded-full mt-2 ml-1">
-      <div class="flex-grow ml-2 text-left">
+     <div class="flex-grow ml-2 text-left">
         <div class="font-bold text-lg mt-2 text-black">{{ postDetails.username }}</div>
         <div class="text-sm text-gray-500">
-  <ng-container *ngIf="isExpired; else notExpired">
-      Expired
-  </ng-container>
-  <ng-template #notExpired>
-      Expires in {{ remainingDays }} days and {{ remainingHours }} hours
-  </ng-template>
-</div>
+        <ng-container *ngIf="isExpired; else notExpired">
+            Expired
+        </ng-container>
+        <ng-template #notExpired>
+            Expires in {{ remainingDays }} days and {{ remainingHours }} hours
+        </ng-template>
+      </div>
       </div>
       <button
         class="bg-primary text-white font-medium font-system-ui border-none px-3 py-1 rounded mt-2 mr-1 cursor-pointer">
@@ -20,7 +20,7 @@
       </button>
     </div>
 
-    <!-- <img [src]="postDetails.offerImageUrl" alt="Event" class="w-full mt-2 object-cover h-96"> -->
+    <img  [src]="postDetails.offerImageUrl" alt="Event" class="w-full mt-2 object-cover h-96">
     <div class="m-4 text-lg font-semibold text-gray-700 text-center">
       {{ postDetails.offerTitle }}
     </div>
@@ -97,10 +97,33 @@
       </div>
     </div>
 
-    <button
-      class="w-full px-2 py-1 text-lg font-bold bg-primary text-white border-none rounded-b-[4px] cursor-pointer text-center">
-      Show Details →
-    </button>
+    <div class="flex flex-col">
+        <app-post-insights
+          *ngIf="activeIndex === index"
+          (ClickOut)="showInsightComponent($event)"
+          [showInsightScreen]="showInsightScreen"
+          [likes]="postDetails.likes"
+          [shares]="postDetails.shares"
+          [engagement]="postDetails.engagement"
+          [comments]="postDetails.comments"
+        >
+          <!-- it will contain the code to insight component -->
+        </app-post-insights>
+      <div class="flex flex-row">
+        <button
+          class="w-full px-2 py-1 text-lg font-bold bg-primary text-white border-none rounded-b-[4px] cursor-pointer text-center">
+          Show Details →
+        </button>
+        <button
+          *ngIf="showInsightsButton === true"
+          (click)="showInsights(activeIndex === index ? false : true,$event)"
+          id="show-insights-button"
+          class="w-full px-2 py-1 text-lg font-bold bg-primary text-white border-none rounded-b-[4px] cursor-pointer text-center">
+          {{ activeIndex === index ? "Hide Insights →" : "Show Insights →" }}
+        </button>
+      </div>
+    </div>
+
   </div>
   <app-pop-up
   *ngIf="showPopup"

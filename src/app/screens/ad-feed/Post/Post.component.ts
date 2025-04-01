@@ -1,8 +1,9 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit,Output,EventEmitter} from '@angular/core';
 import { faBars, faUserGroup, faMagnifyingGlass, faThumbsUp, faThumbsDown, faLocationArrow, faBookmark, faEllipsisVertical, faLocationDot, faHeart, faBell, faCircleUser } from '@fortawesome/free-solid-svg-icons';
 import { faThumbsUp as faThumbsUpOutline, faThumbsDown as faThumbsDownOutline } from '@fortawesome/free-regular-svg-icons'; // Import outlined icons
 import { AdvertisementDetailsService } from 'src/app/services/advertisementTypes.service';
 import { AdvertisementDetails } from 'src/app/models/ad-details';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-Post',
@@ -11,6 +12,9 @@ import { AdvertisementDetails } from 'src/app/models/ad-details';
 })
 export class PostComponent implements OnInit {
   @Input() postDetails!: AdvertisementDetails;
+  @Input() index!: number; 
+  @Input() activeIndex!: number | undefined; 
+  @Output() setActiveIndex = new EventEmitter<number>();
   remainingDays: number;
   remainingHours: number;
   isExpired: boolean = false;
@@ -45,15 +49,38 @@ export class PostComponent implements OnInit {
   // Track like/dislike state
   isLiked: boolean = false; // State for like
   isDisliked: boolean = false; // State for dislike
+  showInsightsButton: boolean = false; 
+  showInsightScreen:boolean = false; 
+ 
 
-  constructor(private advertisementDetailsService: AdvertisementDetailsService) {}
+
+  constructor(private advertisementDetailsService: AdvertisementDetailsService,private route: ActivatedRoute) { }
 
   ngOnInit(): void {
     const { remainingDays, remainingHours, isExpired } = this.advertisementDetailsService.calculateExpiry(this.postDetails.offerExpiry);
     this.remainingDays = remainingDays;
     this.remainingHours = remainingHours;
     this.isExpired = isExpired;
+    this.showInsightsButton = (this.route.snapshot.paramMap.get('username')) ? true : false; 
+    if("shares" in this.postDetails == false && "comments" in this.postDetails == false && "engagement" in this.postDetails == false){
+      this.showInsightsButton = false; 
+    }
   }
+
+  showInsights(val :boolean,event: Event) : void{
+    event.stopPropagation(); 
+    this.showInsightScreen = val; 
+    this.setActiveIndex.emit(this.index); 
+  }
+
+  showInsightComponent(event: Event) {
+    if(!this.showInsightScreen){
+      return; 
+    }
+    this.showInsightScreen = false;
+    this.setActiveIndex.emit(undefined);
+  }
+
 
   likePost(): void {
     const advertisementId = this.postDetails.advertisementId;
@@ -131,7 +158,6 @@ export class PostComponent implements OnInit {
 
     this.advertisementDetailsService.savePost(username, advertisementId).subscribe({
       next: (response) => {
-        console.log('Post saved successfully:', response);
         this.isSaved = true;
       },
       error: (err) => {
