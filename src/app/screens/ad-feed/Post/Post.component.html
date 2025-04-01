@@ -111,15 +111,15 @@
         </app-post-insights>
       <div class="flex flex-row">
         <button
-          class="w-full px-2 py-1 text-lg font-bold bg-primary text-white border-none rounded-b-[1px] cursor-pointer text-center">
+          class="w-full px-2 py-1 text-lg font-bold bg-primary text-white border-none rounded-b-[0px] cursor-pointer text-center">
           Show Details →
         </button>
         <button
           *ngIf="showInsightsButton === true"
           (click)="showInsights(activeIndex === index ? false : true,$event)"
           id="show-insights-button"
-          class="w-full px-2 py-1 text-lg font-bold bg-primary text-white border-none rounded-b-[1px] cursor-pointer text-center">
-          {{ activeIndex === index ? "Hide Insights →" : "Show Insights →" }}
+          class="w-full px-2 py-1 text-lg font-bold bg-primary text-white border-none rounded-b-[0px] cursor-pointer text-center">
+           {{ activeIndex === index ? "Hide Insights →" : "Show Insights →" }}
         </button>
       </div>
     </div>
