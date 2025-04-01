@@ -1,8 +1,9 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit,Output,EventEmitter } from '@angular/core';
 import { faBars, faUserGroup, faMagnifyingGlass, faThumbsUp, faThumbsDown, faLocationArrow, faBookmark, faEllipsisVertical, faLocationDot, faHeart, faBell, faCircleUser } from '@fortawesome/free-solid-svg-icons';
 import { faThumbsUp as faThumbsUpOutline, faThumbsDown as faThumbsDownOutline } from '@fortawesome/free-regular-svg-icons'; // Import outlined icons
 import { AdvertisementDetailsService } from 'src/app/services/advertisementTypes.service';
 import { AdvertisementDetails } from 'src/app/models/ad-details';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-Coupon',
@@ -11,7 +12,9 @@ import { AdvertisementDetails } from 'src/app/models/ad-details';
 })
 export class CouponComponent implements OnInit {
   @Input() couponDetails!: AdvertisementDetails;
-
+  @Input() index!: number; 
+  @Input() activeIndex!: number | undefined; 
+  @Output() setActiveIndex = new EventEmitter<number>();  
   remainingDays: number;
   isExpired: boolean = false;
   reportVisible: boolean = false; // Property to control visibility of report modal
@@ -50,8 +53,9 @@ export class CouponComponent implements OnInit {
   // Track like/dislike state
   isLiked: boolean = false; 
   isDisliked: boolean = false; 
-
-  constructor(private advertisementDetailsService: AdvertisementDetailsService) {}
+  showInsightsButton:boolean = false; 
+  showInsightScreen:boolean = false; 
+  constructor(private advertisementDetailsService: AdvertisementDetailsService,private route: ActivatedRoute) {}
 
   ngOnInit(): void {
     try {
@@ -59,10 +63,33 @@ export class CouponComponent implements OnInit {
       this.remainingDays = remainingDays;
       this.remainingHours = remainingHours;
       this.isExpired = isExpired;
+      this.showInsightsButton = (this.route.snapshot.paramMap.get('username')) ? true : false; 
+      if("shares" in this.couponDetails == false && "comments" in this.couponDetails == false && "engagement" in this.couponDetails == false){
+        this.showInsightsButton = false; 
+      }
+      this.showInsightsButton = (this.route.snapshot.paramMap.get('username')) ? true : false; 
+      if("shares" in this.couponDetails == false && "comments" in this.couponDetails == false && "engagement" in this.couponDetails == false){
+        this.showInsightsButton = false; 
+      }
     } catch (error) {
       console.error('Error calculating expiry:', error);
     }
   }
+
+  showInsights(val :boolean,event: Event) : void{
+    event.stopPropagation(); 
+    this.showInsightScreen = val; 
+    this.setActiveIndex.emit(this.index); 
+  }
+
+  showInsightComponent(event: Event) {
+    if(!this.showInsightScreen){
+      return; 
+    }
+    this.showInsightScreen = false;
+    this.setActiveIndex.emit(undefined);
+  }
+
 
   likePost(): void {
     const advertisementId = this.couponDetails.advertisementId;
@@ -143,7 +170,6 @@ export class CouponComponent implements OnInit {
 
     this.advertisementDetailsService.savePost(username, advertisementId).subscribe({
       next: (response) => {
-        console.log('Post saved successfully:', response);
         this.isSaved = true;
       },
       error: (err) => {
@@ -161,7 +187,6 @@ export class CouponComponent implements OnInit {
       }, 2000);
     }).catch(err => {
       this.showError('Copy Error', 'Failed to copy coupon code. Please try again.');
-     
     });
   }
 

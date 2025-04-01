@@ -1,5 +1,5 @@
 export interface AdvertisementDetails {
-  advertisementId: number;
+    advertisementId: number;
     advertisementType:string;
     profileImageUrl: string;
     username: string;
@@ -8,6 +8,9 @@ export interface AdvertisementDetails {
     offerSubtitle: string;
     likes: number;
     dislikes: number;
+    shares: number; 
+    engagement:number; 
+    comments: number; 
     descriptionTitle: string;
     descriptionContent: string;
     howToAvailSteps: string[];
@@ -17,4 +20,5 @@ export interface AdvertisementDetails {
     imagePaths: string[];
     description: string;
     eventDateAndTime:string;
+    offerImageUrl:string;
   }

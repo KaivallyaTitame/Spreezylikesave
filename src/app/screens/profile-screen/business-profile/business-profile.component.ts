@@ -49,6 +49,7 @@ export class BusinessProfileComponent implements OnInit {
   popupBody: string = "";
   hasMoreProfilePosts: boolean = true; // Initially assume there are more posts
   hasMoreSavedPosts: boolean = true; // Initially assume there are more saved posts
+  activeIndex: number | undefined = undefined; 
 
   constructor(
     private UserService: UserService,
@@ -69,6 +70,17 @@ export class BusinessProfileComponent implements OnInit {
       }
     });
   }
+
+  toggleInsight(index: number | undefined): void {
+    if(this.activeIndex === index){
+      this.activeIndex = undefined; 
+    }
+    else{
+      this.activeIndex = index;
+    }
+  }
+
+
   fetchCurrentUsername(): string {
     const token = localStorage.getItem("token") || "";
     const decodedToken: DecodedToken =
@@ -82,11 +94,13 @@ export class BusinessProfileComponent implements OnInit {
     this.loadingUserDetails = true; // Show skeletons during loading
     this.UserService.getUserDetails(username).subscribe({
       next: (data) => {
+        console.log(data); 
         if (data.profileImageUrl) {
           data.profileImageUrl = this.UserService.getImageUrl(
             username,
             data.profileImageUrl
           );
+
         }
         this.userDetails = data;
         this.loadingUserDetails = false; // Hide skeletons after successful fetch
@@ -216,6 +230,7 @@ export class BusinessProfileComponent implements OnInit {
 
   switchTab(tab: string): void {
     // Save the current scroll position for the active tab
+    console.log(this.selectedTab); 
     const scrollContainer = document.querySelector(".scroll-container");
     if (scrollContainer) {
       this.scrollPositions[this.selectedTab] = scrollContainer.scrollTop;
@@ -231,6 +246,7 @@ export class BusinessProfileComponent implements OnInit {
         newScrollContainer.scrollTop = this.scrollPositions[tab] || 0;
       }
     }, 0);
+    this.activeIndex = undefined; 
   }
 
   defaultProfileImage = "assets/default-pic.png";

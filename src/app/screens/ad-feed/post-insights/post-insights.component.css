@@ -1,0 +1,25 @@
+.slide-up {
+  position: fixed;
+  bottom: -100%;
+  left: 0;
+  width: 100%;
+  height: 34%;
+  background-color: white;
+  color: black;
+  padding: 1rem;
+  text-align: center;
+  transition: bottom 0.5s ease-in-out;
+  z-index: 30;
+  padding-bottom: 0px;
+  margin-bottom: 0px;
+}
+
+.slide-up-active {
+  transform: translateY(0);
+  bottom: 55px; 
+}
+
+.slide-up-hidden {
+  transform: translateY(100%);
+  bottom: -100%; 
+}

@@ -1,0 +1,31 @@
+<div #childDiv class="slide-up fixed w-full z-30 mb-0"
+     [ngClass]="{
+       'slide-up-active': isVisible,
+       'slide-up-hidden': !isVisible
+     }">
+    <div class="flex flex-row flex-wrap gap-x-12 gap-y-5 justify-between justify-items-start">
+        <div *ngIf="likes !== undefined" class="flex flex-col">
+        <fa-icon [icon]="faHeart" class="fa-xl text-[#ff6251]" size="1x"></fa-icon>
+         <p class="text-textcolor-0">Likes</p>
+          <p class="text-textcolor-0">{{likes}}</p>
+        </div>
+
+       <div *ngIf="shares !== undefined" class="flex flex-col">
+          <fa-icon [icon]="faLocationArrow" class="fa-xl" [ngStyle]="{'color': '#ffb43f'}" size="1x"></fa-icon>
+          <p class="text-textcolor-0">Shares</p>
+          <p class="text-textcolor-0">{{shares}}</p>
+        </div>
+
+        <div *ngIf="comments !== undefined" class="flex flex-col">
+          <fa-icon [icon]="faBookmark" class="fa-xl" [ngStyle]="{'color': '#ffb43f'}" size="1x"></fa-icon>
+          <p class="text-textcolor-0">Comments</p>
+          <p class="text-textcolor-0">{{comments}}</p>
+        </div>
+
+        <div *ngIf="engagement !== undefined" class="flex flex-col">
+          <fa-icon [icon]="faUsers" class="fa-xl" [ngStyle]="{'color': '#A3CE48'}" size="1x"></fa-icon>
+          <p class="text-textcolor-0">Engagement</p>
+          <p class="text-textcolor-0">{{engagement}}</p>
+        </div>
+    </div>
+</div>

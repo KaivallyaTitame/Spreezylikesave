@@ -1,9 +1,10 @@
-// src/app/components/post-event/post-event.component.ts
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit,Output,EventEmitter } from '@angular/core';
 import { faBars, faUserGroup, faMagnifyingGlass, faThumbsUp, faThumbsDown, faLocationArrow, faBookmark, faEllipsisVertical, faLocationDot, faHeart, faBell, faCircleUser } from '@fortawesome/free-solid-svg-icons';
 import { faThumbsUp as faThumbsUpOutline, faThumbsDown as faThumbsDownOutline } from '@fortawesome/free-regular-svg-icons'; // Import outlined icons
 import { AdvertisementDetailsService } from 'src/app/services/advertisementTypes.service';
 import { AdvertisementDetails } from 'src/app/models/ad-details';
+import { ActivatedRoute } from '@angular/router';
+
 @Component({
   selector: 'app-Event',
   templateUrl: './Event.component.html',
@@ -11,7 +12,9 @@ import { AdvertisementDetails } from 'src/app/models/ad-details';
 })
 export class EventComponent implements OnInit {
   @Input() eventDetails!:AdvertisementDetails;
-
+  @Input() index!: number; 
+  @Input() activeIndex!: number | undefined; 
+  @Output() setActiveIndex = new EventEmitter<number>();
   remainingDays: number;
   remainingHours: number;
   isExpired: boolean = false;
@@ -22,7 +25,8 @@ export class EventComponent implements OnInit {
   showDislikeAnimation: boolean = false;
   isSaved: boolean = false; // Track saved state
   showSavedMessage: boolean = false; // Track the display of "Saved" message
-  
+ 
+ 
   showPopup: boolean = false;
   popupTitle: string = 'Error';
   popupBody: string = '';
@@ -46,8 +50,9 @@ export class EventComponent implements OnInit {
   // Track like/dislike state
   isLiked: boolean = false; // State for like
   isDisliked: boolean = false; // State for dislike
-
-  constructor(private advertisementDetailsService: AdvertisementDetailsService) {}
+  showInsightsButton:boolean = false; 
+  showInsightScreen:boolean = false; 
+  constructor(private advertisementDetailsService: AdvertisementDetailsService,private route: ActivatedRoute) {}
 
   
   ngOnInit(): void {
@@ -55,7 +60,30 @@ export class EventComponent implements OnInit {
     this.remainingDays = remainingDays;
     this.remainingHours = remainingHours;
     this.isExpired = isExpired;
+    this.showInsightsButton = (this.route.snapshot.paramMap.get('username')) ? true : false; 
+    if("shares" in this.eventDetails == false && "comments" in this.eventDetails == false && "engagement" in this.eventDetails == false){
+      this.showInsightsButton = false; 
+    }
   }
+
+  
+
+  showInsights(val :boolean,event: Event) : void{
+    event.stopPropagation(); 
+    this.showInsightScreen = val; 
+    this.setActiveIndex.emit(this.index); 
+  }
+
+  showInsightComponent(event: Event) {
+    if(!this.showInsightScreen){
+      return; 
+    }
+    this.showInsightScreen = false;
+    this.setActiveIndex.emit(undefined);
+  }
+
+
+
 
   likePost(): void {
     const advertisementId = this.eventDetails.advertisementId;
@@ -136,7 +164,6 @@ export class EventComponent implements OnInit {
 
     this.advertisementDetailsService.savePost(username, advertisementId).subscribe({
       next: (response) => {
-        console.log('Post saved successfully:', response);
         this.isSaved = true;
       },
       error: (err) => {
