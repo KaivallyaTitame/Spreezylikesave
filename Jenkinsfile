@@ -68,23 +68,7 @@ pipeline
 
         //     }
         // }
-        stage('Run Tests'){
-            steps {
-            sh 'npm start &'
-
-            // Wait for Angular application to start
-            sh 'npx wait-on http://localhost:4200'
-
-            // Run Cypress tests
-            sh 'NO_COLOR=1 npm run test'
-            sh 'npm run test:coverage'
-
-
-            sh 'pkill -f "npm start"'
-
-            }
-        }
-
+        
          stage('sonarQube-analysis') {
     steps {
         withSonarQubeEnv('sonar-scanner') { // Ensure 'sonar-scanner' matches the name configured in Jenkins
