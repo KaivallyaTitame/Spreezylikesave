@@ -98,17 +98,6 @@
     </div>
 
     <div class="flex flex-col">
-        <app-post-insights
-          *ngIf="activeIndex === index"
-          (ClickOut)="showInsightComponent($event)"
-          [showInsightScreen]="showInsightScreen"
-          [likes]="postDetails.likes"
-          [shares]="postDetails.shares"
-          [engagement]="postDetails.engagement"
-          [comments]="postDetails.comments"
-        >
-          <!-- it will contain the code to insight component -->
-        </app-post-insights>
       <div class="flex flex-row">
         <button
           class="w-full px-2 py-1 text-lg font-bold bg-primary text-white border-none rounded-b-[0px] cursor-pointer text-center">

@@ -14,7 +14,9 @@ export class PostComponent implements OnInit {
   @Input() postDetails!: AdvertisementDetails;
   @Input() index!: number; 
   @Input() activeIndex!: number | undefined; 
+  @Input() showInsightScreen!: boolean; 
   @Output() setActiveIndex = new EventEmitter<number>();
+  @Output() setInsightScreen = new EventEmitter<Event>(); 
   remainingDays: number;
   remainingHours: number;
   isExpired: boolean = false;
@@ -50,7 +52,6 @@ export class PostComponent implements OnInit {
   isLiked: boolean = false; // State for like
   isDisliked: boolean = false; // State for dislike
   showInsightsButton: boolean = false; 
-  showInsightScreen:boolean = false; 
  
 
 
@@ -68,8 +69,9 @@ export class PostComponent implements OnInit {
   }
 
   showInsights(val :boolean,event: Event) : void{
-    event.stopPropagation(); 
+    console.log(this.activeIndex,this.index,val); 
     this.showInsightScreen = val; 
+    this.setInsightScreen.emit(event);
     this.setActiveIndex.emit(this.index); 
   }
 
