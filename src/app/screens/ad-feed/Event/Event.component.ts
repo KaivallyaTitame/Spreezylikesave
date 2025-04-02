@@ -15,6 +15,8 @@ export class EventComponent implements OnInit {
   @Input() index!: number; 
   @Input() activeIndex!: number | undefined; 
   @Output() setActiveIndex = new EventEmitter<number>();
+  @Output() setInsightScreen = new EventEmitter<Event>(); 
+  @Input() showButton !:boolean;
   remainingDays: number;
   remainingHours: number;
   isExpired: boolean = false;
@@ -50,8 +52,6 @@ export class EventComponent implements OnInit {
   // Track like/dislike state
   isLiked: boolean = false; // State for like
   isDisliked: boolean = false; // State for dislike
-  showInsightsButton:boolean = false; 
-  showInsightScreen:boolean = false; 
   constructor(private advertisementDetailsService: AdvertisementDetailsService,private route: ActivatedRoute) {}
 
   
@@ -60,27 +60,15 @@ export class EventComponent implements OnInit {
     this.remainingDays = remainingDays;
     this.remainingHours = remainingHours;
     this.isExpired = isExpired;
-    this.showInsightsButton = (this.route.snapshot.paramMap.get('username')) ? true : false; 
-    if("shares" in this.eventDetails == false && "comments" in this.eventDetails == false && "engagement" in this.eventDetails == false){
-      this.showInsightsButton = false; 
-    }
   }
 
   
 
-  showInsights(val :boolean,event: Event) : void{
-    event.stopPropagation(); 
-    this.showInsightScreen = val; 
+  showInsights(event: Event) : void{
+    this.setInsightScreen.emit(event);
     this.setActiveIndex.emit(this.index); 
   }
 
-  showInsightComponent(event: Event) {
-    if(!this.showInsightScreen){
-      return; 
-    }
-    this.showInsightScreen = false;
-    this.setActiveIndex.emit(undefined);
-  }
 
 
 
