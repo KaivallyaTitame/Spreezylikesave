@@ -14,9 +14,9 @@ export class PostComponent implements OnInit {
   @Input() postDetails!: AdvertisementDetails;
   @Input() index!: number; 
   @Input() activeIndex!: number | undefined; 
-  @Input() showInsightScreen!: boolean; 
   @Output() setActiveIndex = new EventEmitter<number>();
   @Output() setInsightScreen = new EventEmitter<Event>(); 
+  @Input() showButton !:boolean; 
   remainingDays: number;
   remainingHours: number;
   isExpired: boolean = false;
@@ -51,7 +51,6 @@ export class PostComponent implements OnInit {
   // Track like/dislike state
   isLiked: boolean = false; // State for like
   isDisliked: boolean = false; // State for dislike
-  showInsightsButton: boolean = false; 
  
 
 
@@ -62,25 +61,11 @@ export class PostComponent implements OnInit {
     this.remainingDays = remainingDays;
     this.remainingHours = remainingHours;
     this.isExpired = isExpired;
-    this.showInsightsButton = (this.route.snapshot.paramMap.get('username')) ? true : false; 
-    if("shares" in this.postDetails == false && "comments" in this.postDetails == false && "engagement" in this.postDetails == false){
-      this.showInsightsButton = false; 
-    }
   }
 
-  showInsights(val :boolean,event: Event) : void{
-    console.log(this.activeIndex,this.index,val); 
-    this.showInsightScreen = val; 
+  showInsights(event: Event) : void{
     this.setInsightScreen.emit(event);
     this.setActiveIndex.emit(this.index); 
-  }
-
-  showInsightComponent(event: Event) {
-    if(!this.showInsightScreen){
-      return; 
-    }
-    this.showInsightScreen = false;
-    this.setActiveIndex.emit(undefined);
   }
 
 

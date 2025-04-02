@@ -125,11 +125,11 @@
             Show Details →
           </button>
           <button
-            *ngIf="showInsightsButton === true"
-            (click)="showInsights(activeIndex === index ? false : true,$event)"
+            *ngIf="showButton === true"
+            (click)="showInsights($event)"
             id="show-insights-button"
             class="w-full px-2 py-1 text-lg font-bold bg-primary text-white border-none rounded-b-[0px] cursor-pointer text-center">
-            {{ activeIndex === index ? "Hide Insights" : "Show Insights" }}
+            {{ activeIndex === index ? "Hide Insights →" : "Show Insights →" }}
           </button>
         </div>
       </div>  

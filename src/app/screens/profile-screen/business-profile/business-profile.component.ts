@@ -85,10 +85,8 @@ export class BusinessProfileComponent implements OnInit {
   }
 
   setInsightScreen(event:Event): void{
-      console.log('Before value: ',this.showInsightScreen);
       event.stopPropagation(); 
       this.showInsightScreen = !this.showInsightScreen; 
-      console.log('After value: ',this.showInsightScreen);
   }
 
   hideInsight(event:Event):void{

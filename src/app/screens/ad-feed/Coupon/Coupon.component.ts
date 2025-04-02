@@ -14,7 +14,10 @@ export class CouponComponent implements OnInit {
   @Input() couponDetails!: AdvertisementDetails;
   @Input() index!: number; 
   @Input() activeIndex!: number | undefined; 
-  @Output() setActiveIndex = new EventEmitter<number>();  
+  @Output() setActiveIndex = new EventEmitter<number>();
+  @Output() setInsightScreen = new EventEmitter<Event>(); 
+  @Input() showButton !:boolean; 
+
   remainingDays: number;
   isExpired: boolean = false;
   reportVisible: boolean = false; // Property to control visibility of report modal
@@ -53,8 +56,6 @@ export class CouponComponent implements OnInit {
   // Track like/dislike state
   isLiked: boolean = false; 
   isDisliked: boolean = false; 
-  showInsightsButton:boolean = false; 
-  showInsightScreen:boolean = false; 
   constructor(private advertisementDetailsService: AdvertisementDetailsService,private route: ActivatedRoute) {}
 
   ngOnInit(): void {
@@ -63,32 +64,16 @@ export class CouponComponent implements OnInit {
       this.remainingDays = remainingDays;
       this.remainingHours = remainingHours;
       this.isExpired = isExpired;
-      this.showInsightsButton = (this.route.snapshot.paramMap.get('username')) ? true : false; 
-      if("shares" in this.couponDetails == false && "comments" in this.couponDetails == false && "engagement" in this.couponDetails == false){
-        this.showInsightsButton = false; 
-      }
-      this.showInsightsButton = (this.route.snapshot.paramMap.get('username')) ? true : false; 
-      if("shares" in this.couponDetails == false && "comments" in this.couponDetails == false && "engagement" in this.couponDetails == false){
-        this.showInsightsButton = false; 
-      }
     } catch (error) {
       console.error('Error calculating expiry:', error);
     }
   }
 
-  showInsights(val :boolean,event: Event) : void{
-    event.stopPropagation(); 
-    this.showInsightScreen = val; 
+  showInsights(event: Event) : void{
+    this.setInsightScreen.emit(event);
     this.setActiveIndex.emit(this.index); 
   }
 
-  showInsightComponent(event: Event) {
-    if(!this.showInsightScreen){
-      return; 
-    }
-    this.showInsightScreen = false;
-    this.setActiveIndex.emit(undefined);
-  }
 
 
   likePost(): void {
