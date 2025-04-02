@@ -6,6 +6,7 @@ import { faCoffee,faHeart,faLocationArrow,faBookmark,faUsers} from '@fortawesome
   templateUrl: './post-insights.component.html',
   styleUrls: ['./post-insights.component.css']
 })
+
 export class PostInsightsComponent {
   @Input() showInsightScreen!: boolean; 
   @Input() likes!: number | undefined; 
