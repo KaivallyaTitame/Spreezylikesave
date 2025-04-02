@@ -76,15 +76,23 @@ export class BusinessProfileComponent implements OnInit {
   toggleInsight(index: number | undefined): void {
     if(this.activeIndex === index){
       this.activeIndex = undefined; 
+      this.showInsightScreen = false; 
+    }
+    else if(this.activeIndex !== undefined && this.activeIndex !== index && index != undefined){
+       setTimeout(() => {
+          this.activeIndex = index; 
+          this.showInsightScreen = true; 
+       },1000);
     }
     else{
-      this.activeIndex = index;
+      this.activeIndex = index; 
     }
   }
 
   setInsightScreen(event:Event): void{
       event.stopPropagation(); 
       this.showInsightScreen = !this.showInsightScreen; 
+      console.log('executed'); 
   }
 
   hideInsight(event:Event):void{
