@@ -52,6 +52,8 @@ export class BusinessProfileComponent implements OnInit {
   hasZeroPosts:boolean = false; 
   hasZeroSavedPosts:boolean = false;
   activeIndex: number | undefined = undefined; 
+  showInsightScreen:boolean = false; 
+
 
   constructor(
     private UserService: UserService,
@@ -82,6 +84,19 @@ export class BusinessProfileComponent implements OnInit {
     }
   }
 
+  setInsightScreen(event:Event): void{
+      console.log('Before value: ',this.showInsightScreen);
+      event.stopPropagation(); 
+      this.showInsightScreen = !this.showInsightScreen; 
+      console.log('After value: ',this.showInsightScreen);
+  }
+
+  hideInsight(event:Event):void{
+    event.stopPropagation(); 
+    this.showInsightScreen = false; 
+    this.toggleInsight(undefined); 
+  }
+
 
   fetchCurrentUsername(): string {
     const token = localStorage.getItem("token") || "";
@@ -96,7 +111,6 @@ export class BusinessProfileComponent implements OnInit {
     this.loadingUserDetails = true; // Show skeletons during loading
     this.UserService.getUserDetails(username).subscribe({
       next: (data) => {
-        console.log(data); 
         if (data.profileImageUrl) {
           data.profileImageUrl = this.UserService.getImageUrl(
             username,
@@ -225,7 +239,6 @@ export class BusinessProfileComponent implements OnInit {
 
   switchTab(tab: string): void {
     // Save the current scroll position for the active tab
-    console.log(this.selectedTab); 
     const scrollContainer = document.querySelector(".scroll-container");
     if (scrollContainer) {
       this.scrollPositions[this.selectedTab] = scrollContainer.scrollTop;

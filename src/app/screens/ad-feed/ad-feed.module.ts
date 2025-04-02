@@ -12,7 +12,6 @@ import { CouponComponent } from './Coupon/Coupon.component';
 
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { SharedModule } from 'src/app/shared/shared-module/shared-module.module';
-import { PostInsightsComponent } from './post-insights/post-insights.component';
 
 
 
@@ -23,7 +22,6 @@ import { PostInsightsComponent } from './post-insights/post-insights.component';
     EventComponent,
     PostComponent,
     CouponComponent,
-    PostInsightsComponent,
     
   
    
@@ -40,7 +38,6 @@ import { PostInsightsComponent } from './post-insights/post-insights.component';
     EventComponent,
     PostComponent,
     CouponComponent,
-    PostInsightsComponent
   ]
 
 })

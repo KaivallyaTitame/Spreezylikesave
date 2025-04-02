@@ -24,8 +24,6 @@ export class PostInsightsComponent {
     }
   }
 
-
-  isVisible: boolean = false; 
   faCoffee = faCoffee;
   faHeart = faHeart; 
   faLocationArrow = faLocationArrow;
@@ -34,12 +32,11 @@ export class PostInsightsComponent {
 
 
   ngOnInit(): void {
-    this.isVisible = this.showInsightScreen; 
   }
 
 
-  closeInsight() {
-    this.isVisible = false;
-    setTimeout(() => this.showInsightScreen = false, 500); 
-  }
+  // closeInsight() {
+  //   this.showInsightScreen = false;
+  //   setTimeout(() => this.showInsightScreen = false, 500); 
+  // }
 }
