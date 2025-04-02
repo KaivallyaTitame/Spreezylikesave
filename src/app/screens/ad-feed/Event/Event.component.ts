@@ -139,9 +139,17 @@ export class EventComponent implements OnInit {
   }
 
   reportPost(): void {
-    this.showReportSuccess = true;
-    this.showReportButton = false; 
-    document.body.style.overflow = 'hidden';  
+    this.advertisementDetailsService.reportPost(this.eventDetails.advertisementId).subscribe({
+      next: (response) => {
+        console.log('Post reported successfully:', response);
+        this.showReportSuccess = true;
+        this.showReportButton = false;
+      },
+      error: (err) => {
+        this.showError('Report Error', 'Failed to Report the post. Please try again.');
+      },
+    });
+    document.body.style.overflow = 'hidden';
   }
 
   hideReportSuccess(): void {

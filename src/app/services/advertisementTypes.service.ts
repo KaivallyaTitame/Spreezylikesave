@@ -21,10 +21,10 @@ export class AdvertisementDetailsService {
   }
 
   getAdvertisementDetails(): Observable<AdvertisementDetails[]> {
-    const userDetails = this.jwtDecoderService.decodeInfoFromToken(localStorage.getItem('token') || "");
-    // return this.http.get<AdvertisementDetails[]>(`${this.baseUrl}/advertisement-feed/suyash`, {
+    let token = localStorage.getItem("token") || "";
+    let userName = this.jwtDecoderService.decodeInfoFromToken(token)["sub"] || "";
+    // return this.http.get<AdvertisementDetails[]>(`${this.baseUrl}/advertisement-feed/{userName}`, {
     return this.http.get<AdvertisementDetails[]>(`https://dummyjson.com/c/3144-37bd-44be-b7a9`, {
-    // return this.http.get<AdvertisementDetails[]>(`https://dummyjson.com/c/57b9-038d-47a8-8bd4`, {
       responseType: 'json',
       headers: new HttpHeaders(),
     });
@@ -33,8 +33,7 @@ export class AdvertisementDetailsService {
   updateLikes(advertisementId: number): Observable<AdvertisementDetails> {
     return this.http.post<AdvertisementDetails>(
       `${this.baseUrl}/content/advertisement/upvote/${advertisementId}`,
-      {},
-      {
+      {},{
         responseType: 'json',
         headers: new HttpHeaders(),
       }
@@ -73,6 +72,19 @@ export class AdvertisementDetailsService {
       }
     );
   }
+
+  reportPost(advertisementId: number): Observable<any> {
+    let token = localStorage.getItem("token") || "";
+    let userName = this.jwtDecoderService.decodeInfoFromToken(token)["sub"] || "";
+    return this.http.post(
+      `${this.baseUrl}/content/advertisement/report/${advertisementId}`,{
+        "advertisementId": advertisementId,
+        "usernameOfReporter": userName
+      },{
+        responseType: 'json',
+        headers: new HttpHeaders(),
+      }  );
+    }
 
   unfollowUser(sourceUsername: string, username: string): Observable<any> {
     return this.http.post(

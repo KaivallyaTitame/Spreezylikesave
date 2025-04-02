@@ -17,19 +17,19 @@ import { JwtDecoderService } from 'src/app/services/jwt-decoder.service';
 export class PostComponent implements OnInit {
   @Input() postDetails!: AdvertisementDetails;
 
-  baseUrl="";
+  baseUrl = "";
   // baseUrl="https://images.spreezy.in/";
   remainingDays: number;
   remainingHours: number;
   isExpired: boolean = false;
-  showLikeAnimation: boolean = false; 
-  scaleAnimation:boolean=false;
+  showLikeAnimation: boolean = false;
+  scaleAnimation: boolean = false;
   showDislikeAnimation: boolean = false;
-  isSaved: boolean = false; 
-  showSavedMessage: boolean = false; 
-  showReportButton: boolean = false; 
+  isSaved: boolean = false;
+  showSavedMessage: boolean = false;
+  showReportButton: boolean = false;
   showReportSuccess: boolean = false;
- 
+
   showPopup: boolean = false;
   popupTitle: string = 'Error';
   popupBody: string = '';
@@ -39,8 +39,8 @@ export class PostComponent implements OnInit {
   faThumbsUp = faThumbsUp;
   faThumbsDown = faThumbsDown;
   faLocationArrow = faLocationArrow;
-  solidBookmark = solidBookmark; 
-  regularBookmark = regularBookmark; 
+  solidBookmark = solidBookmark;
+  regularBookmark = regularBookmark;
   faEllipsisVertical = faEllipsisVertical;
   faLocationDot = faLocationDot;
   faHeart = faHeart;
@@ -52,22 +52,23 @@ export class PostComponent implements OnInit {
   isDisliked: boolean = false;
   isFollowing: boolean = false;
 
-  constructor(private advertisementDetailsService: AdvertisementDetailsService ,private router:Router ) {}
+  constructor(private advertisementDetailsService: AdvertisementDetailsService, private router: Router, private jwtDecoderService: JwtDecoderService) { }
 
   ngOnInit(): void {
     const { remainingDays, remainingHours, isExpired } = this.advertisementDetailsService.calculateExpiry(this.postDetails.offerExpiry);
 
-    console.log("POST DETAILS",this.postDetails)
+    console.log("POST DETAILS", this.postDetails)
 
     this.remainingDays = remainingDays;
     this.remainingHours = remainingHours;
     this.isExpired = isExpired;
     this.checkIfFollowing();
   }
-  toggleFollow(): void {//not comfirm if it works please make changes if required and as per dto end user or target user is 'username'
-    // const userDetails = this.jwtDecoderService.decodeInfoFromToken(localStorage.getItem('token') || "");
-    // console.log("USER DETAILS",userDetails)
-    const sourceUsername = 'currentUser';  // Replace with the actual logged-in user
+
+  toggleFollow(): void {//Not tested 
+    let token = localStorage.getItem("token") || "";
+    let userName = this.jwtDecoderService.decodeInfoFromToken(token)["sub"] || "";
+    const sourceUsername = userName || 'currentUser';  // Replace with the actual logged-in user
     const targetUsername = this.postDetails.username;
     if (this.isFollowing) {
       this.advertisementDetailsService.unfollowUser(sourceUsername, targetUsername).subscribe(
@@ -83,7 +84,7 @@ export class PostComponent implements OnInit {
       this.advertisementDetailsService.followUser(sourceUsername, targetUsername).subscribe(
         (response) => {
           console.log('Followed successfully:', response);
-          this.isFollowing = true;  
+          this.isFollowing = true;
         },
         (error) => {
           console.error('Error following:', error);
@@ -94,7 +95,9 @@ export class PostComponent implements OnInit {
 
   // Optionally, check if the user is already following
   checkIfFollowing(): void {
-    const sourceUsername = 'currentUser';  // Replace with the actual logged-in user
+    let token = localStorage.getItem("token") || "";
+    let userName = this.jwtDecoderService.decodeInfoFromToken(token)["sub"] || "";
+    const sourceUsername = userName || 'currentUser';
     const targetUsername = this.postDetails.username;
     // Check if the current user is following the post
     // This could involve a service method to check follow status.
@@ -162,7 +165,7 @@ export class PostComponent implements OnInit {
           this.postDetails.dislikes = updatedPost.dislikes;
         },
         error: (err) => {
-          this.showError('Dislike Error', 'Failed to update dislikes. Please try again.'); 
+          this.showError('Dislike Error', 'Failed to update dislikes. Please try again.');
         },
       });
     }
@@ -176,32 +179,39 @@ export class PostComponent implements OnInit {
     setTimeout(() => {
       this.scaleAnimation = false;
     }, 500);
-    this.isSaved = !this.isSaved;  
-  
+    this.isSaved = !this.isSaved;
     this.advertisementDetailsService.savePost(username, advertisementId).subscribe({
       next: (response) => {
         console.log('Post saved successfully:', response);
       },
       error: (err) => {
         this.showError('Save Error', 'Failed to save the post. Please try again.');
-        this.isSaved = !this.isSaved; 
+        this.isSaved = !this.isSaved;
       },
     });
   }
-  
+
   toggleReportButton(): void {
-    this.showReportButton = !this.showReportButton; 
+    this.showReportButton = !this.showReportButton;
   }
 
   reportPost(): void {
-    this.showReportSuccess = true;
-    this.showReportButton = false; 
-    document.body.style.overflow = 'hidden';  
+    this.advertisementDetailsService.reportPost(this.postDetails.advertisementId).subscribe({
+      next: (response) => {
+        console.log('Post reported successfully:', response);
+        this.showReportSuccess = true;
+        this.showReportButton = false;
+      },
+      error: (err) => {
+        this.showError('Report Error', 'Failed to Report the post. Please try again.');
+      },
+    });
+    document.body.style.overflow = 'hidden';
   }
 
   hideReportSuccess(): void {
-    this.showReportSuccess = false; 
-    document.body.style.overflow = 'auto';  
+    this.showReportSuccess = false;
+    document.body.style.overflow = 'auto';
   }
 
   showError(title: string, body: string) {
@@ -216,15 +226,15 @@ export class PostComponent implements OnInit {
     } else if (type === 'dislike') {
       this.showDislikeAnimation = true;
     }
-    
+
     setTimeout(() => {
       this.showLikeAnimation = false;
       this.showDislikeAnimation = false;
-    }, 500); 
+    }, 500);
   }
 
   showDetails(advertisementId: number): void {
-    this.router.navigate(['/offer-description', advertisementId] ,  {
+    this.router.navigate(['/offer-description', advertisementId], {
       queryParams: { data: JSON.stringify(this.postDetails) },
     })
   }

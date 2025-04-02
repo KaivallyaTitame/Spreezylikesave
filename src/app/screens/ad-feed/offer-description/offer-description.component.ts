@@ -179,8 +179,16 @@ export class OfferDescriptionComponent implements OnInit {
   }
 
   reportPost(): void {
-    this.showReportSuccess = true;
-    this.showReportButton = false;
+    this.advertisementDetailsService.reportPost(this.details.advertisementId).subscribe({
+      next: (response) => {
+        console.log('Post reported successfully:', response);
+        this.showReportSuccess = true;
+        this.showReportButton = false;
+      },
+      error: (err) => {
+        this.showError('Report Error', 'Failed to Report the post. Please try again.');
+      },
+    });
     document.body.style.overflow = 'hidden';
   }
 
