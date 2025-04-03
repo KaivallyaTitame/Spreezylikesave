@@ -1,5 +1,5 @@
 import { Component, Input, SimpleChanges,Output, EventEmitter,HostListener,ElementRef, ViewChild} from '@angular/core';
-import { faCoffee,faHeart,faLocationArrow,faBookmark,faUsers} from '@fortawesome/free-solid-svg-icons';
+import { faCoffee,faHeart,faLocationArrow,faBookmark,faUsers,faHandshake} from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-post-insights',
@@ -13,6 +13,7 @@ export class PostInsightsComponent {
   @Input() shares!: number | undefined; 
   @Input() engagement!: number | undefined; 
   @Input() comments !: number | undefined; 
+  @Input() reach !: number | undefined; 
   @Output() ClickOut = new EventEmitter<Event>(); 
   @ViewChild('childDiv') childDiv!: ElementRef;
 
@@ -30,6 +31,7 @@ export class PostInsightsComponent {
   faLocationArrow = faLocationArrow;
   faBookmark = faBookmark; 
   faUsers = faUsers; 
+  faHandshake=faHandshake;
 
 
   ngOnInit(): void {
