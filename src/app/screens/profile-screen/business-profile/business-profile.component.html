@@ -157,12 +157,9 @@
             <app-post-insights 
                 (ClickOut)="hideInsight($event)"  
                 [showInsightScreen]="showInsightScreen" 
-                [shares]="activeIndex !== undefined ? visibleProfilePosts[activeIndex]?.shares : 0" 
-                [likes]="activeIndex !== undefined ? visibleProfilePosts[activeIndex]?.likes : 0" 
-                [engagement]="activeIndex !== undefined ? visibleProfilePosts[activeIndex]?.engagement : 0" 
-                [comments]="activeIndex !== undefined ? visibleProfilePosts[activeIndex]?.comments : 0">
+                [feed]="activeIndex !== undefined ? visibleProfilePosts[activeIndex].insights : {}" 
+            >
             </app-post-insights>
-
           </div>
           <div *ngIf="loadingProfilePosts" class="text-center py-4">
             <app-loader></app-loader>
