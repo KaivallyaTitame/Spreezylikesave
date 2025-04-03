@@ -74,23 +74,34 @@ export class BusinessProfileComponent implements OnInit {
   }
 
   toggleInsight(index: number | undefined): void {
-    if(this.activeIndex === index){
-      this.activeIndex = undefined; 
-    }
-    else if(this.activeIndex !== undefined && this.activeIndex !== index && index != undefined){
-       setTimeout(() => {
-          this.activeIndex = index; 
-          this.showInsightScreen = true; 
-       },1000);
+    if(index != undefined && this.visibleProfilePosts[index].insights === undefined){
+      this.showError("Error in fetching insights","Unable to fetch the insights of your post!"); 
+      return; 
     }
     else{
-      this.activeIndex = index; 
+      if(this.activeIndex === index){
+        this.activeIndex = undefined; 
+      }
+      else if(this.activeIndex !== undefined && this.activeIndex !== index && index != undefined){
+        setTimeout(() => {
+            this.activeIndex = index; 
+            this.showInsightScreen = true; 
+        },1000);
+      }
+      else{
+        this.activeIndex = index; 
+      }
     }
   }
 
   setInsightScreen(event:Event): void{
       event.stopPropagation(); 
-      this.showInsightScreen = !this.showInsightScreen; 
+      if(this.activeIndex != undefined && this.visibleProfilePosts[this.activeIndex].insights !== undefined){
+          this.showInsightScreen = !this.showInsightScreen;
+      }
+      else{
+          this.showInsightScreen = false; 
+      }
   }
 
   hideInsight(event:Event):void{
