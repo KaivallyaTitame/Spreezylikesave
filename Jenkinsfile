@@ -108,11 +108,12 @@ pipeline
             steps{
                 sh 'mkdir -p apk-releases'
                 sh 'find ./android/app/build/outputs/apk/ -name "*.apk" -exec cp {} ./apk-releases/ \\;'
+                sh 'echo "Contents of apk-releases directory:" && ls -lh apk-releases/'
 
                 withCredentials([usernamePassword(credentialsId: 'nexus_apk_credentials', usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASS')]) {
                     sh '''
                     for apk in apk-releases/*.apk; do
-                        sh 'for apk in apk-releases/*.apk; do wget --user=$NEXUS_USER --password=$NEXUS_PASS --auth-no-challenge --method=PUT --body-file="$apk" "http://nexus.spreezy.in/repository/apk-releases/$(basename "$apk")"; done'
+                        sh 'for apk in apk-releases/*.apk; do wget --user=$NEXUS_USER --password=$NEXUS_PASS --auth-no-challenge --method=PUT --body-file="$apk" "https://nexus.spreezy.in/repository/apk-releases/$(basename "$apk")"; done'
                     done
                     '''
                 }
