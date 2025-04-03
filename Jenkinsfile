@@ -104,6 +104,17 @@ pipeline
             }
         }
 
+        stage('Install Dependencies') {
+            steps {
+                sh '''
+                if ! command -v curl &> /dev/null; then
+                    echo "Installing curl..."
+                    sudo apt update && sudo apt install -y curl || apk add --no-cache curl || yum install -y curl
+                fi
+                '''
+            }
+        }
+
         stage('Publish APK to Nexus'){
             steps{
                 sh 'mkdir -p apk-releases'
