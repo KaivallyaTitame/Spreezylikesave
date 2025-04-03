@@ -45,7 +45,7 @@ pipeline
                     npm config set fetch-timeout 60000
                     npm config set fetch-retries 2
                     npm install --userconfig ${npm_nexus_credentials} --registry https://nexus.spreezy.in/repository/npm-group/ --loglevel verbose
-                '''
+                '''                
                 }
             }
         }
@@ -68,26 +68,26 @@ pipeline
 
         //     }
         // }
-        
+
          stage('sonarQube-analysis') {
-    steps {
-        withSonarQubeEnv('sonar-scanner') { // Ensure 'sonar-scanner' matches the name configured in Jenkins
-            script {
-                sh """
-                    /var/jenkins_home/tools/hudson.plugins.sonar.SonarRunnerInstallation/sonar-scanner/bin/sonar-scanner \
-                    -Dsonar.projectKey=frontend-project \
-                    -Dsonar.projectName="Frontend Project" \
-                    -Dsonar.sources=. \
-                    -Dsonar.host.url=${SONAR_HOST_URL} \
-                    -Dsonar.login=${SONAR_TOKEN} \
-                    -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info \
-                    -Dsonar.exclusions=node_modules/**,dist/**,**/*.spec.ts \
-                    -Dsonar.sourceEncoding=UTF-8
-                """
+            steps {
+                withSonarQubeEnv('sonar-scanner') { // Ensure 'sonar-scanner' matches the name configured in Jenkins
+                    script {
+                        sh """
+                            /var/jenkins_home/tools/hudson.plugins.sonar.SonarRunnerInstallation/sonar-scanner/bin/sonar-scanner \
+                            -Dsonar.projectKey=frontend-project \
+                            -Dsonar.projectName="Frontend Project" \
+                            -Dsonar.sources=. \
+                            -Dsonar.host.url=${SONAR_HOST_URL} \
+                            -Dsonar.login=${SONAR_TOKEN} \
+                            -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info \
+                            -Dsonar.exclusions=node_modules/**,dist/**,**/*.spec.ts \
+                            -Dsonar.sourceEncoding=UTF-8
+                        """
+                    }
+                }
             }
         }
-    }
-}
 
         stage('Build Project') {
             steps {
@@ -103,35 +103,50 @@ pipeline
               sh 'npm run apk-debug'
             }
         }
-        
-        stage('Publish APK on Nexus Repo  '){
-            steps{
-                sh 'mkdir apk-releases'
-                sh 'cp -r  ./android/app/build/outputs/apk/* ./apk-releases/'
-                withCredentials([file(credentialsId: 'nexus_npm_credentials', variable: 'npm_nexus_credentials')]) {
-                 sh "npm publish --userconfig ${npm_nexus_credentials} --registry https://nexus.spreezy.in/repository/npm-hosted/ --loglevel verbose"                }
 
-            }
-        }
-        
-        stage('Notify  Build Success '){
+        stage('Publish APK to Nexus'){
             steps{
-                echo "Build completed successfully"
-            }
-            post {
-                success {
-                    script {
-                        def buildNumber = currentBuild.number
-                        def buildStatus = currentBuild.result
-                        def buildStatusLabel = buildStatus == 'SUCCESS' ? 'successful' : 'failed'
-                        def globalUpdatedBody = "<b>${EMAIL_BODY} ${buildNumber} . <br><br> Build Status - ${buildStatusLabel} .<br><br>  Please find Console Log Output of Build Number ${buildNumber} in build.log File</b>"
-                        def globalUpdatedSubject = "${EMAIL_SUBJECT} ${buildStatusLabel}"
-                        
-                        emailext attachLog: true, body: globalUpdatedBody, subject: globalUpdatedSubject, to: env.EMAIL_TO, from: env.EMAIL_FROM, mimeType: 'text/html'
-                    }
+                sh 'mkdir -p apk-releases'
+                sh 'find ./android/app/build/outputs/apk/ -name "*.apk" -exec cp {} ./apk-releases/ \\;'
+
+                withCredentials([usernamePassword(credentialsId: 'nexus_apk_credentials', usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASS')]) {
+                    sh '''
+                    for apk in apk-releases/*.apk; do
+                        curl -u $NEXUS_USER:$NEXUS_PASS --upload-file "$apk" "http://nexus.spreezy.in/repository/apk-releases/$(basename "$apk")"
+                    done
+                    '''
                 }
             }
         }
+        
+        // stage('Publish APK on Nexus Repo  '){
+        //     steps{
+        //         sh 'mkdir apk-releases'
+        //         sh 'cp -r  ./android/app/build/outputs/apk/* ./apk-releases/'
+        //         withCredentials([file(credentialsId: 'nexus_npm_credentials', variable: 'npm_nexus_credentials')]) {
+        //          sh "npm publish --userconfig ${npm_nexus_credentials} --registry https://nexus.spreezy.in/repository/npm-hosted/ --loglevel verbose"                }
+
+        //     }
+        // }
+        
+        // stage('Notify  Build Success '){
+        //     steps{
+        //         echo "Build completed successfully"
+        //     }
+        //     post {
+        //         success {
+        //             script {
+        //                 def buildNumber = currentBuild.number
+        //                 def buildStatus = currentBuild.result
+        //                 def buildStatusLabel = buildStatus == 'SUCCESS' ? 'successful' : 'failed'
+        //                 def globalUpdatedBody = "<b>${EMAIL_BODY} ${buildNumber} . <br><br> Build Status - ${buildStatusLabel} .<br><br>  Please find Console Log Output of Build Number ${buildNumber} in build.log File</b>"
+        //                 def globalUpdatedSubject = "${EMAIL_SUBJECT} ${buildStatusLabel}"
+                        
+        //                 emailext attachLog: true, body: globalUpdatedBody, subject: globalUpdatedSubject, to: env.EMAIL_TO, from: env.EMAIL_FROM, mimeType: 'text/html'
+        //             }
+        //         }
+        //     }
+        // }
 
         
 
@@ -149,3 +164,4 @@ pipeline
     }
 
 }
+
