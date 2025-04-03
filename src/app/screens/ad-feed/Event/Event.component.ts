@@ -62,11 +62,11 @@ export class EventComponent implements OnInit {
     this.isExpired = isExpired;
   }
 
-  
+ 
 
   showInsights(event: Event) : void{
-    this.setInsightScreen.emit(event);
     this.setActiveIndex.emit(this.index); 
+    this.setInsightScreen.emit(event);
   }
 
 
