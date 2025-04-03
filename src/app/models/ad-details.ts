@@ -9,6 +9,7 @@ export interface AdvertisementDetails {
     likes: number;
     dislikes: number;
     shares: number; 
+    reach: number; 
     engagement:number; 
     comments: number; 
     descriptionTitle: string;

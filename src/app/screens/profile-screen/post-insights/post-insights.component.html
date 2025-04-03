@@ -1,30 +1,38 @@
+<div *ngIf="showInsightScreen" class="backdrop-blur"></div>
+
 <div #childDiv class="slide-up fixed w-full z-30 mb-0"
-     [ngClass]="{
-       'slide-up-active': showInsightScreen,
-       'slide-up-hidden': !showInsightScreen
-     }">
+    [ngClass]="{
+      'slide-up-active': showInsightScreen,
+      'slide-up-hidden': !showInsightScreen
+    }">
     <div class="grid grid-cols-3 md:grid-cols-4 gap-5 justify-items-center">
         <div *ngIf="likes !== undefined" class="flex flex-col items-center">
-        <fa-icon [icon]="faHeart" class="fa-2x text-[#ff6251]"></fa-icon>
-         <p class="text-textcolor-0">Likes</p>
-         <p class="text-textcolor-0">{{likes}}</p>
+          <fa-icon [icon]="faHeart" class="fa-2x text-[#FF8C42]"></fa-icon>
+          <p class="text-textcolor-0">Likes</p>
+          <p class="text-textcolor-0">{{likes}}</p>
         </div>
 
-       <div *ngIf="shares !== undefined" class="flex flex-col items-center">
-          <fa-icon [icon]="faLocationArrow" class="fa-2x" [ngStyle]="{'color': '#ffb43f'}"></fa-icon>
+        <div *ngIf="shares !== undefined" class="flex flex-col items-center">
+          <fa-icon [icon]="faLocationArrow" class="fa-2x" [ngStyle]="{'color': '#FF8C42'}"></fa-icon>
           <p class="text-textcolor-0">Shares</p>
           <p class="text-textcolor-0">{{shares}}</p>
         </div>
 
         <div *ngIf="comments !== undefined" class="flex flex-col items-center">
-          <fa-icon [icon]="faBookmark" class="fa-2x" [ngStyle]="{'color': '#ffb43f'}"></fa-icon>
+          <fa-icon [icon]="faBookmark" class="fa-2x" [ngStyle]="{'color': '#FF8C42'}"></fa-icon>
           <p class="text-textcolor-0">Comments</p>
           <p class="text-textcolor-0">{{comments}}</p>
         </div>
 
         <div *ngIf="engagement !== undefined" class="flex flex-col items-center">
-          <fa-icon [icon]="faUsers" class="fa-2x" [ngStyle]="{'color': '#A3CE48'}"></fa-icon>
+          <fa-icon [icon]="faUsers" class="fa-2x" [ngStyle]="{'color': '#FF8C42'}"></fa-icon>
           <p class="text-textcolor-0">Engagement</p>
+          <p class="text-textcolor-0">{{engagement}}</p>
+        </div>
+
+        <div *ngIf="engagement !== undefined" class="flex flex-col items-center">
+          <fa-icon [icon]="faHandshake" class="fa-2x" [ngStyle]="{'color': '#FF8C42'}"></fa-icon>
+          <p class="text-textcolor-0">Reach</p>
           <p class="text-textcolor-0">{{engagement}}</p>
         </div>
     </div>
