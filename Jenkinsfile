@@ -104,17 +104,6 @@ pipeline
             }
         }
 
-        stage('Install Dependencies') {
-            steps {
-                sh '''
-                if ! command -v curl &> /dev/null; then
-                    echo "Installing curl..."
-                    sudo apt update && sudo apt install -y curl || apk add --no-cache curl || yum install -y curl
-                fi
-                '''
-            }
-        }
-
         stage('Publish APK to Nexus'){
             steps{
                 sh 'mkdir -p apk-releases'
@@ -123,7 +112,7 @@ pipeline
                 withCredentials([usernamePassword(credentialsId: 'nexus_apk_credentials', usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASS')]) {
                     sh '''
                     for apk in apk-releases/*.apk; do
-                        curl -u $NEXUS_USER:$NEXUS_PASS --upload-file "$apk" "http://nexus.spreezy.in/repository/apk-releases/$(basename "$apk")"
+                        sh 'for apk in apk-releases/*.apk; do wget --user=$NEXUS_USER --password=$NEXUS_PASS --auth-no-challenge --method=PUT --body-file="$apk" "http://nexus.harsh.in/repository/apk-releases/$(basename "$apk")"; done'
                     done
                     '''
                 }
