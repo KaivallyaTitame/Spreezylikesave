@@ -112,7 +112,7 @@ pipeline
                 withCredentials([usernamePassword(credentialsId: 'nexus_apk_credentials', usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASS')]) {
                     sh '''
                     for apk in apk-releases/*.apk; do
-                        sh 'for apk in apk-releases/*.apk; do wget --user=$NEXUS_USER --password=$NEXUS_PASS --auth-no-challenge --method=PUT --body-file="$apk" "http://nexus.harsh.in/repository/apk-releases/$(basename "$apk")"; done'
+                        sh 'for apk in apk-releases/*.apk; do wget --user=$NEXUS_USER --password=$NEXUS_PASS --auth-no-challenge --method=PUT --body-file="$apk" "http://nexus.spreezy.in/repository/apk-releases/$(basename "$apk")"; done'
                     done
                     '''
                 }
