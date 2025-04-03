@@ -35,9 +35,4 @@ export class PostInsightsComponent {
   ngOnInit(): void {
   }
 
-
-  // closeInsight() {
-  //   this.showInsightScreen = false;
-  //   setTimeout(() => this.showInsightScreen = false, 500); 
-  // }
 }

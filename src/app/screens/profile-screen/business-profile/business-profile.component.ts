@@ -93,12 +93,13 @@ export class BusinessProfileComponent implements OnInit {
   setInsightScreen(event:Event): void{
       event.stopPropagation(); 
       this.showInsightScreen = !this.showInsightScreen; 
-      console.log('executed'); 
   }
 
   hideInsight(event:Event):void{
     this.showInsightScreen = false; 
-    this.toggleInsight(undefined); 
+    setTimeout(() => {
+      this.activeIndex = undefined;
+    },200);  
   }
 
 
