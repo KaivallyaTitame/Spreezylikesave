@@ -54,7 +54,7 @@ export class EventComponent implements OnInit {
   isDisliked: boolean = false; // State for dislike
   constructor(private advertisementDetailsService: AdvertisementDetailsService,private route: ActivatedRoute) {}
 
-  
+ 
   ngOnInit(): void {
     const { remainingDays, remainingHours, isExpired } = this.advertisementDetailsService.calculateExpiry(this.eventDetails.offerExpiry);
     this.remainingDays = remainingDays;
