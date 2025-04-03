@@ -97,7 +97,7 @@ export class BusinessProfileComponent implements OnInit {
     this.showInsightScreen = false; 
     setTimeout(() => {
       this.activeIndex = undefined;
-    },200);  
+    },400);  
   }
 
 
