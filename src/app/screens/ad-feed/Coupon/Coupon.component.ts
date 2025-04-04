@@ -12,11 +12,11 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class CouponComponent implements OnInit {
   @Input() couponDetails!: AdvertisementDetails;
-  @Input() index!: number; 
-  @Input() activeIndex!: number | undefined; 
-  @Output() setActiveIndex = new EventEmitter<number>();
-  @Output() setInsightScreen = new EventEmitter<Event>(); 
-  @Input() showButton !:boolean; 
+  @Input() index!: number; // index of the post get from for loop.
+  @Input() activeIndex!: number | undefined; // it is used to indicate which post's insight is actively visible. 
+  @Output() setActiveIndex = new EventEmitter<number>();  // it is the methood from business profile component which sets the value of activeIndex variable which is used to indicate the post whoes insights are showing. 
+  @Output() setInsightScreen = new EventEmitter<Event>(); // this methood is from business profile compoennt which  is used to set the boolean variable whether to show the post insight or not. 
+  @Input() showButton !:boolean; // this parameter comes from business profile component which is used to track the visibility of the show insight button. 
 
   remainingDays: number;
   isExpired: boolean = false;
@@ -68,10 +68,14 @@ export class CouponComponent implements OnInit {
       console.error('Error calculating expiry:', error);
     }
   }
-
+  
+  // on Clicking the show insight button below methood get executed. 
   showInsights(event: Event) : void{
     this.setActiveIndex.emit(this.index); 
+    // it first sets the selected post insight data into the component. 
+    // hence it is accepting the index as a parameter for asking which post insight should be shown.
     this.setInsightScreen.emit(event);
+    // after setting the data it will change the value of the insight component and making it visible.
   }
 
 

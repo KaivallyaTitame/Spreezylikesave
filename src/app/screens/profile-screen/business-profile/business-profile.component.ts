@@ -75,39 +75,59 @@ export class BusinessProfileComponent implements OnInit {
     });
   }
 
+  // this method sets the current active index of the post. 
   toggleInsight(index: number | undefined): void {
+
+    // first checks the given post data has insightDetails attribute. 
     if(index != undefined && this.visibleProfilePosts[index].insightDetails === undefined){
+      // if post is selected for showing and post to show has not insightDetails attribute
+      // then it throws error.  
       this.showError("404","Please try again later."); 
       return; 
     }
     else{
       if(this.activeIndex === index){
-        this.activeIndex = undefined; 
+        this.activeIndex = undefined;
+        // when we are closing opened post insight component by clicking on button hide insight.  
       }
       else if(this.activeIndex !== undefined && this.activeIndex !== index && index != undefined){
+        // this case is used to handle when already one post is opened
+        // we tried to open insights of other post then it executes. 
         setTimeout(() => {
+            // first it post insight screen disappears(showInsightScreen set to false) as method fired from post.ts file. 
+            // secondly it sets the data of the post insight screen. 
             this.activeIndex = index; 
+            // it reappears the post insight again. 
             this.showInsightScreen = true; 
+            // for animation accuracies i have used setTimeout function.
         },1000);
       }
       else{
+        // in another case it executes this scnerios. 
         this.activeIndex = index; 
       }
     }
   }
 
+  // it is used to toggle the showInsightScreen value. 
   setInsightScreen(event:Event): void{
       event.stopPropagation(); 
+      // it is used to stop the propagation of parent to child component. 
       if(this.activeIndex != undefined && this.visibleProfilePosts[this.activeIndex].insightDetails !== undefined){
-          this.showInsightScreen = !this.showInsightScreen;
+         // it is check for preventing unnecessary opening of component on invalid data.  
+         this.showInsightScreen = !this.showInsightScreen;
       }
       else{
-           this.showInsightScreen = false; 
+        // if above condition is not satisfied then component will be closed. 
+        this.showInsightScreen = false; 
       }
   }
 
+  // this component specifically designed for hiding the component when clicked outside the post-insight compoenent
   hideInsight(event:Event):void{
+    // first it sets to false
     this.showInsightScreen = false; 
+    // in below code delay is added to execut the code when animation is completed. 
     setTimeout(() => {
       this.activeIndex = undefined;
     },400);  
