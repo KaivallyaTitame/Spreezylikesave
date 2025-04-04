@@ -4,7 +4,7 @@
             <img [src]="offerData?.profileImageUrl" alt="Profile" class="w-12 h-12 rounded-full mt-2 ml-1">
             <div class="flex-grow ml-2 text-left">
                 <div class="font-bold text-lg mt-2 text-black">{{ offerData?.username }}</div>
-                <div class="text-sm text-gray-500">
+                <div class="text-sm text-gray-400">
                     <ng-container *ngIf="isExpired; else notExpired">
                         Expired
                     </ng-container>
@@ -19,9 +19,9 @@
             </button>
         </div>
         <img [src]="offerData?.imagePaths" alt="Event" class="w-full mt-2 object-cover h-96">
-        <div class="m-4 text-lg font-semibold text-gray-700 text-center">
+        <div class="font-bold m-4 text-xl text-black text-center">
             {{ offerData?.offerTitle }}
-            <p class="text-gray-500">{{ offerData?.offerSubtitle }}</p>
+            <p class="text-gray-500 text-lg">{{ offerData?.offerSubtitle }}</p>
         </div>
         <div class="flex justify-between items-center m-4 mb-4 mt-4">
             <div class="flex items-center space-x-4">
@@ -80,12 +80,12 @@
           </div>
   
           <div class="redirect-info mt-1 text-xs text-gray-600 text-center">
-              You will be redirected to this business website. <a href="#" class="text-blue-500" (click)="viewOnWebsite()">Learn more</a>
+              You will be redirected to this business website. 
           </div>
   
-          <div class="offer-description mt-4 ml-4 mr-2">
-              <h3 class="font-bold text-black ml-1">{{ offerData?.offerTitle }}</h3>
-              <p class="text-gray-500">{{ offerData?.description }}</p>
+          <div class="offer-description mt-5 ml-3 mr-2">
+              <h3 class="font-semibold text-center text-xl text-black p-2">{{ offerData?.offerTitle }}</h3>
+              <p class="text-sm text-gray-500 ">{{ offerData?.description }}</p>
           </div>
         <div class="dropdown w-full mt-4 border border-primary cursor-pointer" (click)="toggleDropdown('howToAvail')">
             <h4 class="bg-white py-3 px-4 flex justify-between items-center text-gray-700">
@@ -93,8 +93,8 @@
                 <span [ngClass]="{'rotate-180': dropdowns['howToAvail']}">▼</span>
             </h4>
             <div *ngIf="dropdowns['howToAvail']" class="dropdown-content py-3 px-4 bg-gray-100 text-gray-700">
-                <ul>
-                    <li *ngFor="let step of offerData?.howToAvailSteps">> {{ step }}</li>
+                <ul class="list-decimal list-inside">
+                    <li *ngFor="let step of offerData?.howToAvailSteps">{{ step }}</li>
                 </ul>
             </div>
         </div>
@@ -106,8 +106,8 @@
                 <span [ngClass]="{'rotate-180': dropdowns['termsConditions']}">▼</span>
             </h4>
             <div *ngIf="dropdowns['termsConditions']" class="dropdown-content py-3 px-4 bg-gray-100 text-gray-700">
-                <ul>
-                    <li *ngFor="let term of offerData?.termsConditions">> {{ term }}</li>
+                <ul class="list-disc list-inside">
+                    <li *ngFor="let term of offerData?.termsConditions">{{term}}</li>
                 </ul>
             </div>
         </div>
