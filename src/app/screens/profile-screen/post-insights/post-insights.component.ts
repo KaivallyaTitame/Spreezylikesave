@@ -1,6 +1,6 @@
-import { Component, Input, SimpleChanges,Output, EventEmitter,HostListener,ElementRef, ViewChild} from '@angular/core';
+import { Component, Input,Output, EventEmitter,HostListener,ElementRef, ViewChild} from '@angular/core';
 import { faCoffee,faHeart,faLocationArrow,faBookmark,faUsers,faHandshake} from '@fortawesome/free-solid-svg-icons';
-import { insights } from 'src/app/models/ad-details';
+import { insightDetails } from 'src/app/models/ad-details';
 
 @Component({
   selector: 'app-post-insights',
@@ -10,14 +10,10 @@ import { insights } from 'src/app/models/ad-details';
 
 export class PostInsightsComponent {
   @Input() showInsightScreen!: boolean; 
-  @Input() feed !: insights; 
+  @Input() feed !: insightDetails;
   @Output() ClickOut = new EventEmitter<Event>(); 
   @ViewChild('childDiv') childDiv!: ElementRef;
-  likes : number | undefined = 0; 
-  shares : number | undefined = 0; 
-  reach : number | undefined = 0; 
-  engagement : number | undefined = 0; 
-  comments : number | undefined = 0; 
+   
 
   @HostListener('document:click', ['$event'])
   onClickOutside(event: Event) {
@@ -35,6 +31,6 @@ export class PostInsightsComponent {
   faHandshake=faHandshake;
 
 
-  
+ 
 
 }

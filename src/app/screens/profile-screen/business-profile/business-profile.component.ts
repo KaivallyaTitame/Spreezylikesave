@@ -74,8 +74,8 @@ export class BusinessProfileComponent implements OnInit {
   }
 
   toggleInsight(index: number | undefined): void {
-    if(index != undefined && this.visibleProfilePosts[index].insights === undefined){
-      this.showError("Error in fetching insights","Unable to fetch the insights of your post!"); 
+    if(index != undefined && this.visibleProfilePosts[index].insightDetails === undefined){
+      this.showError("404","Please try again later."); 
       return; 
     }
     else{
@@ -96,11 +96,11 @@ export class BusinessProfileComponent implements OnInit {
 
   setInsightScreen(event:Event): void{
       event.stopPropagation(); 
-      if(this.activeIndex != undefined && this.visibleProfilePosts[this.activeIndex].insights !== undefined){
+      if(this.activeIndex != undefined && this.visibleProfilePosts[this.activeIndex].insightDetails !== undefined){
           this.showInsightScreen = !this.showInsightScreen;
       }
       else{
-          this.showInsightScreen = false; 
+           this.showInsightScreen = false; 
       }
   }
 

@@ -84,7 +84,6 @@ export class BusinessTopNavbarComponent implements OnInit {
       this.businessNavigationService.getBusinessDetails(this.currentUsername).subscribe({
         next: (response) => {
           this.business = response;
-          console.log(this.business)
         },
         error: () => {
           this.business = {};
