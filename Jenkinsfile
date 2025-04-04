@@ -115,7 +115,7 @@ pipeline
                     sh '''
                     for apk in only-apk-releases/*.apk; do
                         echo "Uploading $apk to Nexus using wget..."
-                        wget --method=PUT --user="$NEXUS_USER" --password="$NEXUS_PASS" --body-file="$apk" "http://localhost:6839/repository/apk-release/$(basename "$apk")"
+                        wget --method=PUT --user="$NEXUS_USER" --password="$NEXUS_PASS" --body-file="$apk" "http://nexus.spreezy.in/repository/apk-release/apk-release/$(basename "$apk")"
                     done
                     '''
                 }
