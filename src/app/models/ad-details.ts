@@ -1,4 +1,4 @@
-export class insights{
+export class insightDetails{
   [key:string]:number; 
 }
 
@@ -14,7 +14,7 @@ export interface AdvertisementDetails {
     dislikes: number;
     shares: number; 
     reach: number; 
-    insights:insights; 
+    insightDetails:insightDetails; 
     engagement:number; 
     comments: number; 
     descriptionTitle: string;
