@@ -112,9 +112,13 @@ pipeline
                 sh 'echo "Contents of apk-releases directory:" && ls -lh only-apk-releases/'
 
                 withCredentials([usernamePassword(credentialsId: 'nexus_apk_credentials', usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASS')]) {
-                    sh 'for apk in apk-releases/*.apk; do curl -u $NEXUS_USER:$NEXUS_PASS --upload-file "$apk" "http://localhost:6839/repository/apk-release/$(basename "$apk")"; done'
+                    sh '''
+                    for apk in only-apk-releases/*.apk; do
+                        echo "Uploading $apk to Nexus using wget..."
+                        wget --method=PUT --user="$NEXUS_USER" --password="$NEXUS_PASS" --body-file="$apk" "http://localhost:6839/repository/apk-release/$(basename "$apk")"
+                    done
+                    '''
                 }
-
 
             }
         }
