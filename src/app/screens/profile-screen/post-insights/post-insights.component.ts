@@ -9,12 +9,12 @@ import { insightDetails } from 'src/app/models/ad-details';
 })
 
 export class PostInsightsComponent {
-  @Input() showInsightScreen!: boolean; 
-  @Input() feed !: insightDetails;
-  @Output() ClickOut = new EventEmitter<Event>(); 
+  @Input() showInsightScreen!: boolean; // boolean variable used to show the insights of the post. 
+  @Input() feed !: insightDetails; // data which will be shown on component.  
+  @Output() ClickOut = new EventEmitter<Event>(); // executed when we clicked on outside of component
   @ViewChild('childDiv') childDiv!: ElementRef;
-   
-
+  
+  // when user clicked outside of the component then it will hide post insight component.  
   @HostListener('document:click', ['$event'])
   onClickOutside(event: Event) {
     const clickedInside = this.childDiv.nativeElement.contains(event.target);
