@@ -14,14 +14,15 @@ export class PostInsightsComponent {
   @Output() ClickOut = new EventEmitter<Event>(); // executed when we clicked on outside of component
   @ViewChild('childDiv') childDiv!: ElementRef;
   
-  // when user clicked outside of the component then it will hide post insight component.  
-  @HostListener('document:click', ['$event'])
+  // when user clicked anywhere of the component then it will hide post insight component.  
+  @HostListener('window:click', ['$event'])
   onClickOutside(event: Event) {
     const clickedInside = this.childDiv.nativeElement.contains(event.target);
     if (this.childDiv && this.showInsightScreen && !clickedInside) {
       this.ClickOut.emit(event);
     }
   }
+
 
   faCoffee = faCoffee;
   faHeart = faHeart; 

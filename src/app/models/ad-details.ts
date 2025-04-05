@@ -12,11 +12,7 @@ export interface AdvertisementDetails {
     offerSubtitle: string;
     likes: number;
     dislikes: number;
-    shares: number; 
-    reach: number; 
     insightDetails:insightDetails; 
-    engagement:number; 
-    comments: number; 
     descriptionTitle: string;
     descriptionContent: string;
     howToAvailSteps: string[];
