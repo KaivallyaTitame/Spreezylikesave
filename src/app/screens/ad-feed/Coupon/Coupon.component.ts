@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, HostListener, Input, OnInit } from '@angular/core';
 import { faBars, faUserGroup, faMagnifyingGlass, faThumbsUp, faThumbsDown, faLocationArrow, faEllipsisVertical, faLocationDot, faHeart, faBell, faCircleUser } from '@fortawesome/free-solid-svg-icons';
 import { faThumbsUp as faThumbsUpOutline, faThumbsDown as faThumbsDownOutline } from '@fortawesome/free-regular-svg-icons'; // Import outlined icons
 import { AdvertisementDetailsService } from 'src/app/services/advertisementTypes.service';
@@ -7,6 +7,8 @@ import { faBookmark as solidBookmark } from '@fortawesome/free-solid-svg-icons';
 import { faBookmark as regularBookmark } from '@fortawesome/free-regular-svg-icons';
 import { IconDefinition } from '@fortawesome/fontawesome-svg-core';  // Import the type
 import { Router } from '@angular/router';
+import { ElementRef, ViewChild } from '@angular/core';
+import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-Coupon',
@@ -48,7 +50,12 @@ export class CouponComponent implements OnInit {
 
   faThumbsUpOutline: IconDefinition = faThumbsUpOutline;
   faThumbsDownOutline: IconDefinition = faThumbsDownOutline;
-
+  faChevronLeft = faChevronLeft;
+  faChevronRight = faChevronRight;
+  currentImageIndex = 0;
+  translateX = 0;
+  @ViewChild('imageContainer') imageContainer: ElementRef;
+  
   isLiked: boolean = false; 
   isDisliked: boolean = false; 
 
@@ -207,4 +214,64 @@ export class CouponComponent implements OnInit {
       queryParams: { data: JSON.stringify(this.couponDetails) },
     });
   }
+
+  prevImage() {
+    if (this.currentImageIndex > 0) {
+      this.currentImageIndex--;
+      this.updateTranslateX();
+    }
+  }
+  
+  // Navigate to next image
+  nextImage() {
+    if (this.couponDetails.imagePaths && this.currentImageIndex < this.couponDetails.imagePaths.length - 1) {
+      this.currentImageIndex++;
+      this.updateTranslateX();
+    }
+  }
+  
+  // Go to specific image by index
+  goToImage(index: number) {
+    if (this.couponDetails.imagePaths && index >= 0 && index < this.couponDetails.imagePaths.length) {
+      this.currentImageIndex = index;
+      this.updateTranslateX();
+    }
+  }
+  
+  // Update translateX based on current image index
+  updateTranslateX() {
+    // Get container width
+    const containerWidth = this.imageContainer?.nativeElement?.clientWidth || 0;
+    this.translateX = -this.currentImageIndex * containerWidth;
+  }
+  
+  // Handle window resize to adjust translateX
+  @HostListener('window:resize')
+  onResize() {
+    this.updateTranslateX();
+  }
+  
+  // Optional: Add touch swipe functionality
+  startX: number;
+  
+  @HostListener('touchstart', ['$event'])
+  onTouchStart(event: TouchEvent) {
+    this.startX = event.touches[0].clientX;
+  }
+  
+  @HostListener('touchend', ['$event'])
+  onTouchEnd(event: TouchEvent) {
+    const endX = event.changedTouches[0].clientX;
+    const diff = endX - this.startX;
+    
+    // Swipe threshold
+    if (Math.abs(diff) > 50) {
+      if (diff > 0) {
+        this.prevImage();
+      } else {
+        this.nextImage();
+      }
+    }
+  }
+  
 }

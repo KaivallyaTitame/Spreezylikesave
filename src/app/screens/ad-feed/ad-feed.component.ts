@@ -1,6 +1,6 @@
 import { AuthService } from "src/app/services/auth.service";
 import { Component, OnInit } from '@angular/core';
-import { forkJoin } from 'rxjs'; // Ensure this is imported
+import { forkJoin } from 'rxjs'; 
 import { AdvertisementDetailsService } from 'src/app/services/advertisementTypes.service'; 
 import { AdvertisementDetails } from 'src/app/models/ad-details';
 import { PopUpComponent } from "src/app/components/pop-up/pop-up.component";
@@ -12,8 +12,8 @@ import { PopUpComponent } from "src/app/components/pop-up/pop-up.component";
 })
 export class AdFeedComponent implements OnInit {
   ads: AdvertisementDetails []= [];
-  errorMessage: string = '';  // Variable to store error message
-  showErrorPopup: boolean = false; // Flag to show pop-up
+  errorMessage: string = '';  
+  showErrorPopup: boolean = false; 
   constructor(private advertisementDetailsService: AdvertisementDetailsService, private authService: AuthService) {}
 
   logout() {
@@ -26,7 +26,6 @@ export class AdFeedComponent implements OnInit {
 
   isExpired(offerExpiry: string): boolean {
     const expiryDate = new Date(offerExpiry);
-    console.log(expiryDate)
     const currentDate = new Date();
     return expiryDate < currentDate;
   }

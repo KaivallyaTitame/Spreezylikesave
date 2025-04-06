@@ -1,14 +1,15 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, HostListener, Input, OnInit } from '@angular/core';
 
 import { faBars, faUserGroup, faMagnifyingGlass, faThumbsUp, faThumbsDown, faLocationArrow, faEllipsisVertical, faLocationDot, faHeart, faBell, faCircleUser } from '@fortawesome/free-solid-svg-icons';
-import { faThumbsUp as faThumbsUpOutline, faThumbsDown as faThumbsDownOutline } from '@fortawesome/free-regular-svg-icons'; // Import outlined icons
+import { faThumbsUp as faThumbsUpOutline, faThumbsDown as faThumbsDownOutline } from '@fortawesome/free-regular-svg-icons'; 
 import { AdvertisementDetailsService } from 'src/app/services/advertisementTypes.service';
 import { AdvertisementDetails } from 'src/app/models/ad-details';
 import { faBookmark as solidBookmark } from '@fortawesome/free-solid-svg-icons';
 import { faBookmark as regularBookmark } from '@fortawesome/free-regular-svg-icons';
 import { Router } from '@angular/router';
 import { JwtDecoderService } from 'src/app/services/jwt-decoder.service';
-
+import { ElementRef, ViewChild } from '@angular/core';
+import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
 @Component({
   selector: 'app-Post',
   templateUrl: './Post.component.html',
@@ -52,6 +53,12 @@ export class PostComponent implements OnInit {
   isDisliked: boolean = false;
   isFollowing: boolean = false;
 
+  faChevronLeft = faChevronLeft;
+  faChevronRight = faChevronRight;
+  currentImageIndex = 0;
+  translateX = 0;
+  @ViewChild('imageContainer') imageContainer: ElementRef;
+
   constructor(private advertisementDetailsService: AdvertisementDetailsService, private router: Router, private jwtDecoderService: JwtDecoderService) { }
 
   ngOnInit(): void {
@@ -65,10 +72,10 @@ export class PostComponent implements OnInit {
     this.checkIfFollowing();
   }
 
-  toggleFollow(): void {//Not tested 
+  toggleFollow(): void {
     let token = localStorage.getItem("token") || "";
     let userName = this.jwtDecoderService.decodeInfoFromToken(token)["sub"] || "";
-    const sourceUsername = userName || 'currentUser';  // Replace with the actual logged-in user
+    const sourceUsername = userName || 'currentUser';  
     const targetUsername = this.postDetails.username;
     if (this.isFollowing) {
       this.advertisementDetailsService.unfollowUser(sourceUsername, targetUsername).subscribe(
@@ -238,4 +245,57 @@ export class PostComponent implements OnInit {
       queryParams: { data: JSON.stringify(this.postDetails) },
     })
   }
+
+
+  prevImage() {
+    if (this.currentImageIndex > 0) {
+      this.currentImageIndex--;
+      this.updateTranslateX();
+    }
+  }
+  
+  nextImage() {
+    if (this.postDetails.imagePaths && this.currentImageIndex < this.postDetails.imagePaths.length - 1) {
+      this.currentImageIndex++;
+      this.updateTranslateX();
+    }
+  }
+
+  goToImage(index: number) {
+    if (this.postDetails.imagePaths && index >= 0 && index < this.postDetails.imagePaths.length) {
+      this.currentImageIndex = index;
+      this.updateTranslateX();
+    }
+  }
+
+  updateTranslateX() {
+    const containerWidth = this.imageContainer?.nativeElement?.clientWidth || 0;
+    this.translateX = -this.currentImageIndex * containerWidth;
+  }
+
+  @HostListener('window:resize')
+  onResize() {
+    this.updateTranslateX();
+  }
+
+  startX: number;
+
+  @HostListener('touchstart', ['$event'])
+  onTouchStart(event: TouchEvent) {
+    this.startX = event.touches[0].clientX;
+  }
+
+  @HostListener('touchend', ['$event'])
+  onTouchEnd(event: TouchEvent) {
+    const endX = event.changedTouches[0].clientX;
+    const diff = endX - this.startX;
+    if (Math.abs(diff) > 50) {
+      if (diff > 0) {
+        this.prevImage();
+      } else {
+        this.nextImage();
+      }
+    }
+  }
+
 }  

@@ -3,7 +3,7 @@
     <div class="flex items-center justify-between p-2">
       <img [src]="baseUrl + eventDetails.profileImageUrl" alt="Profile" class="w-12 h-12 rounded-full mt-2 ml-1">
       <div class="flex-grow ml-2 text-left">
-        <div class="font-bold text-lg mt-2 text-black">{{ eventDetails.username }}</div>
+        <div class="font-bold text-xl mt-2 text-black">{{ eventDetails.username }}</div>
         <div class="text-sm text-gray-500">
           <ng-container *ngIf="isExpired; else notExpired">
             Expired
@@ -19,11 +19,43 @@
       </button>
     </div>
     <div>
-      <img [src]="baseUrl + eventDetails.imagePaths[0]" alt="Event" class="w-full mt-2 object-cover h-96">
+
+      <div class="relative">
+        <div class="relative overflow-hidden">
+          <div #imageContainer class="flex transition-transform duration-300 ease-in-out"
+            [style.transform]="'translateX(' + translateX + 'px)'">
+            <div *ngFor="let image of eventDetails.imagePaths; let i = index" class="w-full flex-shrink-0">
+              <img [src]="baseUrl + image" [alt]="'Product image ' + (i+1)" class="w-full object-contain h-96">
+            </div>
+          </div>
+
+          <button *ngIf="eventDetails.imagePaths && eventDetails.imagePaths.length > 1 && currentImageIndex > 0"
+            (click)="prevImage()"
+            class="absolute left-2 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-70 rounded-full p-2 cursor-pointer shadow-md">
+            <fa-icon [icon]="faChevronLeft" class="text-black"></fa-icon>
+          </button>
+
+          <button
+            *ngIf="eventDetails.imagePaths && eventDetails.imagePaths.length > 1 && currentImageIndex < eventDetails.imagePaths.length - 1"
+            (click)="nextImage()"
+            class="absolute right-2 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-70 rounded-full p-2 cursor-pointer shadow-md">
+            <fa-icon [icon]="faChevronRight" class="text-black"></fa-icon>
+          </button>
+        </div>
+      </div>
+      <div *ngIf="eventDetails.imagePaths && eventDetails.imagePaths.length > 1"
+        class="absolute mt-2 bottom-4 left-0 right-0 flex justify-center">
+        <div class="flex space-x-1">
+          <div *ngFor="let image of eventDetails.imagePaths; let i = index" class="w-2 h-2 rounded-full cursor-pointer"
+            [ngClass]="currentImageIndex === i ? 'bg-primary' : 'bg-gray-300 bg-opacity-60'" (click)="goToImage(i)">
+          </div>
+        </div>
+      </div>
+
       <div class="w-full px-2 py-1 text-xl font-bold bg-primary text-white border-none cursor-pointer text-center">
         {{ eventDetails.eventDateAndTime | date:'dd MMM hh:mm a' }}
       </div>
-      <div class="m-4 font-bold text-xl text-gray-500 text-center">
+      <div class="m-4 font-bold text-xl text-black text-center">
         {{ eventDetails.offerTitle }}-Book Your tickets Now
       </div>
     </div>
@@ -55,9 +87,7 @@
 
         <div class="relative">
           <button (click)="savePost()" class="bg-transparent border-none flex items-center cursor-pointer">
-            <fa-icon
-              [icon]="isSaved ? solidBookmark : regularBookmark"
-              class="fa-xl transition-all duration-300"
+            <fa-icon [icon]="isSaved ? solidBookmark : regularBookmark" class="fa-xl transition-all duration-300"
               [ngClass]="{
                 'text-[#ffb43f]': true,  
                 'scale-125': scaleAnimation,  
@@ -90,16 +120,13 @@
         </div>
       </div>
     </div>
-    
+
     <button
-      class="w-full px-2 py-1 text-lg font-bold bg-primary text-white border-none rounded-b-[4px] cursor-pointer text-center"(click)="showDetails(eventDetails.advertisementId)">
+      class="w-full px-2 py-1 text-lg font-bold bg-primary text-white border-none rounded-b-[4px] cursor-pointer text-center"
+      (click)="showDetails(eventDetails.advertisementId)">
       Show Details →
     </button>
   </div>
-  <app-pop-up
-    *ngIf="showPopup"
-    [messageTitle]="popupTitle"
-    [messageBody]="popupBody"
-    (close)="showPopup = false">
+  <app-pop-up *ngIf="showPopup" [messageTitle]="popupTitle" [messageBody]="popupBody" (close)="showPopup = false">
   </app-pop-up>
 </div>

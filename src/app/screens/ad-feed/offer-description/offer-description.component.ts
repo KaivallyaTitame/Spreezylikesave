@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, HostListener, Input, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { faBars, faUserGroup, faMagnifyingGlass, faThumbsUp, faThumbsDown, faLocationArrow, faEllipsisVertical, faLocationDot, faHeart, faBell, faCircleUser } from '@fortawesome/free-solid-svg-icons';
 import { faThumbsUp as faThumbsUpOutline, faThumbsDown as faThumbsDownOutline } from '@fortawesome/free-regular-svg-icons'; 
@@ -7,6 +7,8 @@ import { AdvertisementDetails } from 'src/app/models/ad-details';
 import { faBookmark as solidBookmark } from '@fortawesome/free-solid-svg-icons';
 import { faBookmark as regularBookmark } from '@fortawesome/free-regular-svg-icons';
 import { Router } from '@angular/router';
+import { ElementRef, ViewChild } from '@angular/core';
+import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-offer-description',
@@ -14,12 +16,14 @@ import { Router } from '@angular/router';
   styles: []
 })
 export class OfferDescriptionComponent implements OnInit {
-  offerData: AdvertisementDetails | null = null;
-  details : AdvertisementDetails
+  offerData: AdvertisementDetails 
   dropdowns: { [key: string]: boolean } = {
     howToAvail: false,
     termsConditions: false
   };
+  // baseUrl="https://images.spreezy.in/";
+  baseUrl = "";
+
   remainingDays: number;
   remainingHours: number;
   isExpired: boolean = false;
@@ -52,6 +56,12 @@ export class OfferDescriptionComponent implements OnInit {
   isLiked: boolean = false; 
   isDisliked: boolean = false; 
 
+  faChevronLeft = faChevronLeft;
+  faChevronRight = faChevronRight;
+  currentImageIndex = 0;
+  translateX = 0;
+  @ViewChild('imageContainer') imageContainer: ElementRef;
+
   constructor(
     private route: ActivatedRoute,
     private advertisementDetailsService: AdvertisementDetailsService,
@@ -62,9 +72,9 @@ export class OfferDescriptionComponent implements OnInit {
     const advertisementId = this.route.snapshot.paramMap.get('advertisementId');
     this.route.queryParams.subscribe((params) => {
       if (params['data']) {
-        this.details = JSON.parse(params['data']);
-        console.log("Received Details:", this.details);
-        this.offerData = this.details
+        let details = JSON.parse(params['data']);
+        console.log("Received Details:", details);
+        this.offerData = details
       }
     });
     if (this.offerData) {
@@ -179,7 +189,7 @@ export class OfferDescriptionComponent implements OnInit {
   }
 
   reportPost(): void {
-    this.advertisementDetailsService.reportPost(this.details.advertisementId).subscribe({
+    this.advertisementDetailsService.reportPost(this.offerData.advertisementId).subscribe({
       next: (response) => {
         console.log('Post reported successfully:', response);
         this.showReportSuccess = true;
@@ -213,5 +223,57 @@ export class OfferDescriptionComponent implements OnInit {
       this.showLikeAnimation = false;
       this.showDislikeAnimation = false;
     }, 500);
+  }
+  
+  prevImage() {
+    if (this.currentImageIndex > 0) {
+      this.currentImageIndex--;
+      this.updateTranslateX();
+    }
+  }
+
+  // Navigate to next image
+  nextImage() {
+    if (this.offerData.imagePaths && this.currentImageIndex < this.offerData.imagePaths.length - 1) {
+      this.currentImageIndex++;
+      this.updateTranslateX();
+    }
+  }
+
+  goToImage(index: number) {
+    if (this.offerData.imagePaths && index >= 0 && index < this.offerData.imagePaths.length) {
+      this.currentImageIndex = index;
+      this.updateTranslateX();
+    }
+  }
+
+  updateTranslateX() {
+    const containerWidth = this.imageContainer?.nativeElement?.clientWidth || 0;
+    this.translateX = -this.currentImageIndex * containerWidth;
+  }
+
+  @HostListener('window:resize')
+  onResize() {
+    this.updateTranslateX();
+  }
+
+  startX: number;
+
+  @HostListener('touchstart', ['$event'])
+  onTouchStart(event: TouchEvent) {
+    this.startX = event.touches[0].clientX;
+  }
+
+  @HostListener('touchend', ['$event'])
+  onTouchEnd(event: TouchEvent) {
+    const endX = event.changedTouches[0].clientX;
+    const diff = endX - this.startX;
+    if (Math.abs(diff) > 50) {
+      if (diff > 0) {
+        this.prevImage();
+      } else {
+        this.nextImage();
+      }
+    }
   }
 }
