@@ -1,5 +1,5 @@
 import { Component, Input,Output, EventEmitter,HostListener,ElementRef, ViewChild} from '@angular/core';
-import { faCoffee,faHeart,faLocationArrow,faBookmark,faUsers,faHandshake} from '@fortawesome/free-solid-svg-icons';
+import { faCoffee,faHeart,faLocationArrow,faBookmark,faUsers, faArrowTrendUp as faArrowTrendUp} from '@fortawesome/free-solid-svg-icons';
 import { insightDetails } from 'src/app/models/ad-details';
 
 @Component({
@@ -15,13 +15,6 @@ export class PostInsightsComponent {
   @ViewChild('childDiv') childDiv!: ElementRef;
   
   // when user clicked anywhere of the component then it will hide post insight component.  
-  @HostListener('window:click', ['$event'])
-  onClickOutside(event: Event) {
-    const clickedInside = this.childDiv.nativeElement.contains(event.target);
-    if (this.childDiv && this.showInsightScreen && !clickedInside) {
-      this.ClickOut.emit(event);
-    }
-  }
 
 
   faCoffee = faCoffee;
@@ -29,7 +22,19 @@ export class PostInsightsComponent {
   faLocationArrow = faLocationArrow;
   faBookmark = faBookmark; 
   faUsers = faUsers; 
-  faHandshake=faHandshake;
+  faHandshake=faArrowTrendUp;
+
+  @HostListener('window:touchstart', ['$event'])
+  @HostListener('window:click', ['$event'])
+  onClickOutside(event: Event) {
+    const clickedInside = this.childDiv.nativeElement.contains(event.target);
+    if(clickedInside === true){
+        return;
+    }
+    else if (this.childDiv && this.showInsightScreen && !clickedInside) {
+      this.ClickOut.emit(event);
+    }
+  }
 
 
  
