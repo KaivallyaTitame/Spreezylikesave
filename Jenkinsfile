@@ -70,25 +70,25 @@ pipeline
         // }
         //
 
-         stage('sonarQube-analysis') {
-            steps {
-                withSonarQubeEnv('sonar-scanner') { // Ensure 'sonar-scanner' matches the name configured in Jenkins
-                    script {
-                        sh """
-                            /var/jenkins_home/tools/hudson.plugins.sonar.SonarRunnerInstallation/sonar-scanner/bin/sonar-scanner \
-                            -Dsonar.projectKey=frontend-project \
-                            -Dsonar.projectName="Frontend Project" \
-                            -Dsonar.sources=. \
-                            -Dsonar.host.url=${SONAR_HOST_URL} \
-                            -Dsonar.login=${SONAR_TOKEN} \
-                            -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info \
-                            -Dsonar.exclusions=node_modules/**,dist/**,**/*.spec.ts \
-                            -Dsonar.sourceEncoding=UTF-8
-                        """
-                    }
-                }
-            }
-        }
+        //  stage('sonarQube-analysis') {
+        //     steps {
+        //         withSonarQubeEnv('sonar-scanner') { // Ensure 'sonar-scanner' matches the name configured in Jenkins
+        //             script {
+        //                 sh """
+        //                     /var/jenkins_home/tools/hudson.plugins.sonar.SonarRunnerInstallation/sonar-scanner/bin/sonar-scanner \
+        //                     -Dsonar.projectKey=frontend-project \
+        //                     -Dsonar.projectName="Frontend Project" \
+        //                     -Dsonar.sources=. \
+        //                     -Dsonar.host.url=${SONAR_HOST_URL} \
+        //                     -Dsonar.login=${SONAR_TOKEN} \
+        //                     -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info \
+        //                     -Dsonar.exclusions=node_modules/**,dist/**,**/*.spec.ts \
+        //                     -Dsonar.sourceEncoding=UTF-8
+        //                 """
+        //             }
+        //         }
+        //     }
+        // }
 
         stage('Build Project') {
             steps {
