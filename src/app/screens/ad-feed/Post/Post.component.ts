@@ -1,11 +1,12 @@
 import { Component, HostListener, Input, OnInit } from '@angular/core';
-
-import { faBars, faUserGroup, faMagnifyingGlass, faThumbsUp, faThumbsDown, faLocationArrow, faEllipsisVertical, faLocationDot, faHeart, faBell, faCircleUser } from '@fortawesome/free-solid-svg-icons';
+import { faBars, faUserGroup, faMagnifyingGlass, faThumbsUp, faThumbsDown, faLocationArrow, faEllipsisVertical, faLocationDot, faBell, faCircleUser , faPaperPlane } from '@fortawesome/free-solid-svg-icons';
 import { faThumbsUp as faThumbsUpOutline, faThumbsDown as faThumbsDownOutline } from '@fortawesome/free-regular-svg-icons'; 
 import { AdvertisementDetailsService } from 'src/app/services/advertisementTypes.service';
 import { AdvertisementDetails } from 'src/app/models/ad-details';
 import { faBookmark as solidBookmark } from '@fortawesome/free-solid-svg-icons';
-import { faBookmark as regularBookmark } from '@fortawesome/free-regular-svg-icons';
+import { faHeart as faHeartSolid } from '@fortawesome/free-solid-svg-icons';
+import { faHeart as faHeartRegular } from '@fortawesome/free-regular-svg-icons';
+import { faBookmark as regularBookmark  } from '@fortawesome/free-regular-svg-icons';
 import { Router } from '@angular/router';
 import { JwtDecoderService } from 'src/app/services/jwt-decoder.service';
 import { ElementRef, ViewChild } from '@angular/core';
@@ -35,6 +36,9 @@ export class PostComponent implements OnInit {
   popupTitle: string = 'Error';
   popupBody: string = '';
   faBars = faBars;
+  faHeartSolid = faHeartSolid
+  faHeartRegular = faHeartRegular;
+  faPaperPlane = faPaperPlane;
   faUserGroup = faUserGroup;
   faMagnifyingGlass = faMagnifyingGlass;
   faThumbsUp = faThumbsUp;
@@ -44,7 +48,6 @@ export class PostComponent implements OnInit {
   regularBookmark = regularBookmark;
   faEllipsisVertical = faEllipsisVertical;
   faLocationDot = faLocationDot;
-  faHeart = faHeart;
   faBell = faBell;
   faCircleUser = faCircleUser;
   faThumbsUpOutline = faThumbsUpOutline;
@@ -52,13 +55,13 @@ export class PostComponent implements OnInit {
   isLiked: boolean = false;
   isDisliked: boolean = false;
   isFollowing: boolean = false;
-
+  showBelow = false;
   faChevronLeft = faChevronLeft;
   faChevronRight = faChevronRight;
   currentImageIndex = 0;
   translateX = 0;
   @ViewChild('imageContainer') imageContainer: ElementRef;
-
+  @ViewChild('threeDotsWrapper', { static: false }) threeDotsRef!: ElementRef;
   constructor(private advertisementDetailsService: AdvertisementDetailsService, private router: Router, private jwtDecoderService: JwtDecoderService) { }
 
   ngOnInit(): void {
@@ -200,6 +203,33 @@ export class PostComponent implements OnInit {
 
   toggleReportButton(): void {
     this.showReportButton = !this.showReportButton;
+    if (this.showReportButton) {
+      this.determinePopupPosition();
+    }
+  }
+
+  @HostListener('window:scroll', [])
+  onScroll(): void {
+    const triggerPoint = 135; 
+    this.showBelow = window.scrollY < triggerPoint;
+    if (this.showReportButton) {
+      this.determinePopupPosition();
+    }
+  }
+
+  sharePost(){}
+
+  determinePopupPosition(): void {
+    if (!this.threeDotsRef) return;
+    const rect = this.threeDotsRef.nativeElement.getBoundingClientRect();
+    const safeTopLimit = 135; 
+    this.showBelow = rect.top < safeTopLimit;
+  }
+
+  getReportPopupStyle() {
+    return this.showBelow
+      ? { top: '2.5rem', bottom: 'auto' } 
+      : { bottom: '2.5rem', top: 'auto' };
   }
 
   reportPost(): void {
@@ -241,7 +271,7 @@ export class PostComponent implements OnInit {
   }
 
   showDetails(advertisementId: number): void {
-    this.router.navigate(['/offer-description', advertisementId], {
+    this.router.navigate(['consumer-home/adfeed/offer-description', advertisementId], {
       queryParams: { data: JSON.stringify(this.postDetails) },
     })
   }

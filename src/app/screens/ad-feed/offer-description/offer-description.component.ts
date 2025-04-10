@@ -224,7 +224,7 @@ export class OfferDescriptionComponent implements OnInit {
       this.showDislikeAnimation = false;
     }, 500);
   }
-  
+
   prevImage() {
     if (this.currentImageIndex > 0) {
       this.currentImageIndex--;
@@ -232,7 +232,6 @@ export class OfferDescriptionComponent implements OnInit {
     }
   }
 
-  // Navigate to next image
   nextImage() {
     if (this.offerData.imagePaths && this.currentImageIndex < this.offerData.imagePaths.length - 1) {
       this.currentImageIndex++;

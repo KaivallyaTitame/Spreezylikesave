@@ -1,14 +1,12 @@
-import { Component, HostListener, Input, OnInit } from '@angular/core';
-import { faBars, faUserGroup, faMagnifyingGlass, faThumbsUp, faThumbsDown, faLocationArrow, faEllipsisVertical, faLocationDot, faHeart, faBell, faCircleUser } from '@fortawesome/free-solid-svg-icons';
-import { faThumbsUp as faThumbsUpOutline, faThumbsDown as faThumbsDownOutline } from '@fortawesome/free-regular-svg-icons'; // Import outlined icons
+import { Component, HostListener,ElementRef, ViewChild, Input, OnInit } from '@angular/core';
+import { faBars, faUserGroup, faMagnifyingGlass, faThumbsUp, faThumbsDown, faLocationArrow, faEllipsisVertical, faLocationDot, faHeart, faBell, faCircleUser , faBookmark , faPaperPlane  } from '@fortawesome/free-solid-svg-icons';
+import { faThumbsUp as faThumbsUpOutline, faThumbsDown as faThumbsDownOutline ,} from '@fortawesome/free-regular-svg-icons'; // Import outlined icons
 import { AdvertisementDetailsService } from 'src/app/services/advertisementTypes.service';
 import { AdvertisementDetails } from 'src/app/models/ad-details';
-import { faBookmark as solidBookmark } from '@fortawesome/free-solid-svg-icons';
-import { faBookmark as regularBookmark } from '@fortawesome/free-regular-svg-icons';
+import { faBookmark as solidBookmark , faBookmark as regularBookmark , faHeart as faHeartRegular , faThumbsDown as faThumbsDownRegular, faBookmark as faBookmarkRegular } from '@fortawesome/free-regular-svg-icons';
 import { IconDefinition } from '@fortawesome/fontawesome-svg-core';  // Import the type
 import { Router } from '@angular/router';
-import { ElementRef, ViewChild } from '@angular/core';
-import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
+import { faChevronLeft, faChevronRight,faHeart as faHeartSolid, faThumbsDown as faThumbsDownSolid , faBookmark as faBookmarkSolid } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-Coupon',
@@ -46,7 +44,11 @@ export class CouponComponent implements OnInit {
   faLocationDot: IconDefinition = faLocationDot;
   faHeart: IconDefinition = faHeart;
   faBell: IconDefinition = faBell;
-  faCircleUser: IconDefinition = faCircleUser;
+  faBookmark : IconDefinition = faBookmark;
+  faBookmarkRegular : IconDefinition = faBookmarkRegular;
+  faCircleUser : IconDefinition = faCircleUser;
+  faPaperPlane : IconDefinition = faPaperPlane;
+  showBelow = false;
 
   faThumbsUpOutline: IconDefinition = faThumbsUpOutline;
   faThumbsDownOutline: IconDefinition = faThumbsDownOutline;
@@ -55,7 +57,7 @@ export class CouponComponent implements OnInit {
   currentImageIndex = 0;
   translateX = 0;
   @ViewChild('imageContainer') imageContainer: ElementRef;
-  
+  @ViewChild('threeDotsWrapper', { static: false }) threeDotsRef!: ElementRef;
   isLiked: boolean = false; 
   isDisliked: boolean = false; 
 
@@ -129,11 +131,12 @@ export class CouponComponent implements OnInit {
         },
         error: (err) => {
           this.showError('Dislike Error', 'Failed to update dislikes. Please try again.');
-
         },
       });
     }
   }
+
+  sharePost(){}
 
   savePost(): void {
     const advertisementId = this.couponDetails.advertisementId;
@@ -175,7 +178,32 @@ export class CouponComponent implements OnInit {
   }
 
   toggleReportButton(): void {
-    this.showReportButton = !this.showReportButton; 
+    this.showReportButton = !this.showReportButton;
+    if (this.showReportButton) {
+      this.determinePopupPosition();
+    }
+  }
+
+  @HostListener('window:scroll', [])
+  onScroll(): void {
+    const triggerPoint = 135; 
+    this.showBelow = window.scrollY < triggerPoint;
+    if (this.showReportButton) {
+      this.determinePopupPosition();
+    }
+  }
+
+  determinePopupPosition(): void {
+    if (!this.threeDotsRef) return;
+    const rect = this.threeDotsRef.nativeElement.getBoundingClientRect();
+    const safeTopLimit = 135; 
+    this.showBelow = rect.top < safeTopLimit;
+  }
+
+  getReportPopupStyle() {
+    return this.showBelow
+      ? { top: '2.5rem', bottom: 'auto' } 
+      : { bottom: '2.5rem', top: 'auto' };
   }
 
   reportPost(): void {
@@ -210,7 +238,7 @@ export class CouponComponent implements OnInit {
   }
 
   showDetails(advertisementId: number): void {
-    this.router.navigate(['/offer-description', advertisementId ] ,  {
+    this.router.navigate(['consumer-home/adfeed/offer-description', advertisementId ] ,  {
       queryParams: { data: JSON.stringify(this.couponDetails) },
     });
   }
@@ -222,7 +250,6 @@ export class CouponComponent implements OnInit {
     }
   }
   
-  // Navigate to next image
   nextImage() {
     if (this.couponDetails.imagePaths && this.currentImageIndex < this.couponDetails.imagePaths.length - 1) {
       this.currentImageIndex++;
@@ -230,7 +257,6 @@ export class CouponComponent implements OnInit {
     }
   }
   
-  // Go to specific image by index
   goToImage(index: number) {
     if (this.couponDetails.imagePaths && index >= 0 && index < this.couponDetails.imagePaths.length) {
       this.currentImageIndex = index;
@@ -238,20 +264,16 @@ export class CouponComponent implements OnInit {
     }
   }
   
-  // Update translateX based on current image index
   updateTranslateX() {
-    // Get container width
     const containerWidth = this.imageContainer?.nativeElement?.clientWidth || 0;
     this.translateX = -this.currentImageIndex * containerWidth;
   }
   
-  // Handle window resize to adjust translateX
   @HostListener('window:resize')
   onResize() {
     this.updateTranslateX();
   }
   
-  // Optional: Add touch swipe functionality
   startX: number;
   
   @HostListener('touchstart', ['$event'])
@@ -264,7 +286,6 @@ export class CouponComponent implements OnInit {
     const endX = event.changedTouches[0].clientX;
     const diff = endX - this.startX;
     
-    // Swipe threshold
     if (Math.abs(diff) > 50) {
       if (diff > 0) {
         this.prevImage();

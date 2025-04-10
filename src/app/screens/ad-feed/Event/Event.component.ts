@@ -1,6 +1,6 @@
 
 import { Component, HostListener, Input, OnInit } from '@angular/core';
-import { faBars, faUserGroup, faMagnifyingGlass, faThumbsUp, faThumbsDown, faLocationArrow, faEllipsisVertical, faLocationDot, faHeart, faBell, faCircleUser } from '@fortawesome/free-solid-svg-icons';
+import { faBars, faUserGroup, faMagnifyingGlass, faThumbsUp, faThumbsDown, faLocationArrow, faEllipsisVertical, faLocationDot, faHeart, faBell, faCircleUser , faPaperPlane } from '@fortawesome/free-solid-svg-icons';
 import { faThumbsUp as faThumbsUpOutline, faThumbsDown as faThumbsDownOutline } from '@fortawesome/free-regular-svg-icons'; 
 import { AdvertisementDetailsService } from 'src/app/services/advertisementTypes.service';
 import { AdvertisementDetails } from 'src/app/models/ad-details';
@@ -44,18 +44,19 @@ export class EventComponent implements OnInit {
   faLocationDot = faLocationDot;
   faHeart = faHeart;
   faBell = faBell;
+  faPaperPlane = faPaperPlane;
   faCircleUser = faCircleUser;
   faThumbsUpOutline = faThumbsUpOutline;
   faThumbsDownOutline = faThumbsDownOutline;
   isLiked: boolean = false;
   isDisliked: boolean = false;
-
+  showBelow = false;
   faChevronLeft = faChevronLeft;
   faChevronRight = faChevronRight;
   currentImageIndex = 0;
   translateX = 0;
   @ViewChild('imageContainer') imageContainer: ElementRef;
-
+  @ViewChild('threeDotsWrapper', { static: false }) threeDotsRef!: ElementRef;
   constructor(private advertisementDetailsService: AdvertisementDetailsService, private router: Router) { }
 
   ngOnInit(): void {
@@ -145,7 +146,34 @@ export class EventComponent implements OnInit {
 
   toggleReportButton(): void {
     this.showReportButton = !this.showReportButton;
+    if (this.showReportButton) {
+      this.determinePopupPosition();
+    }
   }
+
+  @HostListener('window:scroll', [])
+  onScroll(): void {
+    const triggerPoint = 135; 
+    this.showBelow = window.scrollY < triggerPoint;
+    if (this.showReportButton) {
+      this.determinePopupPosition();
+    }
+  }
+
+  determinePopupPosition(): void {
+    if (!this.threeDotsRef) return;
+    const rect = this.threeDotsRef.nativeElement.getBoundingClientRect();
+    const safeTopLimit = 135; 
+    this.showBelow = rect.top < safeTopLimit;
+  }
+
+  getReportPopupStyle() {
+    return this.showBelow
+      ? { top: '2.5rem', bottom: 'auto' } 
+      : { bottom: '2.5rem', top: 'auto' };
+  }
+
+  sharePost(){}
 
   reportPost(): void {
     this.advertisementDetailsService.reportPost(this.eventDetails.advertisementId).subscribe({
@@ -189,7 +217,7 @@ export class EventComponent implements OnInit {
   }
 
   showDetails(advertisementId: number): void {
-    this.router.navigate(['/offer-description', advertisementId], {
+    this.router.navigate(['consumer-home/adfeed/offer-description', advertisementId], {
       queryParams: { data: JSON.stringify(this.eventDetails) },
     });
   }

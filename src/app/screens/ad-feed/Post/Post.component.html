@@ -74,9 +74,12 @@
         </button>
       </div>
       <div class="flex items-center space-x-4">
-        <button class="bg-none border-none flex items-center cursor-pointer">
-          <fa-icon [icon]="faLocationArrow" class="fa-xl" [ngStyle]="{'color': '#ffb43f'}"></fa-icon>
-        </button>
+        <button (click)="sharePost()" class="group relative flex items-center cursor-pointer">
+          <fa-icon 
+            [icon]="faPaperPlane" 
+            class="text-[#ffb43f] fa-xl group-hover:rotate-12 transition-transform duration-200">
+          </fa-icon>
+        </button> 
 
         <div class="relative">
           <button (click)="savePost()" class="bg-transparent border-none flex items-center cursor-pointer">
@@ -85,15 +88,16 @@
           </button>
         </div>
 
-        <div class="flex items-center space-x-4 relative">
-          <button class="bg-none border-none flex items-center cursor-pointer" (click)="toggleReportButton()">
-            <fa-icon [icon]="faEllipsisVertical" class="fa-xl text-black"></fa-icon>
-          </button>
-
-          <div *ngIf="showReportButton"
-            class="absolute bottom-10 right-0 bg-white border border-gray-300 rounded shadow-lg p-2 z-10">
-            <button (click)="reportPost()" class="text-black font-bold py-2 px-2 rounded">Report</button>
-          </div>
+          <div class="flex items-center space-x-4 relative" #threeDotsWrapper>
+            <button class="bg-none border-none flex items-center cursor-pointer" (click)="toggleReportButton()">
+              <fa-icon [icon]="faEllipsisVertical" class="fa-xl text-black"></fa-icon>
+            </button>
+          
+            <div *ngIf="showReportButton"
+                 class="absolute right-0 bg-white border border-gray-300 rounded shadow-lg p-2 z-10"
+                 [ngStyle]="getReportPopupStyle()">
+              <button (click)="reportPost()" class="text-black font-bold py-2 px-2 rounded">Report</button>
+            </div>
 
           <div *ngIf="showReportSuccess" class="fixed inset-0 z-20 flex items-center ">
             <div class="fixed inset-0 bg-black opacity-50 z-10"></div>

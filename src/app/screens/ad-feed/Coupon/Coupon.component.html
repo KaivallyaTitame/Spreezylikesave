@@ -20,9 +20,7 @@
     </div>
 
     <div class="relative">
-      <!-- Image Carousel Container -->
       <div class="relative overflow-hidden">
-        <!-- Images Container with Horizontal Scroll -->
         <div #imageContainer class="flex transition-transform duration-300 ease-in-out"
           [style.transform]="'translateX(' + translateX + 'px)'">
           <div *ngFor="let image of couponDetails.imagePaths; let i = index" class="w-full flex-shrink-0">
@@ -30,13 +28,11 @@
           </div>
         </div>
 
-        <!-- Navigation Arrows -->
         <button *ngIf="couponDetails.imagePaths && couponDetails.imagePaths.length > 1 && currentImageIndex > 0"
           (click)="prevImage()"
           class="absolute left-2 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-70 rounded-full p-2 cursor-pointer shadow-md">
           <fa-icon [icon]="faChevronLeft" class="text-black"></fa-icon>
         </button>
-
         <button
           *ngIf="couponDetails.imagePaths && couponDetails.imagePaths.length > 1 && currentImageIndex < couponDetails.imagePaths.length - 1"
           (click)="nextImage()"
@@ -44,9 +40,7 @@
           <fa-icon [icon]="faChevronRight" class="text-black"></fa-icon>
         </button>
       </div>
-
     </div>
-    <!-- Navigation Dots -->
     <div *ngIf="couponDetails.imagePaths && couponDetails.imagePaths.length > 1"
       class="mt-2 mb-2 bottom-4 left-0 right-0 flex justify-center">
       <div class="flex space-x-1">
@@ -57,16 +51,15 @@
     </div>
 
     <div class="max-w-80 m-auto">
-    <div
-      class="flex items-center justify-between p-1.5 border border-primary rounded-full bg-white mt-2 mb-5 mx-1">
-      <input type="text" value="SAVE20" readonly
-        class="border-none font-poppins font-semibold text-lg bg-white text-gray-900 outline-none text-center">
-      <button (click)="copyToClipboard(couponDetails.couponCode)"
-        class="bg-primary border-none rounded-full text-white font-poppins font-semibold text-xl px-4 py-4 cursor-pointer">
-        {{ copyButtonText }}
-      </button>
+      <div class="flex items-center justify-between p-1.5 border border-primary rounded-full bg-white mt-2 mb-5 mx-1">
+        <input type="text" [value]="couponDetails.couponCode" readonly
+          class="border-none font-poppins font-semibold text-lg bg-white text-gray-900 outline-none text-center">
+        <button (click)="copyToClipboard(couponDetails.couponCode)"
+          class="bg-primary border-none rounded-full text-white font-poppins font-semibold text-xl px-4 py-4 cursor-pointer">
+          {{ copyButtonText }}
+        </button>
+      </div>
     </div>
-  </div>
 
     <div class="flex justify-between items-center m-4 mt-10">
       <div class="flex items-center space-x-4">
@@ -84,8 +77,11 @@
         </button>
       </div>
       <div class="flex items-center space-x-4 ">
-        <button class="bg-none border-none flex items-center cursor-pointer">
-          <fa-icon [icon]="faLocationArrow" class="fa-xl" [ngStyle]="{'color': '#ffb43f'}"></fa-icon>
+        <button (click)="sharePost()" class="group relative flex items-center cursor-pointer">
+          <fa-icon 
+            [icon]="faPaperPlane" 
+            class="text-[#ffb43f] fa-xl group-hover:rotate-12 transition-transform duration-200">
+          </fa-icon>
         </button>
         <div class="relative">
           <button (click)="savePost()" class="bg-transparent border-none flex items-center cursor-pointer">
@@ -100,13 +96,19 @@
         </div>
 
         <div class="flex items-center space-x-4 relative">
-          <button class="bg-none border-none flex items-center cursor-pointer" (click)="toggleReportButton()">
-            <fa-icon [icon]="faEllipsisVertical" class="fa-xl text-black"></fa-icon>
-          </button>
-          <div *ngIf="showReportButton"
-            class="absolute bottom-10 right-0 bg-white border border-gray-300 rounded shadow-lg p-2 z-10">
-            <button (click)="reportPost()" class="text-black font-bold py-2 px-2 rounded">Report</button>
+          <div class="flex items-center space-x-4 relative" #threeDotsWrapper>
+            <button class="bg-none border-none flex items-center cursor-pointer" (click)="toggleReportButton()">
+              <fa-icon [icon]="faEllipsisVertical" class="fa-xl text-black"></fa-icon>
+            </button>
+          
+            <div *ngIf="showReportButton"
+                 class="absolute right-0 bg-white border border-gray-300 rounded shadow-lg p-2 z-10"
+                 [ngStyle]="getReportPopupStyle()">
+              <button (click)="reportPost()" class="text-black font-bold py-2 px-2 rounded">Report</button>
+            </div>
           </div>
+          
+          
           <div *ngIf="showReportSuccess" class="fixed inset-0 z-20 flex items-center ">
             <div class="fixed inset-0 bg-black opacity-50 z-10"></div>
             <div class="relative z-20 bg-white rounded-lg shadow-lg w-full max-w-xs ml-2 mr-1 text-center p-3">
