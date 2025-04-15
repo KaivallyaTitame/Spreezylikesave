@@ -44,7 +44,7 @@ pipeline {
         stage('Copy Keystore') {
             steps {
                 // Adjust this if keystore is stored securely somewhere else
-                sh 'cp /path/to/spreezy-release-key.jks android/app/spreezy-release-key.jks'
+                sh 'sh 'cp /home/shoyokun/spreezy/spreezy-frontend/android/app/spreezy-release-key.jks android/app/spreezy-release-key.jks'
             }
         }
 
