@@ -134,7 +134,7 @@ pipeline
 
                 // Extract version from package.json
                 script {
-                    def version = sh(script: "jq -r .version package.json", returnStdout: true).trim()
+                    def version = sh(script: 'node -p "require(\'./package.json\').version"', returnStdout: true).trim()
                     env.APP_VERSION = version
                 }
 
