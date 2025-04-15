@@ -1,10 +1,10 @@
 
 
+
 pipeline {
     agent {
         docker {
-            //image 'node:18-alpine'
-             image 'cypress/base:18.16.0'
+            image 'node:18-bullseye' // Includes npm & can install Java SDK and Gradle
             args '-u root:root'
             reuseNode true
         }
@@ -14,87 +14,86 @@ pipeline {
         GIT_URL = 'git@github.com:spreezy-tech/spreezy-frontend.git'
         GIT_BRANCH = 'feature-nandini'
         CREDENTIALS_ID = 'spreezy-frontend-keys'
-        EMAIL_TO = 'spreezyindia@gmail.com'
-        EMAIL_FROM = 'nandiniachugatla@gmail.com'
-        EMAIL_SUBJECT = 'Build successful : Frontend'
-        EMAIL_BODY = 'Attach console logs. Build is successful for'
-        EMAIL_CC = ''
-        EMAIL_BCC = ''
-        EMAIL_REPLY_TO = ''
+
+        MYAPP_UPLOAD_STORE_FILE = credentials('MYAPP_UPLOAD_STORE_FILE')
+        MYAPP_UPLOAD_KEY_ALIAS = credentials('MYAPP_UPLOAD_KEY_ALIAS')
+        MYAPP_UPLOAD_STORE_PASSWORD = credentials('MYAPP_UPLOAD_STORE_PASSWORD')
+        MYAPP_UPLOAD_KEY_PASSWORD = credentials('MYAPP_UPLOAD_KEY_PASSWORD')
+        GOOGLE_PLAY_JSON_KEY = credentials('GOOGLE_PLAY_JSON_KEY')
     }
 
-
     stages {
-        stage('Generate APK'){
-            steps{
-                sh 'npx cap add android && npx cap add ios'
-            }
-        }
 
-        stage('Clone Repository'){
+        stage('Clone Repository') {
             steps {
                 git branch: env.GIT_BRANCH, credentialsId: env.CREDENTIALS_ID, url: env.GIT_URL
             }
         }
 
-        stage('Install All dependencies') {
-            steps{
-              // sh 'rm -rf node_modules'
-              // sh 'npm cache clean --force'
+        stage('Install Dependencies') {
+            steps {
+                sh 'apt update && apt install -y openjdk-17-jdk zip unzip wget'
+                sh 'npm install -g @angular/cli'
                 sh 'npm install'
             }
-            }
-        
-        
-        stage('Notify Success') {
-            steps {
-                script {
-                    // Access the build number using currentBuild
-                    def buildNumber = currentBuild.number
-                    def updatedSubject = "${EMAIL_SUBJECT} ${buildNumber}"
-                    def updatedBody = "${EMAIL_BODY}  ${buildNumber} at\n\n"
-
-                    mail to: env.EMAIL_TO, cc: env.EMAIL_CC, bcc: env.EMAIL_BCC,
-                         from: env.EMAIL_FROM, replyTo: env.EMAIL_REPLY_TO,
-                         subject: updatedSubject, body: updatedBody
-                }
-            }
         }
 
-
-        stage('Run Tests') {
-            steps {
-            sh 'npm start &'
-
-            // Wait for Angular application to start
-            sh 'npx wait-on http://localhost:4200'
-
-            // Run Cypress tests
-            sh 'NO_COLOR=1 npx cypress run'
-
-            sh 'pkill -f "npm start"'
-
-
-            }
-        }
-        
-         stage('Build Project') {
+        stage('Build Angular App') {
             steps {
                 sh 'npm run build'
             }
         }
-    }
-    
-        post{
-        always{
-                
-                slackSend channel: 'devops-jenkins-updates', message: "Please find status of pipeline here Status - ${currentBuild.currentResult} ${env.JOB_NAME}  ${env.BUILD_NUMBER} ${env.BUILD_URL}"   
-    
+
+        stage('Capacitor Sync') {
+            steps {
+                sh 'npx cap sync android'
+            }
+        }
+
+        stage('Build AAB File') {
+            steps {
+                dir('android') {
+                    sh './gradlew bundleRelease'
+                }
+            }
+        }
+
+        stage('Upload to Google Play (UAT)') {
+            steps {
+                script {
+                    // Save JSON key to file
+                    writeFile file: 'google-play-key.json', text: new String(Base64.decoder.decode(GOOGLE_PLAY_JSON_KEY))
+
+                    // Upload AAB using fastlane
+                    sh '''
+                    apt install -y ruby ruby-dev build-essential
+                    gem install fastlane -NV
+
+                    cd android
+                    fastlane supply --aab ./app/build/outputs/bundle/release/app-release.aab \
+                        --package_name com.spreezy.app \
+                        --track internal \
+                        --json_key ../google-play-key.json \
+                        --skip_upload_metadata true \
+                        --skip_upload_images true \
+                        --skip_upload_screenshots true
+                    '''
+                }
+            }
+        }
+
+        stage('Notify Slack') {
+            steps {
+                slackSend channel: 'devops-jenkins-updates',
+                          message: "✅ AAB built and uploaded to Internal Test track for Spreezy. Build #${env.BUILD_NUMBER} 🚀"
+            }
         }
     }
 
-
-
-
+    post {
+        failure {
+            slackSend channel: 'devops-jenkins-updates',
+                      message: "❌ Build Failed: ${env.BUILD_URL}"
+        }
     }
-    
+}
