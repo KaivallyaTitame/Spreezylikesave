@@ -129,9 +129,18 @@ pipeline
         // }
         stage('Publish APK to Nexus') {
             steps {
-                sh 'mkdir -p apk-releases'
-                sh 'find ./android/app/build/outputs/apk/ -name "*.apk" -exec cp {} ./apk-releases/ \\;'
+                sh '''
+                    echo "Installing curl..."
+                    apt-get update 
+                    apt-get install -y curl
 
+                    mkdir -p only-apk-releases
+
+                    find ./android/app/build/outputs/apk/ -name "*.apk" -exec cp {} ./only-apk-releases/ \\;
+
+                    echo "Contents of apk-releases directory:"
+                    ls -lh only-apk-releases/
+                '''
                 // Extract version from package.json
                 script {
                     def version = sh(script: 'node -p "require(\'./package.json\').version"', returnStdout: true).trim()
@@ -140,16 +149,16 @@ pipeline
 
                 // Rename APKs with version
                 sh '''
-                    for apk in apk-releases/*.apk; do
+                    for apk in only-apk-releases/*.apk; do
                         base=$(basename "$apk" .apk)
-                        mv "$apk" "apk-releases/${base}-${APP_VERSION}.apk"
+                        mv "$apk" "only-apk-releases/${base}-${APP_VERSION}.apk"
                     done
                 '''
 
                 // Upload to Nexus
                 withCredentials([usernamePassword(credentialsId: 'nexus_apk_credentials', usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASS')]) {
                     sh '''
-                        for apk in apk-releases/*.apk; do
+                        for apk in only-apk-releases/*.apk; do
                             curl -u $NEXUS_USER:$NEXUS_PASS --upload-file "$apk" "http://nexus.spreezy.in/repository/apk-release/$(basename "$apk")"
                         done
                     '''
