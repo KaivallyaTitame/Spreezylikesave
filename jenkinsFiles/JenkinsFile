@@ -1,10 +1,7 @@
-
-
-
 pipeline {
     agent {
         docker {
-            image 'node:18-bullseye' // Includes npm & can install Java SDK and Gradle
+            image 'cypress/base:18.16.0'
             args '-u root:root'
             reuseNode true
         }
@@ -14,16 +11,12 @@ pipeline {
         GIT_URL = 'git@github.com:spreezy-tech/spreezy-frontend.git'
         GIT_BRANCH = 'feature-nandini'
         CREDENTIALS_ID = 'spreezy-frontend-keys'
-
-        MYAPP_UPLOAD_STORE_FILE = credentials('MYAPP_UPLOAD_STORE_FILE')
-        MYAPP_UPLOAD_KEY_ALIAS = credentials('MYAPP_UPLOAD_KEY_ALIAS')
-        MYAPP_UPLOAD_STORE_PASSWORD = credentials('MYAPP_UPLOAD_STORE_PASSWORD')
-        MYAPP_UPLOAD_KEY_PASSWORD = credentials('MYAPP_UPLOAD_KEY_PASSWORD')
-        GOOGLE_PLAY_JSON_KEY = credentials('GOOGLE_PLAY_JSON_KEY')
+        JAVA_HOME = '/usr/lib/jvm/java-17-openjdk-amd64'
+        ANDROID_HOME = '/root/Android/Sdk'
+        GRADLE_USER_HOME = "${WORKSPACE}/.gradle"
     }
 
     stages {
-
         stage('Clone Repository') {
             steps {
                 git branch: env.GIT_BRANCH, credentialsId: env.CREDENTIALS_ID, url: env.GIT_URL
@@ -32,8 +25,6 @@ pipeline {
 
         stage('Install Dependencies') {
             steps {
-                sh 'apt update && apt install -y openjdk-17-jdk zip unzip wget'
-                sh 'npm install -g @angular/cli'
                 sh 'npm install'
             }
         }
@@ -50,7 +41,25 @@ pipeline {
             }
         }
 
-        stage('Build AAB File') {
+        stage('Copy Keystore') {
+            steps {
+                // Adjust this if keystore is stored securely somewhere else
+                sh 'cp /path/to/spreezy-release-key.jks android/app/spreezy-release-key.jks'
+            }
+        }
+
+        stage('Update Gradle Properties for Signing') {
+            steps {
+                writeFile file: 'android/keystore.properties', text: """
+MYAPP_UPLOAD_STORE_FILE=spreezy-release-key.jks
+MYAPP_UPLOAD_KEY_ALIAS=spreezy-key-alias
+MYAPP_UPLOAD_STORE_PASSWORD=Hinatashoyo@123
+MYAPP_UPLOAD_KEY_PASSWORD=Hinatashoyo@123
+"""
+            }
+        }
+
+        stage('Generate AAB') {
             steps {
                 dir('android') {
                     sh './gradlew bundleRelease'
@@ -58,42 +67,17 @@ pipeline {
             }
         }
 
-        stage('Upload to Google Play (UAT)') {
+        stage('Archive AAB') {
             steps {
-                script {
-                    // Save JSON key to file
-                    writeFile file: 'google-play-key.json', text: new String(Base64.decoder.decode(GOOGLE_PLAY_JSON_KEY))
-
-                    // Upload AAB using fastlane
-                    sh '''
-                    apt install -y ruby ruby-dev build-essential
-                    gem install fastlane -NV
-
-                    cd android
-                    fastlane supply --aab ./app/build/outputs/bundle/release/app-release.aab \
-                        --package_name com.spreezy.app \
-                        --track internal \
-                        --json_key ../google-play-key.json \
-                        --skip_upload_metadata true \
-                        --skip_upload_images true \
-                        --skip_upload_screenshots true
-                    '''
-                }
-            }
-        }
-
-        stage('Notify Slack') {
-            steps {
-                slackSend channel: 'devops-jenkins-updates',
-                          message: "✅ AAB built and uploaded to Internal Test track for Spreezy. Build #${env.BUILD_NUMBER} 🚀"
+                archiveArtifacts artifacts: 'android/app/build/outputs/bundle/release/app-release.aab', fingerprint: true
             }
         }
     }
 
     post {
-        failure {
+        always {
             slackSend channel: 'devops-jenkins-updates',
-                      message: "❌ Build Failed: ${env.BUILD_URL}"
+                      message: "Pipeline Result: ${currentBuild.currentResult} | Job: ${env.JOB_NAME} #${env.BUILD_NUMBER} | ${env.BUILD_URL}"
         }
     }
 }
