@@ -109,7 +109,7 @@ pipeline
             steps{
                 sh '''
                     echo "Installing curl..."
-                    #apt-get update 
+                    apt-get update 
                     apt-get install -y curl
 
                     mkdir -p only-apk-releases
