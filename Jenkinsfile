@@ -1,83 +1,203 @@
-pipeline {
-    agent {
+pipeline 
+{ 
+        agent {
         docker {
-            image 'cypress/base:18.16.0'
-            args '-u root:root'
-            reuseNode true
+             image 'cypress/base:18.16.0'
+            // args '-v /var/run/docker.sock:/var/run/docker.sock'
         }
     }
 
+
+    parameters
+    { 
+        gitParameter branchFilter: 'origin/(.*)', defaultValue: 'develop', name: 'branch_name', type: 'PT_BRANCH' ,description: 'Please Choose Branch Name to Build '
+    }
+    
     environment {
         GIT_URL = 'git@github.com:spreezy-tech/spreezy-frontend.git'
-        GIT_BRANCH = 'feature-nandini'
-        CREDENTIALS_ID = 'spreezy-frontend-keys'
-        JAVA_HOME = '/usr/lib/jvm/java-17-openjdk-amd64'
-        ANDROID_HOME = '/root/Android/Sdk'
-        GRADLE_USER_HOME = "${WORKSPACE}/.gradle"
+        GIT_BRANCH = "${params.branch_name}"
+        CREDENTIALS_ID = 'spreezy_credentials'
+        JAVA_HOME = '/usr/lib/jvm/openjdk-17'
+        PATH = "${JAVA_HOME}/bin:${PATH}"
+        EMAIL_FROM = 'jenkins@spreezy.in'
+        EMAIL_TO = 'spreezyindia@gmail.com'
+        EMAIL_SUBJECT = 'Spreezy Frontend Project  Build -  '
+        EMAIL_BODY = 'Spreezy Frontend Project Build Number  '
+        SONAR_HOST_URL='http://103.105.111.78:6842'
+        SONAR_TOKEN=credentials('sonarqube')
+         SONAR_HOME = tool 'sonar-scanner'  
     }
-
-    stages {
-        stage('Clone Repository') {
-            steps {
-                git branch: env.GIT_BRANCH, credentialsId: env.CREDENTIALS_ID, url: env.GIT_URL
+    
+     stages{
+         
+        stage('Clone Git Repo'){
+            steps{
+             git branch: env.GIT_BRANCH, credentialsId: env.CREDENTIALS_ID, url: env.GIT_URL
             }
         }
+        
 
-        stage('Install Dependencies') {
-            steps {
-                sh 'npm install'
+        stage('Nexus Setup And Install All Dependencies'){
+            steps{
+                
+                withCredentials([file(credentialsId: 'nexus_npm_credentials', variable: 'npm_nexus_credentials')]) {
+                 sh '''
+                    npm config set fetch-timeout 600000
+                    npm config set fetch-retries 2
+                    npm install --userconfig ${npm_nexus_credentials} --registry https://nexus.spreezy.in/repository/npm-group/ --loglevel verbose
+                '''                
+                }
             }
         }
+        
 
-        stage('Build Angular App') {
-            steps {
-                sh 'npm run build'
-            }
-        }
+        
+        // stage('Run Tests'){
+        //     steps {
+        //     sh 'npm start &'
 
-        stage('Capacitor Sync') {
-            steps {
-                sh 'npx cap sync android'
-            }
-        }
+        //     // Wait for Angular application to start
+        //     sh 'npx wait-on http://localhost:4200'
 
-        stage('Copy Keystore') {
-            steps {
-                // Adjust this if keystore is stored securely somewhere else
-                sh 'sh 'cp /home/shoyokun/spreezy/spreezy-frontend/android/app/spreezy-release-key.jks android/app/spreezy-release-key.jks'
-            }
-        }
+        //     // Run Cypress tests
+        //     sh 'NO_COLOR=1 npm run test'
+        //     sh 'npm run test:coverage'
 
-        stage('Update Gradle Properties for Signing') {
-            steps {
-                writeFile file: 'android/keystore.properties', text: """
-MYAPP_UPLOAD_STORE_FILE=spreezy-release-key.jks
-MYAPP_UPLOAD_KEY_ALIAS=spreezy-key-alias
-MYAPP_UPLOAD_STORE_PASSWORD=Hinatashoyo@123
-MYAPP_UPLOAD_KEY_PASSWORD=Hinatashoyo@123
-"""
-            }
-        }
 
-        stage('Generate AAB') {
+        //     sh 'pkill -f "npm start"'
+
+        //     }
+        // }
+        
+
+         stage('sonarQube-analysis') {
             steps {
-                dir('android') {
-                    sh './gradlew bundleRelease'
+                withSonarQubeEnv('sonar-scanner') { // Ensure 'sonar-scanner' matches the name configured in Jenkins
+                    script {
+                        sh """
+                            /var/jenkins_home/tools/hudson.plugins.sonar.SonarRunnerInstallation/sonar-scanner/bin/sonar-scanner \
+                            -Dsonar.projectKey=frontend-project \
+                            -Dsonar.projectName="Frontend Project" \
+                            -Dsonar.sources=. \
+                            -Dsonar.host.url=${SONAR_HOST_URL} \
+                            -Dsonar.login=${SONAR_TOKEN} \
+                            -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info \
+                            -Dsonar.exclusions=node_modules/**,dist/**,**/*.spec.ts \
+                            -Dsonar.sourceEncoding=UTF-8
+                        """
+                    }
                 }
             }
         }
 
-        stage('Archive AAB') {
+        stage('Build Project') {
             steps {
-                archiveArtifacts artifacts: 'android/app/build/outputs/bundle/release/app-release.aab', fingerprint: true
+                sh 'npm run build-uat'
             }
+        }
+        
+        stage('Generate APK'){
+            steps{
+              sh 'npx cap add android'
+              sh 'echo "sdk.dir=/usr/local/android/sdk" > ./android/local.properties'
+              sh 'npx cap sync'
+              sh 'npm run apk-debug'
+            }
+        }
+
+        stage('Publish APK to Nexus') {
+            steps {
+                sh '''
+                    echo "Installing curl..."
+                    apt-get update 
+                    apt-get install -y curl
+
+                    mkdir -p only-apk-releases
+
+                    find ./android/app/build/outputs/apk/ -name "*.apk" -exec cp {} ./only-apk-releases/ \\;
+
+                    echo "Contents of apk-releases directory:"
+                    ls -lh only-apk-releases/
+                '''
+                // Extract version from package.json
+                script {
+                    def version = sh(script: 'node -p "require(\'./package.json\').version"', returnStdout: true).trim()
+                    env.APP_VERSION = version
+                }
+
+                // Rename APK to spreezy-<version>.apk
+                sh '''
+                    for apk in only-apk-releases/*.apk; do
+                        mv "$apk" "only-apk-releases/spreezy-${APP_VERSION}.apk"
+                    done
+                '''
+
+                // Upload to Nexus
+                // withCredentials([usernamePassword(credentialsId: 'nexus_apk_credentials', usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASS')]) {
+                //     sh '''
+                //         for apk in only-apk-releases/*.apk; do
+                //             curl -u $NEXUS_USER:$NEXUS_PASS --upload-file "$apk" "http://nexus.spreezy.in/repository/apk-release/$(basename "$apk")"
+                //         done
+                //     '''
+                // }
+                withCredentials([usernamePassword(credentialsId: 'nexus_apk_credentials', usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASS')]) {
+                    sh '''
+                        for apk in only-apk-releases/*.apk; do
+                            FILENAME=$(basename "$apk")
+                            VERSION_DIR="spreezy-${APP_VERSION}"
+                            echo "Uploading $FILENAME to Nexus under folder $VERSION_DIR..."
+                            curl -f -u $NEXUS_USER:$NEXUS_PASS \
+                                --upload-file "$apk" \
+                                "http://nexus.spreezy.in/repository/apk-release/${VERSION_DIR}/${FILENAME}"
+                        done
+                    '''
+                }
+            }
+        }
+
+        
+        // stage('Publish APK on Nexus Repo  '){
+        //     steps{
+        //         sh 'mkdir apk-releases'
+        //         sh 'cp -r  ./android/app/build/outputs/apk/* ./apk-releases/'
+        //         withCredentials([file(credentialsId: 'nexus_npm_credentials', variable: 'npm_nexus_credentials')]) {
+        //          sh "npm publish --userconfig ${npm_nexus_credentials} --registry https://nexus.spreezy.in/repository/npm-hosted/ --loglevel verbose"                }
+
+        //     }
+        // }
+        
+        // stage('Notify  Build Success '){
+        //     steps{
+        //         echo "Build completed successfully"
+        //     }
+        //     post {
+        //         success {
+        //             script {
+        //                 def buildNumber = currentBuild.number
+        //                 def buildStatus = currentBuild.result
+        //                 def buildStatusLabel = buildStatus == 'SUCCESS' ? 'successful' : 'failed'
+        //                 def globalUpdatedBody = "<b>${EMAIL_BODY} ${buildNumber} . <br><br> Build Status - ${buildStatusLabel} .<br><br>  Please find Console Log Output of Build Number ${buildNumber} in build.log File</b>"
+        //                 def globalUpdatedSubject = "${EMAIL_SUBJECT} ${buildStatusLabel}"
+                        
+        //                 emailext attachLog: true, body: globalUpdatedBody, subject: globalUpdatedSubject, to: env.EMAIL_TO, from: env.EMAIL_FROM, mimeType: 'text/html'
+        //             }
+        //         }
+        //     }
+        // }
+
+        
+
+
+    }
+     
+  post{
+        always{
+            // publishHTML(target: [allowMissing: false, alwaysLinkToLastBuild: false, keepAll: true, reportDir: 'coverage/lcov-report', reportFiles: 'index.html', reportName: 'Code Coverage Report'])
+
+            // slackSend channel: 'devops-jenkins-updates', message: "Please find status of pipeline here Status - ${currentBuild.currentResult}  ${env.JOB_NAME}   Build Number ${env.BUILD_NUMBER}  URL ${env.BUILD_URL}"   
+            //clean workspace after every build
+            cleanWs()
         }
     }
 
-    post {
-        always {
-            slackSend channel: 'devops-jenkins-updates',
-                      message: "Pipeline Result: ${currentBuild.currentResult} | Job: ${env.JOB_NAME} #${env.BUILD_NUMBER} | ${env.BUILD_URL}"
-        }
-    }
 }
