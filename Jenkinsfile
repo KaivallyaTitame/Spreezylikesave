@@ -68,27 +68,27 @@ pipeline
 
         //     }
         // }
-        //
+        
 
-        //  stage('sonarQube-analysis') {
-        //     steps {
-        //         withSonarQubeEnv('sonar-scanner') { // Ensure 'sonar-scanner' matches the name configured in Jenkins
-        //             script {
-        //                 sh """
-        //                     /var/jenkins_home/tools/hudson.plugins.sonar.SonarRunnerInstallation/sonar-scanner/bin/sonar-scanner \
-        //                     -Dsonar.projectKey=frontend-project \
-        //                     -Dsonar.projectName="Frontend Project" \
-        //                     -Dsonar.sources=. \
-        //                     -Dsonar.host.url=${SONAR_HOST_URL} \
-        //                     -Dsonar.login=${SONAR_TOKEN} \
-        //                     -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info \
-        //                     -Dsonar.exclusions=node_modules/**,dist/**,**/*.spec.ts \
-        //                     -Dsonar.sourceEncoding=UTF-8
-        //                 """
-        //             }
-        //         }
-        //     }
-        // }
+         stage('sonarQube-analysis') {
+            steps {
+                withSonarQubeEnv('sonar-scanner') { // Ensure 'sonar-scanner' matches the name configured in Jenkins
+                    script {
+                        sh """
+                            /var/jenkins_home/tools/hudson.plugins.sonar.SonarRunnerInstallation/sonar-scanner/bin/sonar-scanner \
+                            -Dsonar.projectKey=frontend-project \
+                            -Dsonar.projectName="Frontend Project" \
+                            -Dsonar.sources=. \
+                            -Dsonar.host.url=${SONAR_HOST_URL} \
+                            -Dsonar.login=${SONAR_TOKEN} \
+                            -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info \
+                            -Dsonar.exclusions=node_modules/**,dist/**,**/*.spec.ts \
+                            -Dsonar.sourceEncoding=UTF-8
+                        """
+                    }
+                }
+            }
+        }
 
         stage('Build Project') {
             steps {
@@ -105,28 +105,6 @@ pipeline
             }
         }
 
-        // stage('Publish APK to Nexus'){
-        //     steps{
-        //         sh '''
-        //             echo "Installing curl..."
-        //             apt-get update 
-        //             apt-get install -y curl
-
-        //             mkdir -p only-apk-releases
-
-        //             find ./android/app/build/outputs/apk/ -name "*.apk" -exec cp {} ./only-apk-releases/ \\;
-
-        //             echo "Contents of apk-releases directory:"
-        //             ls -lh only-apk-releases/
-        //         '''
-
-        //         withCredentials([usernamePassword(credentialsId: 'nexus_apk_credentials', usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASS')]) {
-        //             sh 'for apk in only-apk-releases/*.apk; do curl -u $NEXUS_USER:$NEXUS_PASS --upload-file "$apk" "http://nexus.spreezy.in/repository/apk-release/$(basename "$apk")"; done'
-        //         }
-
-
-        //     }
-        // }
         stage('Publish APK to Nexus') {
             steps {
                 sh '''
@@ -147,19 +125,30 @@ pipeline
                     env.APP_VERSION = version
                 }
 
-                // Rename APKs with version
+                // Rename APK to spreezy-<version>.apk
                 sh '''
                     for apk in only-apk-releases/*.apk; do
-                        base=$(basename "$apk" .apk)
-                        mv "$apk" "only-apk-releases/${base}-${APP_VERSION}.apk"
+                        mv "$apk" "only-apk-releases/spreezy-${APP_VERSION}.apk"
                     done
                 '''
 
                 // Upload to Nexus
+                // withCredentials([usernamePassword(credentialsId: 'nexus_apk_credentials', usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASS')]) {
+                //     sh '''
+                //         for apk in only-apk-releases/*.apk; do
+                //             curl -u $NEXUS_USER:$NEXUS_PASS --upload-file "$apk" "http://nexus.spreezy.in/repository/apk-release/$(basename "$apk")"
+                //         done
+                //     '''
+                // }
                 withCredentials([usernamePassword(credentialsId: 'nexus_apk_credentials', usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASS')]) {
                     sh '''
                         for apk in only-apk-releases/*.apk; do
-                            curl -u $NEXUS_USER:$NEXUS_PASS --upload-file "$apk" "http://nexus.spreezy.in/repository/apk-release/$(basename "$apk")"
+                            FILENAME=$(basename "$apk")
+                            VERSION_DIR="spreezy-${APP_VERSION}"
+                            echo "Uploading $FILENAME to Nexus under folder $VERSION_DIR..."
+                            curl -f -u $NEXUS_USER:$NEXUS_PASS \
+                                --upload-file "$apk" \
+                                "http://nexus.spreezy.in/repository/apk-release/${VERSION_DIR}/${FILENAME}"
                         done
                     '''
                 }
