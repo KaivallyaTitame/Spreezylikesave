@@ -35,6 +35,12 @@ pipeline
              git branch: env.GIT_BRANCH, credentialsId: env.CREDENTIALS_ID, url: env.GIT_URL
             }
         }
+
+        stage('Check Android SDK path') { 
+            steps { 
+                sh 'find / -type d -name "sdk" -print 2>/dev/null | grep android || echo "SDK not found"' 
+            } 
+        }
         
 
         stage('Nexus Setup And Install All Dependencies'){
@@ -156,7 +162,7 @@ pipeline
         }
 
         
-        // stage('Publish APK on Nexus Repo  '){
+        // stage('Publish ZIP-APK on Nexus Repo  '){
         //     steps{
         //         sh 'mkdir apk-releases'
         //         sh 'cp -r  ./android/app/build/outputs/apk/* ./apk-releases/'
@@ -165,6 +171,72 @@ pipeline
 
         //     }
         // }
+
+        stage('Generate AAB') {
+            steps {
+                // sh '''
+                //     echo "Generating AAB..."
+                //     if [ ! -f app/spreezy-release-key.jks ]; then
+                //         echo "Signing key not found. Exiting..."
+                //         exit 1
+                //     fi
+
+
+                //     cd android
+                //     ./gradlew bundleRelease
+
+                //     mkdir -p ../only-aab-releases
+
+                //     # Copy the generated AAB to the release directory
+                //     cp app/build/outputs/bundle/release/app-release.aab ../only-aab-releases/
+                // '''
+
+                // Generate the AAB and copy it with version name
+                // Extract version from package.json
+                script {
+                    def version = sh(script: 'node -p "require(\'./package.json\').version"', returnStdout: true).trim()
+                    env.APP_VERSION = version
+                }
+
+                sh '''
+                    echo "sdk.dir=/usr/local/android/sdk" > ./android/local.properties
+                    cd android
+
+                    # Clean and build the release bundle (.aab)
+                    ./gradlew clean bundleRelease
+
+                    cd ..
+                    mkdir -p only-aab-releases
+
+                    cp android/app/build/outputs/bundle/release/app-release.aab "only-aab-releases/spreezy-${APP_VERSION}.aab"
+
+                    echo "Generated AAB: spreezy-${APP_VERSION}.aab"
+                    ls -lh only-aab-releases/
+                '''
+
+                
+
+                // // Rename APK to spreezy-<version>.apk
+                // sh '''
+                //     for file in only-aab-releases/*.aab; do
+                //         mv "$aab" "only-aab-releases/spreezy-${APP_VERSION}.aab"
+                //     done
+                // '''
+
+                withCredentials([usernamePassword(credentialsId: 'nexus_apk_credentials', usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASS')]) {
+                sh '''
+                    AAB_FILE="only-aab-releases/spreezy-${APP_VERSION}.aab"
+                    VERSION_DIR="spreezy-${APP_VERSION}"
+                    echo "Uploading $AAB_FILE to Nexus under folder $VERSION_DIR..."
+                    curl -f -u $NEXUS_USER:$NEXUS_PASS \
+                    --upload-file "$AAB_FILE" \
+                    "http://nexus.spreezy.in/repository/apk-release/${VERSION_DIR}/$(basename $AAB_FILE)"
+                '''
+                }
+
+            }
+        }
+
         
         // stage('Notify  Build Success '){
         //     steps{
