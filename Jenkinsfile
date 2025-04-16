@@ -199,6 +199,10 @@ pipeline
                 }
 
                 sh '''
+                    echo "Installing curl..."
+                    apt-get update 
+                    apt-get install -y curl
+                    
                     echo "sdk.dir=/usr/local/android/sdk" > ./android/local.properties
                     cd android
 
