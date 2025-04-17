@@ -139,13 +139,13 @@ pipeline
                 '''
 
                 // Upload to Nexus
-                // withCredentials([usernamePassword(credentialsId: 'nexus_apk_credentials', usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASS')]) {
-                //     sh '''
-                //         for apk in only-apk-releases/*.apk; do
-                //             curl -u $NEXUS_USER:$NEXUS_PASS --upload-file "$apk" "http://nexus.spreezy.in/repository/apk-release/$(basename "$apk")"
-                //         done
-                //     '''
-                // }
+                withCredentials([usernamePassword(credentialsId: 'nexus_apk_credentials', usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASS')]) {
+                    sh '''
+                        for apk in only-apk-releases/*.apk; do
+                            curl -u $NEXUS_USER:$NEXUS_PASS --upload-file "$apk" "http://nexus.spreezy.in/repository/apk-release/$(basename "$apk")"
+                        done
+                    '''
+                }
                 // withCredentials([usernamePassword(credentialsId: 'nexus_apk_credentials', usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASS')]) {
                 //     sh '''
                 //         for apk in only-apk-releases/*.apk; do
@@ -158,18 +158,18 @@ pipeline
                 //         done
                 //     '''
                 // }
-                withCredentials([usernamePassword(credentialsId: 'nexus_apk_credentials', usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASS')]) {
-                    sh """
-                        for apk in only-apk-releases/*.apk; do
-                            FILENAME=\$(basename "\$apk")
-                            VERSION_DIR="spreezy-${env.APP_VERSION}"
-                            echo "Uploading \$FILENAME to Nexus under folder \$VERSION_DIR..."
-                            curl -v -u \$NEXUS_USER:\$NEXUS_PASS \\
-                                --upload-file "\$apk" \\
-                                "https://nexus.spreezy.in/repository/apk-releases/\$VERSION_DIR/\$FILENAME"
-                        done
-                    """
-                }
+                // withCredentials([usernamePassword(credentialsId: 'nexus_apk_credentials', usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASS')]) {
+                //     sh """
+                //         for apk in only-apk-releases/*.apk; do
+                //             FILENAME=\$(basename "\$apk")
+                //             VERSION_DIR="spreezy-${env.APP_VERSION}"
+                //             echo "Uploading \$FILENAME to Nexus under folder \$VERSION_DIR..."
+                //             curl -v -u \$NEXUS_USER:\$NEXUS_PASS \\
+                //                 --upload-file "\$apk" \\
+                //                 "https://nexus.spreezy.in/repository/apk-releases/\$VERSION_DIR/\$FILENAME"
+                //         done
+                //     """
+                // }
 
             }
         }
