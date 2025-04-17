@@ -126,17 +126,17 @@ pipeline
                     ls -lh only-apk-releases/
                 '''
                 // Extract version from package.json
-                script {
-                    def version = sh(script: 'node -p "require(\'./package.json\').version"', returnStdout: true).trim()
-                    env.APP_VERSION = version
-                }
+                // script {
+                //     def version = sh(script: 'node -p "require(\'./package.json\').version"', returnStdout: true).trim()
+                //     env.APP_VERSION = version
+                // }
 
-                // Rename APK to spreezy-<version>.apk
-                sh '''
-                    for apk in only-apk-releases/*.apk; do
-                        mv "$apk" "only-apk-releases/spreezy-${APP_VERSION}.apk"
-                    done
-                '''
+                // // Rename APK to spreezy-<version>.apk
+                // sh '''
+                //     for apk in only-apk-releases/*.apk; do
+                //         mv "$apk" "only-apk-releases/spreezy-${APP_VERSION}.apk"
+                //     done
+                // '''
 
                 // Upload to Nexus
                 withCredentials([usernamePassword(credentialsId: 'nexus_apk_credentials', usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASS')]) {
@@ -145,6 +145,9 @@ pipeline
                             curl -u $NEXUS_USER:$NEXUS_PASS --upload-file "$apk" "http://nexus.spreezy.in/repository/apk-release/$(basename "$apk")"
                         done
                     '''
+
+
+
                 }
                 // withCredentials([usernamePassword(credentialsId: 'nexus_apk_credentials', usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASS')]) {
                 //     sh '''
