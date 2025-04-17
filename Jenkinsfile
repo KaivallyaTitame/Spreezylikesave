@@ -164,9 +164,9 @@ pipeline
                             FILENAME=\$(basename "\$apk")
                             VERSION_DIR="spreezy-${env.APP_VERSION}"
                             echo "Uploading \$FILENAME to Nexus under folder \$VERSION_DIR..."
-                            curl -f -u \$NEXUS_USER:\$NEXUS_PASS \\
+                            curl -v -u \$NEXUS_USER:\$NEXUS_PASS \\
                                 --upload-file "\$apk" \\
-                                "http://nexus.spreezy.in/repository/apk-release/\$VERSION_DIR/\$FILENAME"
+                                "https://nexus.spreezy.in/repository/apk-releases/\$VERSION_DIR/\$FILENAME"
                         done
                     """
                 }
