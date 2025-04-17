@@ -111,118 +111,52 @@ pipeline
             }
         }
 
-        stage('Upload APK to Nexus') {
-            steps {
-                sh '''
-                    echo "Installing curl..."
-                    apt-get update && apt-get install -y curl
-
-                    echo "Preparing APK directory..."
-                    mkdir -p only-apk-releases
-                    find ./android/app/build/outputs/apk/ -name "*.apk" -exec cp {} ./only-apk-releases/ \\;
-
-                    echo "Contents of apk-releases directory:"
-                    ls -lh only-apk-releases/
-                '''
-
-                // Extract version from package.json
-                script {
-                    def version = sh(script: 'node -p "require(\'./package.json\').version"', returnStdout: true).trim()
-                    env.APP_VERSION = version
-                }
-
-                // Rename APK to spreezy-<version>.apk
-                sh '''
-                    for apk in only-apk-releases/*.apk; do
-                        mv "$apk" "only-apk-releases/spreezy-${APP_VERSION}.apk"
-                    done
-
-                    echo "Contents of apk-releases directory:"
-                    ls -lh only-apk-releases/
-                '''
-
-                // Upload to Nexus raw repo
-                withCredentials([usernamePassword(credentialsId: 'nexus_apk_credentials', usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASS')]) {
-                    sh '''
-                        for apk in only-apk-releases/*.apk; do
-                            FILENAME=$(basename "$apk")
-                            VERSION_DIR="spreezy-${APP_VERSION}"
-                            echo "Uploading $FILENAME to Nexus under $VERSION_DIR..."
-                            curl -f -u $NEXUS_USER:$NEXUS_PASS \
-                                --upload-file "$apk" \
-                                "https://nexus.spreezy.in/repository/apk-release/${VERSION_DIR}/${FILENAME}"
-                        done
-                    '''
-                }
-            }
-        }
-
-
-        // stage('Publish APK to Nexus') {
+        // stage('Upload APK to Nexus') {
         //     steps {
         //         sh '''
         //             echo "Installing curl..."
-        //             apt-get update 
-        //             apt-get install -y curl
+        //             apt-get update && apt-get install -y curl
 
+        //             echo "Preparing APK directory..."
         //             mkdir -p only-apk-releases
-
         //             find ./android/app/build/outputs/apk/ -name "*.apk" -exec cp {} ./only-apk-releases/ \\;
 
         //             echo "Contents of apk-releases directory:"
         //             ls -lh only-apk-releases/
         //         '''
+
         //         // Extract version from package.json
-        //         // script {
-        //         //     def version = sh(script: 'node -p "require(\'./package.json\').version"', returnStdout: true).trim()
-        //         //     env.APP_VERSION = version
-        //         // }
+        //         script {
+        //             def version = sh(script: 'node -p "require(\'./package.json\').version"', returnStdout: true).trim()
+        //             env.APP_VERSION = version
+        //         }
 
-        //         // // Rename APK to spreezy-<version>.apk
-        //         // sh '''
-        //         //     for apk in only-apk-releases/*.apk; do
-        //         //         mv "$apk" "only-apk-releases/spreezy-${APP_VERSION}.apk"
-        //         //     done
-        //         // '''
+        //         // Rename APK to spreezy-<version>.apk
+        //         sh '''
+        //             for apk in only-apk-releases/*.apk; do
+        //                 mv "$apk" "only-apk-releases/spreezy-${APP_VERSION}.apk"
+        //             done
 
-        //         // Upload to Nexus
+        //             echo "Contents of apk-releases directory:"
+        //             ls -lh only-apk-releases/
+        //         '''
+
+        //         // Upload to Nexus raw repo
         //         withCredentials([usernamePassword(credentialsId: 'nexus_apk_credentials', usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASS')]) {
         //             sh '''
         //                 for apk in only-apk-releases/*.apk; do
-        //                     curl -u $NEXUS_USER:$NEXUS_PASS --upload-file "$apk" "http://nexus.spreezy.in/repository/apk-release/$(basename "$apk")"
+        //                     FILENAME=$(basename "$apk")
+        //                     VERSION_DIR="spreezy-${APP_VERSION}"
+        //                     echo "Uploading $FILENAME to Nexus under $VERSION_DIR..."
+        //                     curl -f -u $NEXUS_USER:$NEXUS_PASS \
+        //                         --upload-file "$apk" \
+        //                         "https://nexus.spreezy.in/repository/apk-release/${VERSION_DIR}/${FILENAME}"
         //                 done
         //             '''
-
-
-
         //         }
-        //         // withCredentials([usernamePassword(credentialsId: 'nexus_apk_credentials', usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASS')]) {
-        //         //     sh '''
-        //         //         for apk in only-apk-releases/*.apk; do
-        //         //             FILENAME=$(basename "$apk")
-        //         //             VERSION_DIR="spreezy-${APP_VERSION}"
-        //         //             echo "Uploading $FILENAME to Nexus under folder $VERSION_DIR..."
-        //         //             curl -f -u $NEXUS_USER:$NEXUS_PASS \
-        //         //                 --upload-file "$apk" \
-        //         //                 "http://nexus.spreezy.in/repository/apk-release/${VERSION_DIR}/${FILENAME}"
-        //         //         done
-        //         //     '''
-        //         // }
-        //         // withCredentials([usernamePassword(credentialsId: 'nexus_apk_credentials', usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASS')]) {
-        //         //     sh """
-        //         //         for apk in only-apk-releases/*.apk; do
-        //         //             FILENAME=\$(basename "\$apk")
-        //         //             VERSION_DIR="spreezy-${env.APP_VERSION}"
-        //         //             echo "Uploading \$FILENAME to Nexus under folder \$VERSION_DIR..."
-        //         //             curl -v -u \$NEXUS_USER:\$NEXUS_PASS \\
-        //         //                 --upload-file "\$apk" \\
-        //         //                 "https://nexus.spreezy.in/repository/apk-releases/\$VERSION_DIR/\$FILENAME"
-        //         //         done
-        //         //     """
-        //         // }
-
         //     }
         // }
+
 
         
         // stage('Publish ZIP-APK on Nexus Repo  '){
@@ -234,6 +168,51 @@ pipeline
 
         //     }
         // }
+
+        stage('Generate and Upload AAB to Nexus') {
+            steps {
+                script {
+                    def version = sh(script: 'node -p "require(\'./package.json\').version"', returnStdout: true).trim()
+                    env.APP_VERSION = version
+                }
+
+                sh '''
+                    echo "Installing curl..."
+                    apt-get update && apt-get install -y curl
+
+                    echo "Setting up local.properties..."
+                    echo "sdk.dir=/usr/local/android/sdk" > ./android/local.properties
+
+                    echo "Building AAB..."
+                    cd android
+                    ./gradlew clean bundleRelease
+                    cd ..
+
+                    echo "Preparing AAB output directory..."
+                    mkdir -p only-aab-releases
+
+                    echo "Renaming and copying AAB..."
+                    cp android/app/build/outputs/bundle/release/app-release.aab "only-aab-releases/spreezy-${APP_VERSION}.aab"
+
+                    echo "Generated AAB: spreezy-${APP_VERSION}.aab"
+                    ls -lh only-aab-releases/
+                '''
+
+                withCredentials([usernamePassword(credentialsId: 'nexus_apk_credentials', usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASS')]) {
+                    sh '''
+                        AAB_FILE="only-aab-releases/spreezy-${APP_VERSION}.aab"
+                        VERSION_DIR="spreezy-${APP_VERSION}"
+
+                        echo "Uploading $AAB_FILE to Nexus at path: $VERSION_DIR/$(basename $AAB_FILE)..."
+
+                        curl -f -u $NEXUS_USER:$NEXUS_PASS \
+                        --upload-file "$AAB_FILE" \
+                        "https://nexus.spreezy.in/repository/apk-releases/${VERSION_DIR}/$(basename $AAB_FILE)"
+                    '''
+                }
+            }
+        }
+
 
         // stage('Generate AAB') {
         //     steps {
@@ -298,24 +277,24 @@ pipeline
         // }
 
         
-        // stage('Notify  Build Success '){
-        //     steps{
-        //         echo "Build completed successfully"
-        //     }
-        //     post {
-        //         success {
-        //             script {
-        //                 def buildNumber = currentBuild.number
-        //                 def buildStatus = currentBuild.result
-        //                 def buildStatusLabel = buildStatus == 'SUCCESS' ? 'successful' : 'failed'
-        //                 def globalUpdatedBody = "<b>${EMAIL_BODY} ${buildNumber} . <br><br> Build Status - ${buildStatusLabel} .<br><br>  Please find Console Log Output of Build Number ${buildNumber} in build.log File</b>"
-        //                 def globalUpdatedSubject = "${EMAIL_SUBJECT} ${buildStatusLabel}"
+        stage('Notify  Build Success '){
+            steps{
+                echo "Build completed successfully"
+            }
+            post {
+                success {
+                    script {
+                        def buildNumber = currentBuild.number
+                        def buildStatus = currentBuild.result
+                        def buildStatusLabel = buildStatus == 'SUCCESS' ? 'successful' : 'failed'
+                        def globalUpdatedBody = "<b>${EMAIL_BODY} ${buildNumber} . <br><br> Build Status - ${buildStatusLabel} .<br><br>  Please find Console Log Output of Build Number ${buildNumber} in build.log File</b>"
+                        def globalUpdatedSubject = "${EMAIL_SUBJECT} ${buildStatusLabel}"
                         
-        //                 emailext attachLog: true, body: globalUpdatedBody, subject: globalUpdatedSubject, to: env.EMAIL_TO, from: env.EMAIL_FROM, mimeType: 'text/html'
-        //             }
-        //         }
-        //     }
-        // }
+                        emailext attachLog: true, body: globalUpdatedBody, subject: globalUpdatedSubject, to: env.EMAIL_TO, from: env.EMAIL_FROM, mimeType: 'text/html'
+                    }
+                }
+            }
+        }
 
         
 
