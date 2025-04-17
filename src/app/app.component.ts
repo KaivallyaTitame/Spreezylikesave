@@ -1,4 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, HostListener} from '@angular/core';
+// import { ScreenOrientation } from '@awesome-cordova-plugins/screen-orientation/ngx';
+import { ScreenOrientation } from '@capacitor/screen-orientation';
 import { Location } from '@angular/common';
 
 @Component({
@@ -25,6 +27,19 @@ export class AppComponent {
   onCloseError() {
     this.showError = false;
     this.location.back(); 
+  }
+
+
+  constructor(){
+    this.lockOrientation(); 
+  }
+
+  async lockOrientation() {
+    try {
+      await ScreenOrientation.lock({ orientation: 'portrait' });
+    } catch (error) {
+      console.error('Orientation lock failed:', error);
+    }
   }
 
 
