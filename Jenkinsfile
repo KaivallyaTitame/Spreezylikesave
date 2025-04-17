@@ -207,7 +207,7 @@ pipeline
 
                         curl -f -u $NEXUS_USER:$NEXUS_PASS \
                         --upload-file "$AAB_FILE" \
-                        "https://nexus.spreezy.in/repository/apk-releases/${VERSION_DIR}/$(basename $AAB_FILE)"
+                        "https://nexus.spreezy.in/repository/apk-release/${VERSION_DIR}/$(basename $AAB_FILE)"
                     '''
                 }
             }
@@ -277,24 +277,24 @@ pipeline
         // }
 
         
-        stage('Notify  Build Success '){
-            steps{
-                echo "Build completed successfully"
-            }
-            post {
-                success {
-                    script {
-                        def buildNumber = currentBuild.number
-                        def buildStatus = currentBuild.result
-                        def buildStatusLabel = buildStatus == 'SUCCESS' ? 'successful' : 'failed'
-                        def globalUpdatedBody = "<b>${EMAIL_BODY} ${buildNumber} . <br><br> Build Status - ${buildStatusLabel} .<br><br>  Please find Console Log Output of Build Number ${buildNumber} in build.log File</b>"
-                        def globalUpdatedSubject = "${EMAIL_SUBJECT} ${buildStatusLabel}"
+        // stage('Notify  Build Success '){
+        //     steps{
+        //         echo "Build completed successfully"
+        //     }
+        //     post {
+        //         success {
+        //             script {
+        //                 def buildNumber = currentBuild.number
+        //                 def buildStatus = currentBuild.result
+        //                 def buildStatusLabel = buildStatus == 'SUCCESS' ? 'successful' : 'failed'
+        //                 def globalUpdatedBody = "<b>${EMAIL_BODY} ${buildNumber} . <br><br> Build Status - ${buildStatusLabel} .<br><br>  Please find Console Log Output of Build Number ${buildNumber} in build.log File</b>"
+        //                 def globalUpdatedSubject = "${EMAIL_SUBJECT} ${buildStatusLabel}"
                         
-                        emailext attachLog: true, body: globalUpdatedBody, subject: globalUpdatedSubject, to: env.EMAIL_TO, from: env.EMAIL_FROM, mimeType: 'text/html'
-                    }
-                }
-            }
-        }
+        //                 emailext attachLog: true, body: globalUpdatedBody, subject: globalUpdatedSubject, to: env.EMAIL_TO, from: env.EMAIL_FROM, mimeType: 'text/html'
+        //             }
+        //         }
+        //     }
+        // }
 
         
 
