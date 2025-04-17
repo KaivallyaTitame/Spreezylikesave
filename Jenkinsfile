@@ -146,18 +146,31 @@ pipeline
                 //         done
                 //     '''
                 // }
+                // withCredentials([usernamePassword(credentialsId: 'nexus_apk_credentials', usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASS')]) {
+                //     sh '''
+                //         for apk in only-apk-releases/*.apk; do
+                //             FILENAME=$(basename "$apk")
+                //             VERSION_DIR="spreezy-${APP_VERSION}"
+                //             echo "Uploading $FILENAME to Nexus under folder $VERSION_DIR..."
+                //             curl -f -u $NEXUS_USER:$NEXUS_PASS \
+                //                 --upload-file "$apk" \
+                //                 "http://nexus.spreezy.in/repository/apk-release/${VERSION_DIR}/${FILENAME}"
+                //         done
+                //     '''
+                // }
                 withCredentials([usernamePassword(credentialsId: 'nexus_apk_credentials', usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASS')]) {
-                    sh '''
+                    sh """
                         for apk in only-apk-releases/*.apk; do
-                            FILENAME=$(basename "$apk")
-                            VERSION_DIR="spreezy-${APP_VERSION}"
-                            echo "Uploading $FILENAME to Nexus under folder $VERSION_DIR..."
-                            curl -f -u $NEXUS_USER:$NEXUS_PASS \
-                                --upload-file "$apk" \
-                                "http://nexus.spreezy.in/repository/apk-release/${VERSION_DIR}/${FILENAME}"
+                            FILENAME=\$(basename "\$apk")
+                            VERSION_DIR="spreezy-${env.APP_VERSION}"
+                            echo "Uploading \$FILENAME to Nexus under folder \$VERSION_DIR..."
+                            curl -f -u \$NEXUS_USER:\$NEXUS_PASS \\
+                                --upload-file "\$apk" \\
+                                "http://nexus.spreezy.in/repository/apk-release/\$VERSION_DIR/\$FILENAME"
                         done
-                    '''
+                    """
                 }
+
             }
         }
 
