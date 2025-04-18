@@ -220,6 +220,8 @@ pipeline
                 ]) {
 
                 sh '''
+                    echo "Installing curl..."
+                    apt-get update && apt-get install -y curl
                     echo "Setting up local.properties with SDK path..."
                     echo "sdk.dir=/usr/local/android/sdk" > android/local.properties
 
