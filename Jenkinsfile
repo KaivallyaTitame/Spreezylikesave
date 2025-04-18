@@ -207,6 +207,64 @@ pipeline
         //     }
         // }
 
+        // stage('Generate and Publish Signed AAB') {
+        //     environment {
+        //         ANDROID_KEY_ALIAS = 'spreezy-key-alias'
+        //     }
+        //     steps {
+        //         script {
+        //             def version = sh(script: 'node -p "require(\'./package.json\').version"', returnStdout: true).trim()
+        //             env.APP_VERSION = version
+        //         }
+        //         withCredentials([
+        //         file(credentialsId: 'spreezy-keystore', variable: 'KEYSTORE_FILE'),
+        //         string(credentialsId: 'spreezy-keystore-pass', variable: 'KEYSTORE_PASSWORD'),
+        //         string(credentialsId: 'spreezy-key-pass', variable: 'KEY_PASSWORD'),
+        //         usernamePassword(credentialsId: 'nexus_apk_credentials', usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASS')
+        //         ]) {
+
+        //         sh '''
+        //             echo "Installing curl..."
+        //             apt-get update && apt-get install -y curl
+        //             echo "Setting up local.properties with SDK path..."
+        //             echo "sdk.dir=/usr/local/android/sdk" > android/local.properties
+
+        //             echo "Configuring signing config in gradle.properties..."
+        //             echo "MYAPP_UPLOAD_STORE_FILE=${KEYSTORE_FILE}" > android/gradle.properties
+        //             echo "MYAPP_UPLOAD_KEY_ALIAS=${ANDROID_KEY_ALIAS}" >> android/gradle.properties
+        //             echo "MYAPP_UPLOAD_STORE_PASSWORD=${KEYSTORE_PASSWORD}" >> android/gradle.properties
+        //             echo "MYAPP_UPLOAD_KEY_PASSWORD=${KEY_PASSWORD}" >> android/gradle.properties
+
+        //             echo "android.useAndroidX=true" >> android/gradle.properties
+        //             echo "android.enableJetifier=true" >> android/gradle.properties
+
+        //             echo "Syncing Capacitor..."
+        //             npx cap sync android
+
+        //             echo "Building Signed AAB..."
+        //             cd android && ./gradlew bundleRelease
+
+        //             echo "Preparing AAB output directory..."
+        //             mkdir -p only-aab-releases
+
+        //             echo "Renaming and copying AAB..."
+        //             cp app/build/outputs/bundle/release/app-release.aab "only-aab-releases/spreezy-${APP_VERSION}.aab"
+
+        //             echo "Generated AAB: spreezy-${APP_VERSION}.aab"
+        //             ls -lh only-aab-releases/
+
+        //             AAB_FILE="only-aab-releases/spreezy-${APP_VERSION}.aab"
+        //             VERSION_DIR="spreezy-${APP_VERSION}"
+
+        //             echo "Uploading $AAB_FILE to Nexus at path: $VERSION_DIR/$(basename $AAB_FILE)..."
+
+        //             curl -f -u $NEXUS_USER:$NEXUS_PASS \
+        //             --upload-file "$AAB_FILE" \
+        //             "https://nexus.spreezy.in/repository/apk-release/${VERSION_DIR}/$(basename $AAB_FILE)"
+        //         '''
+        //         }
+        //     }
+        //     }
         stage('Generate and Publish Signed AAB') {
             environment {
                 ANDROID_KEY_ALIAS = 'spreezy-key-alias'
@@ -217,54 +275,48 @@ pipeline
                     env.APP_VERSION = version
                 }
                 withCredentials([
-                file(credentialsId: 'spreezy-keystore', variable: 'KEYSTORE_FILE'),
-                string(credentialsId: 'spreezy-keystore-pass', variable: 'KEYSTORE_PASSWORD'),
-                string(credentialsId: 'spreezy-key-pass', variable: 'KEY_PASSWORD'),
-                usernamePassword(credentialsId: 'nexus_apk_credentials', usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASS')
+                    file(credentialsId: 'spreezy-keystore', variable: 'KEYSTORE_FILE'),
+                    string(credentialsId: 'spreezy-keystore-pass', variable: 'KEYSTORE_PASSWORD'),
+                    string(credentialsId: 'spreezy-key-pass', variable: 'KEY_PASSWORD'),
+                    usernamePassword(credentialsId: 'nexus_apk_credentials', usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASS')
                 ]) {
+                    sh '''
+                        echo "Installing curl..."
+                        apt-get update && apt-get install -y curl
 
-                sh '''
-                    echo "Installing curl..."
-                    apt-get update && apt-get install -y curl
-                    echo "Setting up local.properties with SDK path..."
-                    echo "sdk.dir=/usr/local/android/sdk" > android/local.properties
+                        echo "Setting up local.properties with SDK path..."
+                        echo "sdk.dir=/usr/local/android/sdk" > android/local.properties
 
-                    echo "Configuring signing config in gradle.properties..."
-                    echo "MYAPP_UPLOAD_STORE_FILE=${KEYSTORE_FILE}" > android/gradle.properties
-                    echo "MYAPP_UPLOAD_KEY_ALIAS=${ANDROID_KEY_ALIAS}" >> android/gradle.properties
-                    echo "MYAPP_UPLOAD_STORE_PASSWORD=${KEYSTORE_PASSWORD}" >> android/gradle.properties
-                    echo "MYAPP_UPLOAD_KEY_PASSWORD=${KEY_PASSWORD}" >> android/gradle.properties
+                        echo "Configuring gradle.properties for signing..."
+                        echo "MYAPP_UPLOAD_STORE_FILE=${KEYSTORE_FILE}" > android/gradle.properties
+                        echo "MYAPP_UPLOAD_KEY_ALIAS=${ANDROID_KEY_ALIAS}" >> android/gradle.properties
+                        echo "MYAPP_UPLOAD_STORE_PASSWORD=${KEYSTORE_PASSWORD}" >> android/gradle.properties
+                        echo "MYAPP_UPLOAD_KEY_PASSWORD=${KEY_PASSWORD}" >> android/gradle.properties
+                        echo "android.useAndroidX=true" >> android/gradle.properties
+                        echo "android.enableJetifier=true" >> android/gradle.properties
 
-                    echo "android.useAndroidX=true" >> android/gradle.properties
-                    echo "android.enableJetifier=true" >> android/gradle.properties
+                        echo "Syncing Capacitor..."
+                        npx cap sync android
 
-                    echo "Syncing Capacitor..."
-                    npx cap sync android
+                        echo "Building signed AAB..."
+                        cd android
+                        ./gradlew bundleRelease
+                        cd ..
 
-                    echo "Building Signed AAB..."
-                    cd android && ./gradlew bundleRelease
+                        echo "Preparing output directory..."
+                        mkdir -p only-aab-releases
 
-                    echo "Preparing AAB output directory..."
-                    mkdir -p only-aab-releases
+                        echo "Copying and renaming AAB..."
+                        cp android/app/build/outputs/bundle/release/app-release.aab "only-aab-releases/spreezy-${APP_VERSION}.aab"
 
-                    echo "Renaming and copying AAB..."
-                    cp app/build/outputs/bundle/release/app-release.aab "only-aab-releases/spreezy-${APP_VERSION}.aab"
-
-                    echo "Generated AAB: spreezy-${APP_VERSION}.aab"
-                    ls -lh only-aab-releases/
-
-                    AAB_FILE="only-aab-releases/spreezy-${APP_VERSION}.aab"
-                    VERSION_DIR="spreezy-${APP_VERSION}"
-
-                    echo "Uploading $AAB_FILE to Nexus at path: $VERSION_DIR/$(basename $AAB_FILE)..."
-
-                    curl -f -u $NEXUS_USER:$NEXUS_PASS \
-                    --upload-file "$AAB_FILE" \
-                    "https://nexus.spreezy.in/repository/apk-release/${VERSION_DIR}/$(basename $AAB_FILE)"
-                '''
+                        echo "Uploading to Nexus..."
+                        curl -f -u $NEXUS_USER:$NEXUS_PASS \
+                        --upload-file "only-aab-releases/spreezy-${APP_VERSION}.aab" \
+                        "https://nexus.spreezy.in/repository/apk-release/spreezy-${APP_VERSION}/spreezy-${APP_VERSION}.aab"
+                    '''
                 }
             }
-            }
+        }
 
 
         
