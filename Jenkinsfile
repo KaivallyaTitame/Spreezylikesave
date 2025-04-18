@@ -212,6 +212,10 @@ pipeline
                 ANDROID_KEY_ALIAS = 'spreezy-key-alias'
             }
             steps {
+                script {
+                    def version = sh(script: 'node -p "require(\'./package.json\').version"', returnStdout: true).trim()
+                    env.APP_VERSION = version
+                }
                 withCredentials([
                 file(credentialsId: 'spreezy-keystore', variable: 'KEYSTORE_FILE'),
                 string(credentialsId: 'spreezy-keystore-pass', variable: 'KEYSTORE_PASSWORD'),
@@ -240,20 +244,23 @@ pipeline
                     echo "Building Signed AAB..."
                     cd android && ./gradlew bundleRelease
 
-                    mkdir -p aab-artifacts
+                    echo "Preparing AAB output directory..."
+                    mkdir -p only-aab-releases
 
-                    AAB_PATH=$(find ./app/build/outputs/bundle/release/ -name "*.aab" | head -n 1)
+                    echo "Renaming and copying AAB..."
+                    cp android/app/build/outputs/bundle/release/app-release.aab "only-aab-releases/spreezy-${APP_VERSION}.aab"
 
-                    echo "Found AAB: $AAB_PATH"
+                    echo "Generated AAB: spreezy-${APP_VERSION}.aab"
+                    ls -lh only-aab-releases/
 
-                    VERSION=$(node -p "require('../package.json').version")
+                    AAB_FILE="only-aab-releases/spreezy-${APP_VERSION}.aab"
+                    VERSION_DIR="spreezy-${APP_VERSION}"
 
-                    cp "$AAB_PATH" "../aab-artifacts/spreezy-$VERSION.aab"
+                    echo "Uploading $AAB_FILE to Nexus at path: $VERSION_DIR/$(basename $AAB_FILE)..."
 
-                    echo "Uploading AAB to Nexus..."
-                    curl -f -u "$NEXUS_USER:$NEXUS_PASS" \
-                    --upload-file "../aab-artifacts/spreezy-$VERSION.aab" \
-                    "http://nexus.spreezy.in/repository/apk-release/spreezy-$VERSION/spreezy-$VERSION.aab"
+                    curl -f -u $NEXUS_USER:$NEXUS_PASS \
+                    --upload-file "$AAB_FILE" \
+                    "https://nexus.spreezy.in/repository/apk-release/${VERSION_DIR}/$(basename $AAB_FILE)"
                 '''
                 }
             }
