@@ -334,7 +334,7 @@ pipeline
                         mkdir -p only-aab-releases
 
                         echo "Copying signed AAB..."
-                        cp android/app/build/outputs/bundle/release/app-release.aab "only-aab-releases/spreezy-${APP_VERSION}.aab"
+                        cp app/build/outputs/bundle/release/app-release.aab "only-aab-releases/spreezy-${APP_VERSION}.aab"
 
                         echo "Generated AAB: spreezy-${APP_VERSION}.aab"
                         ls -lh only-aab-releases/
