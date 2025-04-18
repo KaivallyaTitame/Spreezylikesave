@@ -231,6 +231,9 @@ pipeline
                     echo "MYAPP_UPLOAD_STORE_PASSWORD=${KEYSTORE_PASSWORD}" >> android/gradle.properties
                     echo "MYAPP_UPLOAD_KEY_PASSWORD=${KEY_PASSWORD}" >> android/gradle.properties
 
+                    echo "android.useAndroidX=true" >> android/gradle.properties
+                    echo "android.enableJetifier=true" >> android/gradle.properties
+
                     echo "Syncing Capacitor..."
                     npx cap sync android
 
