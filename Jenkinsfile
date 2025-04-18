@@ -284,7 +284,7 @@ pipeline
                         echo "Installing curl..."
                         apt-get update && apt-get install -y curl
 
-                        echo "Setting up local.properties with SDK path..."
+                        echo "Setting up local.properties..."
                         echo "sdk.dir=/usr/local/android/sdk" > android/local.properties
 
                         echo "Configuring gradle.properties for signing..."
@@ -295,28 +295,63 @@ pipeline
                         echo "android.useAndroidX=true" >> android/gradle.properties
                         echo "android.enableJetifier=true" >> android/gradle.properties
 
+                        echo "Injecting signing config into build.gradle..."
+                        SIGNING_CONFIG_BLOCK="\\
+        def MYAPP_UPLOAD_STORE_FILE = project.hasProperty('MYAPP_UPLOAD_STORE_FILE') ? file(project.MYAPP_UPLOAD_STORE_FILE) : null\\n\
+        def MYAPP_UPLOAD_KEY_ALIAS = project.hasProperty('MYAPP_UPLOAD_KEY_ALIAS') ? project.MYAPP_UPLOAD_KEY_ALIAS : null\\n\
+        def MYAPP_UPLOAD_STORE_PASSWORD = project.hasProperty('MYAPP_UPLOAD_STORE_PASSWORD') ? project.MYAPP_UPLOAD_STORE_PASSWORD : null\\n\
+        def MYAPP_UPLOAD_KEY_PASSWORD = project.hasProperty('MYAPP_UPLOAD_KEY_PASSWORD') ? project.MYAPP_UPLOAD_KEY_PASSWORD : null\\n\
+        "
+
+                        sed -i "1s;^;$SIGNING_CONFIG_BLOCK\\n;" android/app/build.gradle
+
+                        echo "Adding signingConfigs and assigning it to release..."
+                        sed -i "/android {/a \\
+            signingConfigs {\\n\
+                release {\\n\
+                    storeFile MYAPP_UPLOAD_STORE_FILE\\n\
+                    storePassword MYAPP_UPLOAD_STORE_PASSWORD\\n\
+                    keyAlias MYAPP_UPLOAD_KEY_ALIAS\\n\
+                    keyPassword MYAPP_UPLOAD_KEY_PASSWORD\\n\
+                }\\n\
+            }" android/app/build.gradle
+
+                        sed -i "/buildTypes {/a \\
+                release {\\n\
+                    signingConfig signingConfigs.release\\n\
+                    minifyEnabled false\\n\
+                    shrinkResources false\\n\
+                    proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'\\n\
+                }" android/app/build.gradle
+
                         echo "Syncing Capacitor..."
                         npx cap sync android
 
-                        echo "Building signed AAB..."
-                        cd android
-                        ./gradlew bundleRelease
-                        cd ..
+                        echo "Building Signed AAB..."
+                        cd android && ./gradlew bundleRelease
 
-                        echo "Preparing output directory..."
+                        echo "Preparing AAB output directory..."
                         mkdir -p only-aab-releases
 
-                        echo "Copying and renaming AAB..."
+                        echo "Copying signed AAB..."
                         cp android/app/build/outputs/bundle/release/app-release.aab "only-aab-releases/spreezy-${APP_VERSION}.aab"
 
-                        echo "Uploading to Nexus..."
+                        echo "Generated AAB: spreezy-${APP_VERSION}.aab"
+                        ls -lh only-aab-releases/
+
+                        AAB_FILE="only-aab-releases/spreezy-${APP_VERSION}.aab"
+                        VERSION_DIR="spreezy-${APP_VERSION}"
+
+                        echo "Uploading $AAB_FILE to Nexus at path: $VERSION_DIR/$(basename $AAB_FILE)..."
+
                         curl -f -u $NEXUS_USER:$NEXUS_PASS \
-                        --upload-file "only-aab-releases/spreezy-${APP_VERSION}.aab" \
-                        "https://nexus.spreezy.in/repository/apk-release/spreezy-${APP_VERSION}/spreezy-${APP_VERSION}.aab"
+                            --upload-file "$AAB_FILE" \
+                            "https://nexus.spreezy.in/repository/apk-release/${VERSION_DIR}/$(basename $AAB_FILE)"
                     '''
                 }
             }
         }
+
 
 
         
