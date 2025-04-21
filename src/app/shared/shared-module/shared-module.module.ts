@@ -6,20 +6,20 @@ import { ProfileInfoComponent } from 'src/app/shared/profile-info/profile-info.c
 import { ProfileSkeletonComponent } from '../profile-skeleton/profile-skeleton.component';
 
 @NgModule({
-  declarations: [
-    PopUpComponent,
-    LoaderComponent,
-    ProfileInfoComponent,
-    ProfileSkeletonComponent
-  ],
-  imports: [
-    CommonModule,
-  ],
-  exports: [
-    PopUpComponent,
-    LoaderComponent,
-    ProfileInfoComponent,
-    ProfileSkeletonComponent
-  ]
+declarations: [
+PopUpComponent,
+LoaderComponent,
+ProfileInfoComponent,
+ProfileSkeletonComponent
+],
+imports: [
+CommonModule,
+],
+exports: [
+PopUpComponent,
+LoaderComponent,
+ProfileInfoComponent,
+ProfileSkeletonComponent
+]
 })
 export class SharedModule {}

@@ -9,37 +9,31 @@ import { EventComponent } from './Event/Event.component';
 import { PostComponent } from './Post/Post.component';
 import { CouponComponent } from './Coupon/Coupon.component';
 
-
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { SharedModule } from 'src/app/shared/shared-module/shared-module.module';
 
-
-
 @NgModule({
-  declarations: [
-    AdFeedComponent,
-    // OfferDescriptionComponent,
-    EventComponent,
-    PostComponent,
-    CouponComponent
+declarations: [
+AdFeedComponent,
+// OfferDescriptionComponent,
+EventComponent,
+PostComponent,
+CouponComponent
 
-    
-  
-   
-  ],
-  imports: [
-    CommonModule,
-    AdFeedRoutingModule,
-    FontAwesomeModule,
-  SharedModule
-  ],
-  exports: [
-    AdFeedComponent,
-    // OfferDescriptionComponent,
-    EventComponent,
-    PostComponent,
-    CouponComponent
-  ]
+],
+imports: [
+CommonModule,
+AdFeedRoutingModule,
+FontAwesomeModule,
+SharedModule
+],
+exports: [
+AdFeedComponent,
+// OfferDescriptionComponent,
+EventComponent,
+PostComponent,
+CouponComponent
+]
 
 })
 export class AdFeedModule { }

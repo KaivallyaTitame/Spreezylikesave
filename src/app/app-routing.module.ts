@@ -5,12 +5,14 @@ import { businessGuard } from "./authGuards/business/business.guard";
 import { loginGuard } from "./authGuards/login/login.guard";
 
 const routes: Routes = [
-  { path: "", redirectTo: "business-home", pathMatch: "full" },
+  { path: "", redirectTo: "login", pathMatch: "full" },
 
   {
     path: "login",
-    loadChildren: () => import("./screens/login/login.module").then(m => m.LoginModule),
-    canActivate: [loginGuard]
+    //loadChildren: () => import('./screens/postcreation/postcreation.module').then(m => m.PostcreationModule),
+     loadChildren: () => import("./screens/login/login.module").then(m => m.LoginModule),
+     canActivate: [loginGuard]
+
   },
   {
     path: "discover-business-screen",
@@ -19,7 +21,7 @@ const routes: Routes = [
   {
     path: "business-home",
     loadChildren: () => import("./screens/business-home/business-home.module").then(m => m.BusinessHomeModule),
-    canActivate: [businessGuard]
+    // canActivate: [businessGuard]
   },
   {
     path: "otpscreen/:mobileNumber/:countryCode",
@@ -28,7 +30,7 @@ const routes: Routes = [
   {
     path: "consumer-home",
     loadChildren: () => import("./screens/consumer-home/consumer-home.module").then(m => m.ConsumerHomeModule),
-    canActivate: [customerGuard]
+    // canActivate: [customerGuard]
   },
   { path: 'terms-conditions', loadChildren: () => import('./screens/terms-conditions/terms-conditions.module').then(m => m.TermsConditionsModule) },
   {
@@ -39,7 +41,13 @@ const routes: Routes = [
     path: 'terms-and-condition',
     loadChildren: () => import('./screens/terms-conditions/terms-conditions.module').then(m => m.TermsConditionsModule),
   },
-  { path: "**", redirectTo: "login"}
+  { path: "**", redirectTo: "login"},
+
+
+  {
+    path: 'postcreation',
+    loadChildren: () => import('./screens/postcreation/postcreation.module').then(m => m.PostcreationModule),
+  },
 ];
 
 @NgModule({

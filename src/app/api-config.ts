@@ -2,7 +2,7 @@ import { environment } from 'src/environments/environment';
 
 export const API_CONFIG = {
   // Image Service
-  IMAGE_URL: 'https://images.spreezy.in',
+  IMAGE_URL: '',
 
   // Auth Service Endpoints
   AUTH_LOGOUT: (userName: string) => `${environment.apiGateway}/auth/${userName}/logout`,
@@ -13,11 +13,11 @@ export const API_CONFIG = {
 
   // Business Service Endpoints
   GET_BUSINESS_DETAILS: (username: string) =>
-    `${environment.apiGateway}/user/profile/${username}`,
+    `https://dummyjson.com/c/7512-f5d4-4f36-af0a`,
   GET_PROFILE_POSTS: (username: string) =>
-    `${environment.apiGateway}/feed-on-profile-page/posts-section/${username}`,
+    `https://dummyjson.com/c/77ce-a317-42f1-9ebd`,
   GET_SAVED_POSTS: (username: string) =>
-    `${environment.apiGateway}/feed-on-profile-page/saved-section/${username}`,
+    `https://dummyjson.com/c/77ce-a317-42f1-9ebd`,
 
   // Feedback Service Endpoints
   SAVE_FEEDBACK: `${environment.apiGateway}/feedback/saveFeedback`,

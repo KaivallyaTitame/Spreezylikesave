@@ -19,7 +19,8 @@ export class AdvertisementDetailsService {
   }
 
   getAdvertisementDetails(): Observable<AdvertisementDetails[]> {
-    return this.http.get<AdvertisementDetails[]>(`${this.baseUrl}/c/e9c8-5ebd-4f70-a7b5`, {
+    //return this.http.get<AdvertisementDetails[]>(`${this.baseUrl}/c/e9c8-5ebd-4f70-a7b5`, {
+      return this.http.get<AdvertisementDetails[]>(`https://dummyjson.com/c/9575-9fc6-48ff-a845`, {
       responseType: 'json',
       headers: new HttpHeaders(),
     });

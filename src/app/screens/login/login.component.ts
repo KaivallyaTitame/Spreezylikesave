@@ -63,25 +63,27 @@ export class LoginComponent implements OnInit {
     const phoneNumber = this.form.value.phonenumber;
     const selectedCountryCode = this.form.value.countryCode;
     this.isLoaderVisible = true;
-    this.otpService.sendOtp(selectedCountryCode, phoneNumber).subscribe({
-      next: (response) => {
-        this.isLoaderVisible = false;
-        this.otpSent = true;
-        this.showPopup("Success", "OTP sent successfully.");
-        this.router.navigate(["/otpscreen", phoneNumber, selectedCountryCode]);
-      },
-      error: (error) => {
-        this.isLoaderVisible = false;
-        const errorCode = error?.error?.errorCode || "Server is down";
-        const errorDescription =
-          error?.error?.errorDescription ||
-          "Failed to send OTP. Please try again later (Internal server Error).";
-        this.showPopup(`Error (${errorCode})`, errorDescription);
-      },
-      complete: () => {
-        this.isLoaderVisible = false;
-      },
-    });
+    // this.otpService.sendOtp(selectedCountryCode, phoneNumber).subscribe({
+    //   next: (response) => {
+    //     this.isLoaderVisible = false;
+    //     this.otpSent = true;
+    //     this.showPopup("Success", "OTP sent successfully.");
+    //     this.router.navigate(["/otpscreen", phoneNumber, selectedCountryCode]);
+    //   },
+    //   error: (error) => {
+    //     this.isLoaderVisible = false;
+    //     const errorCode = error?.error?.errorCode || "Server is down";
+    //     const errorDescription =
+    //       error?.error?.errorDescription ||
+    //       "Failed to send OTP. Please try again later (Internal server Error).";
+    //     this.showPopup(`Error (${errorCode})`, errorDescription);
+    //   },
+    //   complete: () => {
+    //     this.isLoaderVisible = false;
+    //   },
+    // });\\
+    this.showPopup("Success", "OTP sent successfully.");
+    this.router.navigate(["/otpscreen", phoneNumber, selectedCountryCode]);
   }
 
   validatePhoneNumber(control: {

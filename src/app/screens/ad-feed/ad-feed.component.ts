@@ -1,26 +1,20 @@
-import { AuthService } from "src/app/services/auth.service";
 import { Component, OnInit } from '@angular/core';
-import { forkJoin } from 'rxjs'; // Ensure this is imported
-import { AdvertisementDetailsService } from 'src/app/services/advertisementTypes.service'; 
-// import { OfferDescriptionDTO } from 'src/app/models/offerdescriptionGet';
-
+import { AdvertisementDetailsService } from 'src/app/services/advertisementTypes.service';
 import { AdvertisementDetails } from 'src/app/models/ad-details';
-import { PopUpComponent } from "src/app/components/pop-up/pop-up.component";
 
 @Component({
   selector: 'app-ad-feed',
   templateUrl: './ad-feed.component.html',
-  styleUrls: []
+  styleUrls: ['./ad-feed.component.css']
 })
 export class AdFeedComponent implements OnInit {
-  ads: AdvertisementDetails []= [];
-  errorMessage: string = '';  // Variable to store error message
-  showErrorPopup: boolean = false; // Flag to show pop-up
-  constructor(private advertisementDetailsService: AdvertisementDetailsService, private authService: AuthService) {}
+  ads: AdvertisementDetails[] = [];
+  isLoading: boolean = false;
+  showLoader: boolean = true;
+  errorMessage: string = '';
+  showErrorPopup: boolean = false;
 
-  logout() {
-    this.authService.logout();
-  }
+  constructor(private advertisementDetailsService: AdvertisementDetailsService) {}
 
   ngOnInit(): void {
     this.fetchAds();
@@ -33,13 +27,28 @@ export class AdFeedComponent implements OnInit {
   }
 
   fetchAds(): void {
+    this.isLoading = true;
+
+    const timeoutId = setTimeout(() => {
+      if (this.isLoading) {
+        console.log('Network appears slow, showing skeleton');
+      }
+    }, 1000);
+
     this.advertisementDetailsService.getAdvertisementDetails().subscribe({
       next: (response) => {
+        console.log(response)
+        clearTimeout(timeoutId);
         this.ads = response;
+        this.isLoading = false;
       },
-      
+      error: (error) => {
+        clearTimeout(timeoutId);
+        this.errorMessage = 'Failed to load ads';
+        this.showErrorPopup = true;
+        this.isLoading = false;
+        console.error('API Error:', error);
+      }
     });
   }
-
-  
 }
