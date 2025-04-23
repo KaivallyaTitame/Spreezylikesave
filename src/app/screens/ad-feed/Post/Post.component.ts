@@ -11,6 +11,7 @@ import { Router } from '@angular/router';
 import { JwtDecoderService } from 'src/app/services/jwt-decoder.service';
 import { ElementRef, ViewChild } from '@angular/core';
 import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
+import { ActivatedRoute } from '@angular/router'
 @Component({
   selector: 'app-Post',
   templateUrl: './Post.component.html',
@@ -62,7 +63,13 @@ export class PostComponent implements OnInit {
   translateX = 0;
   @ViewChild('imageContainer') imageContainer: ElementRef;
   @ViewChild('threeDotsWrapper', { static: false }) threeDotsRef!: ElementRef;
-  constructor(private advertisementDetailsService: AdvertisementDetailsService, private router: Router, private jwtDecoderService: JwtDecoderService) { }
+  constructor(private advertisementDetailsService: AdvertisementDetailsService, private router: Router, private jwtDecoderService: JwtDecoderService , private route: Router) { }
+
+  hasValidImages: boolean = true;
+  handleImageError(event: any): void {
+    this.hasValidImages = false;
+    event.target.classList.add('min-h-48');
+  }
 
   ngOnInit(): void {
     const { remainingDays, remainingHours, isExpired } = this.advertisementDetailsService.calculateExpiry(this.postDetails.offerExpiry);
@@ -184,6 +191,7 @@ export class PostComponent implements OnInit {
   savePost(): void {
     const advertisementId = this.postDetails.advertisementId;
     const username = this.postDetails.username;
+    console.log(advertisementId , username)
     this.triggerAnimation('save');
     this.scaleAnimation = true;
     setTimeout(() => {
@@ -271,7 +279,7 @@ export class PostComponent implements OnInit {
   }
 
   showDetails(advertisementId: number): void {
-    this.router.navigate(['consumer-home/adfeed/offer-description', advertisementId], {
+    this.router.navigate([`${this.router.url}/offer-description`, advertisementId], {
       queryParams: { data: JSON.stringify(this.postDetails) },
     })
   }

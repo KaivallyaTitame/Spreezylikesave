@@ -23,8 +23,8 @@ export class AdvertisementDetailsService {
   getAdvertisementDetails(): Observable<AdvertisementDetails[]> {
     let token = localStorage.getItem("token") || "";
     let userName = this.jwtDecoderService.decodeInfoFromToken(token)["sub"] || "";
-    // return this.http.get<AdvertisementDetails[]>(`${this.baseUrl}/advertisement-feed/{userName}`, {
-    return this.http.get<AdvertisementDetails[]>(`https://dummyjson.com/c/3144-37bd-44be-b7a9`, {
+    return this.http.get<AdvertisementDetails[]>(`http://localhost:8082/feed-on-profile-page/posts-section/${userName}?page=0&pageSize=10`, {
+    // return this.http.get<AdvertisementDetails[]>(`https://dummyjson.com/c/9575-9fc6-48ff-a845`, {
       responseType: 'json',
       headers: new HttpHeaders(),
     });
@@ -32,7 +32,7 @@ export class AdvertisementDetailsService {
 
   updateLikes(advertisementId: number): Observable<AdvertisementDetails> {
     return this.http.post<AdvertisementDetails>(
-      `${this.baseUrl}/content/advertisement/upvote/${advertisementId}`,
+      `http://localhost:8081/content/advertisement/upvote/${advertisementId}`,
       {},{
         responseType: 'json',
         headers: new HttpHeaders(),
@@ -42,7 +42,7 @@ export class AdvertisementDetailsService {
 
   updateDislikes(advertisementId: number): Observable<AdvertisementDetails> {
     return this.http.post<AdvertisementDetails>(
-      `${this.baseUrl}/content/advertisement/downvote/${advertisementId}`,
+      `http://localhost:8081/content/advertisement/downvote/${advertisementId}`,
       {},{
         responseType: 'json',
         headers: new HttpHeaders(),
@@ -51,13 +51,14 @@ export class AdvertisementDetailsService {
   }
 
   savePost(username: string, advertisementId: number): Observable<AdvertisementDetails> {
+    console.log(username , advertisementId)
     return this.http.post<AdvertisementDetails>(
-      `${this.baseUrl2}/content/advertisement/save`,
+      `http://localhost:8081/content/advertisement/save`,
       {},{
         responseType: 'json',
         headers: new HttpHeaders({
-          'X-Username': username,
-          'X-Advertisement-ID': advertisementId.toString(),
+          'username': username,
+          'advertisementId': advertisementId,
         }),
       }
     );

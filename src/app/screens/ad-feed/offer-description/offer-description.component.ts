@@ -55,7 +55,6 @@ export class OfferDescriptionComponent implements OnInit {
   faThumbsDownOutline = faThumbsDownOutline;
   isLiked: boolean = false; 
   isDisliked: boolean = false; 
-
   faChevronLeft = faChevronLeft;
   faChevronRight = faChevronRight;
   currentImageIndex = 0;
@@ -67,6 +66,12 @@ export class OfferDescriptionComponent implements OnInit {
     private advertisementDetailsService: AdvertisementDetailsService,
     private router: Router
   ) {}
+
+  hasValidImages: boolean = true;
+  handleImageError(event: any): void {
+    this.hasValidImages = false;
+    event.target.classList.add('min-h-48');
+  }
 
   ngOnInit(): void {
     const advertisementId = this.route.snapshot.paramMap.get('advertisementId');

@@ -63,6 +63,12 @@ export class CouponComponent implements OnInit {
 
   constructor(private advertisementDetailsService: AdvertisementDetailsService,private router:Router) {}
 
+  hasValidImages: boolean = true;
+  handleImageError(event: any): void {
+    this.hasValidImages = false;
+    event.target.classList.add('min-h-48');
+  }
+
   ngOnInit(): void {
     try {
       const { remainingDays, remainingHours, isExpired } = this.advertisementDetailsService.calculateExpiry(this.couponDetails.offerExpiry);
@@ -238,7 +244,7 @@ export class CouponComponent implements OnInit {
   }
 
   showDetails(advertisementId: number): void {
-    this.router.navigate(['consumer-home/adfeed/offer-description', advertisementId ] ,  {
+    this.router.navigate([`${this.router.url}/offer-description` , advertisementId ] ,  {
       queryParams: { data: JSON.stringify(this.couponDetails) },
     });
   }

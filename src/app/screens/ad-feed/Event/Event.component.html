@@ -25,7 +25,9 @@
           <div #imageContainer class="flex transition-transform duration-300 ease-in-out"
             [style.transform]="'translateX(' + translateX + 'px)'">
             <div *ngFor="let image of eventDetails.imagePaths; let i = index" class="w-full flex-shrink-0">
-              <img [src]="baseUrl + image" [alt]="'Product image ' + (i+1)" class="w-full object-contain h-96">
+              <img [src]="baseUrl + image" [alt]="'Event image ' + (i+1)" 
+              class="w-full object-contain max-h-96 min-h-48"
+              (error)="handleImageError($event)">
             </div>
           </div>
 

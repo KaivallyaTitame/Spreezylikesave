@@ -59,6 +59,12 @@ export class EventComponent implements OnInit {
   @ViewChild('threeDotsWrapper', { static: false }) threeDotsRef!: ElementRef;
   constructor(private advertisementDetailsService: AdvertisementDetailsService, private router: Router) { }
 
+  hasValidImages: boolean = true;
+  handleImageError(event: any): void {
+    this.hasValidImages = false;
+    event.target.classList.add('min-h-48');
+  }
+
   ngOnInit(): void {
     const { remainingDays, remainingHours, isExpired } = this.advertisementDetailsService.calculateExpiry(this.eventDetails.offerExpiry);
     this.remainingDays = remainingDays;
@@ -217,7 +223,7 @@ export class EventComponent implements OnInit {
   }
 
   showDetails(advertisementId: number): void {
-    this.router.navigate(['consumer-home/adfeed/offer-description', advertisementId], {
+    this.router.navigate([`${this.router.url}/offer-description`, advertisementId], {
       queryParams: { data: JSON.stringify(this.eventDetails) },
     });
   }
