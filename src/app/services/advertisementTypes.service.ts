@@ -66,7 +66,7 @@ export class AdvertisementDetailsService {
 
   followUser(sourceUsername: string, username: string): Observable<any> {
     return this.http.post(
-      `${this.baseUrl}/user/follow/${sourceUsername}/${username}`,
+      `http://localhost:8081/user/follow/${sourceUsername}/${username}`,
       {},{
         responseType: 'json',
         headers: new HttpHeaders(),
@@ -78,7 +78,7 @@ export class AdvertisementDetailsService {
     let token = localStorage.getItem("token") || "";
     let userName = this.jwtDecoderService.decodeInfoFromToken(token)["sub"] || "";
     return this.http.post(
-      `${this.baseUrl}/content/advertisement/report/${advertisementId}`,{
+      `http://localhost:8081/content/advertisement/report`,{
         "advertisementId": advertisementId,
         "usernameOfReporter": userName
       },{

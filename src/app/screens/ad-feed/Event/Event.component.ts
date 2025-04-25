@@ -55,6 +55,7 @@ export class EventComponent implements OnInit {
   faChevronRight = faChevronRight;
   currentImageIndex = 0;
   translateX = 0;
+  isFollowing: boolean = false;
   @ViewChild('imageContainer') imageContainer: ElementRef;
   @ViewChild('threeDotsWrapper', { static: false }) threeDotsRef!: ElementRef;
   constructor(private advertisementDetailsService: AdvertisementDetailsService, private router: Router) { }
@@ -70,6 +71,15 @@ export class EventComponent implements OnInit {
     this.remainingDays = remainingDays;
     this.remainingHours = remainingHours;
     this.isExpired = isExpired;
+  }
+
+  navigateToProfile(){
+    console.log(this.router.url)
+    if(this.router.url == "/business-home/adfeed"){
+      this.router.navigate(['/profile-screen/business-profile',this.eventDetails.username])
+    }else{
+      this.router.navigate(['/profile-screen/consumer-profile',this.eventDetails.username])
+    }
   }
 
   likePost(): void {

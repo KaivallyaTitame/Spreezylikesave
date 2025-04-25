@@ -3,10 +3,10 @@ import { faBars, faUserGroup, faMagnifyingGlass, faThumbsUp, faThumbsDown, faLoc
 import { faThumbsUp as faThumbsUpOutline, faThumbsDown as faThumbsDownOutline ,} from '@fortawesome/free-regular-svg-icons'; // Import outlined icons
 import { AdvertisementDetailsService } from 'src/app/services/advertisementTypes.service';
 import { AdvertisementDetails } from 'src/app/models/ad-details';
-import { faBookmark as solidBookmark , faBookmark as regularBookmark , faHeart as faHeartRegular , faThumbsDown as faThumbsDownRegular, faBookmark as faBookmarkRegular } from '@fortawesome/free-regular-svg-icons';
+import { faBookmark as solidBookmark , faBookmark as regularBookmark , faBookmark as faBookmarkRegular } from '@fortawesome/free-regular-svg-icons';
 import { IconDefinition } from '@fortawesome/fontawesome-svg-core';  // Import the type
 import { Router } from '@angular/router';
-import { faChevronLeft, faChevronRight,faHeart as faHeartSolid, faThumbsDown as faThumbsDownSolid , faBookmark as faBookmarkSolid } from '@fortawesome/free-solid-svg-icons';
+import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-Coupon',
@@ -49,7 +49,7 @@ export class CouponComponent implements OnInit {
   faCircleUser : IconDefinition = faCircleUser;
   faPaperPlane : IconDefinition = faPaperPlane;
   showBelow = false;
-
+  isFollowing: boolean = false;
   faThumbsUpOutline: IconDefinition = faThumbsUpOutline;
   faThumbsDownOutline: IconDefinition = faThumbsDownOutline;
   faChevronLeft = faChevronLeft;
@@ -77,6 +77,15 @@ export class CouponComponent implements OnInit {
       this.isExpired = isExpired;
     } catch (error) {
       console.error('Error calculating expiry:', error);
+    }
+  }
+
+  navigateToProfile(){
+    console.log(this.router.url)
+    if(this.router.url == "/business-home/adfeed"){
+      this.router.navigate(['/profile-screen/business-profile',this.couponDetails.username])
+    }else{
+      this.router.navigate(['/profile-screen/consumer-profile',this.couponDetails.username])
     }
   }
 

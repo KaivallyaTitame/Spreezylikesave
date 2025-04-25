@@ -11,7 +11,6 @@ import { Router } from '@angular/router';
 import { JwtDecoderService } from 'src/app/services/jwt-decoder.service';
 import { ElementRef, ViewChild } from '@angular/core';
 import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
-import { ActivatedRoute } from '@angular/router'
 @Component({
   selector: 'app-Post',
   templateUrl: './Post.component.html',
@@ -19,7 +18,6 @@ import { ActivatedRoute } from '@angular/router'
 })
 export class PostComponent implements OnInit {
   @Input() postDetails!: AdvertisementDetails;
-
   baseUrl = "";
   // baseUrl="https://images.spreezy.in/";
   remainingDays: number;
@@ -80,6 +78,15 @@ export class PostComponent implements OnInit {
     this.remainingHours = remainingHours;
     this.isExpired = isExpired;
     this.checkIfFollowing();
+  }
+
+  navigateToProfile(){
+    console.log(this.router.url)
+    if(this.router.url == "/business-home/adfeed"){
+      this.router.navigate(['/profile-screen/business-profile',this.postDetails.username])
+    }else{
+      this.router.navigate(['/profile-screen/consumer-profile',this.postDetails.username])
+    }
   }
 
   toggleFollow(): void {
@@ -283,7 +290,6 @@ export class PostComponent implements OnInit {
       queryParams: { data: JSON.stringify(this.postDetails) },
     })
   }
-
 
   prevImage() {
     if (this.currentImageIndex > 0) {

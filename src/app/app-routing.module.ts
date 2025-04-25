@@ -4,14 +4,20 @@ import { customerGuard } from "./authGuards/customer/customer.guard";
 import { businessGuard } from "./authGuards/business/business.guard";
 import { loginGuard } from "./authGuards/login/login.guard";
 import { OfferDescriptionComponent } from './screens/ad-feed/offer-description/offer-description.component';
+import { ProfileScreenModule } from './screens/profile-screen/profile-screen.module';
 
 const routes: Routes = [
-  { path: "", redirectTo: "login", pathMatch: "full" },
-
+  { 
+    path: "", redirectTo: "login", pathMatch: "full" 
+  },
   {
     path: "login",
     loadChildren: () => import("./screens/login/login.module").then(m => m.LoginModule),
     canActivate: [loginGuard]
+  },
+  {
+    path: "profile-screen",
+    loadChildren: () => import("./screens/profile-screen/profile-screen.module").then(m => ProfileScreenModule)
   },
   {
     path: "discover-business-screen",
@@ -34,7 +40,9 @@ const routes: Routes = [
     loadChildren: () => import("./screens/consumer-home/consumer-home.module").then(m => m.ConsumerHomeModule),
     canActivate: [customerGuard]
   },
-  { path: 'terms-conditions', loadChildren: () => import('./screens/terms-conditions/terms-conditions.module').then(m => m.TermsConditionsModule) },
+  { 
+    path: 'terms-conditions', loadChildren: () => import('./screens/terms-conditions/terms-conditions.module').then(m => m.TermsConditionsModule) 
+  },
   {
     path: 'register',
     loadChildren: () => import('./screens/Registration/register/register.module').then(m => m.registerModule),

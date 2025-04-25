@@ -48,4 +48,14 @@ export const API_CONFIG = {
     CREATE_POST: `${environment.apiGateway}/content/post/create`,
     CREATE_EVENT: `${environment.apiGateway}/content/event/create`,
   },
+
+  ADVERTISEMENT_EVENTS:{
+    LIKE_ADVERTISEMENT : ``,
+    DISLIKE_ADVERTISEMENT : ``,
+    SAVE_ADVERTISEMENT : ``,
+    REPORT_ADVERTISEMENT : ``,
+    GET_ADDVERTISEMENT_DETAILS : ``,
+    FOLLOW : ``,
+    UN_FOLLOW : ``
+  }
 };

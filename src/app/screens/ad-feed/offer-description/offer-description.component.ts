@@ -1,6 +1,6 @@
 import { Component, HostListener, Input, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { faBars, faUserGroup, faMagnifyingGlass, faThumbsUp, faThumbsDown, faLocationArrow, faEllipsisVertical, faLocationDot, faHeart, faBell, faCircleUser } from '@fortawesome/free-solid-svg-icons';
+import { faBars, faUserGroup, faMagnifyingGlass, faThumbsUp, faThumbsDown, faLocationArrow, faEllipsisVertical, faLocationDot, faHeart, faBell, faCircleUser , faPaperPlane } from '@fortawesome/free-solid-svg-icons';
 import { faThumbsUp as faThumbsUpOutline, faThumbsDown as faThumbsDownOutline } from '@fortawesome/free-regular-svg-icons'; 
 import { AdvertisementDetailsService } from 'src/app/services/advertisementTypes.service';
 import { AdvertisementDetails } from 'src/app/models/ad-details';
@@ -37,7 +37,7 @@ export class OfferDescriptionComponent implements OnInit {
   showPopup: boolean = false;
   popupTitle: string = 'Error';
   popupBody: string = '';
-
+  faPaperPlane = faPaperPlane
   faBars = faBars;
   faUserGroup = faUserGroup;
   faMagnifyingGlass = faMagnifyingGlass;
@@ -59,7 +59,9 @@ export class OfferDescriptionComponent implements OnInit {
   faChevronRight = faChevronRight;
   currentImageIndex = 0;
   translateX = 0;
+  isFollowing: boolean = false;
   @ViewChild('imageContainer') imageContainer: ElementRef;
+  
 
   constructor(
     private route: ActivatedRoute,
@@ -87,6 +89,15 @@ export class OfferDescriptionComponent implements OnInit {
       const today = new Date();
       this.remainingDays = Math.ceil((expirationDate.getTime() - today.getTime()) / (1000 * 3600 * 24));
       this.isExpired = this.remainingDays <= 0;
+    }
+  }
+
+  navigateToProfile(){
+    console.log(this.router.url)
+    if(this.router.url == "/business-home/adfeed"){
+      this.router.navigate(['/profile-screen/business-profile',this.offerData.username])
+    }else{
+      this.router.navigate(['/profile-screen/consumer-profile',this.offerData.username])
     }
   }
 
