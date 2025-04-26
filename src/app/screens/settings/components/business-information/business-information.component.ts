@@ -85,11 +85,15 @@ export class BusinessInformationComponent {
             this.showPopUp = true;
           }
         } catch (error) {
-          console.error('Error parsing JSON:', error);
+          this.loading = false;  
+          console.log('Error is due to parsing in json'); 
+          throw(error); 
         }
       },
       error: (error: HttpErrorResponse) => {
-        console.error('Error fetching data:', error);
+        this.loading = false; 
+        console.log('Error Is HttpErrorResponse'); 
+        throw(error);  
       },
       complete: () => {
         this.loading = false; 
