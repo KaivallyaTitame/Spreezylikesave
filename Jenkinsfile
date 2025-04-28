@@ -399,13 +399,12 @@ pipeline
                         npm install -g google-play-cli
         
                         echo "Authenticating and uploading AAB..."
-                        google-play-cli \
-                          --service-account "$GCLOUD_AUTH" \
-                          --package-name "$APP_PACKAGE_NAME" \
-                          --track "$TRACK" \
-                          --release-name "Spreezy v$APP_VERSION" \
-                          --release-notes "Bug fixes and performance improvements." \
-                          --aab "$AAB_NAME"
+                        npx google-play-cli --service-account $SERVICE_ACCOUNT_JSON \
+                            --package-name $PACKAGE_NAME \
+                            --track $TRACK \
+                            --release-name "Spreezy v$APP_VERSION" \
+                            --release-notes "Bug fixes and performance improvements." \
+                            --aab $AAB_NAME
                       '''
                 }
             }
