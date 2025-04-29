@@ -1,83 +1,63 @@
 pipeline {
     agent {
         docker {
-            image 'cypress/base:18.16.0'
-            args '-u root:root'
-            reuseNode true
+            image 'node:18-bullseye'
         }
     }
 
     environment {
-        GIT_URL = 'git@github.com:spreezy-tech/spreezy-frontend.git'
-        GIT_BRANCH = 'feature-nandini'
-        CREDENTIALS_ID = 'spreezy-frontend-keys'
-        JAVA_HOME = '/usr/lib/jvm/java-17-openjdk-amd64'
-        ANDROID_HOME = '/root/Android/Sdk'
-        GRADLE_USER_HOME = "${WORKSPACE}/.gradle"
+        PACKAGE_NAME = 'com.spreezy.app'
+        TRACK = 'internal' 
+        RELEASE_NOTES = 'Bug fixes and improvements.'
     }
 
     stages {
-        stage('Clone Repository') {
+        stage('Authenticate & Upload AAB to Google Play Console') {
             steps {
-                git branch: env.GIT_BRANCH, credentialsId: env.CREDENTIALS_ID, url: env.GIT_URL
-            }
-        }
+                withCredentials([
+                    file(credentialsId: 'gplay-service-account', variable: 'GOOGLE_APPLICATION_CREDENTIALS'),
+                    usernamePassword(credentialsId: 'nexus_apk_credentials', usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASS')
+                ]) {
+                    sh '''
+                        echo Installing Google Cloud SDK...
+                        apt-get update && apt-get install -y apt-transport-https ca-certificates gnupg curl
+                        echo "deb https://packages.cloud.google.com/apt cloud-sdk main" | tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
+                        curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
+                        apt-get update && apt-get install -y google-cloud-sdk
 
-        stage('Install Dependencies') {
-            steps {
-                sh 'npm install'
-            }
-        }
+                        echo Authenticating with Google Cloud...
+                        gcloud auth activate-service-account --key-file=$GOOGLE_APPLICATION_CREDENTIALS
 
-        stage('Build Angular App') {
-            steps {
-                sh 'npm run build'
-            }
-        }
+                        echo Fetching app version from package.json...
+                        APP_VERSION=$(node -p "require('./package.json').version")
+                        echo "App version: $APP_VERSION"
 
-        stage('Capacitor Sync') {
-            steps {
-                sh 'npx cap sync android'
-            }
-        }
+                        VERSION_DIR="spreezy-$APP_VERSION"
+                        AAB_NAME="spreezy-$APP_VERSION.aab"
 
-        stage('Copy Keystore') {
-            steps {
-                // Adjust this if keystore is stored securely somewhere else
-                sh 'sh 'cp /home/shoyokun/spreezy/spreezy-frontend/android/app/spreezy-release-key.jks android/app/spreezy-release-key.jks'
-            }
-        }
+                        echo Downloading AAB from Nexus...
+                        curl -u $NEXUS_USER:$NEXUS_PASS -o $AAB_NAME "https://nexus.spreezy.in/repository/apk-release/${VERSION_DIR}/${AAB_NAME}"
 
-        stage('Update Gradle Properties for Signing') {
-            steps {
-                writeFile file: 'android/keystore.properties', text: """
-MYAPP_UPLOAD_STORE_FILE=spreezy-release-key.jks
-MYAPP_UPLOAD_KEY_ALIAS=spreezy-key-alias
-MYAPP_UPLOAD_STORE_PASSWORD=Hinatashoyo@123
-MYAPP_UPLOAD_KEY_PASSWORD=Hinatashoyo@123
-"""
-            }
-        }
+                        echo Uploading to Google Play Internal Track...
+                        gcloud beta android publisher uploads aab \
+                            --package-name=$PACKAGE_NAME \
+                            --track=$TRACK \
+                            --release-notes="$RELEASE_NOTES" \
+                            $AAB_NAME
 
-        stage('Generate AAB') {
-            steps {
-                dir('android') {
-                    sh './gradlew bundleRelease'
+                        echo Upload completed successfully.
+                    '''
                 }
-            }
-        }
-
-        stage('Archive AAB') {
-            steps {
-                archiveArtifacts artifacts: 'android/app/build/outputs/bundle/release/app-release.aab', fingerprint: true
             }
         }
     }
 
     post {
-        always {
-            slackSend channel: 'devops-jenkins-updates',
-                      message: "Pipeline Result: ${currentBuild.currentResult} | Job: ${env.JOB_NAME} #${env.BUILD_NUMBER} | ${env.BUILD_URL}"
+        failure {
+            echo 'Upload failed.'
+        }
+        success {
+            echo 'Upload pipeline completed successfully.'
         }
     }
 }
