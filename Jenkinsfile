@@ -373,43 +373,6 @@ pipeline
         //         }
         //     }
         // }
-                stage('Deploy to Google Play Console - Internal Testing') {
-                  environment {
-                    APP_PACKAGE_NAME = 'com.spreezy.app' // change to your actual app ID
-                    TRACK = 'internal'
-                  }
-                  steps {
-                    withCredentials([
-                      file(credentialsId: 'gplay-service-account', variable: 'GCLOUD_AUTH'),
-                      usernamePassword(credentialsId: 'nexus_apk_credentials', usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASS')
-                    ]) {
-                      sh '''
-                        echo "Fetching app version from package.json..."
-                        APP_VERSION=$(node -p "require('./package.json').version")
-                        echo "App version: $APP_VERSION"
-                        VERSION_DIR="spreezy-${APP_VERSION}"
-                        AAB_NAME="spreezy-${APP_VERSION}.aab"
-        
-                        echo "Downloading AAB from Nexus..."
-                        curl -u $NEXUS_USER:$NEXUS_PASS \
-                          -o "$AAB_NAME" \
-                          "https://nexus.spreezy.in/repository/apk-release/${VERSION_DIR}/${AAB_NAME}"
-        
-                        echo "Installing Google Play Publisher CLI..."
-                        npm install -g google-play-cli
-        
-                        echo "Authenticating and uploading AAB..."
-                        npx google-play-cli --service-account $SERVICE_ACCOUNT_JSON \
-                            --package-name $PACKAGE_NAME \
-                            --track $TRACK \
-                            --release-name "Spreezy v$APP_VERSION" \
-                            --release-notes "Bug fixes and performance improvements." \
-                            --aab $AAB_NAME
-                      '''
-                }
-            }
-        }
-
         
 
 
