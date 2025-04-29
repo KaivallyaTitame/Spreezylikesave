@@ -70,25 +70,25 @@ pipeline
         // }
         
 
-         stage('sonarQube-analysis') {
-            steps {
-                withSonarQubeEnv('sonar-scanner') { // Ensure 'sonar-scanner' matches the name configured in Jenkins
-                    script {
-                        sh """
-                            /var/jenkins_home/tools/hudson.plugins.sonar.SonarRunnerInstallation/sonar-scanner/bin/sonar-scanner \
-                            -Dsonar.projectKey=frontend-project \
-                            -Dsonar.projectName="Frontend Project" \
-                            -Dsonar.sources=. \
-                            -Dsonar.host.url=${SONAR_HOST_URL} \
-                            -Dsonar.login=${SONAR_TOKEN} \
-                            -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info \
-                            -Dsonar.exclusions=node_modules/**,dist/**,**/*.spec.ts \
-                            -Dsonar.sourceEncoding=UTF-8
-                        """
-                    }
-                }
-            }
-        }
+        //  stage('sonarQube-analysis') {
+        //     steps {
+        //         withSonarQubeEnv('sonar-scanner') { // Ensure 'sonar-scanner' matches the name configured in Jenkins
+        //             script {
+        //                 sh """
+        //                     /var/jenkins_home/tools/hudson.plugins.sonar.SonarRunnerInstallation/sonar-scanner/bin/sonar-scanner \
+        //                     -Dsonar.projectKey=frontend-project \
+        //                     -Dsonar.projectName="Frontend Project" \
+        //                     -Dsonar.sources=. \
+        //                     -Dsonar.host.url=${SONAR_HOST_URL} \
+        //                     -Dsonar.login=${SONAR_TOKEN} \
+        //                     -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info \
+        //                     -Dsonar.exclusions=node_modules/**,dist/**,**/*.spec.ts \
+        //                     -Dsonar.sourceEncoding=UTF-8
+        //                 """
+        //             }
+        //         }
+        //     }
+        // }
 
         stage('Build Project') {
             steps {
@@ -105,58 +105,55 @@ pipeline
             }
         }
 
-        stage('Publish APK to Nexus') {
-            steps {
-                sh '''
-                    echo "Installing curl..."
-                    apt-get update 
-                    apt-get install -y curl
+        // stage('Upload APK to Nexus') {
+        //     steps {
+        //         sh '''
+        //             echo "Installing curl..."
+        //             apt-get update && apt-get install -y curl
 
-                    mkdir -p only-apk-releases
+        //             echo "Preparing APK directory..."
+        //             mkdir -p only-apk-releases
+        //             find ./android/app/build/outputs/apk/ -name "*.apk" -exec cp {} ./only-apk-releases/ \\;
 
-                    find ./android/app/build/outputs/apk/ -name "*.apk" -exec cp {} ./only-apk-releases/ \\;
+        //             echo "Contents of apk-releases directory:"
+        //             ls -lh only-apk-releases/
+        //         '''
 
-                    echo "Contents of apk-releases directory:"
-                    ls -lh only-apk-releases/
-                '''
-                // Extract version from package.json
-                script {
-                    def version = sh(script: 'node -p "require(\'./package.json\').version"', returnStdout: true).trim()
-                    env.APP_VERSION = version
-                }
+        //         // Extract version from package.json
+        //         script {
+        //             def version = sh(script: 'node -p "require(\'./package.json\').version"', returnStdout: true).trim()
+        //             env.APP_VERSION = version
+        //         }
 
-                // Rename APK to spreezy-<version>.apk
-                sh '''
-                    for apk in only-apk-releases/*.apk; do
-                        mv "$apk" "only-apk-releases/spreezy-${APP_VERSION}.apk"
-                    done
-                '''
+        //         // Rename APK to spreezy-<version>.apk
+        //         sh '''
+        //             for apk in only-apk-releases/*.apk; do
+        //                 mv "$apk" "only-apk-releases/spreezy-${APP_VERSION}.apk"
+        //             done
 
-                // Upload to Nexus
-                // withCredentials([usernamePassword(credentialsId: 'nexus_apk_credentials', usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASS')]) {
-                //     sh '''
-                //         for apk in only-apk-releases/*.apk; do
-                //             curl -u $NEXUS_USER:$NEXUS_PASS --upload-file "$apk" "http://nexus.spreezy.in/repository/apk-release/$(basename "$apk")"
-                //         done
-                //     '''
-                // }
-                withCredentials([usernamePassword(credentialsId: 'nexus_apk_credentials', usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASS')]) {
-                    sh '''
-                        for apk in only-apk-releases/*.apk; do
-                            FILENAME=$(basename "$apk")
-                            VERSION_DIR="spreezy-${APP_VERSION}"
-                            echo "Uploading $FILENAME to Nexus under folder $VERSION_DIR..."
-                            curl -f -u $NEXUS_USER:$NEXUS_PASS \
-                                --upload-file "$apk" \
-                                "http://nexus.spreezy.in/repository/apk-release/${VERSION_DIR}/${FILENAME}"
-                        done
-                    '''
-                }
-            }
-        }
+        //             echo "Contents of apk-releases directory:"
+        //             ls -lh only-apk-releases/
+        //         '''
+
+        //         // Upload to Nexus raw repo
+        //         withCredentials([usernamePassword(credentialsId: 'nexus_apk_credentials', usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASS')]) {
+        //             sh '''
+        //                 for apk in only-apk-releases/*.apk; do
+        //                     FILENAME=$(basename "$apk")
+        //                     VERSION_DIR="spreezy-${APP_VERSION}"
+        //                     echo "Uploading $FILENAME to Nexus under $VERSION_DIR..."
+        //                     curl -f -u $NEXUS_USER:$NEXUS_PASS \
+        //                         --upload-file "$apk" \
+        //                         "https://nexus.spreezy.in/repository/apk-release/${VERSION_DIR}/${FILENAME}"
+        //                 done
+        //             '''
+        //         }
+        //     }
+        // }
+
 
         
-        // stage('Publish APK on Nexus Repo  '){
+        // stage('Publish ZIP-APK on Nexus Repo  '){
         //     steps{
         //         sh 'mkdir apk-releases'
         //         sh 'cp -r  ./android/app/build/outputs/apk/* ./apk-releases/'
@@ -165,6 +162,198 @@ pipeline
 
         //     }
         // }
+
+        // stage('Generate and Upload AAB to Nexus') {
+        //     steps {
+        //         script {
+        //             def version = sh(script: 'node -p "require(\'./package.json\').version"', returnStdout: true).trim()
+        //             env.APP_VERSION = version
+        //         }
+
+        //         sh '''
+        //             echo "Installing curl..."
+        //             apt-get update && apt-get install -y curl
+
+        //             echo "Setting up local.properties..."
+        //             echo "sdk.dir=/usr/local/android/sdk" > ./android/local.properties
+
+        //             echo "Building AAB..."
+        //             cd android
+        //             ./gradlew clean bundleRelease
+        //             cd ..
+
+        //             echo "Preparing AAB output directory..."
+        //             mkdir -p only-aab-releases
+
+        //             echo "Renaming and copying AAB..."
+        //             cp android/app/build/outputs/bundle/release/app-release.aab "only-aab-releases/spreezy-${APP_VERSION}.aab"
+
+        //             echo "Generated AAB: spreezy-${APP_VERSION}.aab"
+        //             ls -lh only-aab-releases/
+        //         '''
+
+        //         withCredentials([usernamePassword(credentialsId: 'nexus_apk_credentials', usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASS')]) {
+        //             sh '''
+        //                 AAB_FILE="only-aab-releases/spreezy-${APP_VERSION}.aab"
+        //                 VERSION_DIR="spreezy-${APP_VERSION}"
+
+        //                 echo "Uploading $AAB_FILE to Nexus at path: $VERSION_DIR/$(basename $AAB_FILE)..."
+
+        //                 curl -f -u $NEXUS_USER:$NEXUS_PASS \
+        //                 --upload-file "$AAB_FILE" \
+        //                 "https://nexus.spreezy.in/repository/apk-release/${VERSION_DIR}/$(basename $AAB_FILE)"
+        //             '''
+        //         }
+        //     }
+        // }
+
+        // stage('Generate and Publish Signed AAB') {
+        //     environment {
+        //         ANDROID_KEY_ALIAS = 'spreezy-key-alias'
+        //     }
+        //     steps {
+        //         script {
+        //             def version = sh(script: 'node -p "require(\'./package.json\').version"', returnStdout: true).trim()
+        //             env.APP_VERSION = version
+        //         }
+        //         withCredentials([
+        //         file(credentialsId: 'spreezy-keystore', variable: 'KEYSTORE_FILE'),
+        //         string(credentialsId: 'spreezy-keystore-pass', variable: 'KEYSTORE_PASSWORD'),
+        //         string(credentialsId: 'spreezy-key-pass', variable: 'KEY_PASSWORD'),
+        //         usernamePassword(credentialsId: 'nexus_apk_credentials', usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASS')
+        //         ]) {
+
+        //         sh '''
+        //             echo "Installing curl..."
+        //             apt-get update && apt-get install -y curl
+        //             echo "Setting up local.properties with SDK path..."
+        //             echo "sdk.dir=/usr/local/android/sdk" > android/local.properties
+
+        //             echo "Configuring signing config in gradle.properties..."
+        //             echo "MYAPP_UPLOAD_STORE_FILE=${KEYSTORE_FILE}" > android/gradle.properties
+        //             echo "MYAPP_UPLOAD_KEY_ALIAS=${ANDROID_KEY_ALIAS}" >> android/gradle.properties
+        //             echo "MYAPP_UPLOAD_STORE_PASSWORD=${KEYSTORE_PASSWORD}" >> android/gradle.properties
+        //             echo "MYAPP_UPLOAD_KEY_PASSWORD=${KEY_PASSWORD}" >> android/gradle.properties
+
+        //             echo "android.useAndroidX=true" >> android/gradle.properties
+        //             echo "android.enableJetifier=true" >> android/gradle.properties
+
+        //             echo "Syncing Capacitor..."
+        //             npx cap sync android
+
+        //             echo "Building Signed AAB..."
+        //             cd android && ./gradlew bundleRelease
+
+        //             echo "Preparing AAB output directory..."
+        //             mkdir -p only-aab-releases
+
+        //             echo "Renaming and copying AAB..."
+        //             cp app/build/outputs/bundle/release/app-release.aab "only-aab-releases/spreezy-${APP_VERSION}.aab"
+
+        //             echo "Generated AAB: spreezy-${APP_VERSION}.aab"
+        //             ls -lh only-aab-releases/
+
+        //             AAB_FILE="only-aab-releases/spreezy-${APP_VERSION}.aab"
+        //             VERSION_DIR="spreezy-${APP_VERSION}"
+
+        //             echo "Uploading $AAB_FILE to Nexus at path: $VERSION_DIR/$(basename $AAB_FILE)..."
+
+        //             curl -f -u $NEXUS_USER:$NEXUS_PASS \
+        //             --upload-file "$AAB_FILE" \
+        //             "https://nexus.spreezy.in/repository/apk-release/${VERSION_DIR}/$(basename $AAB_FILE)"
+        //         '''
+        //         }
+        //     }
+        //     }
+        stage('Generate and Publish Signed AAB') {
+            environment {
+                ANDROID_KEY_ALIAS = 'spreezy-key-alias'
+            }
+            steps {
+                script {
+                    def version = sh(script: 'node -p "require(\'./package.json\').version"', returnStdout: true).trim()
+                    env.APP_VERSION = version
+                }
+                withCredentials([
+                    file(credentialsId: 'spreezy-keystore', variable: 'KEYSTORE_FILE'),
+                    string(credentialsId: 'spreezy-keystore-pass', variable: 'KEYSTORE_PASSWORD'),
+                    string(credentialsId: 'spreezy-key-pass', variable: 'KEY_PASSWORD'),
+                    usernamePassword(credentialsId: 'nexus_apk_credentials', usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASS')
+                ]) {
+                    sh '''
+                        echo "Installing curl..."
+                        apt-get update && apt-get install -y curl
+
+                        echo "Setting up local.properties..."
+                        echo "sdk.dir=/usr/local/android/sdk" > android/local.properties
+
+                        echo "Configuring gradle.properties for signing..."
+                        echo "MYAPP_UPLOAD_STORE_FILE=${KEYSTORE_FILE}" > android/gradle.properties
+                        echo "MYAPP_UPLOAD_KEY_ALIAS=${ANDROID_KEY_ALIAS}" >> android/gradle.properties
+                        echo "MYAPP_UPLOAD_STORE_PASSWORD=${KEYSTORE_PASSWORD}" >> android/gradle.properties
+                        echo "MYAPP_UPLOAD_KEY_PASSWORD=${KEY_PASSWORD}" >> android/gradle.properties
+                        echo "android.useAndroidX=true" >> android/gradle.properties
+                        echo "android.enableJetifier=true" >> android/gradle.properties
+
+                        echo "Injecting signing config into build.gradle..."
+                        SIGNING_CONFIG_BLOCK="\\
+        def MYAPP_UPLOAD_STORE_FILE = project.hasProperty('MYAPP_UPLOAD_STORE_FILE') ? file(project.MYAPP_UPLOAD_STORE_FILE) : null\\n\
+        def MYAPP_UPLOAD_KEY_ALIAS = project.hasProperty('MYAPP_UPLOAD_KEY_ALIAS') ? project.MYAPP_UPLOAD_KEY_ALIAS : null\\n\
+        def MYAPP_UPLOAD_STORE_PASSWORD = project.hasProperty('MYAPP_UPLOAD_STORE_PASSWORD') ? project.MYAPP_UPLOAD_STORE_PASSWORD : null\\n\
+        def MYAPP_UPLOAD_KEY_PASSWORD = project.hasProperty('MYAPP_UPLOAD_KEY_PASSWORD') ? project.MYAPP_UPLOAD_KEY_PASSWORD : null\\n\
+        "
+
+                        sed -i "1s;^;$SIGNING_CONFIG_BLOCK\\n;" android/app/build.gradle
+
+                        echo "Adding signingConfigs and assigning it to release..."
+                        sed -i "/android {/a \\
+            signingConfigs {\\n\
+                release {\\n\
+                    storeFile MYAPP_UPLOAD_STORE_FILE\\n\
+                    storePassword MYAPP_UPLOAD_STORE_PASSWORD\\n\
+                    keyAlias MYAPP_UPLOAD_KEY_ALIAS\\n\
+                    keyPassword MYAPP_UPLOAD_KEY_PASSWORD\\n\
+                }\\n\
+            }" android/app/build.gradle
+
+                        sed -i "/buildTypes {/a \\
+                release {\\n\
+                    signingConfig signingConfigs.release\\n\
+                    minifyEnabled false\\n\
+                    shrinkResources false\\n\
+                    proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'\\n\
+                }" android/app/build.gradle
+
+                        echo "Syncing Capacitor..."
+                        npx cap sync android
+
+                        echo "Building Signed AAB..."
+                        cd android && ./gradlew bundleRelease
+
+                        echo "Preparing AAB output directory..."
+                        mkdir -p only-aab-releases
+
+                        echo "Copying signed AAB..."
+                        cp app/build/outputs/bundle/release/app-release.aab "only-aab-releases/spreezy-${APP_VERSION}.aab"
+
+                        echo "Generated AAB: spreezy-${APP_VERSION}.aab"
+                        ls -lh only-aab-releases/
+
+                        AAB_FILE="only-aab-releases/spreezy-${APP_VERSION}.aab"
+                        VERSION_DIR="spreezy-${APP_VERSION}"
+
+                        echo "Uploading $AAB_FILE to Nexus at path: $VERSION_DIR/$(basename $AAB_FILE)..."
+
+                        curl -f -u $NEXUS_USER:$NEXUS_PASS \
+                            --upload-file "$AAB_FILE" \
+                            "https://nexus.spreezy.in/repository/apk-release/${VERSION_DIR}/$(basename $AAB_FILE)"
+                    '''
+                }
+            }
+        }
+
+
+
         
         // stage('Notify  Build Success '){
         //     steps{
@@ -184,7 +373,6 @@ pipeline
         //         }
         //     }
         // }
-
         
 
 
