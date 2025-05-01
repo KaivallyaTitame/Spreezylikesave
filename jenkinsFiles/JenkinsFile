@@ -1,63 +1,84 @@
 pipeline {
-    agent {
-        docker {
-             image 'cypress/base:18.16.0'
-        }
+  agent any
+
+  environment {
+    PACKAGE_NAME = 'spreezy-0.0.0.aab'
+    NEXUS_REPO_URL = 'https://nexus.spreezy.in/repository/apk-release'
+    AAB_DIR = 'aab'
+    FASTLANE_DISABLE_COLORS = '1'
+  }
+
+  stages {
+    stage('Install Dependencies') {
+      steps {
+        sh '''
+          gem install bundler:2.5.6 || true
+          bundle install || true
+        '''
+      }
     }
 
-    environment {
-        PACKAGE_NAME = 'com.spreezy.app'
-        TRACK = 'internal' 
-        RELEASE_NOTES = 'Bug fixes and improvements.'
+    stage('Fetch App Version') {
+      steps {
+        script {
+          env.APP_VERSION = sh(script: "node -p \"require('./package.json').version\"", returnStdout: true).trim()
+          env.AAB_NAME = "spreezy-${env.APP_VERSION}.aab"
+          env.VERSION_DIR = "spreezy-${env.APP_VERSION}"
+        }
+        echo "App Version: ${env.APP_VERSION}"
+      }
     }
 
-    stages {
-        stage('Authenticate & Upload AAB to Google Play Console') {
-            steps {
-                withCredentials([
-                    file(credentialsId: 'gplay-service-account', variable: 'GOOGLE_APPLICATION_CREDENTIALS'),
-                    usernamePassword(credentialsId: 'nexus_apk_credentials', usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASS')
-                ]) {
-                    sh '''
-                        echo Installing Google Cloud SDK...
-                        apt-get update && apt-get install -y apt-transport-https ca-certificates gnupg curl
-                        echo "deb https://packages.cloud.google.com/apt cloud-sdk main" | tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
-                        curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
-                        apt-get update && apt-get install -y google-cloud-sdk
-
-                        echo Authenticating with Google Cloud...
-                        gcloud auth activate-service-account --key-file=$GOOGLE_APPLICATION_CREDENTIALS
-
-                        echo Fetching app version from package.json...
-                        APP_VERSION=$(node -p "require('./package.json').version")
-                        echo "App version: $APP_VERSION"
-
-                        VERSION_DIR="spreezy-$APP_VERSION"
-                        AAB_NAME="spreezy-$APP_VERSION.aab"
-
-                        echo Downloading AAB from Nexus...
-                        curl -u $NEXUS_USER:$NEXUS_PASS -o $AAB_NAME "https://nexus.spreezy.in/repository/apk-release/${VERSION_DIR}/${AAB_NAME}"
-
-                        echo Uploading to Google Play Internal Track...
-                        gcloud beta android publisher uploads aab \
-                            --package-name=$PACKAGE_NAME \
-                            --track=$TRACK \
-                            --release-notes="$RELEASE_NOTES" \
-                            $AAB_NAME
-
-                        echo Upload completed successfully.
-                    '''
-                }
-            }
+    stage('Download AAB from Nexus') {
+      steps {
+        withCredentials([usernamePassword(credentialsId: 'nexus_apk_credentials', usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASS')]) {
+          sh '''
+            mkdir -p ${AAB_DIR}
+            curl -u "$NEXUS_USER:$NEXUS_PASS" -o ${AAB_DIR}/${AAB_NAME} "${NEXUS_REPO_URL}/${VERSION_DIR}/${AAB_NAME}"
+          '''
         }
+      }
     }
 
-    post {
-        failure {
-            echo 'Upload failed.'
+    stage('Upload to Google Play') {
+      steps {
+        withCredentials([file(credentialsId: 'gplay-service-account', variable: 'SERVICE_ACCOUNT_JSON')]) {
+          sh '''
+            mkdir -p fastlane
+            cat > fastlane/Fastfile <<EOF
+            default_platform(:android)
+
+            platform :android do
+              lane :upload_to_playstore do
+                upload_to_play_store(
+                  track: 'internal',
+                  aab: '${AAB_DIR}/${AAB_NAME}',
+                  json_key: '${SERVICE_ACCOUNT_JSON}',
+                  package_name: '${PACKAGE_NAME}',
+                  skip_upload_metadata: true,
+                  skip_upload_images: true,
+                  skip_upload_screenshots: true,
+                  release_status: 'draft',
+                  release_notes: {
+                    'en-US' => 'Bug fixes and improvements.'
+                  }
+                )
+              end
+            end
+EOF
+            bundle exec fastlane upload_to_playstore
+          '''
         }
-        success {
-            echo 'Upload pipeline completed successfully.'
-        }
+      }
     }
+  }
+
+  post {
+    success {
+      echo "✅ Upload to Google Play internal track completed successfully."
+    }
+    failure {
+      echo "❌ Upload failed. Check the logs above."
+    }
+  }
 }
