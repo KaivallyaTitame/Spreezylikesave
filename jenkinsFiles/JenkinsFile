@@ -1,84 +1,49 @@
-pipeline {
-  agent any
-
-  environment {
-    PACKAGE_NAME = 'spreezy-0.0.0.aab'
-    NEXUS_REPO_URL = 'https://nexus.spreezy.in/repository/apk-release'
-    AAB_DIR = 'aab'
-    FASTLANE_DISABLE_COLORS = '1'
+stage('Checkout Repo') {
+  steps {
+    checkout scm
   }
+}
 
-  stages {
-    stage('Install Dependencies') {
-      steps {
-        sh '''
-          gem install bundler:2.5.6 || true
-          bundle install || true
-        '''
-      }
-    }
-
-    stage('Fetch App Version') {
-      steps {
-        script {
-          env.APP_VERSION = sh(script: "node -p \"require('./package.json').version\"", returnStdout: true).trim()
-          env.AAB_NAME = "spreezy-${env.APP_VERSION}.aab"
-          env.VERSION_DIR = "spreezy-${env.APP_VERSION}"
-        }
-        echo "App Version: ${env.APP_VERSION}"
-      }
-    }
-
-    stage('Download AAB from Nexus') {
-      steps {
-        withCredentials([usernamePassword(credentialsId: 'nexus_apk_credentials', usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASS')]) {
-          sh '''
-            mkdir -p ${AAB_DIR}
-            curl -u "$NEXUS_USER:$NEXUS_PASS" -o ${AAB_DIR}/${AAB_NAME} "${NEXUS_REPO_URL}/${VERSION_DIR}/${AAB_NAME}"
-          '''
-        }
-      }
-    }
-
-    stage('Upload to Google Play') {
-      steps {
-        withCredentials([file(credentialsId: 'gplay-service-account', variable: 'SERVICE_ACCOUNT_JSON')]) {
-          sh '''
-            mkdir -p fastlane
-            cat > fastlane/Fastfile <<EOF
-            default_platform(:android)
-
-            platform :android do
-              lane :upload_to_playstore do
-                upload_to_play_store(
-                  track: 'internal',
-                  aab: '${AAB_DIR}/${AAB_NAME}',
-                  json_key: '${SERVICE_ACCOUNT_JSON}',
-                  package_name: '${PACKAGE_NAME}',
-                  skip_upload_metadata: true,
-                  skip_upload_images: true,
-                  skip_upload_screenshots: true,
-                  release_status: 'draft',
-                  release_notes: {
-                    'en-US' => 'Bug fixes and improvements.'
-                  }
-                )
-              end
-            end
-EOF
-            bundle exec fastlane upload_to_playstore
-          '''
-        }
-      }
-    }
-  }
-
-  post {
-    success {
-      echo "✅ Upload to Google Play internal track completed successfully."
-    }
-    failure {
-      echo "❌ Upload failed. Check the logs above."
+stage('Get App Version') {
+  steps {
+    script {
+      env.APP_VERSION = sh(script: "node -p \"require('./package.json').version\"", returnStdout: true).trim()
+      env.AAB_FILE = "spreezy-${APP_VERSION}.aab"
+      env.VERSION_DIR = "spreezy-${APP_VERSION}"
     }
   }
 }
+
+stage('Download AAB from Nexus') {
+  steps {
+    withCredentials([usernamePassword(credentialsId: 'nexus_apk_credentials', usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASS')]) {
+      sh '''
+        curl -u $NEXUS_USER:$NEXUS_PASS -o $AAB_FILE "https://nexus.spreezy.in/repository/apk-release/${VERSION_DIR}/${AAB_FILE}"
+      '''
+    }
+  }
+}
+
+stage('Upload to Google Play (Fastlane)') {
+  steps {
+    withCredentials([file(credentialsId: 'gplay-service-account', variable: 'GOOGLE_PLAY_JSON')]) {
+      sh '''
+        mkdir -p fastlane
+        cat > fastlane/Fastfile <<EOF
+        default_platform(:android)
+
+        platform :android do
+          lane :upload_internal do
+            upload_to_play_store(
+              track: "internal",
+              aab: "${AAB_FILE}",
+              json_key: "${GOOGLE_PLAY_JSON}",
+              package_name: "com.spreezy.app",
+              release_status: "draft",
+              release_notes: [{
+                language: "en-US",
+                text: "Bug fixes and improvements."
+              }]
+            )
+          end
+        end
