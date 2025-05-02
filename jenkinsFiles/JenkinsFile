@@ -1,74 +1,76 @@
 pipeline {
     agent {
         docker {
-            image 'cypress/base:18.16.0' // includes npm, node, curl
+            image 'cypress/base:18.16.0'
             args '-u root' // Required for apt installs
-
         }
     }
     environment {
         PACKAGE_NAME = 'com.spreezy.app'
         TRACK = 'internal'
-        CHANGELOG = 'Bug fixes and improvements.'
-        LANG = 'en-US.UTF-8'
+        RELEASE_NOTES = 'Bug fixes and improvements.'
     }
     stages {
-        stage('Prepare Environment and Deploying the bundle') {
+        stage('Install dependencies') {
+            steps {
+                sh '''
+                    apt-get update && apt-get install -y curl gnupg2 nodejs npm ruby ruby-dev build-essential
+                    gem install fastlane -NV
+                '''
+            }
+        }
+
+        stage('Fetch & Upload AAB') {
             steps {
                 withCredentials([
-                    file(credentialsId: 'gplay-service-account', variable: 'GOOGLE_APPLICATION_CREDENTIALS'),
+                    file(credentialsId: 'gplay-service-account', variable: 'GOOGLE_PLAY_JSON'),
                     usernamePassword(credentialsId: 'nexus_apk_credentials', usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASS')
                 ]) {
                     sh '''
-                        apt-get update && apt-get install -y ruby-full locales curl unzip
-                        locale-gen en_US.UTF-8
-                        export LANG=en_US.UTF-8
-                        gem install fastlane -NV
+                        echo "Reading version from package.json..."
+                        APP_VERSION=$(node -p "require('./package.json').version")
+                        VERSION_DIR="spreezy-$APP_VERSION"
+                        AAB_NAME="spreezy-$APP_VERSION.aab"
 
-                        echo Bumping version in package.json...
-                        CURRENT_VERSION=$(node -p "require('./package.json').version")
-                        IFS='.' read -r MAJOR MINOR PATCH <<< "$CURRENT_VERSION"
-                        PATCH=$((PATCH + 1))
-                        NEW_VERSION="$MAJOR.$MINOR.$PATCH"
-                        echo "New version: $NEW_VERSION"
-                        jq --arg v "$NEW_VERSION" '.version = $v' package.json > tmp.$$.json && mv tmp.$$.json package.json
+                        echo "Downloading AAB from Nexus..."
+                        curl -u $NEXUS_USER:$NEXUS_PASS -o $AAB_NAME "https://nexus.spreezy.in/repository/apk-release/${VERSION_DIR}/${AAB_NAME}"
 
-                        VERSION_DIR="spreezy-$NEW_VERSION"
-                        AAB_NAME="spreezy-$NEW_VERSION.aab"
-
-                        echo Downloading AAB from Nexus...
-                        curl -u $NEXUS_USER:$NEXUS_PASS -o "$AAB_NAME" "https://nexus.spreezy.in/repository/apk-release/${VERSION_DIR}/${AAB_NAME}"
-
-                        echo Setting up Fastlane Fastfile...
+                        echo "Creating Fastfile for upload..."
                         mkdir -p fastlane
                         cat > fastlane/Fastfile <<EOF
-default_platform(:android)
+                        default_platform(:android)
 
-platform :android do
-  lane :upload_internal do
-    upload_to_play_store(
-      track: "$TRACK",
-      aab: "$AAB_NAME",
-      changelog: "$CHANGELOG"
-    )
-  end
-end
+                        platform :android do
+                          lane :upload_internal do
+                            upload_to_play_store(
+                              track: "${TRACK}",
+                              aab: "${AAB_NAME}",
+                              json_key: "${GOOGLE_PLAY_JSON}",
+                              package_name: "${PACKAGE_NAME}",
+                              release_status: "draft",
+                              release_notes: [{
+                                language: "en-US",
+                                text: "${RELEASE_NOTES}"
+                              }]
+                            )
+                          end
+                        end
 EOF
 
-                        echo Authenticating and uploading...
-                        export GOOGLE_APPLICATION_CREDENTIALS=$GOOGLE_APPLICATION_CREDENTIALS
+                        echo "Uploading to Google Play Console via Fastlane..."
                         fastlane upload_internal
                     '''
                 }
             }
         }
     }
+
     post {
-        success {
-            echo '✅ Upload to Google Play Console completed successfully.'
-        }
         failure {
-            echo '❌ Upload failed. Check logs above for details.'
+            echo '❌ Upload failed.'
+        }
+        success {
+            echo '✅ Upload pipeline completed successfully.'
         }
     }
 }
