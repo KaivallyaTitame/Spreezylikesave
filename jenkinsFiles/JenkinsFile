@@ -2,6 +2,8 @@ pipeline {
     agent {
         docker {
             image 'cypress/base:18.16.0' // includes npm, node, curl
+            args '-u root' // Required for apt installs
+
         }
     }
     environment {
@@ -11,7 +13,7 @@ pipeline {
         LANG = 'en-US.UTF-8'
     }
     stages {
-        stage('Prepare Environment') {
+        stage('Prepare Environment and Deploying the bundle') {
             steps {
                 withCredentials([
                     file(credentialsId: 'gplay-service-account', variable: 'GOOGLE_APPLICATION_CREDENTIALS'),
