@@ -2,19 +2,19 @@ pipeline {
     agent {
         docker {
             image 'cypress/base:18.16.0'
-            args '-u root' // Required for apt installs
+            args '-u root'
         }
     }
     environment {
         PACKAGE_NAME = 'com.spreezy.app'
         TRACK = 'internal'
-        RELEASE_NOTES = 'Bug fixes and improvements.'
+        CHANGELOG = 'Bug fixes and improvements.'
     }
     stages {
         stage('Install dependencies') {
             steps {
                 sh '''
-                    apt-get update && apt-get install -y curl gnupg2 nodejs npm ruby ruby-dev build-essential
+                    apt-get update && apt-get install -y curl gnupg2 git nodejs npm ruby ruby-dev build-essential
                     gem install fastlane -NV
                 '''
             }
@@ -27,8 +27,9 @@ pipeline {
                     usernamePassword(credentialsId: 'nexus_apk_credentials', usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASS')
                 ]) {
                     sh '''
-                        echo "Reading version from package.json..."
-                        APP_VERSION=$(node -p "require('./package.json').version")
+                        echo "Determining app version..."
+                        APP_VERSION=$(git describe --tags --abbrev=0 2>/dev/null || echo "build-$(date +%Y%m%d%H%M)")
+                        echo "Using version: $APP_VERSION"
                         VERSION_DIR="spreezy-$APP_VERSION"
                         AAB_NAME="spreezy-$APP_VERSION.aab"
 
@@ -47,11 +48,10 @@ pipeline {
                               aab: "${AAB_NAME}",
                               json_key: "${GOOGLE_PLAY_JSON}",
                               package_name: "${PACKAGE_NAME}",
+                              changelog: "${CHANGELOG}",
                               release_status: "draft",
-                              release_notes: [{
-                                language: "en-US",
-                                text: "${RELEASE_NOTES}"
-                              }]
+                              skip_upload_changelogs: false,
+                              version_name: "${APP_VERSION}"
                             )
                           end
                         end
