@@ -35,6 +35,12 @@ pipeline {
 
                         echo "Downloading AAB from Nexus..."
                         curl -u $NEXUS_USER:$NEXUS_PASS -o $AAB_NAME "https://nexus.spreezy.in/repository/apk-release/${VERSION_DIR}/${AAB_NAME}"
+                        echo "Verifying AAB file integrity..."
+                        if ! unzip -tq "$AAB_NAME" > /dev/null; then
+                        echo "❌ ERROR: $AAB_NAME is not a valid AAB (zip) file. Check Nexus path or version."
+                        exit 1
+                        fi
+
 
                         echo "Setting up metadata directory for changelog..."
                         mkdir -p fastlane/metadata/android/en-US/changelogs
