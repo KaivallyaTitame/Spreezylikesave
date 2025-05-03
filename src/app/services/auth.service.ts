@@ -83,6 +83,7 @@ export class AuthService {
 
   logout() {
     let token = localStorage.getItem("token") || "";
+    console.log("Token in logout", token);
     let userName = this.jwtDecoder.decodeInfoFromToken(token)["sub"] || "";
     return this.http
       .post(

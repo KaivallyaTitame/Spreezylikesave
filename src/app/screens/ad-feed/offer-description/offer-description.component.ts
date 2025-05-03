@@ -9,6 +9,7 @@ import { faBookmark as regularBookmark } from '@fortawesome/free-regular-svg-ico
 import { Router } from '@angular/router';
 import { ElementRef, ViewChild } from '@angular/core';
 import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
+import { ShareAddService } from 'src/app/services/share-add.service';
 
 @Component({
   selector: 'app-offer-description',
@@ -66,7 +67,8 @@ export class OfferDescriptionComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private advertisementDetailsService: AdvertisementDetailsService,
-    private router: Router
+    private router: Router,
+    private shareService : ShareAddService
   ) {}
 
   hasValidImages: boolean = true;
@@ -90,6 +92,10 @@ export class OfferDescriptionComponent implements OnInit {
       this.remainingDays = Math.ceil((expirationDate.getTime() - today.getTime()) / (1000 * 3600 * 24));
       this.isExpired = this.remainingDays <= 0;
     }
+  }
+
+  share(){
+    this.shareService.shareContent(this.offerData);
   }
 
   navigateToProfile(){
@@ -119,67 +125,63 @@ export class OfferDescriptionComponent implements OnInit {
   }
 
   likePost(): void {
-    const advertisementId = this.offerDataSafe.advertisementId; 
-    this.triggerAnimation('like');
-    if (!this.isLiked) {
-      this.isLiked = true;
-      this.isDisliked = false;
-      this.offerDataSafe.likes += 1;
-      this.advertisementDetailsService.updateLikes(advertisementId).subscribe({
-        next: (updatedPost) => {
-          this.offerDataSafe.likes = updatedPost.likes;
-        },
-        error: (err) => {
+    const advertisementId = this.offerData.advertisementId;
+    this.advertisementDetailsService.updateLikes(advertisementId).subscribe({
+      next: (response) => {
+        this.triggerAnimation('like');
+        const status = response.status;
+        if (status == 201) {
+          this.isLiked = true;
+          this.isDisliked = false;
+          this.offerData.likes += 1;
+        } else if (status == 200) {
+          this.isLiked = true;
+          this.isDisliked = false;
+          this.offerData.likes += 1;
+          this.offerData.dislikes -= 1;
+        } 
+      },
+      error: (error) => {
+        console.log(error.status)
+        if(error.status == 409){
+          this.isLiked = true,
+          this.isDisliked = false
+        }else{
           this.showError('Like Error', 'Failed to update likes. Please try again.');
-        },
-      });
-    } else {
-      this.isLiked = false;
-      this.offerDataSafe.likes -= 1;
-      this.advertisementDetailsService.updateLikes(advertisementId).subscribe({
-        next: (updatedPost) => {
-          this.offerDataSafe.likes = updatedPost.likes;
-        },
-        error: (err) => {
-          console.log(err)
-          this.showError('Like Error', 'Failed to update likes. Please try again.');
-        },
-      });
-    }
+        }
+      },
+    });
   }
-
+  
   dislikePost(): void {
-    const advertisementId = this.offerDataSafe.advertisementId; 
-    this.triggerAnimation('dislike');
-    if (!this.isDisliked) {
-      this.isDisliked = true;
-      this.isLiked = false;
-      this.offerDataSafe.dislikes += 1;
-
-      this.advertisementDetailsService.updateDislikes(advertisementId).subscribe({
-        next: (updatedPost) => {
-          this.offerDataSafe.dislikes = updatedPost.dislikes;
-        },
-        error: (err) => {
-          console.log(err)
-          this.showError('Dislike Error', 'Failed to update dislikes. Please try again.');
-        },
-      });
-    } else {
-      this.isDisliked = false;
-      this.offerDataSafe.dislikes -= 1;
-      this.advertisementDetailsService.updateDislikes(advertisementId).subscribe({
-        next: (updatedPost) => {
-          this.offerDataSafe.dislikes = updatedPost.dislikes;
-        },
-        error: (err) => {
-          console.log(err)
-          this.showError('Dislike Error', 'Failed to update dislikes. Please try again.');
-        },
-      });
-    }
+    const advertisementId = this.offerData.advertisementId;
+    this.advertisementDetailsService.updateDislikes(advertisementId).subscribe({
+      next: (response) => {
+        this.triggerAnimation('dislike');
+        const status = response.status;
+        if (status === 201) {
+          this.isDisliked = true;
+          this.isLiked = false;
+          this.offerData.dislikes += 1;
+        } else if (status === 200) {
+          this.isDisliked = true;
+          this.isLiked = false;
+          this.offerData.dislikes += 1;
+          this.offerData.likes -= 1;
+        } 
+      },
+      error: (error) => {
+        console.log(error.status)
+        if (error.status === 409) {
+          this.isDisliked = true;
+          this.isLiked = false;
+        }else{
+          this.showError('Dislike Error', 'Failed to update dislike. Please try again.');
+        }
+      },
+    });
   }
-
+  
   savePost(): void {
     const advertisementId = this.offerDataSafe.advertisementId; 
     const username = this.offerDataSafe.username;

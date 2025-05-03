@@ -45,7 +45,7 @@ export class SettingsService {
   }
 
   getBusinessDetails(username: string): Observable<any> {
-    return this.http.get(API_CONFIG.SETTINGS.GET_BUSINESS_DETAILS(username), {
+    return this.http.get(`http://localhost:8762/settings/business-details/${username}`, {
       responseType: 'text',
       headers: new HttpHeaders({
         Authorization: `Bearer ${this.token}`,

@@ -7,6 +7,7 @@ import { faBookmark as solidBookmark , faBookmark as regularBookmark , faBookmar
 import { IconDefinition } from '@fortawesome/fontawesome-svg-core';  // Import the type
 import { Router } from '@angular/router';
 import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
+import { ShareAddService } from 'src/app/services/share-add.service';
 
 @Component({
   selector: 'app-Coupon',
@@ -61,7 +62,7 @@ export class CouponComponent implements OnInit {
   isLiked: boolean = false; 
   isDisliked: boolean = false; 
 
-  constructor(private advertisementDetailsService: AdvertisementDetailsService,private router:Router) {}
+  constructor(private advertisementDetailsService: AdvertisementDetailsService,private router:Router , private shareService : ShareAddService) {}
 
   hasValidImages: boolean = true;
   handleImageError(event: any): void {
@@ -80,6 +81,10 @@ export class CouponComponent implements OnInit {
     }
   }
 
+  sharePost(){
+    this.shareService.shareContent(this.couponDetails);
+  }
+
   navigateToProfile(){
     console.log(this.router.url)
     if(this.router.url == "/business-home/adfeed"){
@@ -91,67 +96,61 @@ export class CouponComponent implements OnInit {
 
   likePost(): void {
     const advertisementId = this.couponDetails.advertisementId;
-    this.triggerAnimation('like');
-
-    if (!this.isLiked) {
-      this.isLiked = true;
-      this.isDisliked = false;
-      this.couponDetails.likes += 1;
-
-      this.advertisementDetailsService.updateLikes(advertisementId).subscribe({
-        next: (updatedPost) => {
-          this.couponDetails.likes = updatedPost.likes;
-        },
-        error: (err) => {
+    this.advertisementDetailsService.updateLikes(advertisementId).subscribe({
+      next: (response) => {
+        this.triggerAnimation('like');
+        const status = response.status;
+        if (status == 201) {
+          this.isLiked = true;
+          this.isDisliked = false;
+          this.couponDetails.likes += 1;
+        } else if (status == 200) {
+          this.isLiked = true;
+          this.isDisliked = false;
+          this.couponDetails.likes += 1;
+          this.couponDetails.dislikes -= 1;
+        } 
+      },
+      error: (error) => {
+        console.log(error.status)
+        if(error.status == 409){
+          this.isLiked = true,
+          this.isDisliked = false
+        }else{
           this.showError('Like Error', 'Failed to update likes. Please try again.');
-        },
-      });
-    } else {
-      this.isLiked = false;
-      this.couponDetails.likes -= 1;
-      this.advertisementDetailsService.updateLikes(advertisementId).subscribe({
-        next: (updatedPost) => {
-          this.couponDetails.likes = updatedPost.likes;
-        },
-        error: (err) => {
-          this.showError('Like Error', 'Failed to update likes. Please try again.');
-        },
-      });
-    }
+        }
+      },
+    });
   }
-
+  
   dislikePost(): void {
     const advertisementId = this.couponDetails.advertisementId;
-    this.triggerAnimation('dislike');
-
-    if (!this.isDisliked) {
-      this.isDisliked = true;
-      this.isLiked = false;
-      this.couponDetails.dislikes += 1;
-
-      this.advertisementDetailsService.updateDislikes(advertisementId).subscribe({
-        next: (updatedPost) => {
-          this.couponDetails.dislikes = updatedPost.dislikes;
-        },
-        error: (err) => {
-          this.showError('Dislike Error', 'Failed to update dislikes. Please try again.');
-        },
-      });
-    } else {
-      this.isDisliked = false;
-      this.couponDetails.dislikes -= 1;
-      this.advertisementDetailsService.updateDislikes(advertisementId).subscribe({
-        next: (updatedPost) => {
-          this.couponDetails.dislikes = updatedPost.dislikes;
-        },
-        error: (err) => {
-          this.showError('Dislike Error', 'Failed to update dislikes. Please try again.');
-        },
-      });
-    }
+    this.advertisementDetailsService.updateDislikes(advertisementId).subscribe({
+      next: (response) => {
+        this.triggerAnimation('dislike');
+        const status = response.status;
+        if (status === 201) {
+          this.isDisliked = true;
+          this.isLiked = false;
+          this.couponDetails.dislikes += 1;
+        } else if (status === 200) {
+          this.isDisliked = true;
+          this.isLiked = false;
+          this.couponDetails.dislikes += 1;
+          this.couponDetails.likes -= 1;
+        } 
+      },
+      error: (error) => {
+        console.log(error.status)
+        if (error.status === 409) {
+          this.isDisliked = true;
+          this.isLiked = false;
+        }else{
+          this.showError('Dislike Error', 'Failed to update dislike. Please try again.');
+        }
+      },
+    });
   }
-
-  sharePost(){}
 
   savePost(): void {
     const advertisementId = this.couponDetails.advertisementId;

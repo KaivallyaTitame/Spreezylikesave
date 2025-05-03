@@ -11,6 +11,7 @@ import { Router } from '@angular/router';
 import { JwtDecoderService } from 'src/app/services/jwt-decoder.service';
 import { ElementRef, ViewChild } from '@angular/core';
 import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
+import { ShareAddService } from 'src/app/services/share-add.service';
 @Component({
   selector: 'app-Post',
   templateUrl: './Post.component.html',
@@ -61,7 +62,7 @@ export class PostComponent implements OnInit {
   translateX = 0;
   @ViewChild('imageContainer') imageContainer: ElementRef;
   @ViewChild('threeDotsWrapper', { static: false }) threeDotsRef!: ElementRef;
-  constructor(private advertisementDetailsService: AdvertisementDetailsService, private router: Router, private jwtDecoderService: JwtDecoderService , private route: Router) { }
+  constructor(private advertisementDetailsService: AdvertisementDetailsService, private router: Router, private jwtDecoderService: JwtDecoderService , private route: Router , private shareService : ShareAddService) { }
 
   hasValidImages: boolean = true;
   handleImageError(event: any): void {
@@ -131,70 +132,62 @@ export class PostComponent implements OnInit {
 
   likePost(): void {
     const advertisementId = this.postDetails.advertisementId;
-    this.triggerAnimation('like');
-
-    if (!this.isLiked) {
-      this.isLiked = true;
-      this.isDisliked = false;
-      this.postDetails.likes += 1;
-
-      this.advertisementDetailsService.updateLikes(advertisementId).subscribe({
-        next: (updatedPost) => {
+    this.advertisementDetailsService.updateLikes(advertisementId).subscribe({
+      next: (response) => {
+        this.triggerAnimation('like');
+        const status = response.status;
+        if (status == 201) {
+          this.isLiked = true;
+          this.isDisliked = false;
           this.postDetails.likes += 1;
-          this.postDetails.likes = updatedPost.likes;
-        },
-        error: (err) => {
+        } else if (status == 200) {
+          this.isLiked = true;
+          this.isDisliked = false;
+          this.postDetails.likes += 1;
+          this.postDetails.dislikes -= 1;
+        } 
+      },
+      error: (error) => {
+        console.log(error.status)
+        if(error.status == 409){
+          this.isLiked = true,
+          this.isDisliked = false
+        }else{
           this.showError('Like Error', 'Failed to update likes. Please try again.');
-        },
-      });
-    } else {
-      this.isLiked = false;
-      this.postDetails.likes -= 1;
-      this.advertisementDetailsService.updateLikes(advertisementId).subscribe({
-        next: (updatedPost) => {
-          this.postDetails.likes -= 1;
-          this.postDetails.likes = updatedPost.likes;
-        },
-        error: (err) => {
-          this.showError('Like Error', 'Failed to update likes. Please try again.');
-        },
-      });
-    }
+        }
+      },
+    });
   }
-
+  
   dislikePost(): void {
     const advertisementId = this.postDetails.advertisementId;
-    this.triggerAnimation('dislike');
-
-    if (!this.isDisliked) {
-      this.isDisliked = true;
-      this.isLiked = false;
-      this.postDetails.dislikes += 1;
-
-      this.advertisementDetailsService.updateDislikes(advertisementId).subscribe({
-        next: (updatedPost) => {
+    this.advertisementDetailsService.updateDislikes(advertisementId).subscribe({
+      next: (response) => {
+        this.triggerAnimation('dislike');
+        const status = response.status;
+        if (status === 201) {
+          this.isDisliked = true;
+          this.isLiked = false;
           this.postDetails.dislikes += 1;
-          this.postDetails.dislikes = updatedPost.dislikes;
-        },
-        error: (err) => {
-          this.showError('Dislike Error', 'Failed to update dislikes. Please try again.');
-        },
-      });
-    } else {
-      this.isDisliked = false;
-      this.postDetails.dislikes -= 1;
-      this.advertisementDetailsService.updateDislikes(advertisementId).subscribe({
-        next: (updatedPost) => {
-          this.postDetails.dislikes -= 1;
-          this.postDetails.dislikes = updatedPost.dislikes;
-        },
-        error: (err) => {
-          this.showError('Dislike Error', 'Failed to update dislikes. Please try again.');
-        },
-      });
-    }
+        } else if (status === 200) {
+          this.isDisliked = true;
+          this.isLiked = false;
+          this.postDetails.dislikes += 1;
+          this.postDetails.likes -= 1;
+        } 
+      },
+      error: (error) => {
+        console.log(error.status)
+        if (error.status === 409) {
+          this.isDisliked = true;
+          this.isLiked = false;
+        }else{
+          this.showError('Dislike Error', 'Failed to update dislike. Please try again.');
+        }
+      },
+    });
   }
-
+  
   savePost(): void {
     const advertisementId = this.postDetails.advertisementId;
     const username = this.postDetails.username;
@@ -210,6 +203,7 @@ export class PostComponent implements OnInit {
         console.log('Post saved successfully:', response);
       },
       error: (err) => {
+        console.log(err)
         this.showError('Save Error', 'Failed to save the post. Please try again.');
         this.isSaved = !this.isSaved;
       },
@@ -232,7 +226,9 @@ export class PostComponent implements OnInit {
     }
   }
 
-  sharePost(){}
+  sharePost(){
+    this.shareService.shareContent(this.postDetails);
+  }
 
   determinePopupPosition(): void {
     if (!this.threeDotsRef) return;
