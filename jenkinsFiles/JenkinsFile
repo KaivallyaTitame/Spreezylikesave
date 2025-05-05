@@ -27,26 +27,36 @@ pipeline {
                     usernamePassword(credentialsId: 'nexus_apk_credentials', usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASS')
                 ]) {
                     sh '''
-                        echo "Determining app version..."
-                        APP_VERSION=$(git describe --tags --abbrev=0 2>/dev/null || echo "build-$(date +%Y%m%d%H%M)")
-                        echo "Using version: $APP_VERSION"
-                        VERSION_DIR="spreezy-$APP_VERSION"
-                        AAB_NAME="spreezy-$APP_VERSION.aab"
+                        echo "📦 Determining latest AAB version from Nexus..."
 
-                        echo "Downloading AAB from Nexus..."
-                        curl --fail -u $NEXUS_USER:$NEXUS_PASS -o $AAB_NAME "https://nexus.spreezy.in/repository/apk-release/${VERSION_DIR}/${AAB_NAME}"
-                        echo "Verifying AAB file integrity..."
-                        if ! unzip -tq "$AAB_NAME" > /dev/null; then
-                        echo "❌ ERROR: $AAB_NAME is not a valid AAB (zip) file. Check Nexus path or version."
-                        exit 1
+                        BASE_URL="https://nexus.spreezy.in/repository/apk-release"
+                        BUILD_LIST=$(curl -s -u $NEXUS_USER:$NEXUS_PASS "$BASE_URL/" | grep -oP 'href="\\Kspreezy-build-[^/]+(?=/")' | sort -r)
+
+                        if [ -z "$BUILD_LIST" ]; then
+                          echo "❌ No builds found in Nexus repo!"
+                          exit 1
                         fi
 
+                        APP_VERSION=$(echo "$BUILD_LIST" | head -n 1)
+                        VERSION_DIR="$APP_VERSION"
+                        AAB_NAME="$APP_VERSION.aab"
+                        AAB_URL="$BASE_URL/$VERSION_DIR/$AAB_NAME"
 
-                        echo "Setting up metadata directory for changelog..."
+                        echo "Using version: $APP_VERSION"
+                        echo "📥 Downloading AAB from Nexus: $AAB_URL"
+                        curl --fail -u $NEXUS_USER:$NEXUS_PASS -o "$AAB_NAME" "$AAB_URL"
+
+                        echo "🔍 Verifying AAB file integrity..."
+                        if ! unzip -tq "$AAB_NAME" > /dev/null; then
+                          echo "❌ ERROR: $AAB_NAME is not a valid AAB (zip) file. Check Nexus path or file integrity."
+                          exit 1
+                        fi
+
+                        echo "📝 Setting up metadata directory for changelog..."
                         mkdir -p fastlane/metadata/android/en-US/changelogs
-                        echo "$CHANGELOG" > fastlane/metadata/android/en-US/changelogs/$APP_VERSION.txt
+                        echo "$CHANGELOG" > fastlane/metadata/android/en-US/changelogs/default.txt
 
-                        echo "Creating Fastfile for upload..."
+                        echo "⚙️ Creating Fastfile for upload..."
                         cat > fastlane/Fastfile <<EOF
                         default_platform(:android)
 
@@ -65,7 +75,7 @@ pipeline {
                         end
 EOF
 
-                        echo "Uploading to Google Play Console via Fastlane..."
+                        echo "🚀 Uploading to Google Play Console via Fastlane..."
                         fastlane upload_internal
                     '''
                 }
