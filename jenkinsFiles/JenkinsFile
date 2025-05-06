@@ -2,108 +2,85 @@ pipeline {
     agent {
         docker {
             image 'cypress/base:18.16.0'
-            args '-u root'
         }
     }
 
     environment {
         PACKAGE_NAME = 'com.spreezy.app'
-        TRACK = 'internal' // Change if needed: production, beta, alpha, etc.
-        CHANGELOG = 'Bug fixes and performance improvements.'
-        BASE_URL = 'https://nexus.spreezy.in/repository/apk-release'
+        TRACK = 'internal'
+        RELEASE_NOTES = 'Bug fixes and improvements.'
     }
 
     stages {
-        stage('Install Dependencies') {
+        stage('Setup Environment & Install Fastlane') {
             steps {
                 sh '''
-                    apt-get update && apt-get install -y curl unzip ruby ruby-dev build-essential
+                    echo Installing dependencies...
+                    apt-get update
+                    apt-get install -y ruby-full curl unzip openjdk-17-jdk
                     gem install fastlane -NV
+                    echo Fastlane installed: $(fastlane --version)
                 '''
             }
         }
 
-        stage('Fetch AAB from Nexus') {
+        stage('Download AAB from Nexus') {
             steps {
                 withCredentials([
-                    file(credentialsId: 'gplay-service-account', variable: 'GOOGLE_PLAY_JSON'),
                     usernamePassword(credentialsId: 'nexus_apk_credentials', usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASS')
                 ]) {
                     sh '''
-                        echo "📦 Fetching latest build info from Nexus..."
-
-                        BUILD_LIST=$(curl -s -u $NEXUS_USER:$NEXUS_PASS "$BASE_URL/" | grep -oP 'href="\\Kspreezy-build-[^/]+(?=/")' | sort -Vr)
-
-                        if [ -z "$BUILD_LIST" ]; then
-                          echo "❌ No builds found in Nexus!"
-                          exit 1
-                        fi
-
-                        APP_VERSION=$(echo "$BUILD_LIST" | head -n 1)
-                        AAB_NAME="${APP_VERSION}.aab"
-                        AAB_URL="${BASE_URL}/${APP_VERSION}/${AAB_NAME}"
-
-                        echo "🧾 Using version: $APP_VERSION"
-                        echo "📥 Downloading AAB from: $AAB_URL"
-                        curl --fail -u $NEXUS_USER:$NEXUS_PASS -o "$AAB_NAME" "$AAB_URL"
-
-                        echo "🔍 Verifying AAB integrity..."
-                        if ! unzip -tq "$AAB_NAME" > /dev/null; then
-                          echo "❌ AAB file is corrupted or invalid."
-                          exit 1
-                        fi
-
-                        echo "✅ AAB downloaded and verified: $AAB_NAME"
+                        echo Fetching app version from package.json...
+                        APP_VERSION=$(node -p "require('./package.json').version")
+                        echo "App version: $APP_VERSION"
+                        VERSION_DIR="spreezy-$APP_VERSION"
+                        AAB_NAME="spreezy-$APP_VERSION.aab"
+                        curl -u $NEXUS_USER:$NEXUS_PASS -o $AAB_NAME "https://nexus.spreezy.in/repository/apk-release/${VERSION_DIR}/${AAB_NAME}"
+                        echo "Downloaded $AAB_NAME"
                     '''
                 }
             }
         }
 
-        stage('Prepare Fastlane Environment') {
+        stage('Upload to Google Play Console (Fastlane)') {
             steps {
-                sh '''
-                    echo "📝 Preparing Fastlane changelog..."
-                    mkdir -p fastlane/metadata/android/en-US/changelogs
-                    echo "$CHANGELOG" > fastlane/metadata/android/en-US/changelogs/default.txt
+                withCredentials([
+                    file(credentialsId: 'gplay-service-account', variable: 'GOOGLE_SERVICE_JSON')
+                ]) {
+                    sh '''
+                        echo Creating Fastfile for upload...
+                        mkdir -p android/fastlane
+                        cat > android/fastlane/Fastfile <<EOF
+                        default_platform(:android)
 
-                    echo "⚙️ Creating Fastfile..."
-                    cat > fastlane/Fastfile <<EOF
-                    default_platform(:android)
+                        platform :android do
+                          desc "Upload to internal track"
+                          lane :internal do
+                            upload_to_play_store(
+                              track: '${TRACK}',
+                              json_key: '${GOOGLE_SERVICE_JSON}',
+                              aab: Dir["*.aab"].first,
+                              package_name: '${PACKAGE_NAME}',
+                              changelog: "${RELEASE_NOTES}"
+                            )
+                          end
+                        end
+                        EOF
 
-                    platform :android do
-                      lane :deploy_to_play do
-                        upload_to_play_store(
-                          track: "${TRACK}",
-                          aab: Dir["*.aab"].first,
-                          json_key: "${GOOGLE_PLAY_JSON}",
-                          package_name: "${PACKAGE_NAME}",
-                          release_status: "draft",
-                          skip_upload_changelogs: false,
-                          metadata_path: "fastlane/metadata"
-                        )
-                      end
-                    end
-EOF
-                '''
-            }
-        }
-
-        stage('Deploy to Google Play') {
-            steps {
-                sh 'fastlane deploy_to_play'
+                        echo Running Fastlane...
+                        cd android && fastlane internal
+                    '''
+                }
             }
         }
     }
 
     post {
         success {
-            echo '✅ Deployment completed successfully.'
+            echo '✅ AAB uploaded to Google Play Console using Fastlane.'
         }
         failure {
-            echo '❌ Deployment failed.'
-        }
-        always {
-            cleanWs()
+            echo '❌ Upload failed. Check Fastlane logs.'
         }
     }
 }
