@@ -10,7 +10,8 @@ pipeline
 
     parameters
     { 
-        gitParameter branchFilter: 'origin/(.*)', defaultValue: 'develop', name: 'branch_name', type: 'PT_BRANCH' ,description: 'Please Choose Branch Name to Build '
+        gitParameter branchFilter: 'origin/(.*)', defaultValue: 'develop', name: 'branch_name', type: 'PT_BRANCH' ,description: 'Please Choose Branch Name to Build'
+        string(name: 'version_name', defaultValue: '1.0.0', description: 'Set Version Name for Build (e.g., 1.0.5)')
     }
     
     environment {
@@ -35,6 +36,24 @@ pipeline
              git branch: env.GIT_BRANCH, credentialsId: env.CREDENTIALS_ID, url: env.GIT_URL
             }
         }
+             
+        stage('Inject Version Into build.gradle') {
+                    steps {
+                        script {
+                            def versionName = params.version_name
+                            def versionCode = env.BUILD_NUMBER.toInteger()
+        
+                            echo "Updating versionName to ${versionName}"
+                            echo "Updating versionCode to ${versionCode}"
+        
+                            sh """
+                                sed -i "s/versionCode [0-9]\\+/versionCode ${versionCode}/" android/app/build.gradle
+                                sed -i "s/versionName \\"[^\\"]*\\"/versionName \\"${versionName}\\"/" android/app/build.gradle
+                            """
+                        }
+                    }
+                }
+        
         
 
         stage('Nexus Setup And Install All Dependencies'){
@@ -95,20 +114,7 @@ pipeline
                 sh 'npm run build-uat'
             }
         }
-        //New stage 
-        stage('Update Config') {
-            steps {
-                script {
-                    def version = sh(script: "node -p \"require('./package.json').version\"", returnStdout: true).trim()
-                    writeFile file: 'build_config.json', text: """{
-          "version": "${version}"
-        }"""
-                    archiveArtifacts artifacts: 'build_config.json', onlyIfSuccessful: true
-                }
-            }
-        }
 
-        
         stage('Generate APK'){
             steps{
               sh 'npx cap add android'
