@@ -5,90 +5,105 @@ pipeline {
             args '-u root'
         }
     }
+
     environment {
         PACKAGE_NAME = 'com.spreezy.app'
-        TRACK = 'internal'
-        CHANGELOG = 'Bug fixes and improvements.'
+        TRACK = 'internal' // Change if needed: production, beta, alpha, etc.
+        CHANGELOG = 'Bug fixes and performance improvements.'
+        BASE_URL = 'https://nexus.spreezy.in/repository/apk-release'
     }
+
     stages {
-        stage('Install dependencies') {
+        stage('Install Dependencies') {
             steps {
                 sh '''
-                    apt-get update && apt-get install -y curl gnupg2 git nodejs npm ruby ruby-dev build-essential
+                    apt-get update && apt-get install -y curl unzip ruby ruby-dev build-essential
                     gem install fastlane -NV
                 '''
             }
         }
 
-        stage('Fetch & Upload AAB') {
+        stage('Fetch AAB from Nexus') {
             steps {
                 withCredentials([
                     file(credentialsId: 'gplay-service-account', variable: 'GOOGLE_PLAY_JSON'),
                     usernamePassword(credentialsId: 'nexus_apk_credentials', usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASS')
                 ]) {
                     sh '''
-                        echo "📦 Determining latest AAB version from Nexus..."
+                        echo "📦 Fetching latest build info from Nexus..."
 
-                        BASE_URL="https://nexus.spreezy.in/repository/apk-release"
-                        BUILD_LIST=$(curl -s -u $NEXUS_USER:$NEXUS_PASS "$BASE_URL/" | grep -oP 'href="\\Kspreezy-build-[^/]+(?=/")' | sort -r)
+                        BUILD_LIST=$(curl -s -u $NEXUS_USER:$NEXUS_PASS "$BASE_URL/" | grep -oP 'href="\\Kspreezy-build-[^/]+(?=/")' | sort -Vr)
 
                         if [ -z "$BUILD_LIST" ]; then
-                          echo "❌ No builds found in Nexus repo!"
+                          echo "❌ No builds found in Nexus!"
                           exit 1
                         fi
 
                         APP_VERSION=$(echo "$BUILD_LIST" | head -n 1)
-                        VERSION_DIR="$APP_VERSION"
-                        AAB_NAME="$APP_VERSION.aab"
-                        AAB_URL="$BASE_URL/$VERSION_DIR/$AAB_NAME"
+                        AAB_NAME="${APP_VERSION}.aab"
+                        AAB_URL="${BASE_URL}/${APP_VERSION}/${AAB_NAME}"
 
-                        echo "Using version: $APP_VERSION"
-                        echo "📥 Downloading AAB from Nexus: $AAB_URL"
+                        echo "🧾 Using version: $APP_VERSION"
+                        echo "📥 Downloading AAB from: $AAB_URL"
                         curl --fail -u $NEXUS_USER:$NEXUS_PASS -o "$AAB_NAME" "$AAB_URL"
 
-                        echo "🔍 Verifying AAB file integrity..."
+                        echo "🔍 Verifying AAB integrity..."
                         if ! unzip -tq "$AAB_NAME" > /dev/null; then
-                          echo "❌ ERROR: $AAB_NAME is not a valid AAB (zip) file. Check Nexus path or file integrity."
+                          echo "❌ AAB file is corrupted or invalid."
                           exit 1
                         fi
 
-                        echo "📝 Setting up metadata directory for changelog..."
-                        mkdir -p fastlane/metadata/android/en-US/changelogs
-                        echo "$CHANGELOG" > fastlane/metadata/android/en-US/changelogs/default.txt
-
-                        echo "⚙️ Creating Fastfile for upload..."
-                        cat > fastlane/Fastfile <<EOF
-                        default_platform(:android)
-
-                        platform :android do
-                          lane :upload_internal do
-                            upload_to_play_store(
-                              track: "${TRACK}",
-                              aab: "${AAB_NAME}",
-                              json_key: "${GOOGLE_PLAY_JSON}",
-                              package_name: "${PACKAGE_NAME}",
-                              release_status: "draft",
-                              skip_upload_changelogs: false,
-                              metadata_path: "fastlane/metadata"
-                            )
-                          end
-                        end
-EOF
-
-                        echo "🚀 Uploading to Google Play Console via Fastlane..."
-                        fastlane upload_internal
+                        echo "✅ AAB downloaded and verified: $AAB_NAME"
                     '''
                 }
+            }
+        }
+
+        stage('Prepare Fastlane Environment') {
+            steps {
+                sh '''
+                    echo "📝 Preparing Fastlane changelog..."
+                    mkdir -p fastlane/metadata/android/en-US/changelogs
+                    echo "$CHANGELOG" > fastlane/metadata/android/en-US/changelogs/default.txt
+
+                    echo "⚙️ Creating Fastfile..."
+                    cat > fastlane/Fastfile <<EOF
+                    default_platform(:android)
+
+                    platform :android do
+                      lane :deploy_to_play do
+                        upload_to_play_store(
+                          track: "${TRACK}",
+                          aab: Dir["*.aab"].first,
+                          json_key: "${GOOGLE_PLAY_JSON}",
+                          package_name: "${PACKAGE_NAME}",
+                          release_status: "draft",
+                          skip_upload_changelogs: false,
+                          metadata_path: "fastlane/metadata"
+                        )
+                      end
+                    end
+EOF
+                '''
+            }
+        }
+
+        stage('Deploy to Google Play') {
+            steps {
+                sh 'fastlane deploy_to_play'
             }
         }
     }
 
     post {
-        failure {
-            echo '❌ Upload failed.'
-        }
         success {
-            echo '✅ Upload pipeline completed successfully.'
+            echo '✅ Deployment completed successfully.'
+        }
+        failure {
+            echo '❌ Deployment failed.'
+        }
+        always {
+            cleanWs()
         }
     }
 }
