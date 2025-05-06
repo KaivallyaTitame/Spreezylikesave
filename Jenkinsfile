@@ -95,6 +95,19 @@ pipeline
                 sh 'npm run build-uat'
             }
         }
+        //New stage 
+        stage('Update Config') {
+            steps {
+                script {
+                    def version = sh(script: "node -p \"require('./package.json').version\"", returnStdout: true).trim()
+                    writeFile file: 'build_config.json', text: """{
+          "version": "${version}"
+        }"""
+                    archiveArtifacts artifacts: 'build_config.json', onlyIfSuccessful: true
+                }
+            }
+        }
+
         
         stage('Generate APK'){
             steps{
