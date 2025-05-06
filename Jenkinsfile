@@ -36,26 +36,8 @@ pipeline
              git branch: env.GIT_BRANCH, credentialsId: env.CREDENTIALS_ID, url: env.GIT_URL
             }
         }
-             
-        stage('Inject Version Into build.gradle') {
-                    steps {
-                        script {
-                            def versionName = params.version_name
-                            def versionCode = env.BUILD_NUMBER.toInteger()
-        
-                            echo "Updating versionName to ${versionName}"
-                            echo "Updating versionCode to ${versionCode}"
-        
-                            sh """
-                                sed -i "s/versionCode [0-9]\\+/versionCode ${versionCode}/" android/app/build.gradle
-                                sed -i "s/versionName \\"[^\\"]*\\"/versionName \\"${versionName}\\"/" android/app/build.gradle
-                            """
-                        }
-                    }
-                }
-        
-        
 
+             
         stage('Nexus Setup And Install All Dependencies'){
             steps{
                 
@@ -123,6 +105,24 @@ pipeline
               sh 'npm run apk-debug'
             }
         }
+
+
+        stage('Inject Version Into build.gradle') {
+                    steps {
+                        script {
+                            def versionName = params.version_name
+                            def versionCode = env.BUILD_NUMBER.toInteger()
+        
+                            echo "Updating versionName to ${versionName}"
+                            echo "Updating versionCode to ${versionCode}"
+        
+                            sh """
+                                sed -i "s/versionCode [0-9]\\+/versionCode ${versionCode}/" android/app/build.gradle
+                                sed -i "s/versionName \\"[^\\"]*\\"/versionName \\"${versionName}\\"/" android/app/build.gradle
+                            """
+                        }
+                    }
+                }
 
         // stage('Upload APK to Nexus') {
         //     steps {
