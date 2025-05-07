@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 import { AdvertisementDetails } from '../models/ad-details';
 import { JwtDecoderService } from './jwt-decoder.service';
 import { HttpResponse } from '@angular/common/http';
+import { API_CONFIG } from '../api-config';
 @Injectable({
   providedIn: 'root',
 })
@@ -27,7 +28,7 @@ export class AdvertisementDetailsService {
     // return this.http.get<AdvertisementDetails[]>(`https://dummyjson.com/c/9575-9fc6-48ff-a845`, {
       responseType: 'json',
       headers: new HttpHeaders({
-        Authorization: `Bearer ${this.token}`,
+        authorization: `Bearer ${this.token}`,
         'Content-Type': 'application/json'
       }),
     });
@@ -37,12 +38,11 @@ export class AdvertisementDetailsService {
     const userName = this.jwtDecoderService.decodeInfoFromToken(this.token)["sub"] || "";
   
     return this.http.post(
-      `http://localhost:8081/content/advertisement/upvote/${advertisementId}`,
-      {},
-      {
+      API_CONFIG.ADVERTISEMENT_EVENTS.UPVOTE_ADVERTISEMENT(advertisementId),
+      {},{
         headers: new HttpHeaders({
           username: userName,
-          Authorization: `Bearer ${this.token}`,
+          authorization: `Bearer ${this.token}`,
           'Content-Type': 'application/json',
         }),
         observe: 'response' ,
@@ -55,9 +55,8 @@ export class AdvertisementDetailsService {
     const userName = this.jwtDecoderService.decodeInfoFromToken(this.token)["sub"] || "";
   
     return this.http.post(
-      `http://localhost:8081/content/advertisement/downvote/${advertisementId}`,
-      {},
-      {
+      API_CONFIG.ADVERTISEMENT_EVENTS.DISLIKE_ADVERTISEMENT(advertisementId),
+      {},{
         responseType: 'text', 
         observe: 'response',  
         headers: new HttpHeaders({
@@ -70,15 +69,12 @@ export class AdvertisementDetailsService {
   }
   
   savePost(username: string, advertisementId: number): Observable<AdvertisementDetails> {
-    const body = {
-      username: username,
-      advertisementId: advertisementId
-    };
 
     return this.http.post<AdvertisementDetails>(
-      'http://localhost:8081/content/advertisement/save',
-      body, // send as body
-      {
+      API_CONFIG.ADVERTISEMENT_EVENTS.SAVE_ADVERTISEMENT,{
+        username: username,
+        advertisementId: advertisementId
+      },{
         responseType: 'json'
       }
     );
@@ -86,7 +82,7 @@ export class AdvertisementDetailsService {
   
   followUser(sourceUsername: string, username: string): Observable<any> {
     return this.http.post(
-      `http://localhost:8081/user/follow/${sourceUsername}/${username}`,
+      API_CONFIG.ADVERTISEMENT_EVENTS.FOLLOW(sourceUsername, username),
       {},{
         responseType: 'json',
         headers: new HttpHeaders(),
@@ -98,7 +94,7 @@ export class AdvertisementDetailsService {
     let token = localStorage.getItem("token") || "";
     let userName = this.jwtDecoderService.decodeInfoFromToken(token)["sub"] || "";
     return this.http.post(
-      `http://localhost:8081/content/advertisement/report`,{
+      API_CONFIG.ADVERTISEMENT_EVENTS.REPORT_ADVERTISEMENT,{
         "advertisementId": advertisementId,
         "usernameOfReporter": userName
       },{
@@ -109,9 +105,8 @@ export class AdvertisementDetailsService {
 
   unfollowUser(sourceUsername: string, username: string): Observable<any> {
     return this.http.post(
-      `${this.baseUrl}/user/unfollow/${sourceUsername}/${username}`,
-      {},
-      {
+      API_CONFIG.ADVERTISEMENT_EVENTS.UN_FOLLOW(sourceUsername, username),
+      {},{
         responseType: 'json',
         headers: new HttpHeaders(),
       }

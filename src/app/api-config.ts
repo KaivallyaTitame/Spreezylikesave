@@ -50,12 +50,14 @@ export const API_CONFIG = {
   },
 
   ADVERTISEMENT_EVENTS:{
-    UPVOTE_ADVERTISEMENT : ``,
-    DISLIKE_ADVERTISEMENT : ``,
-    SAVE_ADVERTISEMENT : ``,
-    REPORT_ADVERTISEMENT : ``,
-    GET_ADDVERTISEMENT_DETAILS : ``,
-    FOLLOW : ``,
-    UN_FOLLOW : ``
+    UPVOTE_ADVERTISEMENT : (advertisementId: number) =>`${environment.apiGateway}/content/advertisement/upvote/${advertisementId}`,
+    DISLIKE_ADVERTISEMENT : (advertisementId: number) =>`${environment.apiGateway}/content/advertisement/downvote/${advertisementId}`,
+    SAVE_ADVERTISEMENT : `${environment.apiGateway}/content/advertisement/save`,
+    REPORT_ADVERTISEMENT : `${environment.apiGateway}/content/advertisement/report`,
+    GET_ADDVERTISEMENT_DETAILS : `${environment.apiGateway}`,
+    FOLLOW : (sourceUsername: string, targetUsername: string) => 
+      `${environment.apiGateway}/user/follow/${sourceUsername}/${targetUsername}`,
+    UN_FOLLOW : (sourceUsername: string, targetUsername: string) => 
+    `${environment.apiGateway}/user/unfollow/${sourceUsername}/${targetUsername}`
   }
 };
