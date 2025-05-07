@@ -11,15 +11,16 @@ import { ScreenOrientation } from '@capacitor/screen-orientation';
 export class AppComponent {
   title = 'spreezy-frontend';
   constructor(){
+    // locking the screen on intialisation of the screen
     this.lockOrientation(); 
   }
 
   async lockOrientation() {
-    if(Capacitor.getPlatform() == 'android'){
+    if(Capacitor.getPlatform() == 'android'){ // if the given platform is android then only it will execute the methood.
       try {
-        await ScreenOrientation.lock({ orientation: 'portrait' });
+           await ScreenOrientation.lock({ orientation: 'portrait' });
       } catch (error) {
-        console.error('Orientation lock failed:', error);
+           console.error('Orientation lock failed:', error);
       }
     }
 
