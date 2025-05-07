@@ -1,4 +1,5 @@
 import { Component, HostListener} from '@angular/core';
+import { Capacitor } from '@capacitor/core';
 // import { ScreenOrientation } from '@awesome-cordova-plugins/screen-orientation/ngx';
 import { ScreenOrientation } from '@capacitor/screen-orientation';
 
@@ -14,11 +15,14 @@ export class AppComponent {
   }
 
   async lockOrientation() {
-    try {
-      await ScreenOrientation.lock({ orientation: 'portrait' });
-    } catch (error) {
-      console.error('Orientation lock failed:', error);
+    if(Capacitor.getPlatform() == 'android'){
+      try {
+        await ScreenOrientation.lock({ orientation: 'portrait' });
+      } catch (error) {
+        console.error('Orientation lock failed:', error);
+      }
     }
+
   }
 
 
