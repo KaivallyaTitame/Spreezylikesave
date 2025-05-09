@@ -3,24 +3,28 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 import { AdvertisementDetails } from '../models/ad-details';
+import { JwtDecoderService } from './jwt-decoder.service';
 @Injectable({
   providedIn: 'root',
 })
 export class AdvertisementDetailsService {
-  private baseUrl = 'https://dummyjson.com/c/c24e-729e-4ebc-a38f';
+  private baseUrl = "http:/localhost:8082";
+  private baseUrl2 = "http:/localhost:8762";
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient , private jwtDecoderService : JwtDecoderService) {}
 
   getAdvertisementDetailsById(advertisementId: number): Observable<AdvertisementDetails> {
-    return this.http.get<AdvertisementDetails>(`${this.baseUrl}/c/e9c8-5ebd-4f70-a7b5/${advertisementId}`, {
+    return this.http.get<AdvertisementDetails>(`https://dummyjson.com/c/9575-9fc6-48ff-a845`, {
       responseType: 'json',
       headers: new HttpHeaders(),
     });
   }
 
   getAdvertisementDetails(): Observable<AdvertisementDetails[]> {
-    //return this.http.get<AdvertisementDetails[]>(`${this.baseUrl}/c/e9c8-5ebd-4f70-a7b5`, {
-      return this.http.get<AdvertisementDetails[]>(`https://dummyjson.com/c/9575-9fc6-48ff-a845`, {
+    let token = localStorage.getItem("token") || "";
+    let userName = this.jwtDecoderService.decodeInfoFromToken(token)["sub"] || "";
+    // return this.http.get<AdvertisementDetails[]>(`${this.baseUrl}/advertisement-feed/{userName}`, {
+    return this.http.get<AdvertisementDetails[]>(`https://dummyjson.com/c/3144-37bd-44be-b7a9`, {
       responseType: 'json',
       headers: new HttpHeaders(),
     });
@@ -29,8 +33,7 @@ export class AdvertisementDetailsService {
   updateLikes(advertisementId: number): Observable<AdvertisementDetails> {
     return this.http.post<AdvertisementDetails>(
       `${this.baseUrl}/content/advertisement/upvote/${advertisementId}`,
-      {},
-      {
+      {},{
         responseType: 'json',
         headers: new HttpHeaders(),
       }
@@ -40,8 +43,7 @@ export class AdvertisementDetailsService {
   updateDislikes(advertisementId: number): Observable<AdvertisementDetails> {
     return this.http.post<AdvertisementDetails>(
       `${this.baseUrl}/content/advertisement/downvote/${advertisementId}`,
-      {},
-      {
+      {},{
         responseType: 'json',
         headers: new HttpHeaders(),
       }
@@ -50,14 +52,47 @@ export class AdvertisementDetailsService {
 
   savePost(username: string, advertisementId: number): Observable<AdvertisementDetails> {
     return this.http.post<AdvertisementDetails>(
-      `${this.baseUrl}/content/advertisement/save`,
-      {},
-      {
+      `${this.baseUrl2}/content/advertisement/save`,
+      {},{
         responseType: 'json',
         headers: new HttpHeaders({
           'X-Username': username,
           'X-Advertisement-ID': advertisementId.toString(),
         }),
+      }
+    );
+  }
+
+  followUser(sourceUsername: string, username: string): Observable<any> {
+    return this.http.post(
+      `${this.baseUrl}/user/follow/${sourceUsername}/${username}`,
+      {},{
+        responseType: 'json',
+        headers: new HttpHeaders(),
+      }
+    );
+  }
+
+  reportPost(advertisementId: number): Observable<any> {
+    let token = localStorage.getItem("token") || "";
+    let userName = this.jwtDecoderService.decodeInfoFromToken(token)["sub"] || "";
+    return this.http.post(
+      `${this.baseUrl}/content/advertisement/report/${advertisementId}`,{
+        "advertisementId": advertisementId,
+        "usernameOfReporter": userName
+      },{
+        responseType: 'json',
+        headers: new HttpHeaders(),
+      }  );
+    }
+
+  unfollowUser(sourceUsername: string, username: string): Observable<any> {
+    return this.http.post(
+      `${this.baseUrl}/user/unfollow/${sourceUsername}/${username}`,
+      {},
+      {
+        responseType: 'json',
+        headers: new HttpHeaders(),
       }
     );
   }

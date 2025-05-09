@@ -3,16 +3,15 @@ import { RouterModule, Routes } from '@angular/router';
 import { customerGuard } from "./authGuards/customer/customer.guard";
 import { businessGuard } from "./authGuards/business/business.guard";
 import { loginGuard } from "./authGuards/login/login.guard";
+import { OfferDescriptionComponent } from './screens/ad-feed/offer-description/offer-description.component';
 
 const routes: Routes = [
   { path: "", redirectTo: "login", pathMatch: "full" },
 
   {
     path: "login",
-    //loadChildren: () => import('./screens/postcreation/postcreation.module').then(m => m.PostcreationModule),
-     loadChildren: () => import("./screens/login/login.module").then(m => m.LoginModule),
-     canActivate: [loginGuard]
-
+    loadChildren: () => import("./screens/login/login.module").then(m => m.LoginModule),
+    canActivate: [loginGuard]
   },
   {
     path: "discover-business-screen",
@@ -24,13 +23,16 @@ const routes: Routes = [
     // canActivate: [businessGuard]
   },
   {
+    path: 'offer-description/:id', component: OfferDescriptionComponent
+  },
+  {
     path: "otpscreen/:mobileNumber/:countryCode",
     loadChildren: () => import("./screens/otpScreen/otpscreen.module").then(m => m.OtpScreenModule),
   },
   {
     path: "consumer-home",
     loadChildren: () => import("./screens/consumer-home/consumer-home.module").then(m => m.ConsumerHomeModule),
-    // canActivate: [customerGuard]
+    canActivate: [customerGuard]
   },
   { path: 'terms-conditions', loadChildren: () => import('./screens/terms-conditions/terms-conditions.module').then(m => m.TermsConditionsModule) },
   {
@@ -41,13 +43,7 @@ const routes: Routes = [
     path: 'terms-and-condition',
     loadChildren: () => import('./screens/terms-conditions/terms-conditions.module').then(m => m.TermsConditionsModule),
   },
-  { path: "**", redirectTo: "login"},
-
-
-  {
-    path: 'postcreation',
-    loadChildren: () => import('./screens/postcreation/postcreation.module').then(m => m.PostcreationModule),
-  },
+  // { path: "**", redirectTo: "login"}
 ];
 
 @NgModule({
