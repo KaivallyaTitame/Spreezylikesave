@@ -1,4 +1,4 @@
-import { Component, HostListener,ElementRef, ViewChild, Input, OnInit } from '@angular/core';
+import { Component, HostListener,ElementRef, ViewChild, Input, OnInit, Output, EventEmitter } from '@angular/core';
 import { faBars, faUserGroup, faMagnifyingGlass, faThumbsUp, faThumbsDown, faLocationArrow, faEllipsisVertical, faLocationDot, faHeart, faBell, faCircleUser , faBookmark , faPaperPlane  } from '@fortawesome/free-solid-svg-icons';
 import { faThumbsUp as faThumbsUpOutline, faThumbsDown as faThumbsDownOutline ,} from '@fortawesome/free-regular-svg-icons'; // Import outlined icons
 import { AdvertisementDetailsService } from 'src/app/services/advertisementTypes.service';
@@ -8,6 +8,7 @@ import { IconDefinition } from '@fortawesome/fontawesome-svg-core';  // Import t
 import { Router } from '@angular/router';
 import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
 import { ShareAddService } from 'src/app/services/share-add.service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-Coupon',
@@ -17,7 +18,12 @@ import { ShareAddService } from 'src/app/services/share-add.service';
 export class CouponComponent implements OnInit {
   @Input() couponDetails!: AdvertisementDetails;
   // baseUrl="https://images.spreezy.in/";
-  baseUrl="";
+  baseUrl="";  @Input() index!: number; // index of the post get from for loop.
+  @Input() activeIndex!: number | undefined; // it is used to indicate which post's insight is actively visible. 
+  @Output() setActiveIndex = new EventEmitter<number>();  // it is the methood from business profile component which sets the value of activeIndex variable which is used to indicate the post whoes insights are showing.  
+  @Output() setInsightScreen = new EventEmitter<Event>();
+  @Input() showButton !:boolean; // this parameter comes from business profile component which is used to track the visibility of the show insight button. 
+
   remainingDays: number;
   isExpired: boolean = false;
   reportVisible: boolean = false;
@@ -61,8 +67,7 @@ export class CouponComponent implements OnInit {
   @ViewChild('threeDotsWrapper', { static: false }) threeDotsRef!: ElementRef;
   isLiked: boolean = false; 
   isDisliked: boolean = false; 
-
-  constructor(private advertisementDetailsService: AdvertisementDetailsService,private router:Router , private shareService : ShareAddService) {}
+  constructor(private advertisementDetailsService: AdvertisementDetailsService,private router:Router , private shareService : ShareAddService,private route: ActivatedRoute) {}
 
   hasValidImages: boolean = true;
   handleImageError(event: any): void {
@@ -93,6 +98,17 @@ export class CouponComponent implements OnInit {
       this.router.navigate(['/profile-screen/consumer-profile',this.couponDetails.username])
     }
   }
+  
+  // on Clicking the show insight button below methood get executed. 
+  showInsights(event: Event) : void{
+    this.setActiveIndex.emit(this.index); 
+    // it first sets the selected post insight data into the component. 
+    // hence it is accepting the index as a parameter for asking which post insight should be shown.
+    this.setInsightScreen.emit(event);
+    // after setting the data it will change the value of the insight component and making it visible.
+  }
+
+
 
   likePost(): void {
     const advertisementId = this.couponDetails.advertisementId;
@@ -163,7 +179,6 @@ export class CouponComponent implements OnInit {
     this.isSaved = !this.isSaved; 
     this.advertisementDetailsService.savePost(username, advertisementId).subscribe({
       next: (response) => {
-        console.log('Post saved successfully:', response);
       },
       error: (err) => {
         this.showError('Save Error', 'Failed to save the post. Please try again.');

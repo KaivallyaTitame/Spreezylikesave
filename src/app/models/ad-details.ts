@@ -1,3 +1,7 @@
+export class insightDetails{
+  [key:string]:number; 
+}
+
 export interface AdvertisementDetails {
   advertisementId: number;
   advertisementType: string;
@@ -18,4 +22,8 @@ export interface AdvertisementDetails {
   eventDateAndTime: string
   offerSubtitle: string;
   isFollowing: boolean;  
+  insightDetails:insightDetails; 
+  descriptionTitle: string;
+  descriptionContent: string;
+  offerImageUrl:string;
 }

@@ -9,11 +9,12 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { BusinessProfileComponent } from './business-profile/business-profile.component';
 import { ConsumerProfileComponent } from './consumer-profile/consumer-profile.component';
 import { AdFeedModule } from '../ad-feed/ad-feed.module';
-
+import { PostInsightsComponent } from './post-insights/post-insights.component';
 @NgModule({
   declarations: [
     BusinessProfileComponent,
-    ConsumerProfileComponent
+    ConsumerProfileComponent, 
+    PostInsightsComponent
   ],
   imports: [
     CommonModule,
@@ -24,6 +25,6 @@ import { AdFeedModule } from '../ad-feed/ad-feed.module';
     SharedModule,
     AdFeedModule
   ],
-  exports: [BusinessProfileComponent, ConsumerProfileComponent]
+  exports: [BusinessProfileComponent, ConsumerProfileComponent,PostInsightsComponent]
 })
 export class ProfileScreenModule { }

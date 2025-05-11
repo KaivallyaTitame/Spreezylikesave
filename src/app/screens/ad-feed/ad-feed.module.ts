@@ -28,7 +28,7 @@ import { SharedModule } from 'src/app/shared/shared-module/shared-module.module'
     AdFeedComponent,
     EventComponent,
     PostComponent,
-    CouponComponent
+    CouponComponent,
   ]
 
 })

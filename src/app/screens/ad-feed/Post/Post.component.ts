@@ -1,4 +1,4 @@
-import { Component, HostListener, Input, OnInit } from '@angular/core';
+import { Component, HostListener, Input, OnInit,Output,EventEmitter} from '@angular/core';
 import { faBars, faUserGroup, faMagnifyingGlass, faThumbsUp, faThumbsDown, faLocationArrow, faEllipsisVertical, faLocationDot, faBell, faCircleUser , faPaperPlane } from '@fortawesome/free-solid-svg-icons';
 import { faThumbsUp as faThumbsUpOutline, faThumbsDown as faThumbsDownOutline } from '@fortawesome/free-regular-svg-icons'; 
 import { AdvertisementDetailsService } from 'src/app/services/advertisementTypes.service';
@@ -11,7 +11,8 @@ import { Router } from '@angular/router';
 import { JwtDecoderService } from 'src/app/services/jwt-decoder.service';
 import { ElementRef, ViewChild } from '@angular/core';
 import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
-import { ShareAddService } from 'src/app/services/share-add.service';
+import { ShareAddService } from 'src/app/services/share-add.service';import { ActivatedRoute } from '@angular/router';
+
 @Component({
   selector: 'app-Post',
   templateUrl: './Post.component.html',
@@ -21,6 +22,11 @@ export class PostComponent implements OnInit {
   @Input() postDetails!: AdvertisementDetails;
   baseUrl = "";
   // baseUrl="https://images.spreezy.in/";
+  @Input() index!: number;  // index of the post get from for loop.  
+  @Input() activeIndex!: number | undefined; // it is used to indicate which post's insight is actively visible. 
+  @Output() setActiveIndex = new EventEmitter<number>(); // it is the methood from business profile component which sets the value of activeIndex variable which is used to indicate the post whoes insights are showing. 
+  @Output() setInsightScreen = new EventEmitter<Event>(); // this methood is from business profile compoennt which  is used to set the boolean variable whether to show the post insight or not. 
+  @Input() showButton !:boolean; // this parameter comes from business profile component which is used to track the visibility of the show insight button. 
   remainingDays: number;
   remainingHours: number;
   isExpired: boolean = false;
@@ -130,6 +136,16 @@ export class PostComponent implements OnInit {
     this.isFollowing = false;  // Replace this with actual check
   }
 
+  // on Clicking the show insight button below methood get executed. 
+  showInsights(event: Event) : void{
+    this.setActiveIndex.emit(this.index); 
+    // it first sets the selected post insight data into the component. 
+    // hence it is accepting the index as a parameter for asking which post insight should be shown.
+    this.setInsightScreen.emit(event);
+    // after setting the data it will change the value of the insight component and making it visible.
+  }
+
+
   likePost(): void {
     const advertisementId = this.postDetails.advertisementId;
     this.advertisementDetailsService.updateLikes(advertisementId).subscribe({
@@ -205,7 +221,7 @@ export class PostComponent implements OnInit {
       error: (err) => {
         console.log(err)
         this.showError('Save Error', 'Failed to save the post. Please try again.');
-        this.isSaved = !this.isSaved;
+
       },
     });
   }
