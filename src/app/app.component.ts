@@ -1,7 +1,7 @@
 import { Component, HostListener} from '@angular/core';
 import { Capacitor } from '@capacitor/core';
 // import { ScreenOrientation } from '@awesome-cordova-plugins/screen-orientation/ngx';
-import { ScreenOrientation } from '@capacitor/screen-orientation';
+import { ScreenOrientation} from '@capacitor/screen-orientation';
 
 @Component({
   selector: 'app-root',
