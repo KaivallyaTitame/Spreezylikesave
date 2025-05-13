@@ -9,6 +9,7 @@ import { CouponComponent } from './Coupon/Coupon.component';
 import { OfferDescriptionComponent } from './offer-description/offer-description.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { SharedModule } from 'src/app/shared/shared-module/shared-module.module';
+import { SkeletonComponent } from 'src/app/screens/ad-feed/skeleton/skeleton.component';
 
 @NgModule({
   declarations: [
@@ -16,20 +17,21 @@ import { SharedModule } from 'src/app/shared/shared-module/shared-module.module'
     OfferDescriptionComponent,
     EventComponent,
     PostComponent,
-    CouponComponent
+    CouponComponent,
+    SkeletonComponent
   ],
   imports: [
     CommonModule,
     AdFeedRoutingModule,
     FontAwesomeModule,
-  SharedModule
+    SharedModule
   ],
   exports: [
     AdFeedComponent,
     EventComponent,
     PostComponent,
     CouponComponent,
+    SkeletonComponent
   ]
-
 })
 export class AdFeedModule { }

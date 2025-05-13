@@ -81,6 +81,9 @@ export class PostComponent implements OnInit {
 
     console.log("POST DETAILS", this.postDetails)
 
+
+    console.log("POST DETAILS", this.postDetails)
+
     this.remainingDays = remainingDays;
     this.remainingHours = remainingHours;
     this.isExpired = isExpired;
@@ -210,9 +213,12 @@ export class PostComponent implements OnInit {
     console.log(advertisementId , username)
     this.triggerAnimation('save');
     this.scaleAnimation = true;
+    this.scaleAnimation = true;
     setTimeout(() => {
       this.scaleAnimation = false;
+      this.scaleAnimation = false;
     }, 500);
+    this.isSaved = !this.isSaved;
     this.isSaved = !this.isSaved;
     this.advertisementDetailsService.savePost(username, advertisementId).subscribe({
       next: (response) => {
@@ -221,7 +227,7 @@ export class PostComponent implements OnInit {
       error: (err) => {
         console.log(err)
         this.showError('Save Error', 'Failed to save the post. Please try again.');
-
+        this.isSaved = !this.isSaved;
       },
     });
   }
@@ -271,12 +277,26 @@ export class PostComponent implements OnInit {
       },
     });
     document.body.style.overflow = 'hidden';
+    this.advertisementDetailsService.reportPost(this.postDetails.advertisementId).subscribe({
+      next: (response) => {
+        console.log('Post reported successfully:', response);
+        this.showReportSuccess = true;
+        this.showReportButton = false;
+      },
+      error: (err) => {
+        this.showError('Report Error', 'Failed to Report the post. Please try again.');
+      },
+    });
+    document.body.style.overflow = 'hidden';
   }
 
   hideReportSuccess(): void {
     this.showReportSuccess = false;
     document.body.style.overflow = 'auto';
+    this.showReportSuccess = false;
+    document.body.style.overflow = 'auto';
   }
+
 
   showError(title: string, body: string) {
     this.popupTitle = title;
@@ -290,6 +310,7 @@ export class PostComponent implements OnInit {
     } else if (type === 'dislike') {
       this.showDislikeAnimation = true;
     }
+
 
     setTimeout(() => {
       this.showLikeAnimation = false;

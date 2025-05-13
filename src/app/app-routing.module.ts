@@ -3,8 +3,9 @@ import { RouterModule, Routes } from '@angular/router';
 import { customerGuard } from "./authGuards/customer/customer.guard";
 import { businessGuard } from "./authGuards/business/business.guard";
 import { loginGuard } from "./authGuards/login/login.guard";
-import { OfferDescriptionComponent } from './screens/ad-feed/offer-description/offer-description.component';
+
 import { ProfileScreenModule } from './screens/profile-screen/profile-screen.module';
+import { OfferDescriptionComponent } from './screens/ad-feed/offer-description/offer-description.component';
 
 const routes: Routes = [
   { 

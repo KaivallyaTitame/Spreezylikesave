@@ -13,18 +13,21 @@ export class AdvertisementDetailsService {
   private baseUrl = "http:/localhost:8082";
   private baseUrl2 = "http:/localhost:8762";
   private token = localStorage.getItem("token") || "";
+  private userName = this.jwtDecoderService.decodeInfoFromToken(this.token)["sub"] || "";
+
   constructor(private http: HttpClient , private jwtDecoderService : JwtDecoderService) {}
 
   getAdvertisementDetailsById(advertisementId: number): Observable<AdvertisementDetails> {
-    return this.http.get<AdvertisementDetails>(`${this.baseUrl}/${advertisementId}`, {
+    return this.http.get<AdvertisementDetails>(`https://dummyjson.com/c/9575-9fc6-48ff-a845`, {
       responseType: 'json',
       headers: new HttpHeaders(),
     });
   }
 
   getAdvertisementDetails(): Observable<AdvertisementDetails[]> {
-    let userName = this.jwtDecoderService.decodeInfoFromToken(this.token)["sub"] || "";
-    return this.http.get<AdvertisementDetails[]>(`http://localhost:8082/feed-on-profile-page/posts-section/${userName}?page=0&pageSize=10`, {
+    let token = localStorage.getItem("token") || "";
+    let userName = this.jwtDecoderService.decodeInfoFromToken(token)["sub"] || "";
+    return this.http.get<AdvertisementDetails[]>(`http://localhost:8082/feed-on-profile-page/posts-section/ankit_textiles_01?page=0&pageSize=10`, {
     // return this.http.get<AdvertisementDetails[]>(`https://dummyjson.com/c/9575-9fc6-48ff-a845`, {
       responseType: 'json',
       headers: new HttpHeaders({
@@ -51,6 +54,19 @@ export class AdvertisementDetailsService {
     );
   }
 
+
+  savePost(username: string, advertisementId: number): Observable<AdvertisementDetails> {
+
+    return this.http.post<AdvertisementDetails>(
+      API_CONFIG.ADVERTISEMENT_EVENTS.SAVE_ADVERTISEMENT,{
+        username: username,
+        advertisementId: advertisementId
+      },{
+        responseType: 'json'
+      }
+    );
+  }
+
   updateDislikes(advertisementId: number): Observable<HttpResponse<string>> {
     const userName = this.jwtDecoderService.decodeInfoFromToken(this.token)["sub"] || "";
   
@@ -64,18 +80,6 @@ export class AdvertisementDetailsService {
           Authorization: `Bearer ${this.token}`,
           'Content-Type': 'application/json',
         }),
-      }
-    );
-  }
-  
-  savePost(username: string, advertisementId: number): Observable<AdvertisementDetails> {
-
-    return this.http.post<AdvertisementDetails>(
-      API_CONFIG.ADVERTISEMENT_EVENTS.SAVE_ADVERTISEMENT,{
-        username: username,
-        advertisementId: advertisementId
-      },{
-        responseType: 'json'
       }
     );
   }
@@ -112,6 +116,8 @@ export class AdvertisementDetailsService {
       }
     );
   }
+
+  
 
   calculateExpiry(expiryDate: string): { remainingDays: number; remainingHours: number; isExpired: boolean } {
     const expiry = new Date(expiryDate);

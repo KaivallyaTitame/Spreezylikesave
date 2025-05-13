@@ -7,8 +7,10 @@
                 <div class="text-sm text-gray-400">
                     <ng-container *ngIf="isExpired; else notExpired">
                         Expired
+                        Expired
                     </ng-container>
                     <ng-template #notExpired>
+                        Expires in {{ remainingDays }} days
                         Expires in {{ remainingDays }} days
                     </ng-template>
                 </div>

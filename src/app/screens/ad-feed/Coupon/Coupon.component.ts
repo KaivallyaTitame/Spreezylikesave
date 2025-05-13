@@ -173,9 +173,12 @@ export class CouponComponent implements OnInit {
     const username = this.couponDetails.username;
     this.triggerAnimation('save');
     this.scaleAnimation = true;
+    this.scaleAnimation = true;
     setTimeout(() => {
       this.scaleAnimation = false;
+      this.scaleAnimation = false;
     }, 500);
+    this.isSaved = !this.isSaved; 
     this.isSaved = !this.isSaved; 
     this.advertisementDetailsService.savePost(username, advertisementId).subscribe({
       next: (response) => {
@@ -183,11 +186,14 @@ export class CouponComponent implements OnInit {
       error: (err) => {
         this.showError('Save Error', 'Failed to save the post. Please try again.');
         this.isSaved = !this.isSaved; 
+        this.isSaved = !this.isSaved; 
       },
     });
   }
 
   copyToClipboard(couponCode: string): void {
+    console.log(this.couponDetails)
+    console.log(couponCode)
     console.log(this.couponDetails)
     console.log(couponCode)
     navigator.clipboard.writeText(couponCode).then(() => {
@@ -212,6 +218,7 @@ export class CouponComponent implements OnInit {
       this.determinePopupPosition();
     }
   }
+
 
   @HostListener('window:scroll', [])
   onScroll(): void {

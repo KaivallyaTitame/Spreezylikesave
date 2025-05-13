@@ -13,7 +13,8 @@ import { PopUpComponent } from "src/app/components/pop-up/pop-up.component";
 export class AdFeedComponent implements OnInit {
   ads: AdvertisementDetails []= [];
   errorMessage: string = '';  
-  showErrorPopup: boolean = false; 
+  showErrorPopup: boolean = false;
+  isLoading: boolean = true; 
   constructor(private advertisementDetailsService: AdvertisementDetailsService, private authService: AuthService) {}
 
   logout() {
@@ -31,13 +32,18 @@ export class AdFeedComponent implements OnInit {
   }
 
   fetchAds(): void {
+    this.isLoading = true; 
     this.advertisementDetailsService.getAdvertisementDetails().subscribe({
       next: (response) => {
         this.ads = response;
+        this.isLoading = false;
         console.log(response)
       },
-      error:(err)=>{
-        console.log(err)
+      error: (err) => {
+        this.errorMessage = 'Failed to load ads. Please try again later.';
+        this.showErrorPopup = true;
+        this.isLoading = false;
+        console.log(err);
       }
     });
   }
