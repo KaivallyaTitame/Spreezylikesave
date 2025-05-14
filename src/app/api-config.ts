@@ -4,6 +4,11 @@ export const API_CONFIG = {
   // Image Service
   IMAGE_URL: 'https://images.spreezy.in',
 
+  REGISTRATION: {
+    CONSUMER: `${environment.apiGateway}/user/register-consumer`,
+    BUSINESS: `${environment.apiGateway}/user/register-business`,
+  },
+
   // Auth Service Endpoints
   AUTH_LOGOUT: (userName: string) => `${environment.apiGateway}/auth/${userName}/logout`,
   GENERATE_OTP: `${environment.apiGateway}/auth/generate-otp`,
@@ -50,14 +55,14 @@ export const API_CONFIG = {
   },
 
   ADVERTISEMENT_EVENTS:{
+    GET_ADVERTISEMENT_DETAILS : (username: string) => `${environment.apiGateway}/feed-on-profile-page/posts-section/${username}`,
     UPVOTE_ADVERTISEMENT : (advertisementId: number) =>`${environment.apiGateway}/content/advertisement/upvote/${advertisementId}`,
     DISLIKE_ADVERTISEMENT : (advertisementId: number) =>`${environment.apiGateway}/content/advertisement/downvote/${advertisementId}`,
     SAVE_ADVERTISEMENT : `${environment.apiGateway}/content/advertisement/save`,
     REPORT_ADVERTISEMENT : `${environment.apiGateway}/content/advertisement/report`,
-    GET_ADDVERTISEMENT_DETAILS : `${environment.apiGateway}`,
     FOLLOW : (sourceUsername: string, targetUsername: string) => 
       `${environment.apiGateway}/user/follow/${sourceUsername}/${targetUsername}`,
-    UN_FOLLOW : (sourceUsername: string, targetUsername: string) => 
+    UNFOLLOW : (sourceUsername: string, targetUsername: string) => 
     `${environment.apiGateway}/user/unfollow/${sourceUsername}/${targetUsername}`
   }
 };

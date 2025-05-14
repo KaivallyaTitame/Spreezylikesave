@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 import { AdvertisementDetails } from '../models/ad-details';
@@ -27,13 +27,16 @@ export class AdvertisementDetailsService {
   getAdvertisementDetails(): Observable<AdvertisementDetails[]> {
     let token = localStorage.getItem("token") || "";
     let userName = this.jwtDecoderService.decodeInfoFromToken(token)["sub"] || "";
-    return this.http.get<AdvertisementDetails[]>(`http://localhost:8082/feed-on-profile-page/posts-section/ankit_textiles_01?page=0&pageSize=10`, {
+    return this.http.get<AdvertisementDetails[]>(API_CONFIG.ADVERTISEMENT_EVENTS.GET_ADVERTISEMENT_DETAILS(userName), {
     // return this.http.get<AdvertisementDetails[]>(`https://dummyjson.com/c/9575-9fc6-48ff-a845`, {
       responseType: 'json',
       headers: new HttpHeaders({
         authorization: `Bearer ${this.token}`,
         'Content-Type': 'application/json'
       }),
+      params: new HttpParams()
+        .set('page', 0)
+        .set('pageSize', 10)
     });
   }
 
@@ -109,7 +112,7 @@ export class AdvertisementDetailsService {
 
   unfollowUser(sourceUsername: string, username: string): Observable<any> {
     return this.http.post(
-      API_CONFIG.ADVERTISEMENT_EVENTS.UN_FOLLOW(sourceUsername, username),
+      API_CONFIG.ADVERTISEMENT_EVENTS.UNFOLLOW(sourceUsername, username),
       {},{
         responseType: 'json',
         headers: new HttpHeaders(),
