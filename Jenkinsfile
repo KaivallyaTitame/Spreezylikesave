@@ -105,51 +105,51 @@ pipeline
             }
         }
 
-        // stage('Upload APK to Nexus') {
-        //     steps {
-        //         sh '''
-        //             echo "Installing curl..."
-        //             apt-get update && apt-get install -y curl
+        stage('Upload APK to Nexus') {
+            steps {
+                sh '''
+                    echo "Installing curl..."
+                    apt-get update && apt-get install -y curl
 
-        //             echo "Preparing APK directory..."
-        //             mkdir -p only-apk-releases
-        //             find ./android/app/build/outputs/apk/ -name "*.apk" -exec cp {} ./only-apk-releases/ \\;
+                    echo "Preparing APK directory..."
+                    mkdir -p only-apk-releases
+                    find ./android/app/build/outputs/apk/ -name "*.apk" -exec cp {} ./only-apk-releases/ \\;
 
-        //             echo "Contents of apk-releases directory:"
-        //             ls -lh only-apk-releases/
-        //         '''
+                    echo "Contents of apk-releases directory:"
+                    ls -lh only-apk-releases/
+                '''
 
-        //         // Extract version from package.json
-        //         script {
-        //             def version = sh(script: 'node -p "require(\'./package.json\').version"', returnStdout: true).trim()
-        //             env.APP_VERSION = version
-        //         }
+                // Extract version from package.json
+                script {
+                    def version = sh(script: 'node -p "require(\'./package.json\').version"', returnStdout: true).trim()
+                    env.APP_VERSION = version
+                }
 
-        //         // Rename APK to spreezy-<version>.apk
-        //         sh '''
-        //             for apk in only-apk-releases/*.apk; do
-        //                 mv "$apk" "only-apk-releases/spreezy-${APP_VERSION}.apk"
-        //             done
+                // Rename APK to spreezy-<version>.apk
+                sh '''
+                    for apk in only-apk-releases/*.apk; do
+                        mv "$apk" "only-apk-releases/spreezy-${APP_VERSION}.apk"
+                    done
 
-        //             echo "Contents of apk-releases directory:"
-        //             ls -lh only-apk-releases/
-        //         '''
+                    echo "Contents of apk-releases directory:"
+                    ls -lh only-apk-releases/
+                '''
 
-        //         // Upload to Nexus raw repo
-        //         withCredentials([usernamePassword(credentialsId: 'nexus_apk_credentials', usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASS')]) {
-        //             sh '''
-        //                 for apk in only-apk-releases/*.apk; do
-        //                     FILENAME=$(basename "$apk")
-        //                     VERSION_DIR="spreezy-${APP_VERSION}"
-        //                     echo "Uploading $FILENAME to Nexus under $VERSION_DIR..."
-        //                     curl -f -u $NEXUS_USER:$NEXUS_PASS \
-        //                         --upload-file "$apk" \
-        //                         "https://nexus.spreezy.in/repository/apk-release/${VERSION_DIR}/${FILENAME}"
-        //                 done
-        //             '''
-        //         }
-        //     }
-        // }
+                // Upload to Nexus raw repo
+                withCredentials([usernamePassword(credentialsId: 'nexus_apk_credentials', usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASS')]) {
+                    sh '''
+                        for apk in only-apk-releases/*.apk; do
+                            FILENAME=$(basename "$apk")
+                            VERSION_DIR="spreezy-${APP_VERSION}"
+                            echo "Uploading $FILENAME to Nexus under $VERSION_DIR..."
+                            curl -f -u $NEXUS_USER:$NEXUS_PASS \
+                                --upload-file "$apk" \
+                                "https://nexus.spreezy.in/repository/apk-release/${VERSION_DIR}/${FILENAME}"
+                        done
+                    '''
+                }
+            }
+        }
 
 
         
