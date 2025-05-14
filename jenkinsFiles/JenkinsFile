@@ -17,32 +17,31 @@ pipeline {
                 sh '''
                     echo Installing dependencies...
                     apt-get update
+        
+                    # Ensure needed paths exist
+                    mkdir -p /usr/share/man/man1
+        
+                    # Install system dependencies
                     apt-get install -y --no-install-recommends \
                       ruby-full \
                       curl \
                       unzip \
-                      ca-certificates \
-                      gnupg \
-                      software-properties-common
+                      openjdk-17-jdk \
+                      build-essential \
+                      libffi-dev \
+                      libssl-dev \
+                      zlib1g-dev
         
-                    # Fix for manpage symlink error
-                    mkdir -p /usr/share/man/man1
-        
-                    # Install OpenJDK 17 manually in smaller parts to avoid config error
-                    apt-get install -y --no-install-recommends openjdk-17-jre-headless openjdk-17-jdk-headless || true
-        
-                    # Force reconfigure any broken packages
+                    # Configure broken packages, if any
                     dpkg --configure -a
         
-                    # Verify java installation
-                    java -version
-        
-                    # Now install Fastlane
+                    # Install Fastlane
                     gem install fastlane -NV
                     echo "Fastlane version: $(fastlane --version)"
                 '''
             }
         }
+
 
 
         stage('Download AAB from Nexus') {
