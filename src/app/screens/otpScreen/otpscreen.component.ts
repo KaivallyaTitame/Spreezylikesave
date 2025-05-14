@@ -108,13 +108,7 @@ export class OtpscreenComponent implements OnInit, OnDestroy {
     this.otpFormSubmitted = true;
     if (this.otpForm.valid) {
       const otp = this.otpForm.value.otpdigit;
-      //this.verifyOtp(this.phoneNumber, otp);
-      const token = "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyVHlwZSI6IkJ1c2luZXNzIiwidG9rZW5UeXBlIjoiUmVmcmVzaCBUb2tlbiIsImlzcyI6IlNwcmVlenkiLCJzdWIiOiJZYXNoX3NlcnZpY2VzIiwiaWF0IjoxNzQzMDY4NjA4LCJleHAiOjE3NDgyNTI2MDh9.jVLlnHTrvuEwfF7UJUG7a9i5blGCxEgrv8CSQF_JTt0";
-        localStorage.setItem("token", token);
-        localStorage.setItem("refreshToken", token);
-        const decodedInfoFromToken: DecodedToken =
-        this.jwtDecoder.decodeInfoFromToken(token);
-        this.redirectBasedOnUserType("Business");
+      this.verifyOtp(this.phoneNumber, otp);
     }
   }
 
