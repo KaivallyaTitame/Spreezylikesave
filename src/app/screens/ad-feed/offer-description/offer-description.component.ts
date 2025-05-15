@@ -1,14 +1,9 @@
-import { Component, HostListener, Input, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { faBars, faUserGroup, faMagnifyingGlass, faThumbsUp, faThumbsDown, faLocationArrow, faEllipsisVertical, faLocationDot, faHeart, faBell, faCircleUser , faPaperPlane } from '@fortawesome/free-solid-svg-icons';
-import { faThumbsUp as faThumbsUpOutline, faThumbsDown as faThumbsDownOutline } from '@fortawesome/free-regular-svg-icons'; 
-import { AdvertisementDetailsService } from 'src/app/services/advertisementTypes.service';
+import { Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { faThumbsDown as faThumbsDownOutline, faThumbsUp as faThumbsUpOutline, faBookmark as regularBookmark } from '@fortawesome/free-regular-svg-icons';
+import { faBars, faBell, faChevronLeft, faChevronRight, faCircleUser, faEllipsisVertical, faHeart, faLocationArrow, faLocationDot, faMagnifyingGlass, faPaperPlane, faThumbsDown, faThumbsUp, faUserGroup, faBookmark as solidBookmark } from '@fortawesome/free-solid-svg-icons';
 import { AdvertisementDetails } from 'src/app/models/ad-details';
-import { faBookmark as solidBookmark } from '@fortawesome/free-solid-svg-icons';
-import { faBookmark as regularBookmark } from '@fortawesome/free-regular-svg-icons';
-import { Router } from '@angular/router';
-import { ElementRef, ViewChild } from '@angular/core';
-import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
+import { AdvertisementDetailsService } from 'src/app/services/advertisementTypes.service';
 import { ShareAddService } from 'src/app/services/share-add.service';
 
 @Component({
@@ -22,8 +17,7 @@ export class OfferDescriptionComponent implements OnInit {
     howToAvail: false,
     termsConditions: false
   };
-  // baseUrl="https://images.spreezy.in/";
-  baseUrl = "";
+  baseUrl="https://images.spreezy.in";
 
   remainingDays: number;
   remainingHours: number;
@@ -89,7 +83,7 @@ export class OfferDescriptionComponent implements OnInit {
     if (this.offerData) {
       const expirationDate = new Date(this.offerData.offerExpiry);
       const today = new Date();
-      this.remainingDays = Math.ceil((expirationDate.getTime() - today.getTime()) / (1000 * 3600 * 24));
+      const { remainingDays, remainingHours, isExpired } = this.advertisementDetailsService.calculateExpiry(this.offerData.offerExpiry);
       this.isExpired = this.remainingDays <= 0;
     }
   }

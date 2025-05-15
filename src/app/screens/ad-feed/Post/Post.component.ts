@@ -1,17 +1,11 @@
-import { Component, HostListener, Input, OnInit,Output,EventEmitter} from '@angular/core';
-import { faBars, faUserGroup, faMagnifyingGlass, faThumbsUp, faThumbsDown, faLocationArrow, faEllipsisVertical, faLocationDot, faBell, faCircleUser , faPaperPlane } from '@fortawesome/free-solid-svg-icons';
-import { faThumbsUp as faThumbsUpOutline, faThumbsDown as faThumbsDownOutline } from '@fortawesome/free-regular-svg-icons'; 
-import { AdvertisementDetailsService } from 'src/app/services/advertisementTypes.service';
-import { AdvertisementDetails } from 'src/app/models/ad-details';
-import { faBookmark as solidBookmark } from '@fortawesome/free-solid-svg-icons';
-import { faHeart as faHeartSolid } from '@fortawesome/free-solid-svg-icons';
-import { faHeart as faHeartRegular } from '@fortawesome/free-regular-svg-icons';
-import { faBookmark as regularBookmark  } from '@fortawesome/free-regular-svg-icons';
+import { Component, ElementRef, EventEmitter, HostListener, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
+import { faHeart as faHeartRegular, faThumbsDown as faThumbsDownOutline, faThumbsUp as faThumbsUpOutline, faBookmark as regularBookmark } from '@fortawesome/free-regular-svg-icons';
+import { faBars, faBell, faChevronLeft, faChevronRight, faCircleUser, faEllipsisVertical, faHeart as faHeartSolid, faLocationArrow, faLocationDot, faMagnifyingGlass, faPaperPlane, faThumbsDown, faThumbsUp, faUserGroup, faBookmark as solidBookmark } from '@fortawesome/free-solid-svg-icons';
+import { AdvertisementDetails } from 'src/app/models/ad-details';
+import { AdvertisementDetailsService } from 'src/app/services/advertisementTypes.service';
 import { JwtDecoderService } from 'src/app/services/jwt-decoder.service';
-import { ElementRef, ViewChild } from '@angular/core';
-import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
-import { ShareAddService } from 'src/app/services/share-add.service';import { ActivatedRoute } from '@angular/router';
+import { ShareAddService } from 'src/app/services/share-add.service';
 
 @Component({
   selector: 'app-Post',
@@ -20,8 +14,7 @@ import { ShareAddService } from 'src/app/services/share-add.service';import { Ac
 })
 export class PostComponent implements OnInit {
   @Input() postDetails!: AdvertisementDetails;
-  baseUrl = "";
-  // baseUrl="https://images.spreezy.in/";
+  baseUrl="https://images.spreezy.in";
   @Input() index!: number;  // index of the post get from for loop.  
   @Input() activeIndex!: number | undefined; // it is used to indicate which post's insight is actively visible. 
   @Output() setActiveIndex = new EventEmitter<number>(); // it is the methood from business profile component which sets the value of activeIndex variable which is used to indicate the post whoes insights are showing. 
