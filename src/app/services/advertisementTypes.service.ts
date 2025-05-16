@@ -10,10 +10,7 @@ import { API_CONFIG } from '../api-config';
   providedIn: 'root',
 })
 export class AdvertisementDetailsService {
-  private baseUrl = "http:/localhost:8082";
-  private baseUrl2 = "http:/localhost:8762";
   private token = localStorage.getItem("token") || "";
-  private userName = this.jwtDecoderService.decodeInfoFromToken(this.token)["sub"] || "";
 
   constructor(private http: HttpClient , private jwtDecoderService : JwtDecoderService) {}
 
@@ -25,18 +22,32 @@ export class AdvertisementDetailsService {
   }
 
   getAdvertisementDetails(): Observable<AdvertisementDetails[]> {
-    let token = localStorage.getItem("token") || "";
-    let userName = this.jwtDecoderService.decodeInfoFromToken(token)["sub"] || "";
-    return this.http.get<AdvertisementDetails[]>(API_CONFIG.ADVERTISEMENT_EVENTS.GET_ADVERTISEMENT_DETAILS(userName), {
-    // return this.http.get<AdvertisementDetails[]>(`https://dummyjson.com/c/9575-9fc6-48ff-a845`, {
-      responseType: 'json',
-      headers: new HttpHeaders({
-        authorization: `Bearer ${this.token}`,
-        'Content-Type': 'application/json'
-      }),
-      params: new HttpParams()
-        .set('page', 0)
-        .set('pageSize', 10)
+    const token = localStorage.getItem("token") || "";
+    const userName = this.jwtDecoderService.decodeInfoFromToken(token)["sub"] || "";
+    console.log("userName", userName);
+  
+    const url = API_CONFIG.ADVERTISEMENT_EVENTS.GET_ADVERTISEMENT_DETAILS(userName);
+    const url2 = `http://localhost:8082/feed-on-profile-page/posts-section/${userName}`
+    
+    const body = {
+      'authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    };
+  
+    const headers = new HttpHeaders({
+      'authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    });
+  
+    const params = new HttpParams()
+      .set('page', 0)
+      .set('pageSize', 10);
+  
+    return this.http.request<AdvertisementDetails[]>("GET", url2, {
+      body,
+      headers,
+      params,
+      responseType: 'json'
     });
   }
 

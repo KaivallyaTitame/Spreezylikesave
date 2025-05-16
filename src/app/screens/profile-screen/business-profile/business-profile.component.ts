@@ -1,13 +1,6 @@
 import { Component, Input, OnInit } from "@angular/core";
 import { UserService } from "src/app/services/user-profile.service";
-import {
-  faPhone,
-  faEnvelope,
-  faShare,
-  faList,
-  faBookmark,
-  faCircleUser,
-} from "@fortawesome/free-solid-svg-icons";
+import { faPhone, faEnvelope, faShare, faList, faBookmark, faCircleUser } from "@fortawesome/free-solid-svg-icons";
 import { faInstagram, faFacebook } from "@fortawesome/free-brands-svg-icons";
 import { UserDetails } from "src/app/models/UserDetails";
 import { AdvertisementDetails } from "src/app/models/ad-details";
@@ -50,14 +43,13 @@ export class BusinessProfileComponent implements OnInit {
   hasMoreProfilePosts: boolean = true; // Initially assume there are more posts
   hasMoreSavedPosts: boolean = true; // Initially assume there are more saved posts
   activeIndex: number | undefined = undefined;  // indicates which post insight to be displayed. if it is undefined then it will not shown.
-  showInsightScreen:boolean = false;  // this variable decides the visibility of the post insight component.
-
+  showInsightScreen: boolean = false;  // this variable decides the visibility of the post insight component.
 
   constructor(
     private UserService: UserService,
     private JwtDecoder: JwtDecoderService,
     private route: ActivatedRoute
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.currentUsername = this.fetchCurrentUsername();
@@ -73,62 +65,44 @@ export class BusinessProfileComponent implements OnInit {
     });
   }
 
-  // this method sets the current active index of the post. 
   toggleInsight(index: number | undefined): void {
+    console.log(this.visibleProfilePosts)
 
-    // first checks the given post data has insightDetails attribute. 
-    if(index != undefined && this.visibleProfilePosts[index].insightDetails === undefined){
-      // if post is selected for showing and post to show has not insightDetails attribute
-      // then it throws error.  
-      this.showError("404","Please try again later."); 
-      return; 
+    if (index != undefined && this.visibleProfilePosts[index].insightDetails === undefined) {
+      this.showError("404", "Please try again later.");
+      return;
     }
-    else{
-      if(this.activeIndex === index){
+    else {
+      if (this.activeIndex === index) {
         this.activeIndex = undefined;
-        // when we are closing opened post insight component by clicking on button hide insight.  
       }
-      else if(this.activeIndex !== undefined && this.activeIndex !== index && index != undefined){
-        // this case is used to handle when already one post is opened
-        // we tried to open insights of other post then it executes. 
+      else if (this.activeIndex !== undefined && this.activeIndex !== index && index != undefined) {
         setTimeout(() => {
-            // first it post insight screen disappears(showInsightScreen set to false) as method fired from post.ts file. 
-            // secondly it sets the data of the post insight screen. 
-            this.activeIndex = index; 
-            // it reappears the post insight again. 
-            this.showInsightScreen = true; 
-            // for animation accuracies i have used setTimeout function.
-        },1000);
+          this.activeIndex = index;
+          this.showInsightScreen = true;
+        }, 1000);
       }
-      else{
-        // in another case it executes this scnerios. 
-        this.activeIndex = index; 
+      else {
+        this.activeIndex = index;
       }
     }
   }
-
-  // it is used to toggle the showInsightScreen value. 
-  setInsightScreen(event:Event): void{
-      event.stopPropagation(); 
-      // it is used to stop the propagation of parent to child component. 
-      if(this.activeIndex != undefined && this.visibleProfilePosts[this.activeIndex].insightDetails !== undefined){
-         // it is check for preventing unnecessary opening of component on invalid data.  
-         this.showInsightScreen = !this.showInsightScreen;
-      }
-      else{
-        // if above condition is not satisfied then component will be closed. 
-        this.showInsightScreen = false; 
-      }
+ 
+  setInsightScreen(event: Event): void {
+    event.stopPropagation(); 
+    if (this.activeIndex != undefined && this.visibleProfilePosts[this.activeIndex].insightDetails !== undefined) { 
+      this.showInsightScreen = !this.showInsightScreen;
+    }
+    else {
+      this.showInsightScreen = false;
+    }
   }
 
-  // this component specifically designed for hiding the component when clicked outside the post-insight compoenent
-  hideInsight(event:Event):void{
-    // first it sets to false
-    this.showInsightScreen = false; 
-    // in below code delay is added to execut the code when animation is completed. 
+  hideInsight(event: Event): void {
+    this.showInsightScreen = false;
     setTimeout(() => {
       this.activeIndex = undefined;
-    },400);  
+    }, 400);
   }
 
 
@@ -142,7 +116,7 @@ export class BusinessProfileComponent implements OnInit {
   }
 
   fetchUserDetails(username: string) {
-    this.loadingUserDetails = true; // Show skeletons during loading
+    this.loadingUserDetails = true; 
     this.UserService.getUserDetails(username).subscribe({
       next: (data) => {
         if (data.profileImageUrl) {
@@ -153,11 +127,11 @@ export class BusinessProfileComponent implements OnInit {
 
         }
         this.userDetails = data;
-        this.loadingUserDetails = false; // Hide skeletons after successful fetch
+        this.loadingUserDetails = false; 
       },
       error: (error) => {
-        this.userDetails = null; // Reset user details on error
-        this.loadingUserDetails = false; // Stop skeletons even if there's an error
+        this.userDetails = null; 
+        this.loadingUserDetails = false;
         this.showError(
           error?.error?.errorCode || "Error fetching profile",
           error?.error?.errorDescription || "Please try again later."
@@ -199,7 +173,7 @@ export class BusinessProfileComponent implements OnInit {
         this.showError(
           error?.error?.errorCode || "Error while fetching profile posts",
           error?.error?.errorDescription ||
-            "Unable to fetch profile post, please try again later"
+          "Unable to fetch profile post, please try again later"
         );
         this.loadingProfilePosts = false;
       },
@@ -236,7 +210,7 @@ export class BusinessProfileComponent implements OnInit {
           this.showError(
             error?.error?.errorCode || "Error fetching saved posts",
             error?.error?.errorDescription ||
-              "Unable to fetch saved post, please try again later"
+            "Unable to fetch saved post, please try again later"
           );
           this.loadingSavedPosts = false;
         },
@@ -295,7 +269,7 @@ export class BusinessProfileComponent implements OnInit {
         newScrollContainer.scrollTop = this.scrollPositions[tab] || 0;
       }
     }, 0);
-    this.activeIndex = undefined; 
+    this.activeIndex = undefined;
   }
 
   defaultProfileImage = "assets/default-pic.png";

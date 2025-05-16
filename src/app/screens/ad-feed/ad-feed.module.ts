@@ -6,19 +6,19 @@ import { AdFeedComponent } from './ad-feed.component';
 import { EventComponent } from './Event/Event.component';
 import { PostComponent } from './Post/Post.component';
 import { CouponComponent } from './Coupon/Coupon.component';
-import { OfferDescriptionComponent } from './offer-description/offer-description.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { SharedModule } from 'src/app/shared/shared-module/shared-module.module';
 import { SkeletonComponent } from 'src/app/screens/ad-feed/skeleton/skeleton.component';
+import { OfferDescriptionComponent } from './offer-description/offer-description.component';
 
 @NgModule({
   declarations: [
     AdFeedComponent,
-    OfferDescriptionComponent,
     EventComponent,
     PostComponent,
     CouponComponent,
-    SkeletonComponent
+    SkeletonComponent,
+    OfferDescriptionComponent
   ],
   imports: [
     CommonModule,

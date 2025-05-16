@@ -18,7 +18,8 @@ import { ActivatedRoute } from '@angular/router';
 export class CouponComponent implements OnInit {
   @Input() couponDetails!: AdvertisementDetails;
   // baseUrl="https://images.spreezy.in/";
-  baseUrl="";  @Input() index!: number; // index of the post get from for loop.
+  baseUrl=""; 
+  @Input() index!: number; // index of the post get from for loop.
   @Input() activeIndex!: number | undefined; // it is used to indicate which post's insight is actively visible. 
   @Output() setActiveIndex = new EventEmitter<number>();  // it is the methood from business profile component which sets the value of activeIndex variable which is used to indicate the post whoes insights are showing.  
   @Output() setInsightScreen = new EventEmitter<Event>();
@@ -67,7 +68,7 @@ export class CouponComponent implements OnInit {
   @ViewChild('threeDotsWrapper', { static: false }) threeDotsRef!: ElementRef;
   isLiked: boolean = false; 
   isDisliked: boolean = false; 
-  constructor(private advertisementDetailsService: AdvertisementDetailsService,private router:Router , private shareService : ShareAddService,private route: ActivatedRoute) {}
+  constructor(private advertisementDetailsService: AdvertisementDetailsService,private router:Router , private shareService : ShareAddService,private route: ActivatedRoute ) {}
 
   hasValidImages: boolean = true;
   handleImageError(event: any): void {
@@ -99,16 +100,10 @@ export class CouponComponent implements OnInit {
     }
   }
   
-  // on Clicking the show insight button below methood get executed. 
   showInsights(event: Event) : void{
     this.setActiveIndex.emit(this.index); 
-    // it first sets the selected post insight data into the component. 
-    // hence it is accepting the index as a parameter for asking which post insight should be shown.
     this.setInsightScreen.emit(event);
-    // after setting the data it will change the value of the insight component and making it visible.
   }
-
-
 
   likePost(): void {
     const advertisementId = this.couponDetails.advertisementId;
