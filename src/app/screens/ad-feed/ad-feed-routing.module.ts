@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { AdFeedComponent } from './ad-feed.component';
-import { OfferDescriptionComponent } from './offer-description/offer-description.component';
+import { OfferDescriptionComponent } from 'src/app/shared/offer-description/offer-description.component';
 
 const routes: Routes = [
   { path: '', component: AdFeedComponent }, 

@@ -51,8 +51,9 @@ export class UserService {
     const url = `${API_CONFIG.GET_PROFILE_POSTS(
       username
     )}?page=${page}&pageSize=${postsPerPage}`;
+    const url2 = `http://localhost:8082/feed-on-profile-page/posts-section/${username}`
     return this.http
-      .get<AdvertisementDetails[]>(url, {
+      .get<AdvertisementDetails[]>(url2, {
         responseType: "json",
         headers: headers,
       })

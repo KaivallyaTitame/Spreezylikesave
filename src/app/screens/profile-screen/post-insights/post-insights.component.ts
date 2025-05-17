@@ -14,8 +14,6 @@ export class PostInsightsComponent {
   @Output() ClickOut = new EventEmitter<Event>(); // executed when we clicked on outside of component
   @ViewChild('childDiv') childDiv!: ElementRef;
  
-  
-  
   faCoffee = faCoffee;
   faHeart = faHeart; 
   faLocationArrow = faLocationArrow;
@@ -23,7 +21,6 @@ export class PostInsightsComponent {
   faUsers = faUsers; 
   faHandshake=faArrowTrendUp;
   
-  // when user clicked anywhere of the component then it will hide post insight component.  
   @HostListener('window:touchstart', ['$event'])
   @HostListener('window:click', ['$event'])
   onClickOutside(event: Event) {
@@ -35,8 +32,4 @@ export class PostInsightsComponent {
       this.ClickOut.emit(event);
     }
   }
-
-
- 
-
 }

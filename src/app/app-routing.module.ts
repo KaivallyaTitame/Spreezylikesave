@@ -5,7 +5,7 @@ import { businessGuard } from "./authGuards/business/business.guard";
 import { loginGuard } from "./authGuards/login/login.guard";
 
 import { ProfileScreenModule } from './screens/profile-screen/profile-screen.module';
-import { OfferDescriptionComponent } from './screens/ad-feed/offer-description/offer-description.component';
+
 
 const routes: Routes = [
   { 
@@ -29,9 +29,7 @@ const routes: Routes = [
     loadChildren: () => import("./screens/business-home/business-home.module").then(m => m.BusinessHomeModule),
     // canActivate: [businessGuard]
   },
-  {
-    path: 'offer-description/:id', component: OfferDescriptionComponent
-  },
+  
   {
     path: "otpscreen/:mobileNumber/:countryCode",
     loadChildren: () => import("./screens/otpScreen/otpscreen.module").then(m => m.OtpScreenModule),

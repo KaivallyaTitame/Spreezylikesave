@@ -1,70 +1,75 @@
-
-import { Component, EventEmitter, HostListener, Input, OnInit, Output } from '@angular/core';
+import { Component, HostListener, Input, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { faBars, faUserGroup, faMagnifyingGlass, faThumbsUp, faThumbsDown, faLocationArrow, faEllipsisVertical, faLocationDot, faHeart, faBell, faCircleUser , faPaperPlane } from '@fortawesome/free-solid-svg-icons';
 import { faThumbsUp as faThumbsUpOutline, faThumbsDown as faThumbsDownOutline } from '@fortawesome/free-regular-svg-icons'; 
 import { AdvertisementDetailsService } from 'src/app/services/advertisementTypes.service';
 import { AdvertisementDetails } from 'src/app/models/ad-details';
 import { faBookmark as solidBookmark } from '@fortawesome/free-solid-svg-icons';
 import { faBookmark as regularBookmark } from '@fortawesome/free-regular-svg-icons';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { ElementRef, ViewChild } from '@angular/core';
 import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
 import { ShareAddService } from 'src/app/services/share-add.service';
+
 @Component({
-  selector: 'app-Event',
-  templateUrl: './Event.component.html',
-  styleUrls: []
+  selector: 'app-offer-description',
+  templateUrl: './offer-description.component.html',
+  styles: []
 })
-export class EventComponent implements OnInit {
-  @Input() eventDetails!: AdvertisementDetails;
+export class OfferDescriptionComponent implements OnInit {
+  offerData: AdvertisementDetails 
+  dropdowns: { [key: string]: boolean } = {
+    howToAvail: false,
+    termsConditions: false
+  };
   // baseUrl="https://images.spreezy.in/";
-  baseUrl = "";  @Input() index!: number;   // index of the post get from for loop. 
-  @Input() activeIndex!: number | undefined;  // it is used to indicate which post's insight is actively visible. 
-  @Output() setActiveIndex = new EventEmitter<number>();// it is the methood from business profile component which sets the value of activeIndex variable which is used to indicate the post whoes insights are showing. 
-  @Output() setInsightScreen = new EventEmitter<Event>(); // this methood is from business profile compoennt which  is used to set the boolean variable whether to show the post insight or not. 
-  @Input() showButton !:boolean;// this parameter comes from business profile component which is used to track the visibility of the show insight button. 
+  baseUrl = "";
+
   remainingDays: number;
   remainingHours: number;
   isExpired: boolean = false;
-  reportVisible: boolean = false;
-  showReportButton: boolean = false;
-  showReportSuccess: boolean = false;
   showLikeAnimation: boolean = false;
-  showDislikeAnimation: boolean = false;
-  isSaved: boolean = false; // Track saved state
-  showSavedMessage: boolean = false; // Track the display of "Saved" message
- 
- 
   scaleAnimation: boolean = false;
+  showDislikeAnimation: boolean = false;
+  isSaved: boolean = false; 
+  showSavedMessage: boolean = false; 
+  showReportButton: boolean = false;
+  showReportSuccess: boolean = false; 
   showPopup: boolean = false;
   popupTitle: string = 'Error';
   popupBody: string = '';
+  faPaperPlane = faPaperPlane
   faBars = faBars;
   faUserGroup = faUserGroup;
   faMagnifyingGlass = faMagnifyingGlass;
   faThumbsUp = faThumbsUp;
   faThumbsDown = faThumbsDown;
   faLocationArrow = faLocationArrow;
-  solidBookmark = solidBookmark;
-  regularBookmark = regularBookmark;
+  solidBookmark = solidBookmark; 
+  regularBookmark = regularBookmark; 
   faEllipsisVertical = faEllipsisVertical;
   faLocationDot = faLocationDot;
   faHeart = faHeart;
   faBell = faBell;
-  faPaperPlane = faPaperPlane;
   faCircleUser = faCircleUser;
   faThumbsUpOutline = faThumbsUpOutline;
   faThumbsDownOutline = faThumbsDownOutline;
-  isLiked: boolean = false;
-  isDisliked: boolean = false;
-  showBelow = false;
+  isLiked: boolean = false; 
+  isDisliked: boolean = false; 
   faChevronLeft = faChevronLeft;
   faChevronRight = faChevronRight;
   currentImageIndex = 0;
   translateX = 0;
   isFollowing: boolean = false;
   @ViewChild('imageContainer') imageContainer: ElementRef;
-  @ViewChild('threeDotsWrapper', { static: false }) threeDotsRef!: ElementRef;  constructor(private advertisementDetailsService: AdvertisementDetailsService, private router: Router , private shareService : ShareAddService,private route: ActivatedRoute) { }
+  
+
+  constructor(
+    private route: ActivatedRoute,
+    private advertisementDetailsService: AdvertisementDetailsService,
+    private router: Router,
+    private shareService : ShareAddService
+  ) {}
 
   hasValidImages: boolean = true;
   handleImageError(event: any): void {
@@ -73,28 +78,54 @@ export class EventComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    const { remainingDays, remainingHours, isExpired } = this.advertisementDetailsService.calculateExpiry(this.eventDetails.offerExpiry);
-    this.remainingDays = remainingDays;
-    this.remainingHours = remainingHours;
-    this.isExpired = isExpired;
+    const advertisementId = this.route.snapshot.paramMap.get('advertisementId');
+    this.route.queryParams.subscribe((params) => {
+      if (params['data']) {
+        let details = JSON.parse(params['data']);
+        console.log("Received Details:", details);
+        this.offerData = details
+      }
+    });
+    if (this.offerData) {
+      const expirationDate = new Date(this.offerData.offerExpiry);
+      const today = new Date();
+      this.remainingDays = Math.ceil((expirationDate.getTime() - today.getTime()) / (1000 * 3600 * 24));
+      this.isExpired = this.remainingDays <= 0;
+    }
+  }
+
+  share(){
+    this.shareService.shareContent(this.offerData);
   }
 
   navigateToProfile(){
     console.log(this.router.url)
     if(this.router.url == "/business-home/adfeed"){
-      this.router.navigate(['/profile-screen/business-profile',this.eventDetails.username])
+      this.router.navigate(['/profile-screen/business-profile',this.offerData.username])
     }else{
-      this.router.navigate(['/profile-screen/consumer-profile',this.eventDetails.username])
+      this.router.navigate(['/profile-screen/consumer-profile',this.offerData.username])
     }
   }
 
-  showInsights(event: Event) : void{
-    this.setActiveIndex.emit(this.index); 
-    this.setInsightScreen.emit(event);
+  get offerDataSafe(): AdvertisementDetails {
+    if (!this.offerData) {
+      throw new Error('offerData is null');
+    }
+    return this.offerData;
+  }
+
+  toggleDropdown(key: string): void {
+    this.dropdowns[key] = !this.dropdowns[key];
+  }
+
+  viewOnWebsite(): void {
+    if (this.offerData && this.offerData.websiteLink) {
+      window.open(this.offerData.websiteLink, '_blank');
+    }
   }
 
   likePost(): void {
-    const advertisementId = this.eventDetails.advertisementId;
+    const advertisementId = this.offerData.advertisementId;
     this.advertisementDetailsService.updateLikes(advertisementId).subscribe({
       next: (response) => {
         this.triggerAnimation('like');
@@ -102,12 +133,12 @@ export class EventComponent implements OnInit {
         if (status == 201) {
           this.isLiked = true;
           this.isDisliked = false;
-          this.eventDetails.likes += 1;
+          this.offerData.likes += 1;
         } else if (status == 200) {
           this.isLiked = true;
           this.isDisliked = false;
-          this.eventDetails.likes += 1;
-          this.eventDetails.dislikes -= 1;
+          this.offerData.likes += 1;
+          this.offerData.dislikes -= 1;
         } 
       },
       error: (error) => {
@@ -123,7 +154,7 @@ export class EventComponent implements OnInit {
   }
   
   dislikePost(): void {
-    const advertisementId = this.eventDetails.advertisementId;
+    const advertisementId = this.offerData.advertisementId;
     this.advertisementDetailsService.updateDislikes(advertisementId).subscribe({
       next: (response) => {
         this.triggerAnimation('dislike');
@@ -131,12 +162,12 @@ export class EventComponent implements OnInit {
         if (status === 201) {
           this.isDisliked = true;
           this.isLiked = false;
-          this.eventDetails.dislikes += 1;
+          this.offerData.dislikes += 1;
         } else if (status === 200) {
           this.isDisliked = true;
           this.isLiked = false;
-          this.eventDetails.dislikes += 1;
-          this.eventDetails.likes -= 1;
+          this.offerData.dislikes += 1;
+          this.offerData.likes -= 1;
         } 
       },
       error: (error) => {
@@ -150,25 +181,22 @@ export class EventComponent implements OnInit {
       },
     });
   }
-
+  
   savePost(): void {
-    const advertisementId = this.eventDetails.advertisementId;
-    const username = this.eventDetails.username;
+    const advertisementId = this.offerDataSafe.advertisementId; 
+    const username = this.offerDataSafe.username;
     this.triggerAnimation('save');
     this.scaleAnimation = true;
     setTimeout(() => {
       this.scaleAnimation = false;
-      this.scaleAnimation = false;
     }, 500);
-    this.isSaved = !this.isSaved;
-    this.isSaved = !this.isSaved;
+    this.isSaved = !this.isSaved; 
     this.advertisementDetailsService.savePost(username, advertisementId).subscribe({
       next: (response) => {
+        console.log('Post saved successfully:', response);
       },
       error: (err) => {
-        this.showError('Save Error', 'Failed to save the post. Please try again.' + err);
-        this.isSaved = !this.isSaved;
-        this.showError('Save Error', 'Failed to save the post. Please try again.' + err);
+        this.showError('Save Error', 'Failed to save the post. Please try again.');
         this.isSaved = !this.isSaved;
       },
     });
@@ -176,50 +204,10 @@ export class EventComponent implements OnInit {
 
   toggleReportButton(): void {
     this.showReportButton = !this.showReportButton;
-    if (this.showReportButton) {
-      this.determinePopupPosition();
-    }
-  }
-
-  @HostListener('window:scroll', [])
-  onScroll(): void {
-    const triggerPoint = 135; 
-    this.showBelow = window.scrollY < triggerPoint;
-    if (this.showReportButton) {
-      this.determinePopupPosition();
-    }
-  }
-
-  determinePopupPosition(): void {
-    if (!this.threeDotsRef) return;
-    const rect = this.threeDotsRef.nativeElement.getBoundingClientRect();
-    const safeTopLimit = 135; 
-    this.showBelow = rect.top < safeTopLimit;
-  }
-
-  getReportPopupStyle() {
-    return this.showBelow
-      ? { top: '2.5rem', bottom: 'auto' } 
-      : { bottom: '2.5rem', top: 'auto' };
-  }
-
-  sharePost(){
-    this.shareService.shareContent(this.eventDetails);
   }
 
   reportPost(): void {
-    this.advertisementDetailsService.reportPost(this.eventDetails.advertisementId).subscribe({
-      next: (response) => {
-        console.log('Post reported successfully:', response);
-        this.showReportSuccess = true;
-        this.showReportButton = false;
-      },
-      error: (err) => {
-        this.showError('Report Error', 'Failed to Report the post. Please try again.');
-      },
-    });
-    document.body.style.overflow = 'hidden';
-    this.advertisementDetailsService.reportPost(this.eventDetails.advertisementId).subscribe({
+    this.advertisementDetailsService.reportPost(this.offerData.advertisementId).subscribe({
       next: (response) => {
         console.log('Post reported successfully:', response);
         this.showReportSuccess = true;
@@ -235,8 +223,12 @@ export class EventComponent implements OnInit {
   hideReportSuccess(): void {
     this.showReportSuccess = false;
     document.body.style.overflow = 'auto';
-    this.showReportSuccess = false;
-    document.body.style.overflow = 'auto';
+  }
+
+  showError(title: string, body: string) {
+    this.popupTitle = title;
+    this.popupBody = body;
+    this.showPopup = true;
   }
 
   private triggerAnimation(type: 'like' | 'dislike' | 'save') {
@@ -251,23 +243,6 @@ export class EventComponent implements OnInit {
     }, 500);
   }
 
-  showError(title: string, body: string) {
-    this.popupTitle = title;
-    this.popupBody = body;
-    this.showPopup = true;
-  }
-
-
-  bookNow(): void {
-    window.location.href = this.eventDetails.websiteLink;
-  }
-
-  showDetails(advertisementId: number): void {
-    this.router.navigate([`${this.router.url}/offer-description`, advertisementId], {
-      queryParams: { data: JSON.stringify(this.eventDetails) },
-    });
-  }
-
   prevImage() {
     if (this.currentImageIndex > 0) {
       this.currentImageIndex--;
@@ -276,14 +251,14 @@ export class EventComponent implements OnInit {
   }
 
   nextImage() {
-    if (this.eventDetails.imagePaths && this.currentImageIndex < this.eventDetails.imagePaths.length - 1) {
+    if (this.offerData.imagePaths && this.currentImageIndex < this.offerData.imagePaths.length - 1) {
       this.currentImageIndex++;
       this.updateTranslateX();
     }
   }
 
   goToImage(index: number) {
-    if (this.eventDetails.imagePaths && index >= 0 && index < this.eventDetails.imagePaths.length) {
+    if (this.offerData.imagePaths && index >= 0 && index < this.offerData.imagePaths.length) {
       this.currentImageIndex = index;
       this.updateTranslateX();
     }
@@ -318,5 +293,4 @@ export class EventComponent implements OnInit {
       }
     }
   }
-
 }
