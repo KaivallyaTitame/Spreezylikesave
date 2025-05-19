@@ -15,8 +15,8 @@ export class GlobalErrorHandlerService implements ErrorHandler {
   handleError(error: any): void {
     if(error instanceof HttpErrorResponse){
           const errorB = JSON.parse(error?.error || {}); 
-          const code = errorB.errorCode || '404';
-          const message = errorB.errorDescription || 'An HTTP Error Occurred';
+          const code = errorB.errorCode || 'SPX-7-002';
+          const message = errorB.errorDescription || 'Service unavailable due to maintenance or technical issues';
           const appRef = this.injector.get(ApplicationRef);
           const appComponent = appRef.components[0].instance as AppComponent;
           this.zone.run(() => {
