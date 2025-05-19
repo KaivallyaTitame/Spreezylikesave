@@ -64,7 +64,8 @@ export class UserInformationComponent {
         }
       },
       error: (error: HttpErrorResponse) => {
-        console.error('Error fetching user data:', error);
+        this.loading = false;
+        throw(error);
       },
       complete: () => {
         this.loading = false; 

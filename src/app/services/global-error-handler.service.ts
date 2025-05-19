@@ -13,15 +13,14 @@ export class GlobalErrorHandlerService implements ErrorHandler {
   constructor(private alertService: AlertService, private zone: NgZone,private injector: Injector) {}
 
   handleError(error: any): void {
-    console.log(error instanceof HttpErrorResponse); 
     if(error instanceof HttpErrorResponse){
-          console.log('Yes reached to this block !!'); 
+          const errorB = JSON.parse(error?.error || {}); 
+          const code = errorB.errorCode || '404';
+          const message = errorB.errorDescription || 'An HTTP Error Occurred';
           const appRef = this.injector.get(ApplicationRef);
           const appComponent = appRef.components[0].instance as AppComponent;
-          const status_code = String(error?.status || '404'); 
-          const message = error?.message || 'An HTTP error occurred.';
           this.zone.run(() => {
-            appComponent.showErrorPopup(status_code, message);
+            appComponent.showErrorPopup(code, message);
           })
     }
     else{

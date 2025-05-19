@@ -41,6 +41,7 @@ export class ImageComponentComponent implements OnInit {
         error: (err) => {
           console.error('Error fetching image link', err);
           this.setDefaultImage();
+          throw(err);
         }
       });
     } else {
