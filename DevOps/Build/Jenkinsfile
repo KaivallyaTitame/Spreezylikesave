@@ -52,22 +52,27 @@ pipeline
         
 
         
-        // stage('Run Tests'){
-        //     steps {
-        //     sh 'npm start &'
+        stage('Run Tests'){
+            steps {
+            
+            def skip_test = true
+            sh 'npm start &'
 
-        //     // Wait for Angular application to start
-        //     sh 'npx wait-on http://localhost:4200'
+            // Wait for Angular application to start
+            sh 'npx wait-on http://localhost:4200'
 
-        //     // Run Cypress tests
-        //     sh 'NO_COLOR=1 npm run test'
-        //     sh 'npm run test:coverage'
+            // Run Cypress tests
+            if(!skip_test){
+                sh 'NO_COLOR=1 npm run test'
+                sh 'npm run test:coverage'
+            }else {
+                echo 'Skipping Cypress tests as skip_test is set to true'
+            }
 
+            sh 'pkill -f "npm start"'
 
-        //     sh 'pkill -f "npm start"'
-
-        //     }
-        // }
+            }
+        }
         
 
         //  stage('sonarQube-analysis') {
