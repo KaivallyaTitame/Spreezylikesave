@@ -96,15 +96,6 @@ pipeline
                 sh 'npm run build-uat'
             }
         }
-
-        stage('Generate APK'){
-            steps{
-              sh 'npx cap add android'
-              sh 'echo "sdk.dir=/usr/local/android/sdk" > ./android/local.properties'
-              sh 'npx cap sync'
-              sh 'npm run apk-debug'
-            }
-        }
        
         stage('Update config') {
             steps {
@@ -116,12 +107,22 @@ pipeline
                     echo "Updating versionCode to ${versionCode}"
 
                     sh """
+                        npx cap add android
                         sed -i "s/versionCode [0-9]\\+/versionCode ${versionCode}/" android/app/build.gradle
                         sed -i "s/versionName \\"[^\\"]*\\"/versionName \\"${versionName}\\"/" android/app/build.gradle
                     """
                 }
             }
         }
+
+        stage('Generate APK'){
+                    steps{
+                            
+                      sh 'echo "sdk.dir=/usr/local/android/sdk" > ./android/local.properties'
+                      sh 'npx cap sync'
+                      sh 'npm run apk-debug'
+                    }
+                }
         
         stage('Generate and Publish Signed AAB') {
             environment {
