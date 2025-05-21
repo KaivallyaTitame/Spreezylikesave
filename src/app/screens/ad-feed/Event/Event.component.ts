@@ -1,14 +1,11 @@
 
-import { Component, EventEmitter, HostListener, Input, OnInit, Output } from '@angular/core';
-import { faBars, faUserGroup, faMagnifyingGlass, faThumbsUp, faThumbsDown, faLocationArrow, faEllipsisVertical, faLocationDot, faHeart, faBell, faCircleUser , faPaperPlane } from '@fortawesome/free-solid-svg-icons';
-import { faThumbsUp as faThumbsUpOutline, faThumbsDown as faThumbsDownOutline } from '@fortawesome/free-regular-svg-icons'; 
-import { AdvertisementDetailsService } from 'src/app/services/advertisementTypes.service';
-import { AdvertisementDetails } from 'src/app/models/ad-details';
-import { faBookmark as solidBookmark } from '@fortawesome/free-solid-svg-icons';
-import { faBookmark as regularBookmark } from '@fortawesome/free-regular-svg-icons';
+import { Component, ElementRef, EventEmitter, HostListener, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ElementRef, ViewChild } from '@angular/core';
-import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
+import { faThumbsDown as faThumbsDownOutline, faThumbsUp as faThumbsUpOutline, faBookmark as regularBookmark } from '@fortawesome/free-regular-svg-icons';
+import { faBars, faBell, faChevronLeft, faChevronRight, faCircleUser, faEllipsisVertical, faHeart, faLocationArrow, faLocationDot, faMagnifyingGlass, faPaperPlane, faThumbsDown, faThumbsUp, faUserGroup, faBookmark as solidBookmark } from '@fortawesome/free-solid-svg-icons';
+import { API_CONFIG } from 'src/app/api-config';
+import { AdvertisementDetails } from 'src/app/models/ad-details';
+import { AdvertisementDetailsService } from 'src/app/services/advertisementTypes.service';
 import { ShareAddService } from 'src/app/services/share-add.service';
 import { JwtDecoderService } from 'src/app/services/jwt-decoder.service';
 @Component({
@@ -18,12 +15,13 @@ import { JwtDecoderService } from 'src/app/services/jwt-decoder.service';
 })
 export class EventComponent implements OnInit {
   @Input() eventDetails!: AdvertisementDetails;
-  // baseUrl="https://images.spreezy.in/";
-  baseUrl = "";  @Input() index!: number;   
+  @Input() index!: number;   
   @Input() activeIndex!: number | undefined;  
   @Output() setActiveIndex = new EventEmitter<number>();
   @Output() setInsightScreen = new EventEmitter<Event>(); 
   @Input() showButton !:boolean;
+
+  baseUrl=API_CONFIG.IMAGE_URL;
   remainingDays: number;
   remainingHours: number;
   isExpired: boolean = false;

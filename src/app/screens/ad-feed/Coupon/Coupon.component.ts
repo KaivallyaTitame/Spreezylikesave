@@ -1,14 +1,12 @@
-import { Component, HostListener,ElementRef, ViewChild, Input, OnInit, Output, EventEmitter } from '@angular/core';
-import { faBars, faUserGroup, faMagnifyingGlass, faThumbsUp, faThumbsDown, faLocationArrow, faEllipsisVertical, faLocationDot, faHeart, faBell, faCircleUser , faBookmark , faPaperPlane  } from '@fortawesome/free-solid-svg-icons';
-import { faThumbsUp as faThumbsUpOutline, faThumbsDown as faThumbsDownOutline ,} from '@fortawesome/free-regular-svg-icons'; // Import outlined icons
-import { AdvertisementDetailsService } from 'src/app/services/advertisementTypes.service';
+import { Component, ElementRef, EventEmitter, HostListener, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { IconDefinition } from '@fortawesome/fontawesome-svg-core'; // Import the type
+import { faBookmark as faBookmarkRegular, faThumbsDown as faThumbsDownOutline, faThumbsUp as faThumbsUpOutline, faBookmark as regularBookmark, faBookmark as solidBookmark, } from '@fortawesome/free-regular-svg-icons'; // Import outlined icons
+import { faBars, faBell, faBookmark, faChevronLeft, faChevronRight, faCircleUser, faEllipsisVertical, faHeart, faLocationArrow, faLocationDot, faMagnifyingGlass, faPaperPlane, faThumbsDown, faThumbsUp, faUserGroup } from '@fortawesome/free-solid-svg-icons';
+import { API_CONFIG } from 'src/app/api-config';
 import { AdvertisementDetails } from 'src/app/models/ad-details';
-import { faBookmark as solidBookmark , faBookmark as regularBookmark , faBookmark as faBookmarkRegular } from '@fortawesome/free-regular-svg-icons';
-import { IconDefinition } from '@fortawesome/fontawesome-svg-core';  // Import the type
-import { Router } from '@angular/router';
-import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
+import { AdvertisementDetailsService } from 'src/app/services/advertisementTypes.service';
 import { ShareAddService } from 'src/app/services/share-add.service';
-import { ActivatedRoute } from '@angular/router';
 import { JwtDecoderService } from 'src/app/services/jwt-decoder.service';
 
 @Component({

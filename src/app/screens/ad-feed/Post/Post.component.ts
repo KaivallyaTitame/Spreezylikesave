@@ -1,17 +1,12 @@
-import { Component, HostListener, Input, OnInit,Output,EventEmitter} from '@angular/core';
-import { faBars, faUserGroup, faMagnifyingGlass, faThumbsUp, faThumbsDown, faLocationArrow, faEllipsisVertical, faLocationDot, faBell, faCircleUser , faPaperPlane } from '@fortawesome/free-solid-svg-icons';
-import { faThumbsUp as faThumbsUpOutline, faThumbsDown as faThumbsDownOutline } from '@fortawesome/free-regular-svg-icons'; 
-import { AdvertisementDetailsService } from 'src/app/services/advertisementTypes.service';
-import { AdvertisementDetails } from 'src/app/models/ad-details';
-import { faBookmark as solidBookmark } from '@fortawesome/free-solid-svg-icons';
-import { faHeart as faHeartSolid } from '@fortawesome/free-solid-svg-icons';
-import { faHeart as faHeartRegular } from '@fortawesome/free-regular-svg-icons';
-import { faBookmark as regularBookmark  } from '@fortawesome/free-regular-svg-icons';
+import { Component, ElementRef, EventEmitter, HostListener, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
+import { faHeart as faHeartRegular, faThumbsDown as faThumbsDownOutline, faThumbsUp as faThumbsUpOutline, faBookmark as regularBookmark } from '@fortawesome/free-regular-svg-icons';
+import { faBars, faBell, faChevronLeft, faChevronRight, faCircleUser, faEllipsisVertical, faHeart as faHeartSolid, faLocationArrow, faLocationDot, faMagnifyingGlass, faPaperPlane, faThumbsDown, faThumbsUp, faUserGroup, faBookmark as solidBookmark } from '@fortawesome/free-solid-svg-icons';
+import { API_CONFIG } from 'src/app/api-config';
+import { AdvertisementDetails } from 'src/app/models/ad-details';
+import { AdvertisementDetailsService } from 'src/app/services/advertisementTypes.service';
 import { JwtDecoderService } from 'src/app/services/jwt-decoder.service';
-import { ElementRef, ViewChild } from '@angular/core';
-import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
-import { ShareAddService } from 'src/app/services/share-add.service';import { ActivatedRoute } from '@angular/router';
+import { ShareAddService } from 'src/app/services/share-add.service';
 
 @Component({
   selector: 'app-Post',

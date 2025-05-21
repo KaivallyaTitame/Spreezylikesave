@@ -1,11 +1,11 @@
-import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
-import { AdvertisementDetails } from '../models/ad-details';
-import { JwtDecoderService } from './jwt-decoder.service';
 import { HttpResponse } from '@angular/common/http';
 import { API_CONFIG } from '../api-config';
+import { AdvertisementDetails } from '../models/ad-details';
+import { JwtDecoderService } from './jwt-decoder.service';
 @Injectable({
   providedIn: 'root',
 })
@@ -27,7 +27,6 @@ export class AdvertisementDetailsService {
     console.log("userName", userName);
   
     const url = API_CONFIG.ADVERTISEMENT_EVENTS.GET_ADVERTISEMENT_DETAILS(userName);
-    const url2 = `http://localhost:8082/feed-on-profile-page/posts-section/${userName}`
     
     const body = {
       'authorization': `Bearer ${token}`,
@@ -43,7 +42,7 @@ export class AdvertisementDetailsService {
       .set('page', 0)
       .set('pageSize', 10);
   
-    return this.http.request<AdvertisementDetails[]>("GET", url2, {
+    return this.http.request<AdvertisementDetails[]>("GET", url, {
       body,
       headers,
       params,

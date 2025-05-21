@@ -1,14 +1,10 @@
-import { Component, HostListener, Input, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { faBars, faUserGroup, faMagnifyingGlass, faThumbsUp, faThumbsDown, faLocationArrow, faEllipsisVertical, faLocationDot, faHeart, faBell, faCircleUser , faPaperPlane } from '@fortawesome/free-solid-svg-icons';
-import { faThumbsUp as faThumbsUpOutline, faThumbsDown as faThumbsDownOutline } from '@fortawesome/free-regular-svg-icons'; 
-import { AdvertisementDetailsService } from 'src/app/services/advertisementTypes.service';
+import { Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { faThumbsDown as faThumbsDownOutline, faThumbsUp as faThumbsUpOutline, faBookmark as regularBookmark } from '@fortawesome/free-regular-svg-icons';
+import { faBars, faBell, faChevronLeft, faChevronRight, faCircleUser, faEllipsisVertical, faHeart, faLocationArrow, faLocationDot, faMagnifyingGlass, faPaperPlane, faThumbsDown, faThumbsUp, faUserGroup, faBookmark as solidBookmark } from '@fortawesome/free-solid-svg-icons';
+import { API_CONFIG } from 'src/app/api-config';
 import { AdvertisementDetails } from 'src/app/models/ad-details';
-import { faBookmark as solidBookmark } from '@fortawesome/free-solid-svg-icons';
-import { faBookmark as regularBookmark } from '@fortawesome/free-regular-svg-icons';
-import { Router } from '@angular/router';
-import { ElementRef, ViewChild } from '@angular/core';
-import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
+import { AdvertisementDetailsService } from 'src/app/services/advertisementTypes.service';
 import { ShareAddService } from 'src/app/services/share-add.service';
 import { JwtDecoderService } from 'src/app/services/jwt-decoder.service';
 
@@ -23,9 +19,8 @@ export class OfferDescriptionComponent implements OnInit {
     howToAvail: false,
     termsConditions: false
   };
-  // baseUrl="https://images.spreezy.in/";
-  baseUrl = "";
 
+  baseUrl=API_CONFIG.IMAGE_URL;
   remainingDays: number;
   remainingHours: number;
   isExpired: boolean = false;
