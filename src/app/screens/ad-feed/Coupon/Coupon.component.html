@@ -14,7 +14,9 @@
           </div>
         </div>
         <button
-          class="bg-primary z-10 text-white font-medium font-system-ui border-none px-3 py-1 rounded mt-2 mr-1 cursor-pointer">
+          class="bg-primary z-10 text-white font-medium font-system-ui border-none px-3 py-1 rounded mt-2 mr-1 cursor-pointer"
+          (click)="toggleFollow()">
+        >
           {{ isFollowing ? 'Unfollow' : 'Follow' }}
         </button>
     </div>

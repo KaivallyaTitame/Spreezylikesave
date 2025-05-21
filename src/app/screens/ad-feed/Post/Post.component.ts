@@ -22,11 +22,11 @@ export class PostComponent implements OnInit {
   @Input() postDetails!: AdvertisementDetails;
   baseUrl = "";
   // baseUrl="https://images.spreezy.in/";
-  @Input() index!: number;  // index of the post get from for loop.  
-  @Input() activeIndex!: number | undefined; // it is used to indicate which post's insight is actively visible. 
-  @Output() setActiveIndex = new EventEmitter<number>(); // it is the methood from business profile component which sets the value of activeIndex variable which is used to indicate the post whoes insights are showing. 
-  @Output() setInsightScreen = new EventEmitter<Event>(); // this methood is from business profile compoennt which  is used to set the boolean variable whether to show the post insight or not. 
-  @Input() showButton !:boolean; // this parameter comes from business profile component which is used to track the visibility of the show insight button. 
+  @Input() index!: number;  
+  @Input() activeIndex!: number | undefined; 
+  @Output() setActiveIndex = new EventEmitter<number>(); 
+  @Output() setInsightScreen = new EventEmitter<Event>(); 
+  @Input() showButton !:boolean; 
   remainingDays: number;
   remainingHours: number;
   isExpired: boolean = false;
@@ -37,7 +37,6 @@ export class PostComponent implements OnInit {
   showSavedMessage: boolean = false;
   showReportButton: boolean = false;
   showReportSuccess: boolean = false;
-
   showPopup: boolean = false;
   popupTitle: string = 'Error';
   popupBody: string = '';
@@ -78,12 +77,6 @@ export class PostComponent implements OnInit {
 
   ngOnInit(): void {
     const { remainingDays, remainingHours, isExpired } = this.advertisementDetailsService.calculateExpiry(this.postDetails.offerExpiry);
-
-    console.log("POST DETAILS", this.postDetails)
-
-
-    console.log("POST DETAILS", this.postDetails)
-
     this.remainingDays = remainingDays;
     this.remainingHours = remainingHours;
     this.isExpired = isExpired;
@@ -105,15 +98,16 @@ export class PostComponent implements OnInit {
     const sourceUsername = userName || 'currentUser';  
     const targetUsername = this.postDetails.username;
     if (this.isFollowing) {
-      this.advertisementDetailsService.unfollowUser(sourceUsername, targetUsername).subscribe(
-        (response) => {
+      this.advertisementDetailsService.unfollowUser(sourceUsername, targetUsername).subscribe({
+        next : (response) => {
           console.log('Unfollowed successfully:', response);
-          this.isFollowing = false;
+          this.isFollowing = true;
         },
-        (error) => {
+        error: (error) => {
           console.error('Error unfollowing:', error);
         }
-      );
+      }
+    );
     } else {
       this.advertisementDetailsService.followUser(sourceUsername, targetUsername).subscribe(
         (response) => {
@@ -127,7 +121,6 @@ export class PostComponent implements OnInit {
     }
   }
 
-  // Optionally, check if the user is already following
   checkIfFollowing(): void {
     let token = localStorage.getItem("token") || "";
     let userName = this.jwtDecoderService.decodeInfoFromToken(token)["sub"] || "";
@@ -139,15 +132,10 @@ export class PostComponent implements OnInit {
     this.isFollowing = false;  // Replace this with actual check
   }
 
-  // on Clicking the show insight button below methood get executed. 
   showInsights(event: Event) : void{
     this.setActiveIndex.emit(this.index); 
-    // it first sets the selected post insight data into the component. 
-    // hence it is accepting the index as a parameter for asking which post insight should be shown.
     this.setInsightScreen.emit(event);
-    // after setting the data it will change the value of the insight component and making it visible.
   }
-
 
   likePost(): void {
     const advertisementId = this.postDetails.advertisementId;

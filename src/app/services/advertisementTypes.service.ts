@@ -69,14 +69,19 @@ export class AdvertisementDetailsService {
   }
 
 
-  savePost(username: string, advertisementId: number): Observable<AdvertisementDetails> {
+  savePost(username: string, advertisementId: number): Observable<HttpResponse<AdvertisementDetails>> {
 
     return this.http.post<AdvertisementDetails>(
       API_CONFIG.ADVERTISEMENT_EVENTS.SAVE_ADVERTISEMENT,{
         username: username,
         advertisementId: advertisementId
       },{
-        responseType: 'json'
+        responseType: 'json', 
+        observe: 'response',  
+        headers: new HttpHeaders({
+          Authorization: `Bearer ${this.token}`,
+          'Content-Type': 'application/json',
+        }),
       }
     );
   }

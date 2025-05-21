@@ -54,15 +54,27 @@ export const API_CONFIG = {
     CREATE_EVENT: `${environment.apiGateway}/content/event/create`,
   },
 
+  // ADVERTISEMENT_EVENTS:{
+  //   GET_ADVERTISEMENT_DETAILS : (username: string) => `${environment.apiGateway}/feed-on-profile-page/posts-section/${username}`,
+  //   UPVOTE_ADVERTISEMENT : (advertisementId: number) =>`${environment.apiGateway}/content/advertisement/upvote/${advertisementId}`,
+  //   DISLIKE_ADVERTISEMENT : (advertisementId: number) =>`${environment.apiGateway}/content/advertisement/downvote/${advertisementId}`,
+  //   SAVE_ADVERTISEMENT : `${environment.apiGateway}/content/advertisement/save`,
+  //   REPORT_ADVERTISEMENT : `${environment.apiGateway}/content/advertisement/report`,
+  //   FOLLOW : (sourceUsername: string, targetUsername: string) => 
+  //     `${environment.apiGateway}/user/follow/${sourceUsername}/${targetUsername}`,
+  //   UNFOLLOW : (sourceUsername: string, targetUsername: string) => 
+  //   `${environment.apiGateway}/user/unfollow/${sourceUsername}/${targetUsername}`
+  // }
+
   ADVERTISEMENT_EVENTS:{
-    GET_ADVERTISEMENT_DETAILS : (username: string) => `${environment.apiGateway}/feed-on-profile-page/posts-section/${username}`,
-    UPVOTE_ADVERTISEMENT : (advertisementId: number) =>`${environment.apiGateway}/content/advertisement/upvote/${advertisementId}`,
-    DISLIKE_ADVERTISEMENT : (advertisementId: number) =>`${environment.apiGateway}/content/advertisement/downvote/${advertisementId}`,
-    SAVE_ADVERTISEMENT : `${environment.apiGateway}/content/advertisement/save`,
-    REPORT_ADVERTISEMENT : `${environment.apiGateway}/content/advertisement/report`,
+    GET_ADVERTISEMENT_DETAILS : (username: string) => `http://localhost:8082/feed-on-profile-page/posts-section/${username}`,
+    UPVOTE_ADVERTISEMENT : (advertisementId: number) =>`http://localhost:8082/content/advertisement/upvote/${advertisementId}`,
+    DISLIKE_ADVERTISEMENT : (advertisementId: number) =>`http://localhost:8082/content/advertisement/downvote/${advertisementId}`,
+    SAVE_ADVERTISEMENT : `http://localhost:8082/content/advertisement/save`,
+    REPORT_ADVERTISEMENT : `http://localhost:8082/content/advertisement/report`,
     FOLLOW : (sourceUsername: string, targetUsername: string) => 
-      `${environment.apiGateway}/user/follow/${sourceUsername}/${targetUsername}`,
+      `http://localhost:8082/user/follow/${sourceUsername}/${targetUsername}`,
     UNFOLLOW : (sourceUsername: string, targetUsername: string) => 
-    `${environment.apiGateway}/user/unfollow/${sourceUsername}/${targetUsername}`
+    `http://localhost:8082/user/unfollow/${sourceUsername}/${targetUsername}`
   }
 };

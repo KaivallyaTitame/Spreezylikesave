@@ -10,6 +10,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ElementRef, ViewChild } from '@angular/core';
 import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
 import { ShareAddService } from 'src/app/services/share-add.service';
+import { JwtDecoderService } from 'src/app/services/jwt-decoder.service';
 @Component({
   selector: 'app-Event',
   templateUrl: './Event.component.html',
@@ -18,11 +19,11 @@ import { ShareAddService } from 'src/app/services/share-add.service';
 export class EventComponent implements OnInit {
   @Input() eventDetails!: AdvertisementDetails;
   // baseUrl="https://images.spreezy.in/";
-  baseUrl = "";  @Input() index!: number;   // index of the post get from for loop. 
-  @Input() activeIndex!: number | undefined;  // it is used to indicate which post's insight is actively visible. 
-  @Output() setActiveIndex = new EventEmitter<number>();// it is the methood from business profile component which sets the value of activeIndex variable which is used to indicate the post whoes insights are showing. 
-  @Output() setInsightScreen = new EventEmitter<Event>(); // this methood is from business profile compoennt which  is used to set the boolean variable whether to show the post insight or not. 
-  @Input() showButton !:boolean;// this parameter comes from business profile component which is used to track the visibility of the show insight button. 
+  baseUrl = "";  @Input() index!: number;   
+  @Input() activeIndex!: number | undefined;  
+  @Output() setActiveIndex = new EventEmitter<number>();
+  @Output() setInsightScreen = new EventEmitter<Event>(); 
+  @Input() showButton !:boolean;
   remainingDays: number;
   remainingHours: number;
   isExpired: boolean = false;
@@ -31,10 +32,8 @@ export class EventComponent implements OnInit {
   showReportSuccess: boolean = false;
   showLikeAnimation: boolean = false;
   showDislikeAnimation: boolean = false;
-  isSaved: boolean = false; // Track saved state
-  showSavedMessage: boolean = false; // Track the display of "Saved" message
- 
- 
+  isSaved: boolean = false; 
+  showSavedMessage: boolean = false; 
   scaleAnimation: boolean = false;
   showPopup: boolean = false;
   popupTitle: string = 'Error';
@@ -64,7 +63,7 @@ export class EventComponent implements OnInit {
   translateX = 0;
   isFollowing: boolean = false;
   @ViewChild('imageContainer') imageContainer: ElementRef;
-  @ViewChild('threeDotsWrapper', { static: false }) threeDotsRef!: ElementRef;  constructor(private advertisementDetailsService: AdvertisementDetailsService, private router: Router , private shareService : ShareAddService,private route: ActivatedRoute) { }
+  @ViewChild('threeDotsWrapper', { static: false }) threeDotsRef!: ElementRef;  constructor(private advertisementDetailsService: AdvertisementDetailsService, private router: Router , private shareService : ShareAddService,private route: ActivatedRoute ,private jwtDecoderService : JwtDecoderService) { }
 
   hasValidImages: boolean = true;
   handleImageError(event: any): void {
@@ -77,6 +76,46 @@ export class EventComponent implements OnInit {
     this.remainingDays = remainingDays;
     this.remainingHours = remainingHours;
     this.isExpired = isExpired;
+  }
+
+  toggleFollow(): void {
+    let token = localStorage.getItem("token") || "";
+    let userName = this.jwtDecoderService.decodeInfoFromToken(token)["sub"] || "";
+    const sourceUsername = userName || 'currentUser';  
+    const targetUsername = this.eventDetails.username;
+    if (this.isFollowing) {
+      this.advertisementDetailsService.unfollowUser(sourceUsername, targetUsername).subscribe({
+        next : (response) => {
+          console.log('Unfollowed successfully:', response);
+          this.isFollowing = true;
+        },
+        error: (error) => {
+          console.error('Error unfollowing:', error);
+        }
+      }
+    );
+    } else {
+      this.advertisementDetailsService.followUser(sourceUsername, targetUsername).subscribe(
+        (response) => {
+          console.log('Followed successfully:', response);
+          this.isFollowing = true;
+        },
+        (error) => {
+          console.error('Error following:', error);
+        }
+      );
+    }
+  }
+
+  checkIfFollowing(): void {
+    let token = localStorage.getItem("token") || "";
+    let userName = this.jwtDecoderService.decodeInfoFromToken(token)["sub"] || "";
+    const sourceUsername = userName || 'currentUser';
+    const targetUsername = this.eventDetails.username;
+    // Check if the current user is following the post
+    // This could involve a service method to check follow status.
+    // For simplicity, we're assuming this logic is already in place.
+    this.isFollowing = false;  // Replace this with actual check
   }
 
   navigateToProfile(){

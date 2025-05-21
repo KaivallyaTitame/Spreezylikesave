@@ -10,6 +10,7 @@ import { Router } from '@angular/router';
 import { ElementRef, ViewChild } from '@angular/core';
 import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
 import { ShareAddService } from 'src/app/services/share-add.service';
+import { JwtDecoderService } from 'src/app/services/jwt-decoder.service';
 
 @Component({
   selector: 'app-offer-description',
@@ -68,7 +69,8 @@ export class OfferDescriptionComponent implements OnInit {
     private route: ActivatedRoute,
     private advertisementDetailsService: AdvertisementDetailsService,
     private router: Router,
-    private shareService : ShareAddService
+    private shareService : ShareAddService,
+    private jwtDecoderService : JwtDecoderService
   ) {}
 
   hasValidImages: boolean = true;
@@ -92,6 +94,46 @@ export class OfferDescriptionComponent implements OnInit {
       this.remainingDays = Math.ceil((expirationDate.getTime() - today.getTime()) / (1000 * 3600 * 24));
       this.isExpired = this.remainingDays <= 0;
     }
+  }
+
+  toggleFollow(): void {
+    let token = localStorage.getItem("token") || "";
+    let userName = this.jwtDecoderService.decodeInfoFromToken(token)["sub"] || "";
+    const sourceUsername = userName || 'currentUser';  
+    const targetUsername = this.offerData.username;
+    if (this.isFollowing) {
+      this.advertisementDetailsService.unfollowUser(sourceUsername, targetUsername).subscribe({
+        next : (response) => {
+          console.log('Unfollowed successfully:', response);
+          this.isFollowing = true;
+        },
+        error: (error) => {
+          console.error('Error unfollowing:', error);
+        }
+      }
+    );
+    } else {
+      this.advertisementDetailsService.followUser(sourceUsername, targetUsername).subscribe(
+        (response) => {
+          console.log('Followed successfully:', response);
+          this.isFollowing = true;
+        },
+        (error) => {
+          console.error('Error following:', error);
+        }
+      );
+    }
+  }
+
+  checkIfFollowing(): void {
+    let token = localStorage.getItem("token") || "";
+    let userName = this.jwtDecoderService.decodeInfoFromToken(token)["sub"] || "";
+    const sourceUsername = userName || 'currentUser';
+    const targetUsername = this.offerData.username;
+    // Check if the current user is following the post
+    // This could involve a service method to check follow status.
+    // For simplicity, we're assuming this logic is already in place.
+    this.isFollowing = false;  // Replace this with actual check
   }
 
   share(){
@@ -231,7 +273,7 @@ export class OfferDescriptionComponent implements OnInit {
     this.showPopup = true;
   }
 
-  private triggerAnimation(type: 'like' | 'dislike' | 'save') {
+  triggerAnimation(type: 'like' | 'dislike' | 'save') {
     if (type === 'like') {
       this.showLikeAnimation = true;
     } else if (type === 'dislike') {

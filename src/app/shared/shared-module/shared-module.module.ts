@@ -12,8 +12,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
     LoaderComponent,
     ProfileInfoComponent,
     ProfileSkeletonComponent,
-    OfferDescriptionComponent,
-    
+    OfferDescriptionComponent
   ],
   imports: [
     CommonModule,

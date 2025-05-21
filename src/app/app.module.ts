@@ -12,11 +12,11 @@ import { BusinessHomeModule } from "./screens/business-home/business-home.module
 import { ConsumerHomeModule } from "./screens/consumer-home/consumer-home.module";
 import { ReactiveFormsModule } from "@angular/forms";
 import { registerModule } from "./screens/Registration/register/register.module";
-import { OfferDescriptionComponent } from './shared/offer-description/offer-description.component';
 
 @NgModule({
   declarations: [
     AppComponent,
+    
   ],
   imports: [
     BrowserModule,

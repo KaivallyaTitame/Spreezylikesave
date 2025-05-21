@@ -9,6 +9,7 @@ import { Router } from '@angular/router';
 import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
 import { ShareAddService } from 'src/app/services/share-add.service';
 import { ActivatedRoute } from '@angular/router';
+import { JwtDecoderService } from 'src/app/services/jwt-decoder.service';
 
 @Component({
   selector: 'app-Coupon',
@@ -19,12 +20,11 @@ export class CouponComponent implements OnInit {
   @Input() couponDetails!: AdvertisementDetails;
   // baseUrl="https://images.spreezy.in/";
   baseUrl=""; 
-  @Input() index!: number; // index of the post get from for loop.
-  @Input() activeIndex!: number | undefined; // it is used to indicate which post's insight is actively visible. 
-  @Output() setActiveIndex = new EventEmitter<number>();  // it is the methood from business profile component which sets the value of activeIndex variable which is used to indicate the post whoes insights are showing.  
+  @Input() index!: number; 
+  @Input() activeIndex!: number | undefined; 
+  @Output() setActiveIndex = new EventEmitter<number>();  
   @Output() setInsightScreen = new EventEmitter<Event>();
-  @Input() showButton !:boolean; // this parameter comes from business profile component which is used to track the visibility of the show insight button. 
-
+  @Input() showButton !:boolean; 
   remainingDays: number;
   isExpired: boolean = false;
   reportVisible: boolean = false;
@@ -68,7 +68,7 @@ export class CouponComponent implements OnInit {
   @ViewChild('threeDotsWrapper', { static: false }) threeDotsRef!: ElementRef;
   isLiked: boolean = false; 
   isDisliked: boolean = false; 
-  constructor(private advertisementDetailsService: AdvertisementDetailsService,private router:Router , private shareService : ShareAddService,private route: ActivatedRoute ) {}
+  constructor(private advertisementDetailsService: AdvertisementDetailsService,private router:Router , private shareService : ShareAddService,private jwtDecoderService: JwtDecoderService ) {}
 
   hasValidImages: boolean = true;
   handleImageError(event: any): void {
@@ -85,6 +85,46 @@ export class CouponComponent implements OnInit {
     } catch (error) {
       console.error('Error calculating expiry:', error);
     }
+  }
+  
+  toggleFollow(): void {
+    let token = localStorage.getItem("token") || "";
+    let userName = this.jwtDecoderService.decodeInfoFromToken(token)["sub"] || "";
+    const sourceUsername = userName || 'currentUser';  
+    const targetUsername = this.couponDetails.username;
+    if (this.isFollowing) {
+      this.advertisementDetailsService.unfollowUser(sourceUsername, targetUsername).subscribe({
+        next : (response) => {
+          console.log('Unfollowed successfully:', response);
+          this.isFollowing = true;
+        },
+        error: (error) => {
+          console.error('Error unfollowing:', error);
+        }
+      }
+    );
+    } else {
+      this.advertisementDetailsService.followUser(sourceUsername, targetUsername).subscribe(
+        (response) => {
+          console.log('Followed successfully:', response);
+          this.isFollowing = true;
+        },
+        (error) => {
+          console.error('Error following:', error);
+        }
+      );
+    }
+  }
+
+  checkIfFollowing(): void {
+    let token = localStorage.getItem("token") || "";
+    let userName = this.jwtDecoderService.decodeInfoFromToken(token)["sub"] || "";
+    const sourceUsername = userName || 'currentUser';
+    const targetUsername = this.couponDetails.username;
+    // Check if the current user is following the post
+    // This could involve a service method to check follow status.
+    // For simplicity, we're assuming this logic is already in place.
+    this.isFollowing = false;  // Replace this with actual check
   }
 
   sharePost(){
