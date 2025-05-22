@@ -21,25 +21,30 @@ pipeline {
                 sh '''
                     echo Installing dependencies...
                     apt-get update
-        
+                    
+                    # Avoid tzdata interactive config
+                    export DEBIAN_FRONTEND=noninteractive
+                    
                     # Ensure needed paths exist
                     mkdir -p /usr/share/man/man1
-        
-                    # Install system dependencies
+                    
+                    # Install dependencies including Ruby
                     apt-get install -y --no-install-recommends \
-                      ruby-full \
+                      ruby \
                       curl \
                       unzip \
                       openjdk-17-jdk \
                       build-essential \
                       libffi-dev \
                       libssl-dev \
-                      zlib1g-dev
-        
+                      zlib1g-dev \
+                      apt-utils \
+                      gnupg2
+                    
                     # Configure broken packages, if any
                     dpkg --configure -a
-        
-                    # Install Fastlane
+                    
+                    # Install Fastlane via RubyGems
                     gem install fastlane -NV
                     echo "Fastlane version: $(fastlane --version)"
                 '''
