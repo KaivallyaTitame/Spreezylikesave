@@ -9,22 +9,17 @@ import { Location } from '@angular/common';
 export class AppComponent {
   title = 'spreezy-frontend';
   showError:boolean = false; 
-  errorTitle:string = ''; 
-  errorMessage:string = '';
+  errorCode:string = ''; 
+  errorDescription:string = '';
 
   constructor(private location: Location){
 
   }
   
-  showErrorPopup(titleI: string, message: string) {
-    console.log(titleI); 
-    console.log(message); 
-    this.errorTitle = titleI;
-    this.errorMessage = message;
+  showErrorPopup(errorCode: string, errorDescription: string) {
+    this.errorCode = errorCode;
+    this.errorDescription = errorDescription;
     this.showError = true;
-    console.log(this.showError); 
-    console.log(this.errorTitle); 
-    console.log(this.errorMessage); 
   }
 
   onCloseError() {

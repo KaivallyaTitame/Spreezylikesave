@@ -86,7 +86,6 @@ export class BusinessInformationComponent {
           }
         } catch (error) {
           this.loading = false;  
-          console.log('Error is due to parsing in json'); 
           throw(error); 
         }
       },
