@@ -141,7 +141,10 @@ pipeline
                     string(credentialsId: 'spreezy-key-pass', variable: 'KEY_PASSWORD'),
                     usernamePassword(credentialsId: 'nexus_apk_credentials', usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASS')
                 ]) {
-                    sh './scripts/build-and-upload.sh'
+                    sh '''
+                        chmod +x ./scripts/build-and-upload.sh
+                        ./scripts/build-and-upload.sh
+                    '''
                 }
             }
         }
