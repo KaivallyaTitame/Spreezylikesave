@@ -2,11 +2,11 @@ import { Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular
 import { ActivatedRoute, Router } from '@angular/router';
 import { faThumbsDown as faThumbsDownOutline, faThumbsUp as faThumbsUpOutline, faBookmark as regularBookmark } from '@fortawesome/free-regular-svg-icons';
 import { faBars, faBell, faChevronLeft, faChevronRight, faCircleUser, faEllipsisVertical, faHeart, faLocationArrow, faLocationDot, faMagnifyingGlass, faPaperPlane, faThumbsDown, faThumbsUp, faUserGroup, faBookmark as solidBookmark } from '@fortawesome/free-solid-svg-icons';
-import { API_CONFIG } from 'src/app/api-config';
 import { AdvertisementDetails } from 'src/app/models/ad-details';
 import { AdvertisementDetailsService } from 'src/app/services/advertisementTypes.service';
 import { ShareAddService } from 'src/app/services/share-add.service';
 import { JwtDecoderService } from 'src/app/services/jwt-decoder.service';
+import { ImageUrlGenerationService } from '../image-url-generation.service';
 
 @Component({
   selector: 'app-offer-description',
@@ -19,8 +19,6 @@ export class OfferDescriptionComponent implements OnInit {
     howToAvail: false,
     termsConditions: false
   };
-
-  baseUrl=API_CONFIG.IMAGE_URL;
   remainingDays: number;
   remainingHours: number;
   isExpired: boolean = false;
@@ -59,13 +57,13 @@ export class OfferDescriptionComponent implements OnInit {
   isFollowing: boolean = false;
   @ViewChild('imageContainer') imageContainer: ElementRef;
   
-
   constructor(
     private route: ActivatedRoute,
     private advertisementDetailsService: AdvertisementDetailsService,
     private router: Router,
     private shareService : ShareAddService,
-    private jwtDecoderService : JwtDecoderService
+    private jwtDecoderService : JwtDecoderService,
+    private imageUrlGeneratorService : ImageUrlGenerationService
   ) {}
 
   hasValidImages: boolean = true;
@@ -75,11 +73,9 @@ export class OfferDescriptionComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    const advertisementId = this.route.snapshot.paramMap.get('advertisementId');
     this.route.queryParams.subscribe((params) => {
       if (params['data']) {
         let details = JSON.parse(params['data']);
-        console.log("Received Details:", details);
         this.offerData = details
       }
     });
@@ -88,6 +84,9 @@ export class OfferDescriptionComponent implements OnInit {
       const today = new Date();
       this.remainingDays = Math.ceil((expirationDate.getTime() - today.getTime()) / (1000 * 3600 * 24));
       this.isExpired = this.remainingDays <= 0;
+      this.offerData.profileImageUrl = this.imageUrlGeneratorService.generateImageUrl(this.offerData.profileImageUrl)
+      this.offerData.offerImageUrl = this.imageUrlGeneratorService.generateImageUrl(this.offerData.offerImageUrl)
+      this.offerData.imagePaths = this.imageUrlGeneratorService.generateImageUrls(this.offerData.imagePaths)
     }
   }
 

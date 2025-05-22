@@ -1,7 +1,6 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-
 import { HttpResponse } from '@angular/common/http';
 import { API_CONFIG } from '../api-config';
 import { AdvertisementDetails } from '../models/ad-details';
@@ -24,26 +23,15 @@ export class AdvertisementDetailsService {
   getAdvertisementDetails(): Observable<AdvertisementDetails[]> {
     const token = localStorage.getItem("token") || "";
     const userName = this.jwtDecoderService.decodeInfoFromToken(token)["sub"] || "";
-    console.log("userName", userName);
-  
     const url = API_CONFIG.ADVERTISEMENT_EVENTS.GET_ADVERTISEMENT_DETAILS(userName);
-    
-    const body = {
-      'authorization': `Bearer ${token}`,
-      'Content-Type': 'application/json'
-    };
-  
     const headers = new HttpHeaders({
-      'authorization': `Bearer ${token}`,
+      'Authorization': `Bearer ${token}`,
       'Content-Type': 'application/json'
     });
-  
     const params = new HttpParams()
       .set('page', 0)
       .set('pageSize', 10);
-  
     return this.http.request<AdvertisementDetails[]>("GET", url, {
-      body,
       headers,
       params,
       responseType: 'json'
@@ -52,7 +40,6 @@ export class AdvertisementDetailsService {
 
   updateLikes(advertisementId: number): Observable<HttpResponse<string>> {
     const userName = this.jwtDecoderService.decodeInfoFromToken(this.token)["sub"] || "";
-  
     return this.http.post(
       API_CONFIG.ADVERTISEMENT_EVENTS.UPVOTE_ADVERTISEMENT(advertisementId),
       {},{
@@ -69,7 +56,6 @@ export class AdvertisementDetailsService {
 
 
   savePost(username: string, advertisementId: number): Observable<HttpResponse<AdvertisementDetails>> {
-
     return this.http.post<AdvertisementDetails>(
       API_CONFIG.ADVERTISEMENT_EVENTS.SAVE_ADVERTISEMENT,{
         username: username,
@@ -87,7 +73,6 @@ export class AdvertisementDetailsService {
 
   updateDislikes(advertisementId: number): Observable<HttpResponse<string>> {
     const userName = this.jwtDecoderService.decodeInfoFromToken(this.token)["sub"] || "";
-  
     return this.http.post(
       API_CONFIG.ADVERTISEMENT_EVENTS.DISLIKE_ADVERTISEMENT(advertisementId),
       {},{

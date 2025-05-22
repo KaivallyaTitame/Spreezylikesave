@@ -1,7 +1,7 @@
 <div class="flex justify-center w-full p-0">
   <div  class="border border-white bg-white w-full shadow-lg mt-1 mb-1">
     <div class="flex items-center justify-between p-2">
-      <img (click)="navigateToProfile()" [src]="baseUrl + couponDetails.profileImageUrl" alt="Profile" class="w-12 h-12 rounded-full mt-2 ml-1">
+      <img (click)="navigateToProfile()" [src]="couponDetails.profileImageUrl" alt="Profile" class="w-12 h-12 rounded-full mt-2 ml-1">
       <div class="flex-grow ml-2 text-left">
         <div (click)="navigateToProfile()" class="font-bold text-xl mt-2 text-black">{{couponDetails.username}}</div>
           <div class="text-sm text-gray-500">
@@ -26,7 +26,7 @@
         <div #imageContainer class="flex transition-transform duration-300 ease-in-out min-h-24"
           [style.transform]="'translateX(' + translateX + 'px)'">
           <div *ngFor="let image of couponDetails.imagePaths; let i = index" class="w-full flex-shrink-0">
-            <img [src]="baseUrl + image" [alt]="'Product image ' + (i+1)" 
+            <img [src]="image" [alt]="'Product image ' + (i+1)" 
                  class="w-full object-contain max-h-96 min-h-48"
                  (error)="handleImageError($event)">
           </div>

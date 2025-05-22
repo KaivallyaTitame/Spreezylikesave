@@ -2,11 +2,11 @@ import { Component, ElementRef, EventEmitter, HostListener, Input, OnInit, Outpu
 import { Router } from '@angular/router';
 import { faHeart as faHeartRegular, faThumbsDown as faThumbsDownOutline, faThumbsUp as faThumbsUpOutline, faBookmark as regularBookmark } from '@fortawesome/free-regular-svg-icons';
 import { faBars, faBell, faChevronLeft, faChevronRight, faCircleUser, faEllipsisVertical, faHeart as faHeartSolid, faLocationArrow, faLocationDot, faMagnifyingGlass, faPaperPlane, faThumbsDown, faThumbsUp, faUserGroup, faBookmark as solidBookmark } from '@fortawesome/free-solid-svg-icons';
-import { API_CONFIG } from 'src/app/api-config';
 import { AdvertisementDetails } from 'src/app/models/ad-details';
 import { AdvertisementDetailsService } from 'src/app/services/advertisementTypes.service';
 import { JwtDecoderService } from 'src/app/services/jwt-decoder.service';
 import { ShareAddService } from 'src/app/services/share-add.service';
+import { ImageUrlGenerationService } from 'src/app/shared/image-url-generation.service';
 
 @Component({
   selector: 'app-Post',
@@ -15,8 +15,6 @@ import { ShareAddService } from 'src/app/services/share-add.service';
 })
 export class PostComponent implements OnInit {
   @Input() postDetails!: AdvertisementDetails;
-  baseUrl = "";
-  // baseUrl="https://images.spreezy.in/";
   @Input() index!: number;  
   @Input() activeIndex!: number | undefined; 
   @Output() setActiveIndex = new EventEmitter<number>(); 
@@ -62,7 +60,7 @@ export class PostComponent implements OnInit {
   translateX = 0;
   @ViewChild('imageContainer') imageContainer: ElementRef;
   @ViewChild('threeDotsWrapper', { static: false }) threeDotsRef!: ElementRef;
-  constructor(private advertisementDetailsService: AdvertisementDetailsService, private router: Router, private jwtDecoderService: JwtDecoderService , private route: Router , private shareService : ShareAddService) { }
+  constructor(private advertisementDetailsService: AdvertisementDetailsService, private router: Router, private jwtDecoderService: JwtDecoderService , private route: Router , private shareService : ShareAddService , private imageUrlGeneratorService : ImageUrlGenerationService) { }
 
   hasValidImages: boolean = true;
   handleImageError(event: any): void {
@@ -76,6 +74,8 @@ export class PostComponent implements OnInit {
     this.remainingHours = remainingHours;
     this.isExpired = isExpired;
     this.checkIfFollowing();
+    this.postDetails.profileImageUrl = this.imageUrlGeneratorService.generateImageUrl(this.postDetails.profileImageUrl)
+    this.postDetails.imagePaths = this.imageUrlGeneratorService.generateImageUrls(this.postDetails.imagePaths)
   }
 
   navigateToProfile(){

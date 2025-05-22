@@ -6,7 +6,11 @@ import { ProfileInfoComponent } from 'src/app/shared/profile-info/profile-info.c
 import { ProfileSkeletonComponent } from '../profile-skeleton/profile-skeleton.component';
 import { OfferDescriptionComponent } from '../offer-description/offer-description.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { ImageUrlGenerationService } from '../image-url-generation.service';
 @NgModule({
+  providers: [
+    ImageUrlGenerationService
+  ],
   declarations: [
     PopUpComponent,
     LoaderComponent,

@@ -1,13 +1,13 @@
 import { Component, ElementRef, EventEmitter, HostListener, Input, OnInit, Output, ViewChild } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { IconDefinition } from '@fortawesome/fontawesome-svg-core'; // Import the type
 import { faBookmark as faBookmarkRegular, faThumbsDown as faThumbsDownOutline, faThumbsUp as faThumbsUpOutline, faBookmark as regularBookmark, faBookmark as solidBookmark, } from '@fortawesome/free-regular-svg-icons'; // Import outlined icons
 import { faBars, faBell, faBookmark, faChevronLeft, faChevronRight, faCircleUser, faEllipsisVertical, faHeart, faLocationArrow, faLocationDot, faMagnifyingGlass, faPaperPlane, faThumbsDown, faThumbsUp, faUserGroup } from '@fortawesome/free-solid-svg-icons';
-import { API_CONFIG } from 'src/app/api-config';
 import { AdvertisementDetails } from 'src/app/models/ad-details';
 import { AdvertisementDetailsService } from 'src/app/services/advertisementTypes.service';
 import { ShareAddService } from 'src/app/services/share-add.service';
 import { JwtDecoderService } from 'src/app/services/jwt-decoder.service';
+import { ImageUrlGenerationService } from 'src/app/shared/image-url-generation.service';
 
 @Component({
   selector: 'app-Coupon',
@@ -16,8 +16,6 @@ import { JwtDecoderService } from 'src/app/services/jwt-decoder.service';
 })
 export class CouponComponent implements OnInit {
   @Input() couponDetails!: AdvertisementDetails;
-  // baseUrl="https://images.spreezy.in/";
-  baseUrl=""; 
   @Input() index!: number; 
   @Input() activeIndex!: number | undefined; 
   @Output() setActiveIndex = new EventEmitter<number>();  
@@ -66,7 +64,7 @@ export class CouponComponent implements OnInit {
   @ViewChild('threeDotsWrapper', { static: false }) threeDotsRef!: ElementRef;
   isLiked: boolean = false; 
   isDisliked: boolean = false; 
-  constructor(private advertisementDetailsService: AdvertisementDetailsService,private router:Router , private shareService : ShareAddService,private jwtDecoderService: JwtDecoderService ) {}
+  constructor(private advertisementDetailsService: AdvertisementDetailsService,private router:Router , private shareService : ShareAddService,private jwtDecoderService: JwtDecoderService , private imageUrlGeneratorService : ImageUrlGenerationService ) {}
 
   hasValidImages: boolean = true;
   handleImageError(event: any): void {
@@ -80,6 +78,8 @@ export class CouponComponent implements OnInit {
       this.remainingDays = remainingDays;
       this.remainingHours = remainingHours;
       this.isExpired = isExpired;
+      this.couponDetails.profileImageUrl = this.imageUrlGeneratorService.generateImageUrl(this.couponDetails.profileImageUrl)
+      this.couponDetails.imagePaths = this.imageUrlGeneratorService.generateImageUrls(this.couponDetails.imagePaths)
     } catch (error) {
       console.error('Error calculating expiry:', error);
     }

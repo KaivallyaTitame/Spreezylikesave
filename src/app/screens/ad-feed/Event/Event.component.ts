@@ -1,13 +1,13 @@
 
 import { Component, ElementRef, EventEmitter, HostListener, Input, OnInit, Output, ViewChild } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { faThumbsDown as faThumbsDownOutline, faThumbsUp as faThumbsUpOutline, faBookmark as regularBookmark } from '@fortawesome/free-regular-svg-icons';
 import { faBars, faBell, faChevronLeft, faChevronRight, faCircleUser, faEllipsisVertical, faHeart, faLocationArrow, faLocationDot, faMagnifyingGlass, faPaperPlane, faThumbsDown, faThumbsUp, faUserGroup, faBookmark as solidBookmark } from '@fortawesome/free-solid-svg-icons';
-import { API_CONFIG } from 'src/app/api-config';
 import { AdvertisementDetails } from 'src/app/models/ad-details';
 import { AdvertisementDetailsService } from 'src/app/services/advertisementTypes.service';
 import { ShareAddService } from 'src/app/services/share-add.service';
 import { JwtDecoderService } from 'src/app/services/jwt-decoder.service';
+import { ImageUrlGenerationService } from 'src/app/shared/image-url-generation.service';
 @Component({
   selector: 'app-Event',
   templateUrl: './Event.component.html',
@@ -21,7 +21,6 @@ export class EventComponent implements OnInit {
   @Output() setInsightScreen = new EventEmitter<Event>(); 
   @Input() showButton !:boolean;
 
-  baseUrl=API_CONFIG.IMAGE_URL;
   remainingDays: number;
   remainingHours: number;
   isExpired: boolean = false;
@@ -61,7 +60,7 @@ export class EventComponent implements OnInit {
   translateX = 0;
   isFollowing: boolean = false;
   @ViewChild('imageContainer') imageContainer: ElementRef;
-  @ViewChild('threeDotsWrapper', { static: false }) threeDotsRef!: ElementRef;  constructor(private advertisementDetailsService: AdvertisementDetailsService, private router: Router , private shareService : ShareAddService,private route: ActivatedRoute ,private jwtDecoderService : JwtDecoderService) { }
+  @ViewChild('threeDotsWrapper', { static: false }) threeDotsRef!: ElementRef;  constructor(private advertisementDetailsService: AdvertisementDetailsService, private router: Router , private shareService : ShareAddService ,private jwtDecoderService : JwtDecoderService ,  private imageUrlGeneratorService : ImageUrlGenerationService) { }
 
   hasValidImages: boolean = true;
   handleImageError(event: any): void {
@@ -74,6 +73,8 @@ export class EventComponent implements OnInit {
     this.remainingDays = remainingDays;
     this.remainingHours = remainingHours;
     this.isExpired = isExpired;
+    this.eventDetails.profileImageUrl = this.imageUrlGeneratorService.generateImageUrl(this.eventDetails.profileImageUrl)
+    this.eventDetails.imagePaths = this.imageUrlGeneratorService.generateImageUrls(this.eventDetails.imagePaths)
   }
 
   toggleFollow(): void {
