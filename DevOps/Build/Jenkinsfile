@@ -11,7 +11,6 @@ pipeline
     parameters
     { 
         gitParameter branchFilter: 'origin/(.*)', defaultValue: 'develop', name: 'branch_name', type: 'PT_BRANCH' ,description: 'Please Choose Branch Name to Build'
-        string(name: 'version_name', defaultValue: '1.0.0', description: 'Set Version Name for Build (e.g., 1.0.5)')
     }
     
     environment {
@@ -100,12 +99,18 @@ pipeline
         stage('Update config') {
             steps {
                 script {
-                    def versionName = params.version_name
                     def versionCode = env.BUILD_NUMBER.toInteger()
-
-                    echo "Updating versionName to ${versionName}"
-                    echo "Updating versionCode to ${versionCode}"
-
+        
+                    def packageJson = readJSON file: 'package.json'
+                    def versionName = packageJson.version
+        
+                    echo "Setting versionName to ${versionName}"
+                    echo "Setting versionCode to ${versionCode}"
+        
+                    
+                    env.APP_VERSION = versionName
+                    env.APP_VERSION_CODE = "${versionCode}"
+        
                     sh """
                         npx cap add android
                         sed -i "s/versionCode [0-9]\\+/versionCode ${versionCode}/" android/app/build.gradle
