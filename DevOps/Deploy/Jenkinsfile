@@ -21,30 +21,25 @@ pipeline {
                 sh '''
                     echo Installing dependencies...
                     apt-get update
-                    
-                    # Avoid tzdata interactive config
-                    export DEBIAN_FRONTEND=noninteractive
-                    
+        
                     # Ensure needed paths exist
                     mkdir -p /usr/share/man/man1
-                    
-                    # Install dependencies including Ruby
+        
+                    # Install system dependencies
                     apt-get install -y --no-install-recommends \
-                      ruby \
+                      ruby-full \
                       curl \
                       unzip \
                       openjdk-17-jdk \
                       build-essential \
                       libffi-dev \
                       libssl-dev \
-                      zlib1g-dev \
-                      apt-utils \
-                      gnupg2
-                    
+                      zlib1g-dev
+        
                     # Configure broken packages, if any
                     dpkg --configure -a
-                    
-                    # Install Fastlane via RubyGems
+        
+                    # Install Fastlane
                     gem install fastlane -NV
                     echo "Fastlane version: $(fastlane --version)"
                 '''
@@ -81,35 +76,28 @@ pipeline {
                         def aabFile = "spreezy-${version}.aab"
 
                         sh """
-                            echo "Creating Fastfile for Fastlane upload..."
-
                             mkdir -p android/fastlane
 
                             cat > android/fastlane/Fastfile <<EOF
-default_platform(:android)
+                            default_platform(:android)
 
-platform :android do
-  desc "Upload to Google Play track with release notes and version"
-  lane :upload do
-    upload_to_play_store(
-      json_key: "${GOOGLE_SERVICE_JSON}",
-      aab: "../${aabFile}",
-      track: "${track}",
-      package_name: "${PACKAGE_NAME}",
-      release_status: "completed",
-      release_name: "${releaseName}",
-      changelog: "${RELEASE_NOTES}"
-    )
-  end
-end
-EOF
+                            platform :android do
+                              desc "Upload to Google Play track with release notes and version"
+                              lane :upload do
+                                upload_to_play_store(
+                                  json_key: "\${GOOGLE_SERVICE_JSON}",
+                                  aab: "../${aabFile}",
+                                  track: "${track}",
+                                  package_name: "${PACKAGE_NAME}",
+                                  release_status: "completed",
+                                  release_name: "${releaseName}",
+                                  changelog: "${RELEASE_NOTES}"
+                                )
+                              end
+                            end
+                            EOF
 
-                            echo "Running Fastlane upload..."
-                            cd android
-                            fastlane upload --verbose
-                            EXIT_CODE=\$?
-                            echo "Fastlane exited with: \$EXIT_CODE"
-                            exit \$EXIT_CODE
+                            cd android && fastlane upload
                         """
                     }
                 }
