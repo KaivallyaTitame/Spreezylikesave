@@ -76,28 +76,35 @@ pipeline {
                         def aabFile = "spreezy-${version}.aab"
 
                         sh """
+                            echo "Creating Fastfile for Fastlane upload..."
+
                             mkdir -p android/fastlane
 
                             cat > android/fastlane/Fastfile <<EOF
-                            default_platform(:android)
+default_platform(:android)
 
-                            platform :android do
-                              desc "Upload to Google Play track with release notes and version"
-                              lane :upload do
-                                upload_to_play_store(
-                                  json_key: "\${GOOGLE_SERVICE_JSON}",
-                                  aab: "../${aabFile}",
-                                  track: "${track}",
-                                  package_name: "${PACKAGE_NAME}",
-                                  release_status: "completed",
-                                  release_name: "${releaseName}",
-                                  changelog: "${RELEASE_NOTES}"
-                                )
-                              end
-                            end
-                            EOF
+platform :android do
+  desc "Upload to Google Play track with release notes and version"
+  lane :upload do
+    upload_to_play_store(
+      json_key: "${GOOGLE_SERVICE_JSON}",
+      aab: "../${aabFile}",
+      track: "${track}",
+      package_name: "${PACKAGE_NAME}",
+      release_status: "completed",
+      release_name: "${releaseName}",
+      changelog: "${RELEASE_NOTES}"
+    )
+  end
+end
+EOF
 
-                            cd android && fastlane upload
+                            echo "Running Fastlane upload..."
+                            cd android
+                            fastlane upload --verbose
+                            EXIT_CODE=\$?
+                            echo "Fastlane exited with: \$EXIT_CODE"
+                            exit \$EXIT_CODE
                         """
                     }
                 }
