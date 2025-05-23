@@ -6,16 +6,10 @@ pipeline
             // args '-v /var/run/docker.sock:/var/run/docker.sock'
         }
     }
-
-
-    parameters
-    { 
-        gitParameter branchFilter: 'origin/(.*)', defaultValue: 'develop', name: 'branch_name', type: 'PT_BRANCH' ,description: 'Please Choose Branch Name to Build '
-    }
     
     environment {
         GIT_URL = 'git@github.com:spreezy-tech/spreezy-frontend.git'
-        GIT_BRANCH = "${params.branch_name}"
+        GIT_BRANCH = "${env.branch_name}"
         CREDENTIALS_ID = 'spreezy_credentials'
         JAVA_HOME = '/usr/lib/jvm/openjdk-17'
         PATH = "${JAVA_HOME}/bin:${PATH}"
@@ -29,14 +23,7 @@ pipeline
     }
     
      stages{
-         
-        stage('Clone Git Repo'){
-            steps{
-             git branch: env.GIT_BRANCH, credentialsId: env.CREDENTIALS_ID, url: env.GIT_URL
-            }
-        }
         
-
         stage('Nexus Setup And Install All Dependencies'){
             steps{
                 
