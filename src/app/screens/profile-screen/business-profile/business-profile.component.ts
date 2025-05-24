@@ -1,12 +1,20 @@
 import { Component, Input, OnInit } from "@angular/core";
-import { UserService } from "src/app/services/user-profile.service";
-import { faPhone, faEnvelope, faShare, faList, faBookmark, faCircleUser } from "@fortawesome/free-solid-svg-icons";
-import { faInstagram, faFacebook } from "@fortawesome/free-brands-svg-icons";
+import { ActivatedRoute } from "@angular/router";
+import { faFacebook, faInstagram } from "@fortawesome/free-brands-svg-icons";
+import {
+  faBookmark,
+  faCircleUser,
+  faEnvelope,
+  faList,
+  faPhone,
+  faShare,
+} from "@fortawesome/free-solid-svg-icons";
 import { UserDetails } from "src/app/models/UserDetails";
 import { AdvertisementDetails } from "src/app/models/ad-details";
 import { DecodedToken } from "src/app/models/decodedToken";
 import { JwtDecoderService } from "src/app/services/jwtDecoder/jwt-decoder.service";
-import { ActivatedRoute } from "@angular/router";
+import { UserService } from "src/app/services/user-profile.service";
+import { ImageUrlGenerationService } from "src/app/shared/image-url-generation.service";
 
 @Component({
   selector: "app-business-profile",
@@ -42,14 +50,15 @@ export class BusinessProfileComponent implements OnInit {
   popupBody: string = "";
   hasMoreProfilePosts: boolean = true; // Initially assume there are more posts
   hasMoreSavedPosts: boolean = true; // Initially assume there are more saved posts
-  activeIndex: number | undefined = undefined;  // indicates which post insight to be displayed. if it is undefined then it will not shown.
-  showInsightScreen: boolean = false;  // this variable decides the visibility of the post insight component.
+  activeIndex: number | undefined = undefined; // indicates which post insight to be displayed. if it is undefined then it will not shown.
+  showInsightScreen: boolean = false; // this variable decides the visibility of the post insight component.
 
   constructor(
     private UserService: UserService,
     private JwtDecoder: JwtDecoderService,
-    private route: ActivatedRoute
-  ) { }
+    private route: ActivatedRoute,
+    private imageService: ImageUrlGenerationService
+  ) {}
 
   ngOnInit(): void {
     this.currentUsername = this.fetchCurrentUsername();
@@ -66,34 +75,40 @@ export class BusinessProfileComponent implements OnInit {
   }
 
   toggleInsight(index: number | undefined): void {
-    console.log(this.visibleProfilePosts)
+    console.log(this.visibleProfilePosts);
 
-    if (index != undefined && this.visibleProfilePosts[index].insightDetails === undefined) {
+    if (
+      index != undefined &&
+      this.visibleProfilePosts[index].insightDetails === undefined
+    ) {
       this.showError("404", "Please try again later.");
       return;
-    }
-    else {
+    } else {
       if (this.activeIndex === index) {
         this.activeIndex = undefined;
-      }
-      else if (this.activeIndex !== undefined && this.activeIndex !== index && index != undefined) {
+      } else if (
+        this.activeIndex !== undefined &&
+        this.activeIndex !== index &&
+        index != undefined
+      ) {
         setTimeout(() => {
           this.activeIndex = index;
           this.showInsightScreen = true;
         }, 1000);
-      }
-      else {
+      } else {
         this.activeIndex = index;
       }
     }
   }
- 
+
   setInsightScreen(event: Event): void {
-    event.stopPropagation(); 
-    if (this.activeIndex != undefined && this.visibleProfilePosts[this.activeIndex].insightDetails !== undefined) { 
+    event.stopPropagation();
+    if (
+      this.activeIndex != undefined &&
+      this.visibleProfilePosts[this.activeIndex].insightDetails !== undefined
+    ) {
       this.showInsightScreen = !this.showInsightScreen;
-    }
-    else {
+    } else {
       this.showInsightScreen = false;
     }
   }
@@ -105,7 +120,6 @@ export class BusinessProfileComponent implements OnInit {
     }, 400);
   }
 
-
   fetchCurrentUsername(): string {
     const token = localStorage.getItem("token") || "";
     const decodedToken: DecodedToken =
@@ -116,21 +130,21 @@ export class BusinessProfileComponent implements OnInit {
   }
 
   fetchUserDetails(username: string) {
-    this.loadingUserDetails = true; 
+    this.loadingUserDetails = true;
     this.UserService.getUserDetails(username).subscribe({
       next: (data) => {
         if (data.profileImageUrl) {
-          data.profileImageUrl = this.UserService.getImageUrl(
-            username,
-            data.profileImageUrl
-          );
-
+          data.profileImageUrl = this.imageService.generateImageUrl(data.profileImageUrl);
+          // data.profileImageUrl = this.UserService.getImageUrl(
+          //   username,
+          //   data.profileImageUrl
+          // );
         }
         this.userDetails = data;
-        this.loadingUserDetails = false; 
+        this.loadingUserDetails = false;
       },
       error: (error) => {
-        this.userDetails = null; 
+        this.userDetails = null;
         this.loadingUserDetails = false;
         this.showError(
           error?.error?.errorCode || "Error fetching profile",
@@ -173,7 +187,7 @@ export class BusinessProfileComponent implements OnInit {
         this.showError(
           error?.error?.errorCode || "Error while fetching profile posts",
           error?.error?.errorDescription ||
-          "Unable to fetch profile post, please try again later"
+            "Unable to fetch profile post, please try again later"
         );
         this.loadingProfilePosts = false;
       },
@@ -210,7 +224,7 @@ export class BusinessProfileComponent implements OnInit {
           this.showError(
             error?.error?.errorCode || "Error fetching saved posts",
             error?.error?.errorDescription ||
-            "Unable to fetch saved post, please try again later"
+              "Unable to fetch saved post, please try again later"
           );
           this.loadingSavedPosts = false;
         },

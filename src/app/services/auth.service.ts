@@ -1,18 +1,16 @@
+import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { GoogleAuthProvider } from "@angular/fire/auth";
 import { AngularFireAuth } from "@angular/fire/compat/auth";
 import { Router } from "@angular/router";
+import { Observable } from "rxjs";
+import { API_CONFIG } from "../api-config";
 import { Alert } from "../models/alert";
 import { Credentials } from "../models/credentials";
 import { SpreezyError, SpreezyException } from "../models/spreezyException";
-import { User } from "../models/user";
-import { AlertService } from "../shared/alert.service";
-import { CustomerService } from "./customer.service";
-import { HttpClient, HttpHeaders } from "@angular/common/http";
-import { JwtDecoderService } from "./jwtDecoder/jwt-decoder.service";
-import { API_CONFIG } from "../api-config";
-import { Observable } from "rxjs";
 import { VerifyOtpResponse } from "../models/verifyOtpResponse";
+import { AlertService } from "../shared/alert.service";
+import { JwtDecoderService } from "./jwtDecoder/jwt-decoder.service";
 
 @Injectable({
   providedIn: "root",
@@ -106,7 +104,7 @@ export class AuthService {
         },
       });
   }
-  
+
   logoutFromFireAuth() {
     this.fireAuth.signOut().then(
       () => {
@@ -139,9 +137,11 @@ export class AuthService {
     );
   }
 
-  recycleTokenUsingRefreshToken(refreshToken: string): Observable<VerifyOtpResponse> {
+  recycleTokenUsingRefreshToken(
+    refreshToken: string
+  ): Observable<VerifyOtpResponse> {
     return this.http.post<VerifyOtpResponse>(API_CONFIG.RECYCLE_TOKEN, {
-      "refreshToken":refreshToken
+      refreshToken: refreshToken,
     });
   }
 }

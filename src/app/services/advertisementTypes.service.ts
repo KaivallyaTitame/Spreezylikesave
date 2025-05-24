@@ -1,10 +1,9 @@
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { HttpResponse } from '@angular/common/http';
 import { API_CONFIG } from '../api-config';
 import { AdvertisementDetails } from '../models/ad-details';
-import { JwtDecoderService } from './jwt-decoder.service';
+import { JwtDecoderService } from './jwtDecoder/jwt-decoder.service';
 @Injectable({
   providedIn: 'root',
 })
@@ -12,13 +11,6 @@ export class AdvertisementDetailsService {
   private token = localStorage.getItem("token") || "";
 
   constructor(private http: HttpClient , private jwtDecoderService : JwtDecoderService) {}
-
-  getAdvertisementDetailsById(advertisementId: number): Observable<AdvertisementDetails> {
-    return this.http.get<AdvertisementDetails>(`https://dummyjson.com/c/9575-9fc6-48ff-a845`, {
-      responseType: 'json',
-      headers: new HttpHeaders(),
-    });
-  }
 
   getAdvertisementDetails(): Observable<AdvertisementDetails[]> {
     const token = localStorage.getItem("token") || "";
@@ -45,28 +37,10 @@ export class AdvertisementDetailsService {
       {},{
         headers: new HttpHeaders({
           username: userName,
-          authorization: `Bearer ${this.token}`,
-          'Content-Type': 'application/json',
+          authorization: `Bearer ${this.token}`
         }),
         observe: 'response' ,
         responseType: 'text' ,
-      }
-    );
-  }
-
-
-  savePost(username: string, advertisementId: number): Observable<HttpResponse<AdvertisementDetails>> {
-    return this.http.post<AdvertisementDetails>(
-      API_CONFIG.ADVERTISEMENT_EVENTS.SAVE_ADVERTISEMENT,{
-        username: username,
-        advertisementId: advertisementId
-      },{
-        responseType: 'json', 
-        observe: 'response',  
-        headers: new HttpHeaders({
-          Authorization: `Bearer ${this.token}`,
-          'Content-Type': 'application/json',
-        }),
       }
     );
   }
@@ -77,9 +51,24 @@ export class AdvertisementDetailsService {
       API_CONFIG.ADVERTISEMENT_EVENTS.DISLIKE_ADVERTISEMENT(advertisementId),
       {},{
         responseType: 'text', 
-        observe: 'response',  
+        observe: 'response', 
         headers: new HttpHeaders({
           username: userName,
+          Authorization: `Bearer ${this.token}`
+        }),
+      }
+    );
+  }
+
+  savePost(username: string, advertisementId: number): Observable<HttpResponse<AdvertisementDetails>> {
+    return this.http.post<AdvertisementDetails>(
+      API_CONFIG.ADVERTISEMENT_EVENTS.SAVE_ADVERTISEMENT,{
+        username: username,
+        advertisementId: advertisementId
+      },{
+        responseType: 'json', 
+        observe: 'response',  
+        headers: new HttpHeaders({
           Authorization: `Bearer ${this.token}`,
           'Content-Type': 'application/json',
         }),

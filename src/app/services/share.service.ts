@@ -4,7 +4,7 @@ import { Share } from '@capacitor/share';
 @Injectable({
   providedIn: 'root'
 })
-export class ShareAddService {
+export class ShareService {
 
   constructor() { }
 

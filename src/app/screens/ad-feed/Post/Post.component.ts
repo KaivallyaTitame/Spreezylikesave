@@ -1,25 +1,55 @@
-import { Component, ElementRef, EventEmitter, HostListener, Input, OnInit, Output, ViewChild } from '@angular/core';
-import { Router } from '@angular/router';
-import { faHeart as faHeartRegular, faThumbsDown as faThumbsDownOutline, faThumbsUp as faThumbsUpOutline, faBookmark as regularBookmark } from '@fortawesome/free-regular-svg-icons';
-import { faBars, faBell, faChevronLeft, faChevronRight, faCircleUser, faEllipsisVertical, faHeart as faHeartSolid, faLocationArrow, faLocationDot, faMagnifyingGlass, faPaperPlane, faThumbsDown, faThumbsUp, faUserGroup, faBookmark as solidBookmark } from '@fortawesome/free-solid-svg-icons';
-import { AdvertisementDetails } from 'src/app/models/ad-details';
-import { AdvertisementDetailsService } from 'src/app/services/advertisementTypes.service';
-import { JwtDecoderService } from 'src/app/services/jwt-decoder.service';
-import { ShareAddService } from 'src/app/services/share-add.service';
-import { ImageUrlGenerationService } from 'src/app/shared/image-url-generation.service';
+import {
+  Component,
+  ElementRef,
+  EventEmitter,
+  HostListener,
+  Input,
+  OnInit,
+  Output,
+  ViewChild,
+} from "@angular/core";
+import { Router } from "@angular/router";
+import {
+  faHeart as faHeartRegular,
+  faThumbsDown as faThumbsDownOutline,
+  faThumbsUp as faThumbsUpOutline,
+  faBookmark as regularBookmark,
+} from "@fortawesome/free-regular-svg-icons";
+import {
+  faBars,
+  faBell,
+  faChevronLeft,
+  faChevronRight,
+  faCircleUser,
+  faEllipsisVertical,
+  faHeart as faHeartSolid,
+  faLocationArrow,
+  faLocationDot,
+  faMagnifyingGlass,
+  faPaperPlane,
+  faThumbsDown,
+  faThumbsUp,
+  faUserGroup,
+  faBookmark as solidBookmark,
+} from "@fortawesome/free-solid-svg-icons";
+import { AdvertisementDetails } from "src/app/models/ad-details";
+import { AdvertisementDetailsService } from "src/app/services/advertisementTypes.service";
+import { JwtDecoderService } from "src/app/services/jwtDecoder/jwt-decoder.service";
+import { ShareService } from "src/app/services/share.service";
+import { ImageUrlGenerationService } from "src/app/shared/image-url-generation.service";
 
 @Component({
-  selector: 'app-Post',
-  templateUrl: './Post.component.html',
-  styles: []
+  selector: "app-Post",
+  templateUrl: "./Post.component.html",
+  styles: [],
 })
 export class PostComponent implements OnInit {
   @Input() postDetails!: AdvertisementDetails;
-  @Input() index!: number;  
-  @Input() activeIndex!: number | undefined; 
-  @Output() setActiveIndex = new EventEmitter<number>(); 
-  @Output() setInsightScreen = new EventEmitter<Event>(); 
-  @Input() showButton !:boolean; 
+  @Input() index!: number;
+  @Input() activeIndex!: number | undefined;
+  @Output() setActiveIndex = new EventEmitter<number>();
+  @Output() setInsightScreen = new EventEmitter<Event>();
+  @Input() showButton!: boolean;
   remainingDays: number;
   remainingHours: number;
   isExpired: boolean = false;
@@ -31,10 +61,10 @@ export class PostComponent implements OnInit {
   showReportButton: boolean = false;
   showReportSuccess: boolean = false;
   showPopup: boolean = false;
-  popupTitle: string = 'Error';
-  popupBody: string = '';
+  popupTitle: string = "Error";
+  popupBody: string = "";
   faBars = faBars;
-  faHeartSolid = faHeartSolid
+  faHeartSolid = faHeartSolid;
   faHeartRegular = faHeartRegular;
   faPaperPlane = faPaperPlane;
   faUserGroup = faUserGroup;
@@ -58,77 +88,105 @@ export class PostComponent implements OnInit {
   faChevronRight = faChevronRight;
   currentImageIndex = 0;
   translateX = 0;
-  @ViewChild('imageContainer') imageContainer: ElementRef;
-  @ViewChild('threeDotsWrapper', { static: false }) threeDotsRef!: ElementRef;
-  constructor(private advertisementDetailsService: AdvertisementDetailsService, private router: Router, private jwtDecoderService: JwtDecoderService , private route: Router , private shareService : ShareAddService , private imageUrlGeneratorService : ImageUrlGenerationService) { }
+  @ViewChild("imageContainer") imageContainer: ElementRef;
+  @ViewChild("threeDotsWrapper", { static: false }) threeDotsRef!: ElementRef;
+
+  constructor(
+    private advertisementDetailsService: AdvertisementDetailsService,
+    private router: Router,
+    private jwtDecoderService: JwtDecoderService,
+    private route: Router,
+    private shareService: ShareService,
+    private imageUrlGeneratorService: ImageUrlGenerationService
+  ) {}
 
   hasValidImages: boolean = true;
   handleImageError(event: any): void {
     this.hasValidImages = false;
-    event.target.classList.add('min-h-48');
+    event.target.classList.add("min-h-48");
   }
 
   ngOnInit(): void {
-    const { remainingDays, remainingHours, isExpired } = this.advertisementDetailsService.calculateExpiry(this.postDetails.offerExpiry);
+    const { remainingDays, remainingHours, isExpired } =
+      this.advertisementDetailsService.calculateExpiry(
+        this.postDetails.offerExpiry
+      );
     this.remainingDays = remainingDays;
     this.remainingHours = remainingHours;
     this.isExpired = isExpired;
     this.checkIfFollowing();
-    this.postDetails.profileImageUrl = this.imageUrlGeneratorService.generateImageUrl(this.postDetails.profileImageUrl)
-    this.postDetails.imagePaths = this.imageUrlGeneratorService.generateImageUrls(this.postDetails.imagePaths)
+    this.postDetails.profileImageUrl =
+      this.imageUrlGeneratorService.generateImageUrl(
+        this.postDetails.profileImageUrl
+      );
+    this.postDetails.imagePaths =
+      this.imageUrlGeneratorService.generateImageUrls(
+        this.postDetails.imagePaths
+      );
   }
 
-  navigateToProfile(){
-    console.log(this.router.url)
-    if(this.router.url == "/business-home/adfeed"){
-      this.router.navigate(['/profile-screen/business-profile',this.postDetails.username])
-    }else{
-      this.router.navigate(['/profile-screen/consumer-profile',this.postDetails.username])
+  navigateToProfile() {
+    console.log(this.router.url);
+    if (this.router.url == "/business-home/adfeed") {
+      this.router.navigate([
+        "/profile-screen/business-profile",
+        this.postDetails.username,
+      ]);
+    } else {
+      this.router.navigate([
+        "/profile-screen/consumer-profile",
+        this.postDetails.username,
+      ]);
     }
   }
 
   toggleFollow(): void {
     let token = localStorage.getItem("token") || "";
-    let userName = this.jwtDecoderService.decodeInfoFromToken(token)["sub"] || "";
-    const sourceUsername = userName || 'currentUser';  
+    let userName =
+      this.jwtDecoderService.decodeInfoFromToken(token)["sub"] || "";
+    const sourceUsername = userName || "currentUser";
     const targetUsername = this.postDetails.username;
     if (this.isFollowing) {
-      this.advertisementDetailsService.unfollowUser(sourceUsername, targetUsername).subscribe({
-        next : (response) => {
-          console.log('Unfollowed successfully:', response);
-          this.isFollowing = true;
-        },
-        error: (error) => {
-          console.error('Error unfollowing:', error);
-        }
-      }
-    );
+      this.advertisementDetailsService
+        .unfollowUser(sourceUsername, targetUsername)
+        .subscribe({
+          next: (response) => {
+            console.log("Unfollowed successfully:", response);
+            this.isFollowing = true;
+          },
+          error: (error) => {
+            console.error("Error unfollowing:", error);
+          },
+        });
     } else {
-      this.advertisementDetailsService.followUser(sourceUsername, targetUsername).subscribe(
-        (response) => {
-          console.log('Followed successfully:', response);
-          this.isFollowing = true;
-        },
-        (error) => {
-          console.error('Error following:', error);
-        }
-      );
+      this.advertisementDetailsService
+        .followUser(sourceUsername, targetUsername)
+        .subscribe(
+          (response) => {
+            console.log("Followed successfully:", response);
+            this.isFollowing = true;
+          },
+          (error) => {
+            console.error("Error following:", error);
+          }
+        );
     }
   }
 
   checkIfFollowing(): void {
     let token = localStorage.getItem("token") || "";
-    let userName = this.jwtDecoderService.decodeInfoFromToken(token)["sub"] || "";
-    const sourceUsername = userName || 'currentUser';
+    let userName =
+      this.jwtDecoderService.decodeInfoFromToken(token)["sub"] || "";
+    const sourceUsername = userName || "currentUser";
     const targetUsername = this.postDetails.username;
     // Check if the current user is following the post
     // This could involve a service method to check follow status.
     // For simplicity, we're assuming this logic is already in place.
-    this.isFollowing = false;  // Replace this with actual check
+    this.isFollowing = false; // Replace this with actual check
   }
 
-  showInsights(event: Event) : void{
-    this.setActiveIndex.emit(this.index); 
+  showInsights(event: Event): void {
+    this.setActiveIndex.emit(this.index);
     this.setInsightScreen.emit(event);
   }
 
@@ -136,7 +194,7 @@ export class PostComponent implements OnInit {
     const advertisementId = this.postDetails.advertisementId;
     this.advertisementDetailsService.updateLikes(advertisementId).subscribe({
       next: (response) => {
-        this.triggerAnimation('like');
+        this.triggerAnimation("like");
         const status = response.status;
         if (status == 201) {
           this.isLiked = true;
@@ -147,25 +205,27 @@ export class PostComponent implements OnInit {
           this.isDisliked = false;
           this.postDetails.likes += 1;
           this.postDetails.dislikes -= 1;
-        } 
+        }
       },
       error: (error) => {
-        console.log(error.status)
-        if(error.status == 409){
-          this.isLiked = true,
-          this.isDisliked = false
-        }else{
-          this.showError('Like Error', 'Failed to update likes. Please try again.');
+        console.log(error.status);
+        if (error.status == 409) {
+          (this.isLiked = true), (this.isDisliked = false);
+        } else {
+          this.showError(
+            "Like Error",
+            "Failed to update likes. Please try again."
+          );
         }
       },
     });
   }
-  
+
   dislikePost(): void {
     const advertisementId = this.postDetails.advertisementId;
     this.advertisementDetailsService.updateDislikes(advertisementId).subscribe({
       next: (response) => {
-        this.triggerAnimation('dislike');
+        this.triggerAnimation("dislike");
         const status = response.status;
         if (status === 201) {
           this.isDisliked = true;
@@ -176,25 +236,28 @@ export class PostComponent implements OnInit {
           this.isLiked = false;
           this.postDetails.dislikes += 1;
           this.postDetails.likes -= 1;
-        } 
+        }
       },
       error: (error) => {
-        console.log(error.status)
+        console.log(error.status);
         if (error.status === 409) {
           this.isDisliked = true;
           this.isLiked = false;
-        }else{
-          this.showError('Dislike Error', 'Failed to update dislike. Please try again.');
+        } else {
+          this.showError(
+            "Dislike Error",
+            "Failed to update dislike. Please try again."
+          );
         }
       },
     });
   }
-  
+
   savePost(): void {
     const advertisementId = this.postDetails.advertisementId;
     const username = this.postDetails.username;
-    console.log(advertisementId , username)
-    this.triggerAnimation('save');
+    console.log(advertisementId, username);
+    this.triggerAnimation("save");
     this.scaleAnimation = true;
     this.scaleAnimation = true;
     setTimeout(() => {
@@ -203,16 +266,21 @@ export class PostComponent implements OnInit {
     }, 500);
     this.isSaved = !this.isSaved;
     this.isSaved = !this.isSaved;
-    this.advertisementDetailsService.savePost(username, advertisementId).subscribe({
-      next: (response) => {
-        console.log('Post saved successfully:', response);
-      },
-      error: (err) => {
-        console.log(err)
-        this.showError('Save Error', 'Failed to save the post. Please try again.');
-        this.isSaved = !this.isSaved;
-      },
-    });
+    this.advertisementDetailsService
+      .savePost(username, advertisementId)
+      .subscribe({
+        next: (response) => {
+          console.log("Post saved successfully:", response);
+        },
+        error: (err) => {
+          console.log(err);
+          this.showError(
+            "Save Error",
+            "Failed to save the post. Please try again."
+          );
+          this.isSaved = !this.isSaved;
+        },
+      });
   }
 
   toggleReportButton(): void {
@@ -222,64 +290,73 @@ export class PostComponent implements OnInit {
     }
   }
 
-  @HostListener('window:scroll', [])
+  @HostListener("window:scroll", [])
   onScroll(): void {
-    const triggerPoint = 135; 
+    const triggerPoint = 135;
     this.showBelow = window.scrollY < triggerPoint;
     if (this.showReportButton) {
       this.determinePopupPosition();
     }
   }
 
-  sharePost(){
+  sharePost() {
     this.shareService.shareContent(this.postDetails);
   }
 
   determinePopupPosition(): void {
     if (!this.threeDotsRef) return;
     const rect = this.threeDotsRef.nativeElement.getBoundingClientRect();
-    const safeTopLimit = 135; 
+    const safeTopLimit = 135;
     this.showBelow = rect.top < safeTopLimit;
   }
 
   getReportPopupStyle() {
     return this.showBelow
-      ? { top: '2.5rem', bottom: 'auto' } 
-      : { bottom: '2.5rem', top: 'auto' };
+      ? { top: "2.5rem", bottom: "auto" }
+      : { bottom: "2.5rem", top: "auto" };
   }
 
   reportPost(): void {
-    this.advertisementDetailsService.reportPost(this.postDetails.advertisementId).subscribe({
-      next: (response) => {
-        console.log('Post reported successfully:', response);
-        this.showReportSuccess = true;
-        this.showReportButton = false;
-      },
-      error: (err) => {
-        this.showError('Report Error', 'Failed to Report the post. Please try again.');
-      },
-    });
-    document.body.style.overflow = 'hidden';
-    this.advertisementDetailsService.reportPost(this.postDetails.advertisementId).subscribe({
-      next: (response) => {
-        console.log('Post reported successfully:', response);
-        this.showReportSuccess = true;
-        this.showReportButton = false;
-      },
-      error: (err) => {
-        this.showError('Report Error', 'Failed to Report the post. Please try again.');
-      },
-    });
-    document.body.style.overflow = 'hidden';
+    this.advertisementDetailsService
+      .reportPost(this.postDetails.advertisementId)
+      .subscribe({
+        next: (response) => {
+          console.log("Post reported successfully:", response);
+          this.showReportSuccess = true;
+          this.showReportButton = false;
+        },
+        error: (err) => {
+          this.showError(
+            "Report Error",
+            "Failed to Report the post. Please try again."
+          );
+        },
+      });
+    document.body.style.overflow = "hidden";
+    this.advertisementDetailsService
+      .reportPost(this.postDetails.advertisementId)
+      .subscribe({
+        next: (response) => {
+          console.log("Post reported successfully:", response);
+          this.showReportSuccess = true;
+          this.showReportButton = false;
+        },
+        error: (err) => {
+          this.showError(
+            "Report Error",
+            "Failed to Report the post. Please try again."
+          );
+        },
+      });
+    document.body.style.overflow = "hidden";
   }
 
   hideReportSuccess(): void {
     this.showReportSuccess = false;
-    document.body.style.overflow = 'auto';
+    document.body.style.overflow = "auto";
     this.showReportSuccess = false;
-    document.body.style.overflow = 'auto';
+    document.body.style.overflow = "auto";
   }
-
 
   showError(title: string, body: string) {
     this.popupTitle = title;
@@ -287,13 +364,12 @@ export class PostComponent implements OnInit {
     this.showPopup = true;
   }
 
-  private triggerAnimation(type: 'like' | 'dislike' | 'save') {
-    if (type === 'like') {
+  private triggerAnimation(type: "like" | "dislike" | "save") {
+    if (type === "like") {
       this.showLikeAnimation = true;
-    } else if (type === 'dislike') {
+    } else if (type === "dislike") {
       this.showDislikeAnimation = true;
     }
-
 
     setTimeout(() => {
       this.showLikeAnimation = false;
@@ -302,9 +378,12 @@ export class PostComponent implements OnInit {
   }
 
   showDetails(advertisementId: number): void {
-    this.router.navigate([`${this.router.url}/offer-description`, advertisementId], {
-      queryParams: { data: JSON.stringify(this.postDetails) },
-    })
+    this.router.navigate(
+      [`${this.router.url}/offer-description`, advertisementId],
+      {
+        queryParams: { data: JSON.stringify(this.postDetails) },
+      }
+    );
   }
 
   prevImage() {
@@ -313,16 +392,23 @@ export class PostComponent implements OnInit {
       this.updateTranslateX();
     }
   }
-  
+
   nextImage() {
-    if (this.postDetails.imagePaths && this.currentImageIndex < this.postDetails.imagePaths.length - 1) {
+    if (
+      this.postDetails.imagePaths &&
+      this.currentImageIndex < this.postDetails.imagePaths.length - 1
+    ) {
       this.currentImageIndex++;
       this.updateTranslateX();
     }
   }
 
   goToImage(index: number) {
-    if (this.postDetails.imagePaths && index >= 0 && index < this.postDetails.imagePaths.length) {
+    if (
+      this.postDetails.imagePaths &&
+      index >= 0 &&
+      index < this.postDetails.imagePaths.length
+    ) {
       this.currentImageIndex = index;
       this.updateTranslateX();
     }
@@ -333,19 +419,19 @@ export class PostComponent implements OnInit {
     this.translateX = -this.currentImageIndex * containerWidth;
   }
 
-  @HostListener('window:resize')
+  @HostListener("window:resize")
   onResize() {
     this.updateTranslateX();
   }
 
   startX: number;
 
-  @HostListener('touchstart', ['$event'])
+  @HostListener("touchstart", ["$event"])
   onTouchStart(event: TouchEvent) {
     this.startX = event.touches[0].clientX;
   }
 
-  @HostListener('touchend', ['$event'])
+  @HostListener("touchend", ["$event"])
   onTouchEnd(event: TouchEvent) {
     const endX = event.changedTouches[0].clientX;
     const diff = endX - this.startX;
@@ -357,5 +443,4 @@ export class PostComponent implements OnInit {
       }
     }
   }
-
-}  
+}

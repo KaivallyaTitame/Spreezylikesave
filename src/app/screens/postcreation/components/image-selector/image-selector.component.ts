@@ -1,6 +1,6 @@
-import { Component, ViewChild, ElementRef, OnInit, Input, SimpleChanges } from '@angular/core';
+import { Component, ElementRef, Input, OnInit, SimpleChanges, ViewChild } from '@angular/core';
 import { PresignedUrl } from 'src/app/models/presigned-url';
-import { JwtDecoderService } from 'src/app/services/jwt-decoder.service';
+import { JwtDecoderService } from 'src/app/services/jwtDecoder/jwt-decoder.service';
 import { PostUploadService } from 'src/app/services/post-upload.service';
 
 @Component({

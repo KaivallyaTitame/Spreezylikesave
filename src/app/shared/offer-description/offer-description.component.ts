@@ -1,23 +1,49 @@
-import { Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { faThumbsDown as faThumbsDownOutline, faThumbsUp as faThumbsUpOutline, faBookmark as regularBookmark } from '@fortawesome/free-regular-svg-icons';
-import { faBars, faBell, faChevronLeft, faChevronRight, faCircleUser, faEllipsisVertical, faHeart, faLocationArrow, faLocationDot, faMagnifyingGlass, faPaperPlane, faThumbsDown, faThumbsUp, faUserGroup, faBookmark as solidBookmark } from '@fortawesome/free-solid-svg-icons';
-import { AdvertisementDetails } from 'src/app/models/ad-details';
-import { AdvertisementDetailsService } from 'src/app/services/advertisementTypes.service';
-import { ShareAddService } from 'src/app/services/share-add.service';
-import { JwtDecoderService } from 'src/app/services/jwt-decoder.service';
-import { ImageUrlGenerationService } from '../image-url-generation.service';
+import {
+  Component,
+  ElementRef,
+  HostListener,
+  OnInit,
+  ViewChild,
+} from "@angular/core";
+import { ActivatedRoute, Router } from "@angular/router";
+import {
+  faThumbsDown as faThumbsDownOutline,
+  faThumbsUp as faThumbsUpOutline,
+  faBookmark as regularBookmark,
+} from "@fortawesome/free-regular-svg-icons";
+import {
+  faBars,
+  faBell,
+  faChevronLeft,
+  faChevronRight,
+  faCircleUser,
+  faEllipsisVertical,
+  faHeart,
+  faLocationArrow,
+  faLocationDot,
+  faMagnifyingGlass,
+  faPaperPlane,
+  faThumbsDown,
+  faThumbsUp,
+  faUserGroup,
+  faBookmark as solidBookmark,
+} from "@fortawesome/free-solid-svg-icons";
+import { AdvertisementDetails } from "src/app/models/ad-details";
+import { AdvertisementDetailsService } from "src/app/services/advertisementTypes.service";
+import { JwtDecoderService } from "src/app/services/jwtDecoder/jwt-decoder.service";
+import { ShareService } from "src/app/services/share.service";
+import { ImageUrlGenerationService } from "../image-url-generation.service";
 
 @Component({
-  selector: 'app-offer-description',
-  templateUrl: './offer-description.component.html',
-  styles: []
+  selector: "app-offer-description",
+  templateUrl: "./offer-description.component.html",
+  styles: [],
 })
 export class OfferDescriptionComponent implements OnInit {
-  offerData: AdvertisementDetails 
+  offerData: AdvertisementDetails;
   dropdowns: { [key: string]: boolean } = {
     howToAvail: false,
-    termsConditions: false
+    termsConditions: false,
   };
   remainingDays: number;
   remainingHours: number;
@@ -25,22 +51,22 @@ export class OfferDescriptionComponent implements OnInit {
   showLikeAnimation: boolean = false;
   scaleAnimation: boolean = false;
   showDislikeAnimation: boolean = false;
-  isSaved: boolean = false; 
-  showSavedMessage: boolean = false; 
+  isSaved: boolean = false;
+  showSavedMessage: boolean = false;
   showReportButton: boolean = false;
-  showReportSuccess: boolean = false; 
+  showReportSuccess: boolean = false;
   showPopup: boolean = false;
-  popupTitle: string = 'Error';
-  popupBody: string = '';
-  faPaperPlane = faPaperPlane
+  popupTitle: string = "Error";
+  popupBody: string = "";
+  faPaperPlane = faPaperPlane;
   faBars = faBars;
   faUserGroup = faUserGroup;
   faMagnifyingGlass = faMagnifyingGlass;
   faThumbsUp = faThumbsUp;
   faThumbsDown = faThumbsDown;
   faLocationArrow = faLocationArrow;
-  solidBookmark = solidBookmark; 
-  regularBookmark = regularBookmark; 
+  solidBookmark = solidBookmark;
+  regularBookmark = regularBookmark;
   faEllipsisVertical = faEllipsisVertical;
   faLocationDot = faLocationDot;
   faHeart = faHeart;
@@ -48,104 +74,114 @@ export class OfferDescriptionComponent implements OnInit {
   faCircleUser = faCircleUser;
   faThumbsUpOutline = faThumbsUpOutline;
   faThumbsDownOutline = faThumbsDownOutline;
-  isLiked: boolean = false; 
-  isDisliked: boolean = false; 
+  isLiked: boolean = false;
+  isDisliked: boolean = false;
   faChevronLeft = faChevronLeft;
   faChevronRight = faChevronRight;
   currentImageIndex = 0;
   translateX = 0;
   isFollowing: boolean = false;
-  @ViewChild('imageContainer') imageContainer: ElementRef;
-  
+  @ViewChild("imageContainer") imageContainer: ElementRef;
+
   constructor(
     private route: ActivatedRoute,
     private advertisementDetailsService: AdvertisementDetailsService,
     private router: Router,
-    private shareService : ShareAddService,
-    private jwtDecoderService : JwtDecoderService,
-    private imageUrlGeneratorService : ImageUrlGenerationService
+    private shareService: ShareService,
+    private jwtDecoderService: JwtDecoderService,
+    private imageUrlGeneratorService: ImageUrlGenerationService
   ) {}
 
   hasValidImages: boolean = true;
   handleImageError(event: any): void {
     this.hasValidImages = false;
-    event.target.classList.add('min-h-48');
+    event.target.classList.add("min-h-48");
   }
 
   ngOnInit(): void {
     this.route.queryParams.subscribe((params) => {
-      if (params['data']) {
-        let details = JSON.parse(params['data']);
-        this.offerData = details
+      if (params["data"]) {
+        let details = JSON.parse(params["data"]);
+        this.offerData = details;
       }
     });
     if (this.offerData) {
       const expirationDate = new Date(this.offerData.offerExpiry);
       const today = new Date();
-      this.remainingDays = Math.ceil((expirationDate.getTime() - today.getTime()) / (1000 * 3600 * 24));
+      this.remainingDays = Math.ceil(
+        (expirationDate.getTime() - today.getTime()) / (1000 * 3600 * 24)
+      );
       this.isExpired = this.remainingDays <= 0;
-      this.offerData.profileImageUrl = this.imageUrlGeneratorService.generateImageUrl(this.offerData.profileImageUrl)
-      this.offerData.offerImageUrl = this.imageUrlGeneratorService.generateImageUrl(this.offerData.offerImageUrl)
-      this.offerData.imagePaths = this.imageUrlGeneratorService.generateImageUrls(this.offerData.imagePaths)
     }
   }
 
   toggleFollow(): void {
     let token = localStorage.getItem("token") || "";
-    let userName = this.jwtDecoderService.decodeInfoFromToken(token)["sub"] || "";
-    const sourceUsername = userName || 'currentUser';  
+    let userName =
+      this.jwtDecoderService.decodeInfoFromToken(token)["sub"] || "";
+    const sourceUsername = userName || "currentUser";
     const targetUsername = this.offerData.username;
     if (this.isFollowing) {
-      this.advertisementDetailsService.unfollowUser(sourceUsername, targetUsername).subscribe({
-        next : (response) => {
-          console.log('Unfollowed successfully:', response);
-          this.isFollowing = true;
-        },
-        error: (error) => {
-          console.error('Error unfollowing:', error);
-        }
-      }
-    );
+      this.advertisementDetailsService
+        .unfollowUser(sourceUsername, targetUsername)
+        .subscribe({
+          next: (response) => {
+            console.log("Unfollowed successfully:", response);
+            this.isFollowing = true;
+          },
+          error: (error) => {
+            console.error("Error unfollowing:", error);
+          },
+        });
     } else {
-      this.advertisementDetailsService.followUser(sourceUsername, targetUsername).subscribe(
-        (response) => {
-          console.log('Followed successfully:', response);
-          this.isFollowing = true;
-        },
-        (error) => {
-          console.error('Error following:', error);
-        }
-      );
+      this.advertisementDetailsService
+        .followUser(sourceUsername, targetUsername)
+        .subscribe(
+          (response) => {
+            console.log("Followed successfully:", response);
+            this.isFollowing = true;
+          },
+          (error) => {
+            console.error("Error following:", error);
+          }
+        );
     }
   }
 
   checkIfFollowing(): void {
     let token = localStorage.getItem("token") || "";
-    let userName = this.jwtDecoderService.decodeInfoFromToken(token)["sub"] || "";
-    const sourceUsername = userName || 'currentUser';
+    let userName =
+      this.jwtDecoderService.decodeInfoFromToken(token)["sub"] || "";
+    const sourceUsername = userName || "currentUser";
     const targetUsername = this.offerData.username;
     // Check if the current user is following the post
     // This could involve a service method to check follow status.
     // For simplicity, we're assuming this logic is already in place.
-    this.isFollowing = false;  // Replace this with actual check
+    this.isFollowing = false; // Replace this with actual check
   }
 
-  share(){
+  share() {
     this.shareService.shareContent(this.offerData);
   }
 
-  navigateToProfile(){
-    console.log(this.router.url)
-    if(this.router.url == "/business-home/adfeed"){
-      this.router.navigate(['/profile-screen/business-profile',this.offerData.username])
-    }else{
-      this.router.navigate(['/profile-screen/consumer-profile',this.offerData.username])
+  navigateToProfile() {
+    console.log(this.router.url);
+    if (this.router.url == "/business-home/adfeed") {
+      this.router.navigate([
+        "/profile-screen/business-profile",
+        this.offerData.username,
+      ]);
+    } else {
+      this.router.navigate([
+        "/profile-screen/consumer-profile",
+        this.offerData.username,
+      ]);
     }
   }
 
   get offerDataSafe(): AdvertisementDetails {
     if (!this.offerData) {
-      throw new Error('offerData is null');
+      throw new Error("offerData is null");
     }
     return this.offerData;
   }
@@ -156,7 +192,7 @@ export class OfferDescriptionComponent implements OnInit {
 
   viewOnWebsite(): void {
     if (this.offerData && this.offerData.websiteLink) {
-      window.open(this.offerData.websiteLink, '_blank');
+      window.open(this.offerData.websiteLink, "_blank");
     }
   }
 
@@ -164,7 +200,7 @@ export class OfferDescriptionComponent implements OnInit {
     const advertisementId = this.offerData.advertisementId;
     this.advertisementDetailsService.updateLikes(advertisementId).subscribe({
       next: (response) => {
-        this.triggerAnimation('like');
+        this.triggerAnimation("like");
         const status = response.status;
         if (status == 201) {
           this.isLiked = true;
@@ -175,25 +211,27 @@ export class OfferDescriptionComponent implements OnInit {
           this.isDisliked = false;
           this.offerData.likes += 1;
           this.offerData.dislikes -= 1;
-        } 
+        }
       },
       error: (error) => {
-        console.log(error.status)
-        if(error.status == 409){
-          this.isLiked = true,
-          this.isDisliked = false
-        }else{
-          this.showError('Like Error', 'Failed to update likes. Please try again.');
+        console.log(error.status);
+        if (error.status == 409) {
+          (this.isLiked = true), (this.isDisliked = false);
+        } else {
+          this.showError(
+            "Like Error",
+            "Failed to update likes. Please try again."
+          );
         }
       },
     });
   }
-  
+
   dislikePost(): void {
     const advertisementId = this.offerData.advertisementId;
     this.advertisementDetailsService.updateDislikes(advertisementId).subscribe({
       next: (response) => {
-        this.triggerAnimation('dislike');
+        this.triggerAnimation("dislike");
         const status = response.status;
         if (status === 201) {
           this.isDisliked = true;
@@ -204,38 +242,46 @@ export class OfferDescriptionComponent implements OnInit {
           this.isLiked = false;
           this.offerData.dislikes += 1;
           this.offerData.likes -= 1;
-        } 
+        }
       },
       error: (error) => {
-        console.log(error.status)
+        console.log(error.status);
         if (error.status === 409) {
           this.isDisliked = true;
           this.isLiked = false;
-        }else{
-          this.showError('Dislike Error', 'Failed to update dislike. Please try again.');
+        } else {
+          this.showError(
+            "Dislike Error",
+            "Failed to update dislike. Please try again."
+          );
         }
       },
     });
   }
-  
+
   savePost(): void {
-    const advertisementId = this.offerDataSafe.advertisementId; 
+    const advertisementId = this.offerDataSafe.advertisementId;
     const username = this.offerDataSafe.username;
-    this.triggerAnimation('save');
+    this.triggerAnimation("save");
     this.scaleAnimation = true;
     setTimeout(() => {
       this.scaleAnimation = false;
     }, 500);
-    this.isSaved = !this.isSaved; 
-    this.advertisementDetailsService.savePost(username, advertisementId).subscribe({
-      next: (response) => {
-        console.log('Post saved successfully:', response);
-      },
-      error: (err) => {
-        this.showError('Save Error', 'Failed to save the post. Please try again.');
-        this.isSaved = !this.isSaved;
-      },
-    });
+    this.isSaved = !this.isSaved;
+    this.advertisementDetailsService
+      .savePost(username, advertisementId)
+      .subscribe({
+        next: (response) => {
+          console.log("Post saved successfully:", response);
+        },
+        error: (err) => {
+          this.showError(
+            "Save Error",
+            "Failed to save the post. Please try again."
+          );
+          this.isSaved = !this.isSaved;
+        },
+      });
   }
 
   toggleReportButton(): void {
@@ -243,22 +289,27 @@ export class OfferDescriptionComponent implements OnInit {
   }
 
   reportPost(): void {
-    this.advertisementDetailsService.reportPost(this.offerData.advertisementId).subscribe({
-      next: (response) => {
-        console.log('Post reported successfully:', response);
-        this.showReportSuccess = true;
-        this.showReportButton = false;
-      },
-      error: (err) => {
-        this.showError('Report Error', 'Failed to Report the post. Please try again.');
-      },
-    });
-    document.body.style.overflow = 'hidden';
+    this.advertisementDetailsService
+      .reportPost(this.offerData.advertisementId)
+      .subscribe({
+        next: (response) => {
+          console.log("Post reported successfully:", response);
+          this.showReportSuccess = true;
+          this.showReportButton = false;
+        },
+        error: (err) => {
+          this.showError(
+            "Report Error",
+            "Failed to Report the post. Please try again."
+          );
+        },
+      });
+    document.body.style.overflow = "hidden";
   }
 
   hideReportSuccess(): void {
     this.showReportSuccess = false;
-    document.body.style.overflow = 'auto';
+    document.body.style.overflow = "auto";
   }
 
   showError(title: string, body: string) {
@@ -267,10 +318,10 @@ export class OfferDescriptionComponent implements OnInit {
     this.showPopup = true;
   }
 
-  triggerAnimation(type: 'like' | 'dislike' | 'save') {
-    if (type === 'like') {
+  triggerAnimation(type: "like" | "dislike" | "save") {
+    if (type === "like") {
       this.showLikeAnimation = true;
-    } else if (type === 'dislike') {
+    } else if (type === "dislike") {
       this.showDislikeAnimation = true;
     }
     setTimeout(() => {
@@ -287,14 +338,21 @@ export class OfferDescriptionComponent implements OnInit {
   }
 
   nextImage() {
-    if (this.offerData.imagePaths && this.currentImageIndex < this.offerData.imagePaths.length - 1) {
+    if (
+      this.offerData.imagePaths &&
+      this.currentImageIndex < this.offerData.imagePaths.length - 1
+    ) {
       this.currentImageIndex++;
       this.updateTranslateX();
     }
   }
 
   goToImage(index: number) {
-    if (this.offerData.imagePaths && index >= 0 && index < this.offerData.imagePaths.length) {
+    if (
+      this.offerData.imagePaths &&
+      index >= 0 &&
+      index < this.offerData.imagePaths.length
+    ) {
       this.currentImageIndex = index;
       this.updateTranslateX();
     }
@@ -305,19 +363,19 @@ export class OfferDescriptionComponent implements OnInit {
     this.translateX = -this.currentImageIndex * containerWidth;
   }
 
-  @HostListener('window:resize')
+  @HostListener("window:resize")
   onResize() {
     this.updateTranslateX();
   }
 
   startX: number;
 
-  @HostListener('touchstart', ['$event'])
+  @HostListener("touchstart", ["$event"])
   onTouchStart(event: TouchEvent) {
     this.startX = event.touches[0].clientX;
   }
 
-  @HostListener('touchend', ['$event'])
+  @HostListener("touchend", ["$event"])
   onTouchEnd(event: TouchEvent) {
     const endX = event.changedTouches[0].clientX;
     const diff = endX - this.startX;
