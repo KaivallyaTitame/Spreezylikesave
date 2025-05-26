@@ -1,5 +1,3 @@
 {
     "runSignedAab": false  
 }
-
-// set true = run 'Generate and Publish Signed AAB' stage otherwise false
