@@ -140,8 +140,8 @@ pipeline
                     sh """
                         export APP_VERSION='${env.APP_VERSION}'
                         export APP_VERSION_CODE='${env.APP_VERSION_CODE}'
-                        chmod +x ./scripts/build-and-upload.sh
-                        ./scripts/build-and-upload.sh
+                        chmod +x ./DevOps/scripts/build-and-upload.sh
+                        ./DevOps/scripts/build-and-upload.sh
                     """
                 }
             }
