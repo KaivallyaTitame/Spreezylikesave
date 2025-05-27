@@ -1,9 +1,9 @@
+import { HttpClient } from "@angular/common/http";
 import { Component, OnInit } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { OtpService } from "src/app/services/otp/otp.service";
-import { AuthService } from "src/app/services/auth.service";
 import { Router } from "@angular/router";
-import { HttpClient } from "@angular/common/http";
+import { AuthService } from "src/app/services/auth.service";
+import { OtpService } from "src/app/services/otp/otp.service";
 
 @Component({
   selector: "app-login",
@@ -67,7 +67,6 @@ export class LoginComponent implements OnInit {
       next: (response) => {
         this.isLoaderVisible = false;
         this.otpSent = true;
-        this.showPopup("Success", "OTP sent successfully.");
         this.router.navigate(["/otpscreen", phoneNumber, selectedCountryCode]);
       },
       error: (error) => {

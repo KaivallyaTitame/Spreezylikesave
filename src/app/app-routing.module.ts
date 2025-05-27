@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { customerGuard } from "./authGuards/customer/customer.guard";
 import { businessGuard } from "./authGuards/business/business.guard";
+import { customerGuard } from "./authGuards/customer/customer.guard";
 import { loginGuard } from "./authGuards/login/login.guard";
 
 import { ProfileScreenModule } from './screens/profile-screen/profile-screen.module';
@@ -27,7 +27,7 @@ const routes: Routes = [
   {
     path: "business-home",
     loadChildren: () => import("./screens/business-home/business-home.module").then(m => m.BusinessHomeModule),
-    // canActivate: [businessGuard]
+    canActivate: [businessGuard]
   },
   
   {
