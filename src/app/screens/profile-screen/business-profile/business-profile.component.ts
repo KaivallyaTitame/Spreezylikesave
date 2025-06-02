@@ -62,7 +62,9 @@ export class BusinessProfileComponent implements OnInit {
       this.username = params.get("username");
       if (this.username) {
         this.fetchUserDetails(this.username);
+        console.log('user details fetched !!!');
         this.fetchProfilePosts(this.username, this.profilePostPage);
+        console.log('Profile posts fetched !!'); 
         if (this.currentUsername === this.username) {
           this.fetchSavedPosts(this.username, this.savedPostPage);
         }
@@ -80,6 +82,7 @@ export class BusinessProfileComponent implements OnInit {
 
   fetchUserDetails(username: string) {
     this.loadingUserDetails = true; // Show skeletons during loading
+    console.log('first i am  setting the loading to true !!');
     this.UserService.getUserDetails(username).subscribe({
       next: (data) => {
         if (data.profileImageUrl) {
@@ -89,15 +92,14 @@ export class BusinessProfileComponent implements OnInit {
           );
         }
         this.userDetails = data;
+        console.log(this.userDetails);
         this.loadingUserDetails = false; // Hide skeletons after successful fetch
+        console.log('fetching the data was successeful !!');
       },
       error: (error) => {
-        this.userDetails = null; // Reset user details on error
         this.loadingUserDetails = false; // Stop skeletons even if there's an error
-        this.showError(
-          error?.error?.errorCode || "Error fetching profile",
-          error?.error?.errorDescription || "Please try again later."
-        );
+        this.userDetails = null; // Reset user details on error
+        throw(error);
       },
     });
   }
@@ -110,8 +112,9 @@ export class BusinessProfileComponent implements OnInit {
       this.postsPerPage
     ).subscribe({
       next: (data) => {
-        if (data.length > 0) {
+        if (data !== null && data.length > 0) {
           data.forEach((post) => {
+
             if (post.profileImageUrl) {
               post.profileImageUrl = this.UserService.getImageUrl(
                 username,
@@ -124,20 +127,17 @@ export class BusinessProfileComponent implements OnInit {
               );
             }
           });
+          this.loadingProfilePosts = false;
           this.visibleProfilePosts.push(...data);
           this.profilePostPage++; // Increment page only if data exists
-        } else {
+        } else if(data === null) {
           this.hasMoreProfilePosts = false; // No more posts to fetch
         }
         this.loadingProfilePosts = false;
       },
       error: (error) => {
-        this.showError(
-          error?.error?.errorCode || "Error while fetching profile posts",
-          error?.error?.errorDescription ||
-            "Unable to fetch profile post, please try again later"
-        );
-        this.loadingProfilePosts = false;
+        this.loadingProfilePosts = false; 
+        throw(error);
       },
     });
   }
@@ -147,7 +147,7 @@ export class BusinessProfileComponent implements OnInit {
     this.UserService.getSavedPosts(username, page, this.postsPerPage).subscribe(
       {
         next: (data) => {
-          if (data.length > 0) {
+          if (data !== null && data.length > 0) {
             data.forEach((post) => {
               if (post.profileImageUrl) {
                 post.profileImageUrl = this.UserService.getImageUrl(
@@ -161,20 +161,19 @@ export class BusinessProfileComponent implements OnInit {
                 );
               }
             });
+            this.loadingSavedPosts = false;
             this.visibleSavedPosts.push(...data);
             this.savedPostPage++; // Increment page only if data exists
           } else {
             this.hasMoreSavedPosts = false; // No more saved posts to fetch
+            console.log('The saved posts are not no more....')
           }
           this.loadingSavedPosts = false;
+          console.log('The loadign of the saved posts has been stopped !!');
         },
         error: (error) => {
-          this.showError(
-            error?.error?.errorCode || "Error fetching saved posts",
-            error?.error?.errorDescription ||
-              "Unable to fetch saved post, please try again later"
-          );
           this.loadingSavedPosts = false;
+          throw(error);
         },
       }
     );

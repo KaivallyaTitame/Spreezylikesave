@@ -72,11 +72,7 @@ export class LoginComponent implements OnInit {
       },
       error: (error) => {
         this.isLoaderVisible = false;
-        const errorCode = error?.error?.errorCode || "Server is down";
-        const errorDescription =
-          error?.error?.errorDescription ||
-          "Failed to send OTP. Please try again later (Internal server Error).";
-        this.showPopup(`Error (${errorCode})`, errorDescription);
+        throw(error); 
       },
       complete: () => {
         this.isLoaderVisible = false;

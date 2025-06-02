@@ -69,8 +69,7 @@ export class PostComponent implements OnInit {
           this.postDetails.likes = updatedPost.likes;
         },
         error: (err) => {
-          this.showError('Like Error', 'Failed to update likes. Please try again.');
-       
+          throw(err);
         },
       });
     } else {
@@ -82,8 +81,7 @@ export class PostComponent implements OnInit {
           this.postDetails.likes = updatedPost.likes;
         },
         error: (err) => {
-          this.showError('Like Error', 'Failed to update likes. Please try again.');
-          
+          throw(err);
         },
       });
     }
@@ -103,8 +101,7 @@ export class PostComponent implements OnInit {
           this.postDetails.dislikes = updatedPost.dislikes;
         },
         error: (err) => {
-          this.showError('Dislike Error', 'Failed to update dislikes. Please try again.');
-         
+         throw(err);
         },
       });
     } else {
@@ -115,8 +112,7 @@ export class PostComponent implements OnInit {
           this.postDetails.dislikes = updatedPost.dislikes;
         },
         error: (err) => {
-          this.showError('Dislike Error', 'Failed to update dislikes. Please try again.');
-      
+          throw(err);
         },
       });
     }
@@ -139,8 +135,7 @@ export class PostComponent implements OnInit {
         this.isSaved = true;
       },
       error: (err) => {
-        this.showError('Save Error', 'Failed to save the post. Please try again.');
-
+        throw(err);
       },
     });
   }

@@ -63,10 +63,7 @@ export class ConsumerProfileComponent implements OnInit {
       error: (error) => {
         this.userDetails = null; // Reset user details on error
         this.loadingUserDetails = false; // Stop skeletons even if there's an error
-        this.showError(
-          error?.error?.errorCode || "Error fetching profile",
-          error?.error?.errorDescription || "Please try again later."
-        );
+        throw(error);
       },
     });
   }
@@ -76,7 +73,7 @@ export class ConsumerProfileComponent implements OnInit {
     this.UserService.getSavedPosts(username, page, this.postsPerPage).subscribe(
       {
         next: (data) => {
-          if (data.length > 0) {
+          if (data !== null && data.length > 0) {
             data.forEach((post) => {
               if (post.profileImageUrl) {
                 post.profileImageUrl = this.UserService.getImageUrl(
@@ -99,10 +96,7 @@ export class ConsumerProfileComponent implements OnInit {
         },
         error: (error) => {
           this.loadingSavedPosts = false; // Stop loading spinner on error
-          this.showError(
-            error?.error?.errorCode || "Error while fetching posts",
-            error?.error?.errorDescription || "Please try again later."
-          );
+          throw(error);
         },
       }
     );
