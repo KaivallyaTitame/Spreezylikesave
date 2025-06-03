@@ -26,7 +26,7 @@ export class OtpService {
         }),
         catchError((error) => {
           this.isOtpSentToMobile = false;
-          return throwError(() => new HttpErrorResponse(error));
+          throw(() => new HttpErrorResponse(error));
         })
       );
   }
@@ -44,12 +44,7 @@ export class OtpService {
           return { success: true, message: response };
         }),
         catchError((error: HttpErrorResponse) => {
-          let errorMessage = "Failed to send OTP. Please try again later.";
-          const errorBody = JSON.parse(error?.error || "{}");
-          if (errorBody?.errorDescription) {
-            errorMessage = errorBody.errorDescription;
-          }
-          return throwError(() => new Error(errorMessage));
+          throw(error);
         })
       );
   }
