@@ -80,6 +80,7 @@ pipeline
                 sh 'npm run build-uat'
             }
         }
+        
 
         stage('Update config') {
             when {
