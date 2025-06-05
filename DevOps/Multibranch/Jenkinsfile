@@ -178,6 +178,29 @@ pipeline
 
             // slackSend channel: 'devops-jenkins-updates', message: "Please find status of pipeline here Status - ${currentBuild.currentResult}  ${env.JOB_NAME}   Build Number ${env.BUILD_NUMBER}  URL ${env.BUILD_URL}"
             //clean workspace after every build
+            success {
+                script {
+                    githubNotify context: 'CI Pipeline', status: 'SUCCESS', description: "Build successful", targetUrl: env.BUILD_URL
+                }
+            }
+
+            failure {
+                script {
+                    githubNotify context: 'CI Pipeline', status: 'FAILURE', description: "Build failed", targetUrl: env.BUILD_URL
+                }
+            }
+
+            unstable {
+                script {
+                    githubNotify context: 'CI Pipeline', status: 'ERROR', description: "Build unstable", targetUrl: env.BUILD_URL
+                }
+            }
+
+            aborted {
+                script {
+                    githubNotify context: 'CI Pipeline', status: 'ERROR', description: "Build aborted", targetUrl: env.BUILD_URL
+                }
+            }
             cleanWs()
         }
     }
