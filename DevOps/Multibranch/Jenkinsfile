@@ -47,24 +47,42 @@ pipeline
             }
         }
 
-        stage('Run Tests') {
-            steps {
-                script {
-                    def skip_test = false  // Set to 'true' to skip tests, 'false' to run them
-                    if (!skip_test) {
-                        sh 'npm start &'
+        // stage('Run Tests') {
+        //     steps {
+        //         script {
+        //             def skip_test = true  // Set to 'true' to skip tests, 'false' to run them
+        //             if (!skip_test) {
+        //                 sh 'npm start &'
 
-                        // Wait for Angular application to start
-                        sh 'npx wait-on http://localhost:4200'
-                        sh 'NO_COLOR=1 npm run test'
-                        sh 'npm run test:coverage'
-                        sh 'pkill -f "npm start"'
-                    } else {
-                        echo 'Skipping Cypress tests as skip_test is set to true'
-                    }
-                }
+        //                 // Wait for Angular application to start
+        //                 sh 'npx wait-on http://localhost:4200'
+        //                 sh 'NO_COLOR=1 npm run test'
+        //                 sh 'npm run test:coverage'
+        //                 sh 'pkill -f "npm start"'
+        //             } else {
+        //                 echo 'Skipping Cypress tests as skip_test is set to true'
+        //             }
+        //         }
+        //     }
+        // }
+
+        stage('Run Tests'){
+            steps {
+            sh 'npm start &'
+
+            // Wait for Angular application to start
+            sh 'npx wait-on http://localhost:4200'
+
+            // Run Cypress tests
+            sh 'NO_COLOR=1 npm run test'
+            sh 'npm run test:coverage'
+
+
+            sh 'pkill -f "npm start"'
+
             }
         }
+
         //  stage('sonarQube-analysis') {
         //     steps {
         //         withSonarQubeEnv('sonar-scanner') { // Ensure 'sonar-scanner' matches the name configured in Jenkins
