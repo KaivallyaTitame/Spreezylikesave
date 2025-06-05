@@ -47,41 +47,41 @@ pipeline
             }
         }
 
-        // stage('Run Tests') {
-        //     steps {
-        //         script {
-        //             def skip_test = true  // Set to 'true' to skip tests, 'false' to run them
-        //             if (!skip_test) {
-        //                 sh 'npm start &'
-
-        //                 // Wait for Angular application to start
-        //                 sh 'npx wait-on http://localhost:4200'
-        //                 sh 'NO_COLOR=1 npm run test'
-        //                 sh 'npm run test:coverage'
-        //                 sh 'pkill -f "npm start"'
-        //             } else {
-        //                 echo 'Skipping Cypress tests as skip_test is set to true'
-        //             }
-        //         }
-        //     }
-        // }
-
-        stage('Run Tests'){
+        stage('Run Tests') {
             steps {
-            sh 'npm start &'
+                script {
+                    def skip_test = false  // Set to 'true' to skip tests, 'false' to run them
+                    if (!skip_test) {
+                        sh 'npm start &'
 
-            // Wait for Angular application to start
-            sh 'npx wait-on http://localhost:4200'
-
-            // Run Cypress tests
-            sh 'NO_COLOR=1 npm run test'
-            sh 'npm run test:coverage'
-
-
-            sh 'pkill -f "npm start"'
-
+                        // Wait for Angular application to start
+                        sh 'npx wait-on http://localhost:4200'
+                        sh 'NO_COLOR=1 npm run test'
+                        sh 'npm run test:coverage'
+                        sh 'pkill -f "npm start"'
+                    } else {
+                        echo 'Skipping Cypress tests as skip_test is set to true'
+                    }
+                }
             }
         }
+
+        // stage('Run Tests'){
+        //     steps {
+        //     sh 'npm start &'
+
+        //     // Wait for Angular application to start
+        //     sh 'npx wait-on http://localhost:4200'
+
+        //     // Run Cypress tests
+        //     sh 'NO_COLOR=1 npm run test'
+        //     sh 'npm run test:coverage'
+
+
+        //     sh 'pkill -f "npm start"'
+
+        //     }
+        // }
 
         //  stage('sonarQube-analysis') {
         //     steps {
@@ -229,6 +229,22 @@ pipeline
                 '''
             }
         }
+
+        aborted {
+            withCredentials([string(credentialsId: 'Personal_Access_Token', variable: 'GITHUB_TOKEN')]) {
+                sh '''
+                    curl -s -X POST "$GITHUB_API_URL" \
+                    -H "Authorization: token ${GITHUB_TOKEN}" \
+                    -H "Content-Type: application/json" \
+                    -d '{
+                        "state": "error",
+                        "context": "Jenkins CI",
+                        "description": "Build was aborted"
+                    }'
+                '''
+            }
+        }
+
         always {
             // publishHTML(target: [allowMissing: false, alwaysLinkToLastBuild: false, keepAll: true, reportDir: 'coverage/lcov-report', reportFiles: 'index.html', reportName: 'Code Coverage Report'])
 
