@@ -23,6 +23,10 @@ pipeline
         GITHUB_API_URL = "https://api.github.com/repos/spreezy-tech/spreezy-frontend/statuses/${env.GIT_COMMIT}"
     }
 
+    options {
+        skipDefaultCheckout()
+    }
+
     stages {
         stage('Install curl') {
             steps {
@@ -32,6 +36,25 @@ pipeline
                 '''
             }
         }
+
+        stage('Checkout and Notify GitHub - Pending') {
+            steps {
+                checkout scm
+                withCredentials([string(credentialsId: 'Personal_Access_Token', variable: 'GITHUB_TOKEN')]) {
+                    sh '''
+                        curl -s -X POST "$GITHUB_API_URL" \
+                        -H "Authorization: token $GITHUB_TOKEN" \
+                        -H "Content-Type: application/json" \
+                        -d '{
+                            "state": "pending",
+                            "context": "Jenkins CI",
+                            "description": "Build started"
+                        }'
+                    '''
+                }
+            }
+        }
+        
         stage('Nexus Setup And Install All Dependencies') {
             steps {
                 withCredentials([file(credentialsId: 'nexus_npm_credentials', variable: 'npm_nexus_credentials')]) {
