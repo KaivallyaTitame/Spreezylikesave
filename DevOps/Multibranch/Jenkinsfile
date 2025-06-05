@@ -20,6 +20,7 @@ pipeline
         SONAR_HOST_URL = 'http://103.105.111.78:6842'
         SONAR_TOKEN = credentials('sonarqube')
         SONAR_HOME = tool 'sonar-scanner'
+        GITHUB_API_URL = "https://api.github.com/repos/spreezy-tech/spreezy-frontend/statuses/${env.GIT_COMMIT}"
     }
 
     stages {
@@ -174,26 +175,31 @@ pipeline
 
     post {
         success {
-            script {
-                githubNotify context: 'CI Pipeline', status: 'SUCCESS', description: "Build successful", targetUrl: env.BUILD_URL
+            withCredentials([string(credentialsId: 'Personal_Access_Token', variable: 'GITHUB_TOKEN')]) {
+                sh '''
+                    curl -s -X POST "$GITHUB_API_URL" \
+                    -H "Authorization: token $GITHUB_TOKEN" \
+                    -H "Content-Type: application/json" \
+                    -d '{
+                        "state": "success",
+                        "context": "Jenkins CI",
+                        "description": "Build succeeded"
+                    }'
+                '''
             }
         }
-
         failure {
-            script {
-                githubNotify context: 'CI Pipeline', status: 'FAILURE', description: "Build failed", targetUrl: env.BUILD_URL
-            }
-        }
-
-        unstable {
-            script {
-                githubNotify context: 'CI Pipeline', status: 'ERROR', description: "Build unstable", targetUrl: env.BUILD_URL
-            }
-        }
-
-        aborted {
-            script {
-                githubNotify context: 'CI Pipeline', status: 'ERROR', description: "Build aborted", targetUrl: env.BUILD_URL
+            withCredentials([string(credentialsId: 'Personal_Access_Token', variable: 'GITHUB_TOKEN')]) {
+                sh '''
+                    curl -s -X POST "$GITHUB_API_URL" \
+                    -H "Authorization: token $GITHUB_TOKEN" \
+                    -H "Content-Type: application/json" \
+                    -d '{
+                        "state": "failure",
+                        "context": "Jenkins CI",
+                        "description": "Build failed"
+                    }'
+                '''
             }
         }
         always {
