@@ -199,7 +199,6 @@ pipeline
             }
         }
     }
-    
 
     post {
         success {
