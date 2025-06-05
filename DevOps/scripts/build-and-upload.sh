@@ -2,8 +2,8 @@
 
 set -e
 
-echo "Installing curl..."
-apt-get update && apt-get install -y curl
+#echo "Installing curl..."
+#apt-get update && apt-get install -y curl
 
 echo "Setting up local.properties..."
 echo "sdk.dir=/usr/local/android/sdk" >android/local.properties

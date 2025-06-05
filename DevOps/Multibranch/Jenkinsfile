@@ -24,6 +24,14 @@ pipeline
     }
 
     stages {
+        stage('Install curl') {
+            steps {
+                sh '''
+                    echo "Installing curl..."
+                    apt-get update && apt-get install -y curl
+                '''
+            }
+        }
         stage('Nexus Setup And Install All Dependencies') {
             steps {
                 withCredentials([file(credentialsId: 'nexus_npm_credentials', variable: 'npm_nexus_credentials')]) {
