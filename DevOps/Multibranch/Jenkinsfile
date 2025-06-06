@@ -234,8 +234,7 @@ pipeline
         success {
         withCredentials([string(credentialsId: 'Personal_Access_Token', variable: 'GITHUB_TOKEN')]) {
             script {
-                def jobName = env.JOB_NAME.replaceAll('%2F', '/')
-                def blueOceanUrl = "${env.JENKINS_URL}blue/organizations/jenkins/${jobName}/detail/${env.BRANCH_NAME}/${env.BUILD_NUMBER}/pipeline/"
+                def blueOceanUrl = "${env.JENKINS_URL}blue/organizations/jenkins/${env.JOB_NAME}/detail/${env.BRANCH_NAME}/${env.BUILD_NUMBER}/pipeline/"
                 sh """
                     curl -s -X POST "$GITHUB_API_URL" \\
                     -H "Authorization: token $GITHUB_TOKEN" \\
@@ -254,8 +253,7 @@ pipeline
     failure {
         withCredentials([string(credentialsId: 'Personal_Access_Token', variable: 'GITHUB_TOKEN')]) {
             script {
-                def jobName = env.JOB_NAME.replaceAll('%2F', '/')
-                def blueOceanUrl = "${env.JENKINS_URL}blue/organizations/jenkins/${jobName}/detail/${env.BRANCH_NAME}/${env.BUILD_NUMBER}/pipeline/"
+                def blueOceanUrl = "${env.JENKINS_URL}blue/organizations/jenkins/${env.JOB_NAME}/detail/${env.BRANCH_NAME}/${env.BUILD_NUMBER}/pipeline/"
                 sh """
                     curl -s -X POST "$GITHUB_API_URL" \\
                     -H "Authorization: token $GITHUB_TOKEN" \\
@@ -274,8 +272,7 @@ pipeline
     aborted {
         withCredentials([string(credentialsId: 'Personal_Access_Token', variable: 'GITHUB_TOKEN')]) {
             script {
-                def jobName = env.JOB_NAME.replaceAll('%2F', '/')
-                def blueOceanUrl = "${env.JENKINS_URL}blue/organizations/jenkins/${jobName}/detail/${env.BRANCH_NAME}/${env.BUILD_NUMBER}/pipeline/"
+                def blueOceanUrl = "${env.JENKINS_URL}blue/organizations/jenkins/${env.JOB_NAME}/detail/${env.BRANCH_NAME}/${env.BUILD_NUMBER}/pipeline/"
                 sh """
                     curl -s -X POST "$GITHUB_API_URL" \\
                     -H "Authorization: token $GITHUB_TOKEN" \\
