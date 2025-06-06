@@ -186,7 +186,7 @@ pipeline
     post {
         success {
             withCredentials([string(credentialsId: 'Personal_Access_Token', variable: 'GITHUB_TOKEN')]) {
-                sh '''
+                sh """
                     curl -s -X POST "$GITHUB_API_URL" \
                     -H "Authorization: token $GITHUB_TOKEN" \
                     -H "Content-Type: application/json" \
@@ -196,12 +196,12 @@ pipeline
                         "description": "Build succeeded"
                         "target_url": "${env.BUILD_URL}blue"
                     }'
-                '''
+                """
             }
         }
         failure {
             withCredentials([string(credentialsId: 'Personal_Access_Token', variable: 'GITHUB_TOKEN')]) {
-                sh '''
+                sh """
                     curl -s -X POST "$GITHUB_API_URL" \
                     -H "Authorization: token $GITHUB_TOKEN" \
                     -H "Content-Type: application/json" \
@@ -211,13 +211,13 @@ pipeline
                         "description": "Build failed"
                         "target_url": "${env.BUILD_URL}blue"
                     }'
-                '''
+                """
             }
         }
 
         aborted {
             withCredentials([string(credentialsId: 'Personal_Access_Token', variable: 'GITHUB_TOKEN')]) {
-                sh '''
+                sh """
                     curl -s -X POST "$GITHUB_API_URL" \
                     -H "Authorization: token ${GITHUB_TOKEN}" \
                     -H "Content-Type: application/json" \
@@ -227,7 +227,7 @@ pipeline
                         "description": "Build was aborted"
                         "target_url": "${env.BUILD_URL}blue"
                     }'
-                '''
+                """
             }
         }
 
