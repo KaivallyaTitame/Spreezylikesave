@@ -190,12 +190,12 @@ pipeline
                     curl -s -X POST "$GITHUB_API_URL" \
                     -H "Authorization: token $GITHUB_TOKEN" \
                     -H "Content-Type: application/json" \
-                    -d '{
-                        "state": "success",
-                        "context": "Jenkins CI",
-                        "description": "Build succeeded"
-                        "target_url": "${env.BUILD_URL}blue"
-                    }'
+                    -d "{ \
+                        \\\"state\\\": \\\"success\\\", \
+                        \\\"context\\\": \\\"Jenkins CI\\\", \
+                        \\\"description\\\": \\\"Build succeeded\\\", \
+                        \\\"target_url\\\": \\\"${BUILD_URL}blue\\\" \
+                    }"
                 """
             }
         }
@@ -205,12 +205,12 @@ pipeline
                     curl -s -X POST "$GITHUB_API_URL" \
                     -H "Authorization: token $GITHUB_TOKEN" \
                     -H "Content-Type: application/json" \
-                    -d '{
-                        "state": "failure",
-                        "context": "Jenkins CI",
-                        "description": "Build failed"
-                        "target_url": "${env.BUILD_URL}blue"
-                    }'
+                    -d "{ \
+                        \\\"state\\\": \\\"failure\\\", \
+                        \\\"context\\\": \\\"Jenkins CI\\\", \
+                        \\\"description\\\": \\\"Build failed\\\", \
+                        \\\"target_url\\\": \\\"${BUILD_URL}blue\\\" \
+                    }"
                 """
             }
         }
@@ -221,12 +221,12 @@ pipeline
                     curl -s -X POST "$GITHUB_API_URL" \
                     -H "Authorization: token ${GITHUB_TOKEN}" \
                     -H "Content-Type: application/json" \
-                    -d '{
-                        "state": "error",
-                        "context": "Jenkins CI",
-                        "description": "Build was aborted"
-                        "target_url": "${env.BUILD_URL}blue"
-                    }'
+                    -d "{ \
+                        \\\"state\\\": \\\"error\\\", \
+                        \\\"context\\\": \\\"Jenkins CI\\\", \
+                        \\\"description\\\": \\\"Build was aborted\\\", \
+                        \\\"target_url\\\": \\\"${BUILD_URL}blue\\\" \
+                    }"
                 """
             }
         }
