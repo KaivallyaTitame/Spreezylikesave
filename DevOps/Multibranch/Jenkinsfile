@@ -194,7 +194,6 @@ pipeline
                         "state": "success",
                         "context": "Jenkins CI",
                         "description": "Build succeeded"
-                        "target_url": "${env.BUILD_URL}blue"
                     }'
                 '''
             }
@@ -209,7 +208,6 @@ pipeline
                         "state": "failure",
                         "context": "Jenkins CI",
                         "description": "Build failed"
-                        "target_url": "${env.BUILD_URL}blue"
                     }'
                 '''
             }
@@ -225,7 +223,6 @@ pipeline
                         "state": "error",
                         "context": "Jenkins CI",
                         "description": "Build was aborted"
-                        "target_url": "${env.BUILD_URL}blue"
                     }'
                 '''
             }
