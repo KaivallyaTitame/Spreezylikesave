@@ -186,6 +186,7 @@ pipeline
     post {
         success {
             withCredentials([string(credentialsId: 'Personal_Access_Token', variable: 'GITHUB_TOKEN')]) {
+                def blueOceanUrl = "${env.JENKINS_URL}blue/organizations/jenkins/${env.JOB_NAME.replaceAll('%2F', '/')}/detail/${env.BRANCH_NAME}/${env.BUILD_NUMBER}/pipeline/"
                 sh """
                     curl -s -X POST "$GITHUB_API_URL" \
                     -H "Authorization: token $GITHUB_TOKEN" \
@@ -194,7 +195,7 @@ pipeline
                         \\\"state\\\": \\\"success\\\", \
                         \\\"context\\\": \\\"Jenkins CI\\\", \
                         \\\"description\\\": \\\"Build succeeded\\\", \
-                        \\\"target_url\\\": \\\"${BUILD_URL}blue\\\" \
+                        \\\"target_url\\\": \\\"${blueOceanUrl}\\\" \
                     }"
                 """
             }
