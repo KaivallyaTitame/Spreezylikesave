@@ -232,70 +232,70 @@ pipeline
         // }
 
         success {
-        withCredentials([string(credentialsId: 'Personal_Access_Token', variable: 'GITHUB_TOKEN')]) {
-            script {
-                def encodedJobName = java.net.URLEncoder.encode(env.JOB_NAME, "UTF-8")
-                def encodedBranch = java.net.URLEncoder.encode(env.BRANCH_NAME, "UTF-8")
-                def blueOceanUrl = "${env.JENKINS_URL}blue/organizations/jenkins/${encodedJobName}/detail/${encodedBranch}/${env.BUILD_NUMBER}/pipeline/"
+            withCredentials([string(credentialsId: 'Personal_Access_Token', variable: 'GITHUB_TOKEN')]) {
+                script {
+                    def encodedJobName = java.net.URLEncoder.encode(env.JOB_NAME, "UTF-8")
+                    def encodedBranch = java.net.URLEncoder.encode(env.BRANCH_NAME, "UTF-8")
+                    def blueOceanUrl = "${env.JENKINS_URL}blue/organizations/jenkins/${encodedJobName}/detail/${encodedBranch}/${env.BUILD_NUMBER}/pipeline/"
 
-                sh """
-                    curl -s -X POST "$GITHUB_API_URL" \\
-                    -H "Authorization: token $GITHUB_TOKEN" \\
-                    -H "Content-Type: application/json" \\
-                    -d '{
-                        "state": "success",
-                        "context": "Jenkins CI",
-                        "description": "Build succeeded",
-                        "target_url": "${blueOceanUrl}"
-                    }'
-                """
+                    sh """
+                        curl -s -X POST "$GITHUB_API_URL" \\
+                        -H "Authorization: token $GITHUB_TOKEN" \\
+                        -H "Content-Type: application/json" \\
+                        -d '{
+                            "state": "success",
+                            "context": "Jenkins CI",
+                            "description": "Build succeeded",
+                            "target_url": "${blueOceanUrl}"
+                        }'
+                    """
+                }
             }
         }
-    }
 
-    failure {
-        withCredentials([string(credentialsId: 'Personal_Access_Token', variable: 'GITHUB_TOKEN')]) {
-            script {
-                def encodedJobName = java.net.URLEncoder.encode(env.JOB_NAME, "UTF-8")
-                def encodedBranch = java.net.URLEncoder.encode(env.BRANCH_NAME, "UTF-8")
-                def blueOceanUrl = "${env.JENKINS_URL}blue/organizations/jenkins/${encodedJobName}/detail/${encodedBranch}/${env.BUILD_NUMBER}/pipeline/"
+        failure {
+            withCredentials([string(credentialsId: 'Personal_Access_Token', variable: 'GITHUB_TOKEN')]) {
+                script {
+                    def encodedJobName = java.net.URLEncoder.encode(env.JOB_NAME, "UTF-8")
+                    def encodedBranch = java.net.URLEncoder.encode(env.BRANCH_NAME, "UTF-8")
+                    def blueOceanUrl = "${env.JENKINS_URL}blue/organizations/jenkins/${encodedJobName}/detail/${encodedBranch}/${env.BUILD_NUMBER}/pipeline/"
 
-                sh """
-                    curl -s -X POST "$GITHUB_API_URL" \\
-                    -H "Authorization: token $GITHUB_TOKEN" \\
-                    -H "Content-Type: application/json" \\
-                    -d '{
-                        "state": "failure",
-                        "context": "Jenkins CI",
-                        "description": "Build failed",
-                        "target_url": "${blueOceanUrl}"
-                    }'
-                """
+                    sh """
+                        curl -s -X POST "$GITHUB_API_URL" \\
+                        -H "Authorization: token $GITHUB_TOKEN" \\
+                        -H "Content-Type: application/json" \\
+                        -d '{
+                            "state": "failure",
+                            "context": "Jenkins CI",
+                            "description": "Build failed",
+                            "target_url": "${blueOceanUrl}"
+                        }'
+                    """
+                }
             }
         }
-    }
 
-    aborted {
-        withCredentials([string(credentialsId: 'Personal_Access_Token', variable: 'GITHUB_TOKEN')]) {
-            script {
-                def encodedJobName = java.net.URLEncoder.encode(env.JOB_NAME, "UTF-8")
-                def encodedBranch = java.net.URLEncoder.encode(env.BRANCH_NAME, "UTF-8")
-                def blueOceanUrl = "${env.JENKINS_URL}blue/organizations/jenkins/${encodedJobName}/detail/${encodedBranch}/${env.BUILD_NUMBER}/pipeline/"
+        aborted {
+            withCredentials([string(credentialsId: 'Personal_Access_Token', variable: 'GITHUB_TOKEN')]) {
+                script {
+                    def encodedJobName = java.net.URLEncoder.encode(env.JOB_NAME, "UTF-8")
+                    def encodedBranch = java.net.URLEncoder.encode(env.BRANCH_NAME, "UTF-8")
+                    def blueOceanUrl = "${env.JENKINS_URL}blue/organizations/jenkins/${encodedJobName}/detail/${encodedBranch}/${env.BUILD_NUMBER}/pipeline/"
 
-                sh """
-                    curl -s -X POST "$GITHUB_API_URL" \\
-                    -H "Authorization: token $GITHUB_TOKEN" \\
-                    -H "Content-Type: application/json" \\
-                    -d '{
-                        "state": "error",
-                        "context": "Jenkins CI",
-                        "description": "Build was aborted",
-                        "target_url": "${blueOceanUrl}"
-                    }'
-                """
+                    sh """
+                        curl -s -X POST "$GITHUB_API_URL" \\
+                        -H "Authorization: token $GITHUB_TOKEN" \\
+                        -H "Content-Type: application/json" \\
+                        -d '{
+                            "state": "error",
+                            "context": "Jenkins CI",
+                            "description": "Build was aborted",
+                            "target_url": "${blueOceanUrl}"
+                        }'
+                    """
+                }
             }
         }
-    }
         always {
             // publishHTML(target: [allowMissing: false, alwaysLinkToLastBuild: false, keepAll: true, reportDir: 'coverage/lcov-report', reportFiles: 'index.html', reportName: 'Code Coverage Report'])
 
