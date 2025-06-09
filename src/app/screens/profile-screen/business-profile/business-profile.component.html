@@ -158,6 +158,9 @@
           <div *ngIf="loadingProfilePosts" class="text-center py-4">
             <app-loader></app-loader>
           </div>
+          <div *ngIf="hasZeroPosts" class="text-center text-2xl text-gray-500 italic  mt-4">
+              <p>Start creating posts and ads </p>
+          </div>
         </div>
       </div>
 
@@ -181,6 +184,9 @@
           </div>
           <div *ngIf="loadingSavedPosts" class="text-center py-4">
             <app-loader></app-loader>
+          </div>
+          <div *ngIf="hasZeroSavedPosts" class="text-center text-2xl text-gray-500 italic  mt-4">
+              <p>No saved ads present !</p>
           </div>
         </div>
       </div>

@@ -49,6 +49,8 @@ export class BusinessProfileComponent implements OnInit {
   popupBody: string = "";
   hasMoreProfilePosts: boolean = true; // Initially assume there are more posts
   hasMoreSavedPosts: boolean = true; // Initially assume there are more saved posts
+  hasZeroPosts:boolean = false; 
+  hasZeroSavedPosts:boolean = false;
 
   constructor(
     private UserService: UserService,
@@ -160,6 +162,7 @@ export class BusinessProfileComponent implements OnInit {
             this.visibleSavedPosts.push(...data);
             this.savedPostPage++; // Increment page only if data exists
           } else {
+            this.hasZeroSavedPosts = true;
             this.hasMoreSavedPosts = false; // No more saved posts to fetch
           }
           this.loadingSavedPosts = false;

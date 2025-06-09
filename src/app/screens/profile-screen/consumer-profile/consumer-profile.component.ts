@@ -25,7 +25,8 @@ export class ConsumerProfileComponent implements OnInit {
   showPopup: boolean = false;
   popupTitle: string = "Error";
   popupBody: string = "";
-
+  hasZeroSavedPosts:boolean = false;
+  
   hasMoreSavedPosts: boolean = true; // Initially assume there are more saved posts
 
   private scrollPositions: { [key: string]: number } = {
@@ -90,6 +91,7 @@ export class ConsumerProfileComponent implements OnInit {
             this.visibleSavedPosts.push(...data);
             this.savedPostPage++; // Increment page if there are more posts
           } else {
+            this.hasZeroSavedPosts = true; 
             this.hasMoreSavedPosts = false; // No more saved posts to fetch
           }
           this.loadingSavedPosts = false;
