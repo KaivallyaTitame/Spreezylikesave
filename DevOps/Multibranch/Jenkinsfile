@@ -50,7 +50,7 @@ pipeline
         stage('Run Tests') {
             steps {
                 script {
-                    def skip_test = true  // Set to 'true' to skip tests, 'false' to run them
+                    def skip_test = false  // Set to 'true' to skip tests, 'false' to run them
                     if (!skip_test) {
                         sh 'npm start &'
 
