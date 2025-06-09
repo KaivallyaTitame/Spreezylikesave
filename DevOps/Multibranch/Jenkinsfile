@@ -1,5 +1,8 @@
 pipeline
 {
+    options {
+        buildDiscarder(logRotator(numToKeepStr: '5'))
+    }
         agent {
         docker {
             image 'cypress/base:18.16.0'
