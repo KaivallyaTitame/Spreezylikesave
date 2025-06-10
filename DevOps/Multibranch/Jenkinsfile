@@ -3,12 +3,12 @@ pipeline
     options {
         buildDiscarder(logRotator(numToKeepStr: '5'))
     }
-        agent {
+    agent {
         docker {
             image 'cypress/base:18.16.0'
         // args '-v /var/run/docker.sock:/var/run/docker.sock'
         }
-        }
+    }
 
     environment {
         // GIT_URL = 'git@github.com:spreezy-tech/spreezy-frontend.git'
