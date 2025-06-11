@@ -51,9 +51,9 @@ export class BusinessProfileComponent implements OnInit {
   hasMoreSavedPosts: boolean = true; // Initially assume there are more saved posts
   hasZeroPosts:boolean = false; 
   hasZeroSavedPosts:boolean = false;
-  activeIndex: number | undefined = undefined; 
-  showInsightScreen:boolean = false; 
-
+  activeIndex: number | undefined = undefined;  // indicates which post insight to be displayed. if it is undefined then it will not shown.
+  showInsightScreen:boolean = false;  // this variable decides the visibility of the post insight component.
+  noPostMessages:string = ''; 
 
   constructor(
     private UserService: UserService,
@@ -145,6 +145,16 @@ export class BusinessProfileComponent implements OnInit {
 
   fetchUserDetails(username: string) {
     this.loadingUserDetails = true; // Show skeletons during loading
+    const loggedInUser:string = ''; 
+    const token = localStorage.getItem("token") || "";
+    const payload = JSON.parse((atob(token.split('.')[1]))); 
+    if(payload != payload.sub){
+      this.noPostMessages = 'No Offers Available !'; 
+    }
+    else{
+      this.noPostMessages = 'Start creating posts and ads'; 
+    }
+    
     this.UserService.getUserDetails(username).subscribe({
       next: (data) => {
         if (data.profileImageUrl) {
