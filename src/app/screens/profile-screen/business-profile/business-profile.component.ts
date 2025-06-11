@@ -191,8 +191,14 @@ export class BusinessProfileComponent implements OnInit {
           this.loadingProfilePosts = false;
           this.visibleProfilePosts.push(...data);
           this.profilePostPage++; // Increment page only if data exists
-        } else if(data === null) {
-          this.hasMoreProfilePosts = false; // No more posts to fetch
+        } 
+        else
+        {
+          if(data == null)
+          {
+            this.hasZeroPosts = true;
+          }
+          this.hasMoreProfilePosts = false; // No more posts to fetch 
         }
         this.loadingProfilePosts = false;
       },
@@ -226,7 +232,10 @@ export class BusinessProfileComponent implements OnInit {
             this.visibleSavedPosts.push(...data);
             this.savedPostPage++; // Increment page only if data exists
           } else {
-            this.hasZeroSavedPosts = true;
+            if(data == null)
+            {
+              this.hasZeroSavedPosts = true;
+            }
             this.hasMoreSavedPosts = false; // No more saved posts to fetch
           }
           this.loadingSavedPosts = false;
