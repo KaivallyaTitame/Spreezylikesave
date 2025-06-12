@@ -146,13 +146,13 @@
         <div class="post-section grid grid-cols-1 gap-2 py-2">
           <div *ngFor="let post of visibleProfilePosts; let i = index" class="ad-item">
             <ng-container *ngIf="post.advertisementType == 'Post'">
-              <app-Post (setInsightScreen)="setInsightScreen($event)" [showButton]="true" (setActiveIndex)="toggleInsight(i)" [activeIndex]="activeIndex" [index]="i"  [postDetails]="post"></app-Post>
+              <app-Post (setInsightScreen)="setInsightScreen($event)" [showButton]="currentUsername===username" (setActiveIndex)="toggleInsight(i)" [activeIndex]="activeIndex" [index]="i"  [postDetails]="post"></app-Post>
             </ng-container>
             <ng-container *ngIf="post.advertisementType == 'Event'">
-              <app-Event (setInsightScreen)="setInsightScreen($event)" [showButton]="true" (setActiveIndex)="toggleInsight(i)" [activeIndex]="activeIndex" [index]="i"  [eventDetails]="post"></app-Event>
+              <app-Event (setInsightScreen)="setInsightScreen($event)" [showButton]="currentUsername===username" (setActiveIndex)="toggleInsight(i)" [activeIndex]="activeIndex" [index]="i"  [eventDetails]="post"></app-Event>
             </ng-container>
             <ng-container *ngIf="post.advertisementType == 'Coupon'">
-              <app-Coupon (setInsightScreen)="setInsightScreen($event)" [showButton]="true" (setActiveIndex)="toggleInsight(i)" [activeIndex]="activeIndex" [index]="i"  [couponDetails]="post"></app-Coupon>
+              <app-Coupon (setInsightScreen)="setInsightScreen($event)" [showButton]="currentUsername===username" (setActiveIndex)="toggleInsight(i)" [activeIndex]="activeIndex" [index]="i"  [couponDetails]="post"></app-Coupon>
             </ng-container>
             <app-post-insights 
                 (ClickOut)="hideInsight($event)"  
