@@ -1,3 +1,4 @@
 {
-    "runSignedAab": false  
+    "runSignedAab": false,
+    "codecutprofile": false
 }

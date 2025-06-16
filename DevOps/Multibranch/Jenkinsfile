@@ -11,9 +11,9 @@ pipeline
     }
 
     environment {
-        // GIT_URL = 'git@github.com:spreezy-tech/spreezy-frontend.git'
+        GIT_URL = 'https://github.com/spreezy-tech/spreezy-frontend.git'
         GIT_BRANCH = "${env.BRANCH_NAME}"
-        CREDENTIALS_ID = 'spreezy_credentials'
+        CREDENTIALS_ID = 'spreezy_frontend_password_PAT'
         JAVA_HOME = '/usr/lib/jvm/openjdk-17'
         PATH = "${JAVA_HOME}/bin:${PATH}"
         EMAIL_FROM = 'jenkins@spreezy.in'
@@ -35,14 +35,56 @@ pipeline
                 '''
             }
         }
-        
+
+        stage('Codecut') {
+            when {
+                allOf {
+                    branch 'develop'
+                    expression {
+                        def config = readJSON file: '.jenkins-config.json'
+                        return config.codecutprofile == true
+                    }
+                }
+            }
+            steps {
+                withCredentials([
+                    usernamePassword(credentialsId: 'spreezy_frontend_password_PAT', usernameVariable: 'GITHUB_USR', passwordVariable: 'GITHUB_TOKN')
+                ]) {
+                    sh '''
+                        echo "Running release-version.js with PROFILE=codecut and branch = develop"
+                        export GIT_REPO_AUTH=https://${GITHUB_USR}:${GITHUB_TOKN}@github.com/spreezy-tech/spreezy-frontend.git
+                        node release-version.js
+                    '''
+                }
+            }
+        }
+
+        stage('Checkout Branch') {    
+            when {
+                expression {
+                    def config = readJSON file: '.jenkins-config.json'
+                    return config.codecutprofile == true
+                }
+            }        
+            steps {
+                script {
+                    def config = readJSON file: '.jenkins-config.json'
+                    def selectedBranch = (config.codecutprofile == true) ? 'master' : 'develop'
+                    echo "Checking out branch: ${selectedBranch}"
+                    git(
+                        branch: selectedBranch,
+                        url: env.GIT_URL,
+                        credentialsId: env.CREDENTIALS_ID
+                    )
+                }
+            }
+        }
+
         stage('Nexus Setup And Install All Dependencies') {
             steps {
                 withCredentials([file(credentialsId: 'nexus_npm_credentials', variable: 'npm_nexus_credentials')]) {
                     sh '''
-                    npm config set fetch-retry-maxtimeout 120000
-                    npm config set fetch-timeout 120000
-                    npm config set fetch-timeout 600000
+                    npm config set fetch-timeout 6000000
                     npm config set fetch-retries 2
                     npm install --userconfig ${npm_nexus_credentials} --registry https://nexus.spreezy.in/repository/npm-group/ --loglevel verbose
                 '''
