@@ -13,7 +13,7 @@ pipeline
     environment {
         GIT_URL = 'https://github.com/spreezy-tech/spreezy-frontend.git'
         GIT_BRANCH = "${env.BRANCH_NAME}"
-        CREDENTIALS_ID = 'spreezy_frontend_password_PAT'
+        CREDENTIALS_ID = 'spreezy-PAT-frontend-backend'
         JAVA_HOME = '/usr/lib/jvm/openjdk-17'
         PATH = "${JAVA_HOME}/bin:${PATH}"
         EMAIL_FROM = 'jenkins@spreezy.in'
@@ -48,7 +48,7 @@ pipeline
             }
             steps {
                 withCredentials([
-                    usernamePassword(credentialsId: 'spreezy_frontend_password_PAT', usernameVariable: 'GITHUB_USR', passwordVariable: 'GITHUB_TOKN')
+                    usernamePassword(credentialsId: 'spreezy-PAT-frontend-backend', usernameVariable: 'GITHUB_USR', passwordVariable: 'GITHUB_TOKN')
                 ]) {
                     sh '''
                         echo "Running release-version.js with PROFILE=codecut and branch = develop"
