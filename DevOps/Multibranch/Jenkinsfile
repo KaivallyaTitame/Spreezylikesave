@@ -228,76 +228,76 @@ pipeline
     }
 
     post {
-        success {
-            withCredentials([string(credentialsId: 'Personal_Access_Token', variable: 'GITHUB_TOKEN')]) {
-                script {
-                    def jobNameOnly = env.JOB_NAME.split('/')[0..-2].join('/')
-                    def encodedJobName = java.net.URLEncoder.encode(jobNameOnly, "UTF-8")
-                    def encodedBranch = java.net.URLEncoder.encode(env.BRANCH_NAME, "UTF-8")
-                    def blueOceanUrl = "${env.JENKINS_URL}blue/organizations/jenkins/${encodedJobName}/detail/${encodedBranch}/${env.BUILD_NUMBER}/pipeline/"
+        // success {
+        //     withCredentials([string(credentialsId: 'Personal_Access_Token', variable: 'GITHUB_TOKEN')]) {
+        //         script {
+        //             def jobNameOnly = env.JOB_NAME.split('/')[0..-2].join('/')
+        //             def encodedJobName = java.net.URLEncoder.encode(jobNameOnly, "UTF-8")
+        //             def encodedBranch = java.net.URLEncoder.encode(env.BRANCH_NAME, "UTF-8")
+        //             def blueOceanUrl = "${env.JENKINS_URL}blue/organizations/jenkins/${encodedJobName}/detail/${encodedBranch}/${env.BUILD_NUMBER}/pipeline/"
 
-                    sh """
-                        curl -s -X POST "$GITHUB_API_URL" \\
-                        -H "Authorization: token $GITHUB_TOKEN" \\
-                        -H "Content-Type: application/json" \\
-                        -d '{
-                            "state": "success",
-                            "context": "Jenkins CI",
-                            "description": "Build succeeded",
-                            "target_url": "${blueOceanUrl}"
-                        }'
-                    """
-                }
-            }
-        }
+        //             sh """
+        //                 curl -s -X POST "$GITHUB_API_URL" \\
+        //                 -H "Authorization: token $GITHUB_TOKEN" \\
+        //                 -H "Content-Type: application/json" \\
+        //                 -d '{
+        //                     "state": "success",
+        //                     "context": "Jenkins CI",
+        //                     "description": "Build succeeded",
+        //                     "target_url": "${blueOceanUrl}"
+        //                 }'
+        //             """
+        //         }
+        //     }
+        // }
 
-        failure {
-            withCredentials([string(credentialsId: 'Personal_Access_Token', variable: 'GITHUB_TOKEN')]) {
-                script {
-                    def jobNameOnly = env.JOB_NAME.split('/')[0..-2].join('/')
-                    def encodedJobName = java.net.URLEncoder.encode(jobNameOnly, "UTF-8")
-                    def encodedBranch = java.net.URLEncoder.encode(env.BRANCH_NAME, "UTF-8")
-                    def blueOceanUrl = "${env.JENKINS_URL}blue/organizations/jenkins/${encodedJobName}/detail/${encodedBranch}/${env.BUILD_NUMBER}/pipeline/"
+        // failure {
+        //     withCredentials([string(credentialsId: 'Personal_Access_Token', variable: 'GITHUB_TOKEN')]) {
+        //         script {
+        //             def jobNameOnly = env.JOB_NAME.split('/')[0..-2].join('/')
+        //             def encodedJobName = java.net.URLEncoder.encode(jobNameOnly, "UTF-8")
+        //             def encodedBranch = java.net.URLEncoder.encode(env.BRANCH_NAME, "UTF-8")
+        //             def blueOceanUrl = "${env.JENKINS_URL}blue/organizations/jenkins/${encodedJobName}/detail/${encodedBranch}/${env.BUILD_NUMBER}/pipeline/"
 
-                    sh """
-                        curl -s -X POST "$GITHUB_API_URL" \\
-                        -H "Authorization: token $GITHUB_TOKEN" \\
-                        -H "Content-Type: application/json" \\
-                        -d '{
-                            "state": "failure",
-                            "context": "Jenkins CI",
-                            "description": "Build failed",
-                            "target_url": "${blueOceanUrl}"
-                        }'
-                    """
-                }
-            }
-        }
+        //             sh """
+        //                 curl -s -X POST "$GITHUB_API_URL" \\
+        //                 -H "Authorization: token $GITHUB_TOKEN" \\
+        //                 -H "Content-Type: application/json" \\
+        //                 -d '{
+        //                     "state": "failure",
+        //                     "context": "Jenkins CI",
+        //                     "description": "Build failed",
+        //                     "target_url": "${blueOceanUrl}"
+        //                 }'
+        //             """
+        //         }
+        //     }
+        // }
 
-        aborted {
-            withCredentials([string(credentialsId: 'Personal_Access_Token', variable: 'GITHUB_TOKEN')]) {
-                script {
-                    def jobNameOnly = env.JOB_NAME.split('/')[0..-2].join('/')
-                    def encodedJobName = java.net.URLEncoder.encode(jobNameOnly, "UTF-8")
-                    def encodedBranch = java.net.URLEncoder.encode(env.BRANCH_NAME, "UTF-8")
-                    def blueOceanUrl = "${env.JENKINS_URL}blue/organizations/jenkins/${encodedJobName}/detail/${encodedBranch}/${env.BUILD_NUMBER}/pipeline/"
+        // aborted {
+        //     withCredentials([string(credentialsId: 'Personal_Access_Token', variable: 'GITHUB_TOKEN')]) {
+        //         script {
+        //             def jobNameOnly = env.JOB_NAME.split('/')[0..-2].join('/')
+        //             def encodedJobName = java.net.URLEncoder.encode(jobNameOnly, "UTF-8")
+        //             def encodedBranch = java.net.URLEncoder.encode(env.BRANCH_NAME, "UTF-8")
+        //             def blueOceanUrl = "${env.JENKINS_URL}blue/organizations/jenkins/${encodedJobName}/detail/${encodedBranch}/${env.BUILD_NUMBER}/pipeline/"
 
-                    sh """
-                        curl -s -X POST "$GITHUB_API_URL" \\
-                        -H "Authorization: token $GITHUB_TOKEN" \\
-                        -H "Content-Type: application/json" \\
-                        -d '{
-                            "state": "error",
-                            "context": "Jenkins CI",
-                            "description": "Build was aborted",
-                            "target_url": "${blueOceanUrl}"
-                        }'
-                    """
-                }
-            }
-        }
+        //             sh """
+        //                 curl -s -X POST "$GITHUB_API_URL" \\
+        //                 -H "Authorization: token $GITHUB_TOKEN" \\
+        //                 -H "Content-Type: application/json" \\
+        //                 -d '{
+        //                     "state": "error",
+        //                     "context": "Jenkins CI",
+        //                     "description": "Build was aborted",
+        //                     "target_url": "${blueOceanUrl}"
+        //                 }'
+        //             """
+        //         }
+        //     }
+        // }
         always {
-            // publishHTML(target: [allowMissing: false, alwaysLinkToLastBuild: false, keepAll: true, reportDir: 'coverage/lcov-report', reportFiles: 'index.html', reportName: 'Code Coverage Report'])
+            publishHTML(target: [allowMissing: false, alwaysLinkToLastBuild: false, keepAll: true, reportDir: 'coverage/lcov-report', reportFiles: 'index.html', reportName: 'Code Coverage Report'])
 
             slackSend channel: 'devops-jenkins-updates', message: "Please find status of pipeline here Status - ${currentBuild.currentResult}  ${env.JOB_NAME}   Build Number ${env.BUILD_NUMBER}  URL ${env.BUILD_URL}"
             //clean workspace after every build
