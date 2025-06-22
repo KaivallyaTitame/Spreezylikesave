@@ -101,7 +101,7 @@ export class AuthService {
           window.location.reload();
         },
         error: (error) => {
-          throw new Error(`Error while logout : ${error}`);
+          throw(error);
         },
       });
   }

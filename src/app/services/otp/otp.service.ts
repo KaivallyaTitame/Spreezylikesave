@@ -26,7 +26,7 @@ export class OtpService {
         }),
         catchError((error) => {
           this.isOtpSentToMobile = false;
-          throw(() => new HttpErrorResponse(error));
+          throw(error); 
         })
       );
   }

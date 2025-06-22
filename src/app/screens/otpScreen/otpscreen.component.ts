@@ -126,13 +126,7 @@ export class OtpscreenComponent implements OnInit, OnDestroy {
       },
       error: (error) => {
         this.isLoaderVisible = false;
-        this.showPopup(
-          `Error ${error?.error?.errorCode || ""} `,
-          `${
-            error?.error?.errorDescription ||
-            "Internal server error please try again later"
-          } `
-        );
+        throw(error); 
       },
     });
   }
