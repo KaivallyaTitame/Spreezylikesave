@@ -148,22 +148,22 @@ export class BusinessProfileComponent implements OnInit {
     const loggedInUser:string = ''; 
     const token = localStorage.getItem("token") || "";
     const payload = JSON.parse((atob(token.split('.')[1]))); 
-    if(payload != payload.sub){
-      this.noPostMessages = 'No Offers Available !'; 
+    if(this.username != payload.sub){
+      this.noPostMessages = 'No posts yet — reach out to connect.'; 
     }
     else{
-      this.noPostMessages = 'Start creating posts and ads'; 
+      this.noPostMessages = 'Oops, nothing here yet! Start Posting'; 
     }
     
     this.UserService.getUserDetails(username).subscribe({
       next: (data) => {
-        if (data.profileImageUrl) {
-          data.profileImageUrl = this.UserService.getImageUrl(
-            username,
-            data.profileImageUrl
-          );
+        // if (data.profileImageUrl) {
+        //   data.profileImageUrl = this.UserService.getImageUrl(
+        //     username,
+        //     data.profileImageUrl
+        //   );
 
-        }
+        // }
         this.userDetails = data;
         this.loadingUserDetails = false; // Hide skeletons after successful fetch
       },
@@ -226,17 +226,17 @@ export class BusinessProfileComponent implements OnInit {
         next: (data) => {
           if (data !== null && data.length > 0) {
             data.forEach((post) => {
-              if (post.profileImageUrl) {
-                post.profileImageUrl = this.UserService.getImageUrl(
-                  username,
-                  post.profileImageUrl
-                );
-              }
-              if (post.imagePaths?.length > 0) {
-                post.imagePaths = post.imagePaths.map((imagePath) =>
-                  this.UserService.getImageUrl(username, imagePath)
-                );
-              }
+              // if (post.profileImageUrl) {
+              //   post.profileImageUrl = this.UserService.getImageUrl(
+              //     username,
+              //     post.profileImageUrl
+              //   );
+              // }
+              // if (post.imagePaths?.length > 0) {
+              //   post.imagePaths = post.imagePaths.map((imagePath) =>
+              //     this.UserService.getImageUrl(username, imagePath)
+              //   );
+              // }
             });
             this.loadingSavedPosts = false;
             this.visibleSavedPosts.push(...data);

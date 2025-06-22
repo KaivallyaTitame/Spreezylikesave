@@ -28,7 +28,8 @@ export class ConsumerProfileComponent implements OnInit {
   hasZeroSavedPosts:boolean = false;
   
   hasMoreSavedPosts: boolean = true; // Initially assume there are more saved posts
-
+  noPostMessages:string = '';
+  
   private scrollPositions: { [key: string]: number } = {
     saved: 0,
   };
