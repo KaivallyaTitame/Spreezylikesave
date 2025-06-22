@@ -93,13 +93,7 @@ export class OtpscreenComponent implements OnInit, OnDestroy {
       },
       error: (error) => {
         this.isLoaderVisible = false;
-        this.showPopup(
-          `Error (${error?.errorCode || "Unable to resend otp"}) `,
-          ` ${
-            error || "Error occured while resending otp (Internal Server Error)"
-          }  `
-        );
-        this.isLoaderVisible = false;
+        throw(error);
       },
     });
   }
