@@ -56,7 +56,7 @@ export class SettingsService {
 
   postBusinessDetails(data: BusinessInformation): Observable<string> {
     return this.http.post(API_CONFIG.SETTINGS.UPDATE_BUSINESS_DETAILS, data, {
-      responseType: 'text',
+       responseType: 'text',
       headers: new HttpHeaders({
          Authorization: `Bearer ${this.token}`,
          'Content-Type': 'application/json'
