@@ -117,6 +117,16 @@ This module contains all the necessary logic for spreezy frontend application.
 - Once the build is complete, need to sync the android and ios binaries using capacitor. use - <pre><code>npx cap sync</code></pre>
 - After syncing the android binaries, from root directory execute mentioned cmd to create the APK - <pre><code>cd android && ./gradlew assembleDebug && cd ..</code></pre>
 - The app should be present in the android/app/build/outputs/apk/debug/app-debug.apk
+- To control Jenkins pipeline stages, update the .jenkins-config.json file in the root folder.
+- Set values to true only at the time of release, otherwise keep them false:
+
+- To enable the **Codecut** stage:
+  ```json
+  "codecutprofile": true
+
+- To enable **Signed AAB build and upload** stage:
+  ```json
+  "runSignedAab": true
 
 ## Contribution guidelines
 

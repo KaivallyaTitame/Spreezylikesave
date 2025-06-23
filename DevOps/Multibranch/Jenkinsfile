@@ -6,7 +6,6 @@ pipeline
     agent {
         docker {
             image 'cypress/base:18.16.0'
-        // args '-v /var/run/docker.sock:/var/run/docker.sock'
         }
     }
 
@@ -26,15 +25,6 @@ pipeline
     }
 
     stages {
-        stage('Install curl') {
-            steps {
-                sh '''
-                    echo "Installing curl..."
-                    apt-get update && apt-get install -y curl
-                '''
-            }
-        }
-
         stage('Codecut') {
             when {
                 allOf {
@@ -52,7 +42,7 @@ pipeline
                     sh '''
                         echo "Running release-version.js with PROFILE=codecut and branch = develop"
                         export GIT_REPO_AUTH=https://${GITHUB_USR}:${GITHUB_TOKN}@github.com/spreezy-tech/spreezy-frontend.git
-                        node release-version.js
+                        node DevOps/scripts/release-version.js
                     '''
                 }
             }
