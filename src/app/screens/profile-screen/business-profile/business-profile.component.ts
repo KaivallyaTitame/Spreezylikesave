@@ -22,8 +22,8 @@ import { ImageUrlGenerationService } from "src/app/shared/image-url-generation.s
   styleUrls: ["./business-profile.component.css"],
 })
 export class BusinessProfileComponent implements OnInit {
-  userDetails: UserDetails | null = null; // User details fetched from backend
-  loadingUserDetails: boolean = true; // To show skeletons while data is loading
+  userDetails: UserDetails | null = null;
+  loadingUserDetails: boolean = true; 
   @Input() profilePosts!: AdvertisementDetails[];
   @Input() savedPosts!: AdvertisementDetails[];
   visibleProfilePosts: AdvertisementDetails[] = [];
@@ -41,17 +41,17 @@ export class BusinessProfileComponent implements OnInit {
   faList = faList;
   faBookmark = faBookmark;
   faCircleUser = faCircleUser;
-  selectedTab: string = "posts"; //selected tab by default
+  selectedTab: string = "posts";
   currentUsername: string = "";
   username: string | null = null;
   userType: string;
   showPopup: boolean = false;
   popupTitle: string = "Error";
   popupBody: string = "";
-  hasMoreProfilePosts: boolean = true; // Initially assume there are more posts
-  hasMoreSavedPosts: boolean = true; // Initially assume there are more saved posts
-  activeIndex: number | undefined = undefined; // indicates which post insight to be displayed. if it is undefined then it will not shown.
-  showInsightScreen: boolean = false; // this variable decides the visibility of the post insight component.
+  hasMoreProfilePosts: boolean = true;
+  hasMoreSavedPosts: boolean = true; 
+  activeIndex: number | undefined = undefined; 
+  showInsightScreen: boolean = false; 
 
   constructor(
     private UserService: UserService,
@@ -177,9 +177,9 @@ export class BusinessProfileComponent implements OnInit {
             }
           });
           this.visibleProfilePosts.push(...data);
-          this.profilePostPage++; // Increment page only if data exists
+          this.profilePostPage++; 
         } else {
-          this.hasMoreProfilePosts = false; // No more posts to fetch
+          this.hasMoreProfilePosts = false; 
         }
         this.loadingProfilePosts = false;
       },
@@ -214,9 +214,9 @@ export class BusinessProfileComponent implements OnInit {
               }
             });
             this.visibleSavedPosts.push(...data);
-            this.savedPostPage++; // Increment page only if data exists
+            this.savedPostPage++; 
           } else {
-            this.hasMoreSavedPosts = false; // No more saved posts to fetch
+            this.hasMoreSavedPosts = false; 
           }
           this.loadingSavedPosts = false;
         },
@@ -241,7 +241,7 @@ export class BusinessProfileComponent implements OnInit {
   onScroll(event: any): void {
     const scrollContainer = event.target;
     const scrollPosition =
-      scrollContainer.scrollTop + scrollContainer.clientHeight;
+    scrollContainer.scrollTop + scrollContainer.clientHeight;
     const scrollHeight = scrollContainer.scrollHeight;
 
     if (scrollPosition >= scrollHeight - 100) {
@@ -267,16 +267,11 @@ export class BusinessProfileComponent implements OnInit {
   };
 
   switchTab(tab: string): void {
-    // Save the current scroll position for the active tab
     const scrollContainer = document.querySelector(".scroll-container");
     if (scrollContainer) {
       this.scrollPositions[this.selectedTab] = scrollContainer.scrollTop;
     }
-
-    // Switch the selected tab
     this.selectedTab = tab;
-
-    // Restore the scroll position for the new tab
     setTimeout(() => {
       const newScrollContainer = document.querySelector(".scroll-container");
       if (newScrollContainer) {

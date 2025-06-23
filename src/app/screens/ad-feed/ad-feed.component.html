@@ -1,8 +1,14 @@
-<div class="ad-feed mt-12">
-  <div class="ad-feed mt-12 mb-12">
+<div class="ad-feed mt-12" class="feed-container overflow-auto" (touchstart)="onTouchStart($event)"
+(touchmove)="onTouchMove($event)"
+(touchend)="onTouchEnd($event)"
+#feedContainer >
+  <div class="refresh-indicator" [style.transform]="indicatorTransform" [class.active]="isRefreshing">
+    <p *ngIf="!isRefreshing">Pull to refresh</p>
+    <p *ngIf="isRefreshing">Refreshing...</p>
+  </div>
+  <div class="feed mt-12 mb-12" #feed>
     <ng-container *ngIf="isLoading; else content">
-      <!-- Show skeleton loaders while loading -->
-      <app-skeleton *ngFor="let i of [1, 2, 3, 4, 5]"></app-skeleton> <!-- Adjust the number of skeletons based on expected ad count -->
+      <app-skeleton *ngFor="let i of [1, 2, 3, 4, 5]"></app-skeleton>
     </ng-container>
 
     <ng-template #content>
@@ -29,4 +35,5 @@
 </div>
 
 <!-- Optional: Error Popup -->
-<app-pop-up *ngIf="showErrorPopup" [messageTitle]="'Error'" [messageBody]="errorMessage" (close)="showErrorPopup = false"></app-pop-up>
+<app-pop-up *ngIf="showErrorPopup" [messageTitle]="'Error'" [messageBody]="errorMessage"
+  (close)="showErrorPopup = false"></app-pop-up>

@@ -36,6 +36,7 @@ import { AdvertisementDetails } from "src/app/models/ad-details";
 import { AdvertisementDetailsService } from "src/app/services/advertisementTypes.service";
 import { JwtDecoderService } from "src/app/services/jwtDecoder/jwt-decoder.service";
 import { ShareService } from "src/app/services/share.service";
+import { EngageServiceService } from "src/app/shared/engage-service.service";
 import { ImageUrlGenerationService } from "src/app/shared/image-url-generation.service";
 
 @Component({
@@ -97,7 +98,8 @@ export class PostComponent implements OnInit {
     private jwtDecoderService: JwtDecoderService,
     private route: Router,
     private shareService: ShareService,
-    private imageUrlGeneratorService: ImageUrlGenerationService
+    private imageUrlGeneratorService: ImageUrlGenerationService,
+    private engageService: EngageServiceService
   ) {}
 
   hasValidImages: boolean = true;
@@ -377,6 +379,17 @@ export class PostComponent implements OnInit {
     }, 500);
   }
 
+  incrementEngagementCount(advertisementId: number) {
+    this.engageService.incrementEngagementCount(advertisementId).subscribe({
+      next: (response) => {
+        console.log('Engagement count incremented successfully:', response);
+      },
+      error: (error) => {
+        console.error('Error incrementing engagement count:', error);
+      }
+    })
+  }
+
   showDetails(advertisementId: number): void {
     this.router.navigate(
       [`${this.router.url}/offer-description`, advertisementId],
@@ -384,6 +397,7 @@ export class PostComponent implements OnInit {
         queryParams: { data: JSON.stringify(this.postDetails) },
       }
     );
+    this.incrementEngagementCount(advertisementId);
   }
 
   prevImage() {

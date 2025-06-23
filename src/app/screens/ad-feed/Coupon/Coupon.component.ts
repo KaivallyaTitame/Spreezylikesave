@@ -38,6 +38,7 @@ import { AdvertisementDetails } from "src/app/models/ad-details";
 import { AdvertisementDetailsService } from "src/app/services/advertisementTypes.service";
 import { JwtDecoderService } from "src/app/services/jwtDecoder/jwt-decoder.service";
 import { ShareService } from "src/app/services/share.service";
+import { EngageServiceService } from "src/app/shared/engage-service.service";
 import { ImageUrlGenerationService } from "src/app/shared/image-url-generation.service";
 
 @Component({
@@ -95,13 +96,26 @@ export class CouponComponent implements OnInit {
   @ViewChild("threeDotsWrapper", { static: false }) threeDotsRef!: ElementRef;
   isLiked: boolean = false;
   isDisliked: boolean = false;
+
+  private triggerAnimation(type: "like" | "dislike" | "save") {
+    if (type === "like") {
+      this.showLikeAnimation = true;
+    } else if (type === "dislike") {
+      this.showDislikeAnimation = true;
+    }
+    setTimeout(() => {
+      this.showLikeAnimation = false;
+      this.showDislikeAnimation = false;
+    }, 500);
+  }
   
   constructor(
     private advertisementDetailsService: AdvertisementDetailsService,
     private router: Router,
     private shareService: ShareService,
     private jwtDecoderService: JwtDecoderService,
-    private imageUrlGeneratorService: ImageUrlGenerationService
+    private imageUrlGeneratorService: ImageUrlGenerationService,
+    private engageService: EngageServiceService
   ) {}
 
   hasValidImages: boolean = true;
@@ -131,6 +145,7 @@ export class CouponComponent implements OnInit {
       console.error("Error calculating expiry:", error);
     }
   }
+
 
   toggleFollow(): void {
     let token = localStorage.getItem("token") || "";
@@ -196,6 +211,13 @@ export class CouponComponent implements OnInit {
     }
   }
 
+  showError(title: string, body: string) {
+    this.popupTitle = title;
+    this.popupBody = body;
+    this.showPopup = true;
+  }
+
+
   showInsights(event: Event): void {
     this.setActiveIndex.emit(this.index);
     this.setInsightScreen.emit(event);
@@ -204,7 +226,7 @@ export class CouponComponent implements OnInit {
   likePost(): void {
     const advertisementId = this.couponDetails.advertisementId;
     this.advertisementDetailsService.updateLikes(advertisementId).subscribe({
-      next: (response) => {
+      next: (response : any) => {
         this.triggerAnimation("like");
         const status = response.status;
         if (status == 201) {
@@ -217,6 +239,7 @@ export class CouponComponent implements OnInit {
           this.couponDetails.likes += 1;
           this.couponDetails.dislikes -= 1;
         }
+        
       },
       error: (error) => {
         console.log(error.status);
@@ -232,10 +255,11 @@ export class CouponComponent implements OnInit {
     });
   }
 
+
   dislikePost(): void {
     const advertisementId = this.couponDetails.advertisementId;
     this.advertisementDetailsService.updateDislikes(advertisementId).subscribe({
-      next: (response) => {
+      next: (response ) => {
         this.triggerAnimation("dislike");
         const status = response.status;
         if (status === 201) {
@@ -248,6 +272,7 @@ export class CouponComponent implements OnInit {
           this.couponDetails.dislikes += 1;
           this.couponDetails.likes -= 1;
         }
+        
       },
       error: (error) => {
         console.log(error.status);
@@ -312,11 +337,7 @@ export class CouponComponent implements OnInit {
       });
   }
 
-  showError(title: string, body: string) {
-    this.popupTitle = title;
-    this.popupBody = body;
-    this.showPopup = true;
-  }
+  
 
   toggleReportButton(): void {
     this.showReportButton = !this.showReportButton;
@@ -371,16 +392,15 @@ export class CouponComponent implements OnInit {
     document.body.style.overflow = "auto";
   }
 
-  private triggerAnimation(type: "like" | "dislike" | "save") {
-    if (type === "like") {
-      this.showLikeAnimation = true;
-    } else if (type === "dislike") {
-      this.showDislikeAnimation = true;
-    }
-    setTimeout(() => {
-      this.showLikeAnimation = false;
-      this.showDislikeAnimation = false;
-    }, 500);
+  incrementEngagementCount(advertisementId: number) {
+    this.engageService.incrementEngagementCount(advertisementId).subscribe({
+      next: (response) => {
+        console.log('Engagement count incremented successfully:', response);
+      },
+      error: (error) => {
+        console.error('Error incrementing engagement count:', error);
+      }
+    })
   }
 
   showDetails(advertisementId: number): void {
@@ -390,6 +410,7 @@ export class CouponComponent implements OnInit {
         queryParams: { data: JSON.stringify(this.couponDetails) },
       }
     );
+    this.incrementEngagementCount(advertisementId);
   }
 
   prevImage() {
@@ -398,6 +419,7 @@ export class CouponComponent implements OnInit {
       this.updateTranslateX();
     }
   }
+
 
   nextImage() {
     if (
@@ -408,6 +430,7 @@ export class CouponComponent implements OnInit {
       this.updateTranslateX();
     }
   }
+
 
   goToImage(index: number) {
     if (
@@ -420,6 +443,7 @@ export class CouponComponent implements OnInit {
     }
   }
 
+
   updateTranslateX() {
     const containerWidth = this.imageContainer?.nativeElement?.clientWidth || 0;
     this.translateX = -this.currentImageIndex * containerWidth;
@@ -430,6 +454,7 @@ export class CouponComponent implements OnInit {
     this.updateTranslateX();
   }
 
+
   startX: number;
 
   @HostListener("touchstart", ["$event"])
@@ -437,10 +462,12 @@ export class CouponComponent implements OnInit {
     this.startX = event.touches[0].clientX;
   }
 
-  @HostListener("touchend", ["$event"])
+
+  @HostListener('touchend', ['$event'])
   onTouchEnd(event: TouchEvent) {
     const endX = event.changedTouches[0].clientX;
     const diff = endX - this.startX;
+
 
     if (Math.abs(diff) > 50) {
       if (diff > 0) {

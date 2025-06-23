@@ -35,6 +35,7 @@ import { AdvertisementDetails } from "src/app/models/ad-details";
 import { AdvertisementDetailsService } from "src/app/services/advertisementTypes.service";
 import { JwtDecoderService } from "src/app/services/jwtDecoder/jwt-decoder.service";
 import { ShareService } from "src/app/services/share.service";
+import { EngageServiceService } from "src/app/shared/engage-service.service";
 import { ImageUrlGenerationService } from "src/app/shared/image-url-generation.service";
 @Component({
   selector: "app-Event",
@@ -95,7 +96,8 @@ export class EventComponent implements OnInit {
     private router: Router,
     private shareService: ShareService,
     private jwtDecoderService: JwtDecoderService,
-    private imageUrlGeneratorService: ImageUrlGenerationService
+    private imageUrlGeneratorService: ImageUrlGenerationService,
+    private engageService: EngageServiceService
   ) {}
 
   hasValidImages: boolean = true;
@@ -377,6 +379,17 @@ export class EventComponent implements OnInit {
     window.location.href = this.eventDetails.websiteLink;
   }
 
+  incrementEngagementCount(advertisementId: number) {
+    this.engageService.incrementEngagementCount(advertisementId).subscribe({
+      next: (response) => {
+        console.log('Engagement count incremented successfully:', response);
+      },
+      error: (error) => {
+        console.error('Error incrementing engagement count:', error);
+      }
+    })
+  }
+
   showDetails(advertisementId: number): void {
     this.router.navigate(
       [`${this.router.url}/offer-description`, advertisementId],
@@ -384,6 +397,7 @@ export class EventComponent implements OnInit {
         queryParams: { data: JSON.stringify(this.eventDetails) },
       }
     );
+    this.incrementEngagementCount(advertisementId);
   }
 
   prevImage() {

@@ -21,7 +21,7 @@ import { SkeletonComponent } from 'src/app/screens/ad-feed/skeleton/skeleton.com
     CommonModule,
     AdFeedRoutingModule,
     FontAwesomeModule,
-    SharedModule
+    SharedModule,
   ],
   exports: [
     AdFeedComponent,
