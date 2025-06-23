@@ -1,6 +1,6 @@
 import { AuthService } from "src/app/services/auth.service";
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { AdvertisementDetailsService } from 'src/app/services/advertisementTypes.service'; 
+import { AdvertisementDetailsService } from 'src/app/services/advertisementTypes.service';
 import { AdvertisementDetails } from 'src/app/models/ad-details';
 
 @Component({
@@ -9,66 +9,28 @@ import { AdvertisementDetails } from 'src/app/models/ad-details';
   styleUrls: ['./ad-feed.component.css'],
 })
 export class AdFeedComponent implements OnInit {
-  ads: AdvertisementDetails []= [];
-  errorMessage: string = '';  
+  ads: AdvertisementDetails[] = [];
+  errorMessage: string = '';
   showErrorPopup: boolean = false;
-  isLoading: boolean = true; 
-  constructor(private advertisementDetailsService: AdvertisementDetailsService, private authService: AuthService) {}
+  isLoading: boolean = true;
+  isPulling: boolean = false;
+  isRefreshing: boolean = false;
+  pullDistance: number = 0;
+  maxPullDistance: number = 120;
+  refreshThreshold: number = 60;
+  private startY: number = 0;
+  private currentY: number = 0;
+  private isAtTop: boolean = false;
+  private touchStarted: boolean = false;
+  private lastTouchTime: number = 0;
 
-  @ViewChild('feedContainer', { static: true }) feedElement!: ElementRef;
+  @ViewChild('feed', { static: false }) feedElement!: ElementRef;
 
-  feedItems = Array.from({ length: 20 }, (_, i) => `Feed Item ${i + 1}`);
-  isRefreshing = false;
-  indicatorTransform = 'translateY(-50px)';
+  constructor(
+    private advertisementDetailsService: AdvertisementDetailsService,
+    private authService: AuthService
+  ) { }
 
-  private startY = 0;
-  private isDragging = false;
-
-  onTouchStart(event: TouchEvent) {
-    const scrollTop = this.feedElement.nativeElement.scrollTop;
-
-    if (this.isRefreshing || scrollTop > 0) return; 
-    this.startY = event.touches[0].clientY;
-    this.isDragging = true;
-    console.log("Touch start detected at the top");
-  }
-
-  onTouchMove(event: TouchEvent) {
-    if (!this.isDragging) return;
-
-    const currentY = event.touches[0].clientY;
-    const deltaY = currentY - this.startY;
-
-    if (deltaY > 0 && !this.isRefreshing) {
-      this.indicatorTransform = `translateY(${Math.min(deltaY, 100) - 50}px)`;
-    }
-  }
-
-  onTouchEnd(event: TouchEvent) {
-    if (!this.isDragging) return;
-    this.isDragging = false;
-
-    const currentY = event.changedTouches[0].clientY;
-    const deltaY = currentY - this.startY;
-
-    if (deltaY > 50) {
-      this.triggerRefresh();
-    } else {
-      this.indicatorTransform = 'translateY(-50px)'; 
-    }
-  }
-
-  triggerRefresh() {
-    this.isRefreshing = true;
-    this.indicatorTransform = 'translateY(0)';
-
-    setTimeout(() => {
-      const newItems = Array.from({ length: 5 }, (_, i) => `New Feed Item ${i + 1}`);
-      this.feedItems = [...newItems, ...this.feedItems];
-      this.isRefreshing = false;
-      this.indicatorTransform = 'translateY(-50px)'; // Reset position
-    }, 1500);
-  }
   logout() {
     this.authService.logout();
   }
@@ -84,12 +46,12 @@ export class AdFeedComponent implements OnInit {
   }
 
   fetchAds(): void {
-    this.isLoading = true; 
+    this.isLoading = true;
     this.advertisementDetailsService.getAdvertisementDetails().subscribe({
       next: (response) => {
         this.ads = response;
         this.isLoading = false;
-        console.log(response)
+        console.log(response);
       },
       error: (err) => {
         this.errorMessage = 'Failed to load ads. Please try again later.';
@@ -98,5 +60,117 @@ export class AdFeedComponent implements OnInit {
         console.log(err);
       }
     });
+  }
+
+  onTouchStart(event: TouchEvent): void {
+    if (this.isRefreshing) return;
+
+    this.startY = event.touches[0].clientY;
+    this.touchStarted = true;
+    this.isAtTop = this.checkIfAtTop();
+    this.lastTouchTime = Date.now();
+    if (this.feedElement) {
+      this.feedElement.nativeElement.classList.add('pulling');
+    }
+  }
+
+  onTouchMove(event: TouchEvent): void {
+    if (!this.touchStarted || this.isRefreshing || !this.isAtTop) return;
+
+    this.currentY = event.touches[0].clientY;
+    const deltaY = this.currentY - this.startY;
+    const currentTime = Date.now();
+    const timeDiff = currentTime - this.lastTouchTime;
+    if (deltaY > 0) {
+      event.preventDefault();
+      const resistance = 0.6; 
+      this.pullDistance = Math.min(deltaY * resistance, this.maxPullDistance);
+      this.isPulling = true;
+      if (this.pullDistance >= this.refreshThreshold && timeDiff > 100) {
+        this.triggerHapticFeedback();
+        this.lastTouchTime = currentTime;
+      }
+    }
+  }
+
+  onTouchEnd(event: TouchEvent): void {
+    if (!this.touchStarted || this.isRefreshing) return;
+    this.touchStarted = false;
+    if (this.feedElement) {
+      this.feedElement.nativeElement.classList.remove('pulling');
+    }
+
+    if (this.isPulling && this.pullDistance >= this.refreshThreshold) {
+      this.triggerRefresh();
+    } else {
+      this.resetPullState();
+    }
+  }
+
+  private checkIfAtTop(): boolean {
+    if (!this.feedElement) return true;
+    return this.feedElement.nativeElement.scrollTop <= 5; 
+  }
+
+  private triggerRefresh(): void {
+    this.isRefreshing = true;
+    this.isPulling = false;
+    setTimeout(() => {
+      this.refreshAds();
+    }, 200);
+  }
+
+  private refreshAds(): void {
+    this.advertisementDetailsService.getAdvertisementDetails().subscribe({
+      next: (response) => {
+        this.ads = response;
+        console.log('Ads refreshed:', response);
+        this.completeRefresh();
+      },
+      error: (err) => {
+        this.errorMessage = 'Failed to refresh ads. Please try again later.';
+        this.showErrorPopup = true;
+        console.log('Refresh error:', err);
+        this.completeRefresh();
+      }
+    });
+  }
+
+  private completeRefresh(): void {
+    setTimeout(() => {
+      this.isRefreshing = false;
+      this.resetPullState();
+    }, 600);
+  }
+
+  private resetPullState(): void {
+    this.isPulling = false;
+    this.pullDistance = 0;
+  }
+
+  private triggerHapticFeedback(): void {
+    if ('vibrate' in navigator) {
+      navigator.vibrate(10);
+    }
+    if (navigator.vibrate) {
+      navigator.vibrate([10]);
+    }
+  }
+
+  manualRefresh(): void {
+    if (!this.isRefreshing) {
+      this.triggerRefresh();
+    }
+  }
+  
+  getRefreshStatus(): string {
+    if (this.isRefreshing) {
+      return 'Refreshing content...';
+    } else if (this.isPulling && this.pullDistance >= this.refreshThreshold) {
+      return 'Release to refresh';
+    } else if (this.isPulling) {
+      return 'Pull down to refresh';
+    }
+    return 'Pull down to refresh';
   }
 }

@@ -1,39 +1,72 @@
-<div class="ad-feed mt-12" class="feed-container overflow-auto" (touchstart)="onTouchStart($event)"
-(touchmove)="onTouchMove($event)"
-(touchend)="onTouchEnd($event)"
-#feedContainer >
-  <div class="refresh-indicator" [style.transform]="indicatorTransform" [class.active]="isRefreshing">
-    <p *ngIf="!isRefreshing">Pull to refresh</p>
-    <p *ngIf="isRefreshing">Refreshing...</p>
-  </div>
-  <div class="feed mt-12 mb-12" #feed>
-    <ng-container *ngIf="isLoading; else content">
-      <app-skeleton *ngFor="let i of [1, 2, 3, 4, 5]"></app-skeleton>
-    </ng-container>
 
-    <ng-template #content>
-      <div *ngFor="let ad of ads" class="ad-item">
-        <ng-container *ngIf="ad.advertisementType == 'Post'">
-          <div [ngClass]="{'opacity-50 pointer-events-none': isExpired(ad.offerExpiry)}">
-            <app-Post [postDetails]="ad"></app-Post>
-          </div>
-        </ng-container>
+<div class="ad-feed mt-12">
+  <div class="feed-wrapper mt-12 relative overflow-hidden">
+    <div
+      class="pull-refresh-indicator fixed top-0 left-0 right-0 flex justify-center items-center z-50"
+      [ngClass]="{
+        'visible': isPulling || isRefreshing,
+        'refreshing': isRefreshing
+      }"
+      [ngStyle]="{
+        'transform': 'translateY(' + (isPulling ? (pullDistance - 60 > 20 ?  pullDistance - 60 : 20) : (isRefreshing ? '20px' : '-60px')) + ')'
+      }">
+      <div class="instagram-spinner-container">
+        <div 
+          class="instagram-spinner"
+          [ngClass]="{
+            'visible': isPulling && pullDistance > 30,
+            'spinning': isRefreshing,
+            'ready': isPulling && pullDistance >= refreshThreshold
+          }">
 
-        <ng-container *ngIf="ad.advertisementType == 'Event'">
-          <div [ngClass]="{'opacity-50 pointer-events-none': isExpired(ad.offerExpiry)}">
-            <app-Event [eventDetails]="ad"></app-Event>
-          </div>
-        </ng-container>
-        <ng-container *ngIf="ad.advertisementType == 'Coupon'">
-          <div [ngClass]="{'opacity-50 pointer-events-none': isExpired(ad.offerExpiry)}">
-            <app-Coupon [couponDetails]="ad"></app-Coupon>
-          </div>
-        </ng-container>
+          <div class="spinner-ring outer-ring"></div>
+          <div class="spinner-ring inner-ring"></div>
+          <div class="spinner-center"></div>
+        </div>
       </div>
-    </ng-template>
-  </div>
-</div>
+    </div>
 
-<!-- Optional: Error Popup -->
-<app-pop-up *ngIf="showErrorPopup" [messageTitle]="'Error'" [messageBody]="errorMessage"
-  (close)="showErrorPopup = false"></app-pop-up>
+    <div
+      class="feed transition-transform duration-300 ease-out"
+      [ngStyle]="{ 
+        'transform': 'translateY(' + (isPulling ? (pullDistance * 0.6 > 80 ?pullDistance * 0.6: 80) : 0) + 'px)',
+        'transition': isPulling ? 'none' : 'transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94)'
+      }"
+      #feed
+      (touchstart)="onTouchStart($event)"
+      (touchmove)="onTouchMove($event)"
+      (touchend)="onTouchEnd($event)">
+
+      <ng-container *ngIf="isLoading && !isRefreshing; else content">
+        <app-skeleton *ngFor="let i of [1, 2, 3, 4, 5]"></app-skeleton>
+      </ng-container>
+
+      <ng-template #content>
+        <div *ngFor="let ad of ads" class="ad-item">
+          <ng-container *ngIf="ad.advertisementType == 'Post'">
+            <div [ngClass]="{'opacity-50 pointer-events-none': isExpired(ad.offerExpiry)}">
+              <app-Post [postDetails]="ad"></app-Post>
+            </div>
+          </ng-container>
+          <ng-container *ngIf="ad.advertisementType == 'Event'">
+            <div [ngClass]="{'opacity-50 pointer-events-none': isExpired(ad.offerExpiry)}">
+              <app-Event [eventDetails]="ad"></app-Event>
+            </div>
+          </ng-container>
+          <ng-container *ngIf="ad.advertisementType == 'Coupon'">
+            <div [ngClass]="{'opacity-50 pointer-events-none': isExpired(ad.offerExpiry)}">
+              <app-Coupon [couponDetails]="ad"></app-Coupon>
+            </div>
+          </ng-container>
+        </div>
+      </ng-template>
+    </div>
+  </div>
+
+  <app-pop-up 
+    *ngIf="showErrorPopup" 
+    [messageTitle]="'Error'" 
+    [messageBody]="errorMessage"
+    (close)="showErrorPopup = false">
+  </app-pop-up>
+</div>
