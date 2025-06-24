@@ -115,13 +115,7 @@ export class CouponCodeFormComponent {
       },
       error: (error: HttpErrorResponse) => {
         console.error('Error Details:', error);
-        this.popUpTitle = 'Error!';
-        if (error.error && error.error.message) {
-          this.popUpBody = `Error: ${error.error.message}`;
-        } else {
-          this.popUpBody = 'Something went wrong. Please try again.';
-        }
-        this.showPopUp = true;
+        throw(error); 
       }
     });
   }

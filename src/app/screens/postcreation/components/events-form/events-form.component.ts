@@ -113,13 +113,7 @@ export class EventsFormComponent {
         this.eventFormDetails.reset(); 
       },
       error: (error: HttpErrorResponse) => {
-        this.popUpTitle = 'Error!';
-        if (error.error && error.error.message) {
-          this.popUpBody = `Error: ${error.error.message}`;
-        } else {
-          this.popUpBody = 'Something went wrong. Please try again.';
-        }
-        this.showPopUp = true;
+        throw(error);
       }
     });
   }

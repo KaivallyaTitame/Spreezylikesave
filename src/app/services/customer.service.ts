@@ -31,6 +31,7 @@ export class CustomerService {
         }
       }, error => {
         console.error('Error:', error);
+        throw(error);
       });
   }
   

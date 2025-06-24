@@ -140,9 +140,8 @@ export class Business3Component implements OnInit {
         setTimeout(() => this.router.navigate(['/login']), 2000);
       }
     } catch (error: any) {
-      console.error('Registration error:', error);
-      const errorMessage = 'An error occurred during registration';
-      this.showPopup('Error', errorMessage);
+      console.log(error);
+      throw(error);
     } finally {
       this.isSubmitting = false;
     }
