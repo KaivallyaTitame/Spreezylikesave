@@ -9,6 +9,18 @@ import { Observable } from "rxjs";
 import { API_CONFIG } from "../api-config";
 import { AdvertisementDetails } from "../models/ad-details";
 import { JwtDecoderService } from "./jwtDecoder/jwt-decoder.service";
+
+export interface PaginatedResponse<T> {
+  content: T[];
+  totalElements: number;
+  totalPages: number;
+  size: number;
+  number: number;
+  first: boolean;
+  last: boolean;
+  numberOfElements: number;
+}
+
 @Injectable({
   providedIn: "root",
 })
@@ -20,7 +32,7 @@ export class AdvertisementDetailsService {
     private jwtDecoderService: JwtDecoderService
   ) {}
 
-  getAdvertisementDetails(): Observable<AdvertisementDetails[]> {
+  getAdvertisementDetails(page: number = 0, pageSize: number = 10): Observable<AdvertisementDetails[]> {
     const token = localStorage.getItem("token") || "";
     const userName =
       this.jwtDecoderService.decodeInfoFromToken(token)["sub"] || "";
@@ -30,12 +42,44 @@ export class AdvertisementDetailsService {
       Authorization: `Bearer ${token}`,
       "Content-Type": "application/json",
     });
-    const params = new HttpParams().set("page", 0).set("pageSize", 10);
+    const params = new HttpParams()
+      .set("page", page.toString())
+      .set("pageSize", pageSize.toString());
+    
     return this.http.request<AdvertisementDetails[]>("GET", url, {
       headers,
       params,
       responseType: "json",
     });
+  }
+
+  getAdvertisementDetailsPaginated(page: number = 0, pageSize: number = 10): Observable<PaginatedResponse<AdvertisementDetails>> {
+    const token = localStorage.getItem("token") || "";
+    const userName =
+      this.jwtDecoderService.decodeInfoFromToken(token)["sub"] || "";
+    const url =
+      API_CONFIG.ADVERTISEMENT_EVENTS.GET_ADVERTISEMENT_DETAILS(userName);
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    });
+    const params = new HttpParams()
+      .set("page", page.toString())
+      .set("pageSize", pageSize.toString());
+    
+    return this.http.request<PaginatedResponse<AdvertisementDetails>>("GET", url, {
+      headers,
+      params,
+      responseType: "json",
+    });
+  }
+
+  getFreshAdvertisements(pageSize: number = 10): Observable<AdvertisementDetails[]> {
+    return this.getAdvertisementDetails(0, pageSize);
+  }
+
+  loadMoreAdvertisements(page: number, pageSize: number = 10): Observable<AdvertisementDetails[]> {
+    return this.getAdvertisementDetails(page, pageSize);
   }
 
   updateLikes(advertisementId: number): Observable<HttpResponse<string>> {

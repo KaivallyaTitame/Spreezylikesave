@@ -1,5 +1,5 @@
 import { AuthService } from "src/app/services/auth.service";
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { AdvertisementDetailsService } from 'src/app/services/advertisementTypes.service';
 import { AdvertisementDetails } from 'src/app/models/ad-details';
 
@@ -13,18 +13,12 @@ export class AdFeedComponent implements OnInit {
   errorMessage: string = '';
   showErrorPopup: boolean = false;
   isLoading: boolean = true;
-  isPulling: boolean = false;
   isRefreshing: boolean = false;
-  pullDistance: number = 0;
-  maxPullDistance: number = 120;
-  refreshThreshold: number = 60;
-  private startY: number = 0;
-  private currentY: number = 0;
-  private isAtTop: boolean = false;
-  private touchStarted: boolean = false;
-  private lastTouchTime: number = 0;
-
-  @ViewChild('feed', { static: false }) feedElement!: ElementRef;
+  isLoadingMore: boolean = false;
+  hasMoreData: boolean = true;
+  private currentPage: number = 0;
+  private pageSize: number = 10;
+  private totalPages: number = 0;
 
   constructor(
     private advertisementDetailsService: AdvertisementDetailsService,
@@ -47,11 +41,14 @@ export class AdFeedComponent implements OnInit {
 
   fetchAds(): void {
     this.isLoading = true;
-    this.advertisementDetailsService.getAdvertisementDetails().subscribe({
+    this.currentPage = 0;
+    this.hasMoreData = true;
+    this.advertisementDetailsService.getAdvertisementDetails(this.currentPage, this.pageSize).subscribe({
       next: (response) => {
         this.ads = response;
         this.isLoading = false;
-        console.log(response);
+        this.checkIfMoreDataAvailable(response.length);
+        console.log('Initial ads loaded:', response);
       },
       error: (err) => {
         this.errorMessage = 'Failed to load ads. Please try again later.';
@@ -62,68 +59,14 @@ export class AdFeedComponent implements OnInit {
     });
   }
 
-  onTouchStart(event: TouchEvent): void {
-    if (this.isRefreshing) return;
-
-    this.startY = event.touches[0].clientY;
-    this.touchStarted = true;
-    this.isAtTop = this.checkIfAtTop();
-    this.lastTouchTime = Date.now();
-    if (this.feedElement) {
-      this.feedElement.nativeElement.classList.add('pulling');
-    }
-  }
-
-  onTouchMove(event: TouchEvent): void {
-    if (!this.touchStarted || this.isRefreshing || !this.isAtTop) return;
-
-    this.currentY = event.touches[0].clientY;
-    const deltaY = this.currentY - this.startY;
-    const currentTime = Date.now();
-    const timeDiff = currentTime - this.lastTouchTime;
-    if (deltaY > 0) {
-      event.preventDefault();
-      const resistance = 0.6; 
-      this.pullDistance = Math.min(deltaY * resistance, this.maxPullDistance);
-      this.isPulling = true;
-      if (this.pullDistance >= this.refreshThreshold && timeDiff > 100) {
-        this.triggerHapticFeedback();
-        this.lastTouchTime = currentTime;
-      }
-    }
-  }
-
-  onTouchEnd(event: TouchEvent): void {
-    if (!this.touchStarted || this.isRefreshing) return;
-    this.touchStarted = false;
-    if (this.feedElement) {
-      this.feedElement.nativeElement.classList.remove('pulling');
-    }
-
-    if (this.isPulling && this.pullDistance >= this.refreshThreshold) {
-      this.triggerRefresh();
-    } else {
-      this.resetPullState();
-    }
-  }
-
-  private checkIfAtTop(): boolean {
-    if (!this.feedElement) return true;
-    return this.feedElement.nativeElement.scrollTop <= 5; 
-  }
-
-  private triggerRefresh(): void {
+  onRefresh(): void {
     this.isRefreshing = true;
-    this.isPulling = false;
-    setTimeout(() => {
-      this.refreshAds();
-    }, 200);
-  }
-
-  private refreshAds(): void {
-    this.advertisementDetailsService.getAdvertisementDetails().subscribe({
+    this.currentPage = 0;
+    this.hasMoreData = true;
+    this.advertisementDetailsService.getFreshAdvertisements(this.pageSize).subscribe({
       next: (response) => {
         this.ads = response;
+        this.checkIfMoreDataAvailable(response.length);
         console.log('Ads refreshed:', response);
         this.completeRefresh();
       },
@@ -136,41 +79,37 @@ export class AdFeedComponent implements OnInit {
     });
   }
 
+  onLoadMore(): void {
+    if (this.isLoadingMore || !this.hasMoreData) return;
+    this.isLoadingMore = true;
+    this.advertisementDetailsService.getFreshAdvertisements(this.pageSize).subscribe({
+      next: (response) => {
+        if (response && response.length > 0) {
+          this.ads = [...this.ads, ...response];
+          console.log('Fresh ads loaded at bottom:', response);
+        } else {
+          this.hasMoreData = false;
+        }
+        this.isLoadingMore = false;
+      },
+      error: (err) => {
+        this.errorMessage = 'Failed to load fresh ads. Please try again later.';
+        this.showErrorPopup = true;
+        this.isLoadingMore = false;
+        console.log('Load fresh ads error:', err);
+      }
+    });
+  }
+
   private completeRefresh(): void {
     setTimeout(() => {
       this.isRefreshing = false;
-      this.resetPullState();
     }, 600);
   }
 
-  private resetPullState(): void {
-    this.isPulling = false;
-    this.pullDistance = 0;
-  }
-
-  private triggerHapticFeedback(): void {
-    if ('vibrate' in navigator) {
-      navigator.vibrate(10);
+  private checkIfMoreDataAvailable(responseLength: number): void {
+    if (responseLength < this.pageSize) {
+      this.hasMoreData = false;
     }
-    if (navigator.vibrate) {
-      navigator.vibrate([10]);
-    }
-  }
-
-  manualRefresh(): void {
-    if (!this.isRefreshing) {
-      this.triggerRefresh();
-    }
-  }
-  
-  getRefreshStatus(): string {
-    if (this.isRefreshing) {
-      return 'Refreshing content...';
-    } else if (this.isPulling && this.pullDistance >= this.refreshThreshold) {
-      return 'Release to refresh';
-    } else if (this.isPulling) {
-      return 'Pull down to refresh';
-    }
-    return 'Pull down to refresh';
   }
 }

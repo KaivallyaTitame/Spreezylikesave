@@ -16,7 +16,6 @@ import { registerModule } from "./screens/Registration/register/register.module"
 @NgModule({
   declarations: [
     AppComponent,
-    
   ],
   imports: [
     BrowserModule,

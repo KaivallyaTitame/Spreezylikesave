@@ -7,6 +7,7 @@ import { ProfileSkeletonComponent } from '../profile-skeleton/profile-skeleton.c
 import { OfferDescriptionComponent } from '../offer-description/offer-description.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { ImageUrlGenerationService } from '../image-url-generation.service';
+import { PullToRefreshComponent } from '../pull-to-refresh/pull-to-refresh.component';
 @NgModule({
   providers: [
     ImageUrlGenerationService
@@ -16,7 +17,8 @@ import { ImageUrlGenerationService } from '../image-url-generation.service';
     LoaderComponent,
     ProfileInfoComponent,
     ProfileSkeletonComponent,
-    OfferDescriptionComponent
+    OfferDescriptionComponent,
+    PullToRefreshComponent
   ],
   imports: [
     CommonModule,
@@ -27,7 +29,8 @@ import { ImageUrlGenerationService } from '../image-url-generation.service';
     LoaderComponent,
     ProfileInfoComponent,
     ProfileSkeletonComponent,
-    OfferDescriptionComponent
+    OfferDescriptionComponent,
+    PullToRefreshComponent
   ]
 })
 export class SharedModule {}
