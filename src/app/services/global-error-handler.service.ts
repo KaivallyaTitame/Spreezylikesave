@@ -14,11 +14,11 @@ export class GlobalErrorHandlerService implements ErrorHandler {
 
   handleError(error: any): void {
     if(error instanceof HttpErrorResponse){
-          let errorAttribute:any; 
+         let errorAttribute:any; 
           if (typeof error?.error === 'object' && error?.error !== null) {
               errorAttribute = error.error; 
           } else if (typeof error?.error === 'string') {
-              try {
+             try {
                   errorAttribute = JSON.parse(error.error); 
               } catch (e) {
                   errorAttribute = {}; 
@@ -26,16 +26,13 @@ export class GlobalErrorHandlerService implements ErrorHandler {
           } else {
               errorAttribute = {}; 
           } 
-          const errorCode = errorAttribute.errorCode || 'SPX-7-002';
+          const errorCode = errorAttribute.errorCode || 'SPX-0-001';
           const errorMessage = errorAttribute.errorDescription || 'Service unavailable due to maintenance or technical issues';
           const appRef = this.injector.get(ApplicationRef);
           const appComponent = appRef.components[0].instance as AppComponent;
           this.zone.run(() => {
             appComponent.showErrorPopup(errorCode, errorMessage);
           })
-    }
-    else{
-        console.error('Non-HTTP error:', error);
     }
   }
 }
