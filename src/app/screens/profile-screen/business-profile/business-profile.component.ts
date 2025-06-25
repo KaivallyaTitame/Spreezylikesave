@@ -62,9 +62,7 @@ export class BusinessProfileComponent implements OnInit {
       this.username = params.get("username");
       if (this.username) {
         this.fetchUserDetails(this.username);
-        console.log('user details fetched !!!');
         this.fetchProfilePosts(this.username, this.profilePostPage);
-        console.log('Profile posts fetched !!'); 
         if (this.currentUsername === this.username) {
           this.fetchSavedPosts(this.username, this.savedPostPage);
         }
@@ -82,7 +80,6 @@ export class BusinessProfileComponent implements OnInit {
 
   fetchUserDetails(username: string) {
     this.loadingUserDetails = true; // Show skeletons during loading
-    console.log('first i am  setting the loading to true !!');
     this.UserService.getUserDetails(username).subscribe({
       next: (data) => {
         if (data.profileImageUrl) {
@@ -92,9 +89,7 @@ export class BusinessProfileComponent implements OnInit {
           );
         }
         this.userDetails = data;
-        console.log(this.userDetails);
         this.loadingUserDetails = false; // Hide skeletons after successful fetch
-        console.log('fetching the data was successeful !!');
       },
       error: (error) => {
         this.loadingUserDetails = false; // Stop skeletons even if there's an error
@@ -166,10 +161,8 @@ export class BusinessProfileComponent implements OnInit {
             this.savedPostPage++; // Increment page only if data exists
           } else {
             this.hasMoreSavedPosts = false; // No more saved posts to fetch
-            console.log('The saved posts are not no more....')
           }
           this.loadingSavedPosts = false;
-          console.log('The loadign of the saved posts has been stopped !!');
         },
         error: (error) => {
           this.loadingSavedPosts = false;

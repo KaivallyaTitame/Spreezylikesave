@@ -91,7 +91,6 @@ export class BusinessInformationComponent {
       },
       error: (error: HttpErrorResponse) => {
         this.loading = false; 
-        console.log('Error Is HttpErrorResponse'); 
         throw(error);  
       },
       complete: () => {

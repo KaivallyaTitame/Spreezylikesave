@@ -59,7 +59,6 @@ export class FeedbackScreenComponent {
           this.showPopUp = true;
         },
         (error) => {
-          console.log(error);
           throw(error); 
         }
       );
