@@ -45,7 +45,7 @@ export class ConsumerRegistration implements OnInit {
       ]),
       username: new FormControl("", [
         Validators.required,
-        Validators.maxLength(10),
+        Validators.maxLength(20),
       ]),
       email: new FormControl("", [Validators.required, Validators.email]),
       phoneNumber: new FormControl("", [
