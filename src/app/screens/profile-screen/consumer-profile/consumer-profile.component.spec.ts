@@ -31,6 +31,7 @@ describe('ConsumerProfileComponent', () => {
   });
 
   it('should create', () => {
+    // @ts-ignore
     expect(component).toBeTruthy();
   });
 });

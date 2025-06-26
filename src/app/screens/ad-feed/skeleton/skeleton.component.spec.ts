@@ -16,6 +16,7 @@ describe('SkeletonComponent', () => {
   });
 
   it('should create', () => {
+    // @ts-ignore
     expect(component).toBeTruthy();
   });
 });
