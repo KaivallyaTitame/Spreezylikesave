@@ -1,0 +1,116 @@
+pipeline {
+    agent {
+        docker {
+            image 'cypress/base:18.16.0'
+        }
+    }
+
+    parameters {
+        string(name: 'version_name', defaultValue: '1.0.0', description: 'Set Version Name for Build (e.g., 1.0.5)')
+        choice(name: 'play_track', choices: ['internal', 'closed', 'open'], description: 'Select Google Play Track for release')
+    }
+
+    environment {
+        PACKAGE_NAME = 'com.spreezy.app'
+        RELEASE_NOTES = 'Bug fixes and improvements.'
+    }
+
+    stages {
+        stage('Install Fastlane & Dependencies') {
+            steps {
+                sh '''
+                    echo Installing dependencies...
+                    apt-get update
+        
+                    # Ensure needed paths exist
+                    mkdir -p /usr/share/man/man1
+        
+                    # Install system dependencies
+                    apt-get install -y --no-install-recommends \
+                      ruby-full \
+                      curl \
+                      unzip \
+                      openjdk-17-jdk \
+                      build-essential \
+                      libffi-dev \
+                      libssl-dev \
+                      zlib1g-dev
+        
+                    # Configure broken packages, if any
+                    dpkg --configure -a
+        
+                    # Install Fastlane
+                    gem install fastlane -NV
+                    echo "Fastlane version: $(fastlane --version)"
+                '''
+            }
+        }
+
+        stage('Download AAB from Nexus') {
+            steps {
+                withCredentials([
+                    usernamePassword(credentialsId: 'nexus_apk_credentials', usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASS')
+                ]) {
+                    script {
+                        def version = params.version_name
+                        def versionDir = "spreezy-${version}"
+                        def aabName = "spreezy-${version}.aab"
+                        echo "Downloading AAB for version: ${version}"
+                        sh """
+                            curl -u $NEXUS_USER:$NEXUS_PASS -o ${aabName} "https://nexus.spreezy.in/repository/apk-release/${versionDir}/${aabName}"
+                        """
+                    }
+                }
+            }
+        }
+
+        stage('Upload to Google Play (Fastlane)') {
+            steps {
+                withCredentials([
+                    file(credentialsId: 'gplay-service-account', variable: 'GOOGLE_SERVICE_JSON')
+                ]) {
+                    script {
+                        def version = params.version_name
+                        def releaseName = "v${version}"
+                        def track = params.play_track
+                        def aabFile = "spreezy-${version}.aab"
+
+                        sh """
+                            mkdir -p android/fastlane
+
+                            cat > android/fastlane/Fastfile <<EOF
+                            default_platform(:android)
+
+                            platform :android do
+                              desc "Upload to Google Play track with release notes and version"
+                              lane :upload do
+                                upload_to_play_store(
+                                  json_key: "\${GOOGLE_SERVICE_JSON}",
+                                  aab: "../${aabFile}",
+                                  track: "${track}",
+                                  package_name: "${PACKAGE_NAME}",
+                                  release_status: "completed",
+                                  release_name: "${releaseName}",
+                                  changelog: "${RELEASE_NOTES}"
+                                )
+                              end
+                            end
+                            EOF
+
+                            cd android && fastlane upload
+                        """
+                    }
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            echo "✅ AAB uploaded to ${params.play_track} testing with release name v${params.version_name}."
+        }
+        failure {
+            echo '❌ Upload failed. Check Fastlane logs for details.'
+        }
+    }
+}

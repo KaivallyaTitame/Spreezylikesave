@@ -1,0 +1,230 @@
+pipeline
+{
+    options {
+        buildDiscarder(logRotator(numToKeepStr: '5'))
+    }
+    
+    agent {
+        docker {
+            image 'cypress/base:18.16.0'
+        }
+    }
+
+    environment {
+        GIT_URL = 'https://github.com/spreezy-tech/spreezy-frontend.git'
+        CREDENTIALS_ID = 'spreezy-PAT-frontend-backend'
+        JAVA_HOME = '/usr/lib/jvm/openjdk-17'
+        PATH = "${JAVA_HOME}/bin:${PATH}"
+        EMAIL_FROM = 'jenkins@spreezy.in'
+        EMAIL_TO = 'spreezyindia@gmail.com'
+        EMAIL_SUBJECT = 'Spreezy Frontend Project [${env.BRANCH_NAME}]'
+        EMAIL_BODY = 'Spreezy Frontend Build #${env.BUILD_NUMBER} for branch ${env.BRANCH_NAME}'
+        SONAR_HOST_URL = 'http://103.105.111.78:6842'
+        SONAR_TOKEN = credentials('sonarqube')
+        SONAR_HOME = tool 'sonar-scanner'
+    }
+
+    stages {
+        stage('Codecut') {
+            when {
+                allOf {
+                    branch 'develop'
+                    expression {
+                        def config = readJSON file: '.jenkins-config.json'
+                        return config.codecutprofile == true
+                    }
+                }
+            }
+            steps {
+                withCredentials([
+                    usernamePassword(credentialsId: 'spreezy-PAT-frontend-backend', usernameVariable: 'GITHUB_USR', passwordVariable: 'GITHUB_TOKN')
+                ]) {
+                    sh '''
+                        echo "Running release-version.js with PROFILE=codecut and branch = develop"
+                        export GIT_REPO_AUTH=https://${GITHUB_USR}:${GITHUB_TOKN}@github.com/spreezy-tech/spreezy-frontend.git
+                        node DevOps/scripts/release-version.js
+                    '''
+                }
+            }
+        }
+
+        stage('Checkout Branch') {    
+            when {
+                expression {
+                    def config = readJSON file: '.jenkins-config.json'
+                    return config.codecutprofile == true
+                }
+            }        
+            steps {
+                script {
+                    def config = readJSON file: '.jenkins-config.json'
+                    def selectedBranch = (config.codecutprofile == true) ? 'master' : 'develop'
+                    echo "Checking out branch: ${selectedBranch}"
+                    git(
+                        branch: selectedBranch,
+                        url: env.GIT_URL,
+                        credentialsId: env.CREDENTIALS_ID
+                    )
+                }
+            }
+        }
+
+        stage('Nexus Setup And Install All Dependencies') {
+            steps {
+                withCredentials([file(credentialsId: 'nexus_npm_credentials', variable: 'npm_nexus_credentials')]) {
+                    sh '''
+                    npm config set fetch-timeout 60000
+                    npm config set fetch-retries 5
+                    npm install --userconfig ${npm_nexus_credentials} --registry https://nexus.spreezy.in/repository/npm-group/ --loglevel verbose
+                '''
+                }
+            }
+        }
+
+        stage('Run Tests') {
+            steps {
+                script {
+                    def skip_test = true  // Set to 'true' to skip tests, 'false' to run them
+                    if (!skip_test) {
+                        sh 'npm start &'
+
+                        // Wait for Angular application to start
+                        sh 'npx wait-on http://localhost:4200'
+                        sh 'NO_COLOR=1 npm run test'
+                        sh 'npm run test:coverage'
+                        sh 'pkill -f "npm start"'
+                    } else {
+                        echo 'Skipping Cypress tests as skip_test is set to true'
+                    }
+                }
+            }
+        }
+
+        //  stage('sonarQube-analysis') {
+        //     steps {
+        //         withSonarQubeEnv('sonar-scanner') { // Ensure 'sonar-scanner' matches the name configured in Jenkins
+        //             script {
+        //                 sh """
+        //                     /var/jenkins_home/tools/hudson.plugins.sonar.SonarRunnerInstallation/sonar-scanner/bin/sonar-scanner \
+        //                     -Dsonar.projectKey=frontend-project \
+        //                     -Dsonar.projectName="Frontend Project" \
+        //                     -Dsonar.sources=. \
+        //                     -Dsonar.host.url=${SONAR_HOST_URL} \
+        //                     -Dsonar.login=${SONAR_TOKEN} \
+        //                     -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info \
+        //                     -Dsonar.exclusions=node_modules/**,dist/**,**/*.spec.ts \
+        //                     -Dsonar.sourceEncoding=UTF-8
+        //                 """
+        //             }
+        //         }
+        //     }
+        // }
+
+        stage('Build Project') {
+            steps {
+                sh 'npm run build-uat'
+            }
+        }        
+
+        stage('Update config') {
+            when {
+                expression {
+                    def config = readJSON file: '.jenkins-config.json'
+                    return config.runSignedAab == true
+                }
+            }
+            steps {
+                script {
+                    def versionCode = env.BUILD_NUMBER.toInteger()
+
+                    def packageJson = readJSON file: 'package.json'
+                    def versionName = packageJson.version
+
+                    echo "Setting versionName to ${versionName}"
+                    echo "Setting versionCode to ${versionCode}"
+
+                    env.APP_VERSION = versionName
+                    env.APP_VERSION_CODE = "${versionCode}"
+
+                    sh """
+                        npx cap add android
+                        sed -i "s/versionCode [0-9]\\+/versionCode ${versionCode}/" android/app/build.gradle
+                        sed -i "s/versionName \\"[^\\"]*\\"/versionName \\"${versionName}\\"/" android/app/build.gradle
+                    """
+                }
+            }
+        }
+
+        stage('Generate APK') {
+            when {
+                expression {
+                    def config = readJSON file: '.jenkins-config.json'
+                    return config.runSignedAab == true
+                }
+            }
+                    steps {
+                sh 'echo "sdk.dir=/usr/local/android/sdk" > ./android/local.properties'
+                sh 'npx cap sync'
+                sh 'npm run apk-debug'
+                    }
+        }
+
+        stage('Generate and Publish Signed AAB') {
+            when {
+                expression {
+                    def config = readJSON file: '.jenkins-config.json'
+                    return config.runSignedAab == true
+                }
+            }
+            environment {
+                ANDROID_KEY_ALIAS = 'spreezy-key-alias'
+            }
+            steps {
+                withCredentials([
+                    file(credentialsId: 'spreezy-keystore', variable: 'KEYSTORE_FILE'),
+                    string(credentialsId: 'spreezy-keystore-pass', variable: 'KEYSTORE_PASSWORD'),
+                    string(credentialsId: 'spreezy-key-pass', variable: 'KEY_PASSWORD'),
+                    usernamePassword(credentialsId: 'nexus_apk_credentials', usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASS')
+                ]) {
+                    sh """
+                        export APP_VERSION='${env.APP_VERSION}'
+                        export APP_VERSION_CODE='${env.APP_VERSION_CODE}'
+                        chmod +x ./DevOps/scripts/build-and-upload.sh
+                        ./DevOps/scripts/build-and-upload.sh
+                    """
+                }
+            }
+        }
+
+        stage('Notify  Build Success '){
+            steps{
+                echo "Build completed successfully"
+            }
+            post {
+                success {
+                    script {
+                        def buildNumber = currentBuild.number
+                        def buildStatus = currentBuild.result
+                        def buildStatusLabel = buildStatus == 'SUCCESS' ? 'successful' : 'failed'
+                        def globalUpdatedBody = "<b>${EMAIL_BODY} ${buildNumber} . <br><br> Build Status - ${buildStatusLabel} .<br><br>  Please find Console Log Output of Build Number ${buildNumber} in build.log File</b>"
+                        def globalUpdatedSubject = "${EMAIL_SUBJECT} ${buildStatusLabel}"
+                        
+                        emailext attachLog: true, body: globalUpdatedBody, subject: globalUpdatedSubject, to: env.EMAIL_TO, from: env.EMAIL_FROM, mimeType: 'text/html'
+                    }
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            // Uncomment the next line to publish code coverage report if needed but only works when tests are run.
+            //publishHTML(target: [allowMissing: false, alwaysLinkToLastBuild: false, keepAll: true, reportDir: 'coverage/lcov-report', reportFiles: 'index.html', reportName: 'Code Coverage Report'])
+
+            slackSend channel: 'devops-jenkins-updates', message: "Please find status of pipeline here Status - ${currentBuild.currentResult}  ${env.JOB_NAME}   Build Number ${env.BUILD_NUMBER}  URL ${env.BUILD_URL}"
+            //clean workspace after every build
+            
+            cleanWs()
+        }
+    }
+}
