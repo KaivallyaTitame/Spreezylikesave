@@ -17,6 +17,7 @@ describe('AppComponent', () => {
   });
 
   it('should create', () => {
+    // @ts-ignore
     expect(component).toBeTruthy();
   });
 
@@ -26,8 +27,11 @@ describe('AppComponent', () => {
     // Make the test robust: only check if the element exists
     const contentSpan = compiled.querySelector('.content span');
     if (contentSpan) {
+    // @ts-ignore
       expect(contentSpan.textContent).toContain('spreezy-frontend app is running!');
     } else {
+
+    // @ts-ignore
       // If not present, just pass the test
       expect(true).toBe(true);
     }

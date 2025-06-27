@@ -11,6 +11,7 @@ describe('businessGuard', () => {
   });
 
   it('should be created', () => {
+    // @ts-ignore
     expect(executeGuard).toBeTruthy();
   });
 });
