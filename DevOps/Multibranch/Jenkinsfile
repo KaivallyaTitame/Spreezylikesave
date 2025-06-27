@@ -12,7 +12,6 @@ pipeline
 
     environment {
         GIT_URL = 'https://github.com/spreezy-tech/spreezy-frontend.git'
-        GIT_BRANCH = "${env.BRANCH_NAME}"
         CREDENTIALS_ID = 'spreezy-PAT-frontend-backend'
         JAVA_HOME = '/usr/lib/jvm/openjdk-17'
         PATH = "${JAVA_HOME}/bin:${PATH}"
@@ -219,6 +218,7 @@ pipeline
 
     post {
         always {
+            // Uncomment the next line to publish code coverage report if needed buy only works when tests are run.
             //publishHTML(target: [allowMissing: false, alwaysLinkToLastBuild: false, keepAll: true, reportDir: 'coverage/lcov-report', reportFiles: 'index.html', reportName: 'Code Coverage Report'])
 
             slackSend channel: 'devops-jenkins-updates', message: "Please find status of pipeline here Status - ${currentBuild.currentResult}  ${env.JOB_NAME}   Build Number ${env.BUILD_NUMBER}  URL ${env.BUILD_URL}"

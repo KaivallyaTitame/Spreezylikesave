@@ -3,7 +3,6 @@ pipeline
         agent {
         docker {
              image 'cypress/base:18.16.0'
-            // args '-v /var/run/docker.sock:/var/run/docker.sock'
         }
     }
 
@@ -173,7 +172,8 @@ pipeline
      
   post{
         always{
-            publishHTML(target: [allowMissing: false, alwaysLinkToLastBuild: false, keepAll: true, reportDir: 'coverage/lcov-report', reportFiles: 'index.html', reportName: 'Code Coverage Report'])
+            // Uncomment the next line to publish code coverage report if needed buy only works when tests are run.
+            //publishHTML(target: [allowMissing: false, alwaysLinkToLastBuild: false, keepAll: true, reportDir: 'coverage/lcov-report', reportFiles: 'index.html', reportName: 'Code Coverage Report'])
 
             slackSend channel: 'devops-jenkins-updates', message: "Please find status of pipeline here Status - ${currentBuild.currentResult}  ${env.JOB_NAME}   Build Number ${env.BUILD_NUMBER}  URL ${env.BUILD_URL}"   
             //clean workspace after every build
