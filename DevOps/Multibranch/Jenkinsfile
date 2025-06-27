@@ -73,8 +73,9 @@ pipeline
             steps {
                 withCredentials([file(credentialsId: 'nexus_npm_credentials', variable: 'npm_nexus_credentials')]) {
                     sh '''
-                    npm config set fetch-timeout 6000000
-                    npm config set fetch-retries 2
+                    npm config set fetch-timeout 60000
+                    npm config set fetch-retries 5
+                    npm config set retry-delay 1000
                     npm install --userconfig ${npm_nexus_credentials} --registry https://nexus.spreezy.in/repository/npm-group/ --loglevel verbose
                 '''
                 }
