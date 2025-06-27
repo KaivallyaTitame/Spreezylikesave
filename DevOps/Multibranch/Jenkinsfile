@@ -75,7 +75,6 @@ pipeline
                     sh '''
                     npm config set fetch-timeout 60000
                     npm config set fetch-retries 5
-                    npm config set retry-delay 1000
                     npm install --userconfig ${npm_nexus_credentials} --registry https://nexus.spreezy.in/repository/npm-group/ --loglevel verbose
                 '''
                 }
