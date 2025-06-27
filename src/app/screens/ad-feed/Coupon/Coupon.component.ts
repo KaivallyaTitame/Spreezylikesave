@@ -38,7 +38,7 @@ import { AdvertisementDetails } from "src/app/models/ad-details";
 import { AdvertisementDetailsService } from "src/app/services/advertisementTypes.service";
 import { JwtDecoderService } from "src/app/services/jwtDecoder/jwt-decoder.service";
 import { ShareService } from "src/app/services/share.service";
-import { EngageServiceService } from "src/app/shared/engage-service.service";
+import { EngageService } from "src/app/shared/engage.service";
 import { ImageUrlGenerationService } from "src/app/shared/image-url-generation.service";
 
 @Component({
@@ -115,7 +115,7 @@ export class CouponComponent implements OnInit {
     private shareService: ShareService,
     private jwtDecoderService: JwtDecoderService,
     private imageUrlGeneratorService: ImageUrlGenerationService,
-    private engageService: EngageServiceService
+    private engageService: EngageService
   ) {}
 
   hasValidImages: boolean = true;

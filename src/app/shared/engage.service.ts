@@ -8,7 +8,7 @@ import { JwtDecoderService } from '../services/jwtDecoder/jwt-decoder.service';
 @Injectable({
   providedIn: 'root'
 })
-export class EngageServiceService {
+export class EngageService {
   constructor(private http: HttpClient, private jwtDecoderService: JwtDecoderService) { }
 
   incrementEngagementCount(advertisementId: number): Observable<any> {
