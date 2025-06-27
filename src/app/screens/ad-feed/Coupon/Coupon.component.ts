@@ -9,14 +9,13 @@ import {
   ViewChild,
 } from "@angular/core";
 import { Router } from "@angular/router";
-import { IconDefinition } from "@fortawesome/fontawesome-svg-core"; // Import the type
+import { IconDefinition } from "@fortawesome/fontawesome-svg-core"; 
 import {
   faBookmark as faBookmarkRegular,
   faThumbsDown as faThumbsDownOutline,
   faThumbsUp as faThumbsUpOutline,
-  faBookmark as regularBookmark,
-  faBookmark as solidBookmark,
-} from "@fortawesome/free-regular-svg-icons"; // Import outlined icons
+  faBookmark as regularBookmark
+} from "@fortawesome/free-regular-svg-icons"; 
 import {
   faBars,
   faBell,
@@ -33,6 +32,7 @@ import {
   faThumbsDown,
   faThumbsUp,
   faUserGroup,
+  faBookmark as solidBookmark
 } from "@fortawesome/free-solid-svg-icons";
 import { AdvertisementDetails } from "src/app/models/ad-details";
 import { AdvertisementDetailsService } from "src/app/services/advertisementTypes.service";
@@ -289,36 +289,44 @@ export class CouponComponent implements OnInit {
     });
   }
 
-  savePost(): void {
-    const advertisementId = this.couponDetails.advertisementId;
+  savePost(): void {const advertisementId = this.couponDetails.advertisementId;
     const username = this.couponDetails.username;
+    
+    // Store the current state to revert on error
+    const previousSavedState = this.isSaved;
+    
+    // Optimistically update the UI
+    this.isSaved = !this.isSaved;
     this.triggerAnimation("save");
     this.scaleAnimation = true;
-    this.scaleAnimation = true;
+    
     setTimeout(() => {
       this.scaleAnimation = false;
-      this.scaleAnimation = false;
     }, 500);
-    this.isSaved = !this.isSaved;
-    this.isSaved = !this.isSaved;
+  
     this.advertisementDetailsService
       .savePost(username, advertisementId)
       .subscribe({
-        next: (response) => {},
+        next: (response) => {
+          console.log("Post save/unsave successful:", response);
+          if (this.isSaved) {
+            this.showSavedMessage = true;
+            setTimeout(() => {
+              this.showSavedMessage = false;
+            }, 2000);
+          }
+        },
         error: (err) => {
+          this.isSaved = previousSavedState;
           this.showError(
             "Save Error",
-            "Failed to save the post. Please try again."
+            "Failed to save/unsave the post. Please try again."
           );
-          this.isSaved = !this.isSaved;
-          this.isSaved = !this.isSaved;
         },
       });
   }
 
   copyToClipboard(couponCode: string): void {
-    console.log(this.couponDetails);
-    console.log(couponCode);
     console.log(this.couponDetails);
     console.log(couponCode);
     navigator.clipboard

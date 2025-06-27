@@ -100,7 +100,7 @@ export class PostComponent implements OnInit {
     private shareService: ShareService,
     private imageUrlGeneratorService: ImageUrlGenerationService,
     private engageService: EngageServiceService
-  ) {}
+  ) { }
 
   hasValidImages: boolean = true;
   handleImageError(event: any): void {
@@ -258,29 +258,33 @@ export class PostComponent implements OnInit {
   savePost(): void {
     const advertisementId = this.postDetails.advertisementId;
     const username = this.postDetails.username;
-    console.log(advertisementId, username);
+    const previousSavedState = this.isSaved;
+    this.isSaved = !this.isSaved;
     this.triggerAnimation("save");
     this.scaleAnimation = true;
-    this.scaleAnimation = true;
+
     setTimeout(() => {
       this.scaleAnimation = false;
-      this.scaleAnimation = false;
     }, 500);
-    this.isSaved = !this.isSaved;
-    this.isSaved = !this.isSaved;
+
     this.advertisementDetailsService
       .savePost(username, advertisementId)
       .subscribe({
         next: (response) => {
-          console.log("Post saved successfully:", response);
+          console.log("Post save/unsave successful:", response);
+          if (this.isSaved) {
+            this.showSavedMessage = true;
+            setTimeout(() => {
+              this.showSavedMessage = false;
+            }, 2000);
+          }
         },
         error: (err) => {
-          console.log(err);
+          this.isSaved = previousSavedState;
           this.showError(
             "Save Error",
-            "Failed to save the post. Please try again."
+            "Failed to save/unsave the post. Please try again."
           );
-          this.isSaved = !this.isSaved;
         },
       });
   }

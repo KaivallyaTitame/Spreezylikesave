@@ -254,32 +254,36 @@ export class EventComponent implements OnInit {
 
   savePost(): void {
     const advertisementId = this.eventDetails.advertisementId;
-    const username = this.eventDetails.username;
-    this.triggerAnimation("save");
-    this.scaleAnimation = true;
-    setTimeout(() => {
-      this.scaleAnimation = false;
-      this.scaleAnimation = false;
-    }, 500);
-    this.isSaved = !this.isSaved;
-    this.isSaved = !this.isSaved;
-    this.advertisementDetailsService
-      .savePost(username, advertisementId)
-      .subscribe({
-        next: (response) => {},
-        error: (err) => {
-          this.showError(
-            "Save Error",
-            "Failed to save the post. Please try again." + err
-          );
-          this.isSaved = !this.isSaved;
-          this.showError(
-            "Save Error",
-            "Failed to save the post. Please try again." + err
-          );
-          this.isSaved = !this.isSaved;
-        },
-      });
+  const username = this.eventDetails.username;
+  const previousSavedState = this.isSaved;
+  this.isSaved = !this.isSaved;
+  this.triggerAnimation("save");
+  this.scaleAnimation = true;
+  
+  setTimeout(() => {
+    this.scaleAnimation = false;
+  }, 500);
+
+  this.advertisementDetailsService
+    .savePost(username, advertisementId)
+    .subscribe({
+      next: (response) => {
+        console.log("Post save/unsave successful:", response);
+        if (this.isSaved) {
+          this.showSavedMessage = true;
+          setTimeout(() => {
+            this.showSavedMessage = false;
+          }, 2000);
+        }
+      },
+      error: (err) => {
+        this.isSaved = previousSavedState;
+        this.showError(
+          "Save Error",
+          "Failed to save/unsave the post. Please try again."
+        );
+      },
+    });
   }
 
   toggleReportButton(): void {
