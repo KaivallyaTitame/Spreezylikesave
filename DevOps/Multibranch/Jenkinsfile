@@ -218,7 +218,7 @@ pipeline
 
     post {
         always {
-            // Uncomment the next line to publish code coverage report if needed buy only works when tests are run.
+            // Uncomment the next line to publish code coverage report if needed but only works when tests are run.
             //publishHTML(target: [allowMissing: false, alwaysLinkToLastBuild: false, keepAll: true, reportDir: 'coverage/lcov-report', reportFiles: 'index.html', reportName: 'Code Coverage Report'])
 
             slackSend channel: 'devops-jenkins-updates', message: "Please find status of pipeline here Status - ${currentBuild.currentResult}  ${env.JOB_NAME}   Build Number ${env.BUILD_NUMBER}  URL ${env.BUILD_URL}"
