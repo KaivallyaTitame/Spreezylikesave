@@ -164,8 +164,11 @@
           <div *ngIf="loadingProfilePosts" class="text-center py-4">
             <app-loader></app-loader>
           </div>
-          <div *ngIf="hasZeroPosts" class="text-center text-2xl text-gray-500 italic  mt-4">
-              <p>{{noPostMessages}}</p>
+          <div class="absolute inset-0 flex items-center justify-center">
+            <div *ngIf="hasZeroPosts" class="mt-[15%] text-center text-2xl text-gray-500 italic">
+              <b>{{ noPostTitle }}</b>
+              <p>{{ noPostDescription }}</p>
+            </div>
           </div>
         </div>
       </div>
@@ -191,8 +194,11 @@
           <div *ngIf="loadingSavedPosts" class="text-center py-4">
             <app-loader></app-loader>
           </div>
-          <div *ngIf="hasZeroSavedPosts" class="text-center text-2xl text-gray-500 italic  mt-4">
-              <p>See something useful? Tap save !</p>
+          <div class="absolute inset-0 flex items-center justify-center">
+            <div *ngIf="hasZeroSavedPosts" class="mt-[15%] text-center text-2xl text-gray-500 italic">
+              <b>See something useful?</b>
+              <p>Tap save</p>
+            </div>
           </div>
         </div>
       </div>

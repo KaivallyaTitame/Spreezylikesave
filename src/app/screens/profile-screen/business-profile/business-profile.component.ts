@@ -53,7 +53,8 @@ export class BusinessProfileComponent implements OnInit {
   hasZeroSavedPosts:boolean = false;
   activeIndex: number | undefined = undefined;  // indicates which post insight to be displayed. if it is undefined then it will not shown.
   showInsightScreen:boolean = false;  // this variable decides the visibility of the post insight component.
-  noPostMessages:string = ''; 
+  noPostTitle:string = ''; 
+  noPostDescription:string = ''; 
 
   constructor(
     private UserService: UserService,
@@ -149,12 +150,14 @@ export class BusinessProfileComponent implements OnInit {
     const token = localStorage.getItem("token") || "";
     const payload = JSON.parse((atob(token.split('.')[1]))); 
     if(this.username != payload.sub){
-      this.noPostMessages = 'No posts yet — reach out to connect.'; 
+      this.noPostTitle = 'No posts yet !'; 
+      this.noPostDescription = 'Reach out to connect...'; 
     }
     else{
-      this.noPostMessages = 'Oops, nothing here yet! Start Posting'; 
+      this.noPostTitle = 'Oops, nothing here yet!'; 
+      this.noPostDescription = 'Start Posting';
     }
-    
+   
     this.UserService.getUserDetails(username).subscribe({
       next: (data) => {
         // if (data.profileImageUrl) {
@@ -301,6 +304,7 @@ export class BusinessProfileComponent implements OnInit {
 
     // Switch the selected tab
     this.selectedTab = tab;
+    console.log(this.selectedTab);
 
     // Restore the scroll position for the new tab
     setTimeout(() => {
