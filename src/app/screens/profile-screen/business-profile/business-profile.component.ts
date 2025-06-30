@@ -160,13 +160,14 @@ export class BusinessProfileComponent implements OnInit {
    
     this.UserService.getUserDetails(username).subscribe({
       next: (data) => {
-        // if (data.profileImageUrl) {
-        //   data.profileImageUrl = this.UserService.getImageUrl(
-        //     username,
-        //     data.profileImageUrl
-        //   );
+        if (data.profileImageUrl) {
+          data.profileImageUrl = this.UserService.getImageUrl(
+            username,
+            data.profileImageUrl
+          );
 
-        // }
+        }
+        console.log(data);
         this.userDetails = data;
         this.loadingUserDetails = false; // Hide skeletons after successful fetch
       },

@@ -47,7 +47,7 @@
               </a>
               <a
                 [href]="userDetails.email"
-                mt-[15%]      class="text-red-500 px-2"
+                class="text-red-500 px-2"
                 target="_blank"
               >
                 <fa-icon [icon]="faEnvelope" class="text-2xl px-1"></fa-icon>
@@ -144,22 +144,16 @@
         *ngIf="selectedTab === 'posts'"
       >
         <div class="post-section grid grid-cols-1 gap-2 py-2">
-          <div *ngFor="let post of visibleProfilePosts; let i = index" class="ad-item">
+          <div *ngFor="let post of visibleProfilePosts" class="ad-item">
             <ng-container *ngIf="post.advertisementType == 'Post'">
-              <app-Post (setInsightScreen)="setInsightScreen($event)" [showButton]="currentUsername===username" (setActiveIndex)="toggleInsight(i)" [activeIndex]="activeIndex" [index]="i"  [postDetails]="post"></app-Post>
+              <app-Post [postDetails]="post"></app-Post>
             </ng-container>
             <ng-container *ngIf="post.advertisementType == 'Event'">
-              <app-Event (setInsightScreen)="setInsightScreen($event)" [showButton]="currentUsername===username" (setActiveIndex)="toggleInsight(i)" [activeIndex]="activeIndex" [index]="i"  [eventDetails]="post"></app-Event>
+              <app-Event [eventDetails]="post"></app-Event>
             </ng-container>
             <ng-container *ngIf="post.advertisementType == 'Coupon'">
-              <app-Coupon (setInsightScreen)="setInsightScreen($event)" [showButton]="currentUsername===username" (setActiveIndex)="toggleInsight(i)" [activeIndex]="activeIndex" [index]="i"  [couponDetails]="post"></app-Coupon>
+              <app-Coupon [couponDetails]="post"></app-Coupon>
             </ng-container>
-            <app-post-insights 
-                (ClickOut)="hideInsight($event)"  
-                [showInsightScreen]="showInsightScreen" 
-                [feed]="activeIndex !== undefined ? visibleProfilePosts[activeIndex].insightDetails : {}" 
-            >
-            </app-post-insights>
           </div>
           <div *ngIf="loadingProfilePosts" class="text-center py-4">
             <app-loader></app-loader>
