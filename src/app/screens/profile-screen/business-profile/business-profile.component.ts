@@ -14,6 +14,7 @@ import { AdvertisementDetails } from "src/app/models/ad-details";
 import { DecodedToken } from "src/app/models/decodedToken";
 import { JwtDecoderService } from "src/app/services/jwtDecoder/jwt-decoder.service";
 import { ActivatedRoute } from "@angular/router";
+import { HttpErrorResponse } from "@angular/common/http";
 
 @Component({
   selector: "app-business-profile",
@@ -83,8 +84,13 @@ export class BusinessProfileComponent implements OnInit {
     if(index != undefined && this.visibleProfilePosts[index].insightDetails === undefined){
       // if post is selected for showing and post to show has not insightDetails attribute
       // then it throws error.  
-      this.showError("404","Please try again later."); 
-      return; 
+      const customError = new HttpErrorResponse({
+        error:{
+          errorCode:'SPX-0-001', 
+          errorDescription:'Given post has no insights'
+        }
+      });
+      throw(customError) 
     }
     else{
       if(this.activeIndex === index){
