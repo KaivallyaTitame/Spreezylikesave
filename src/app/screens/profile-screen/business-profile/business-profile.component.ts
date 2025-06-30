@@ -87,7 +87,7 @@ export class BusinessProfileComponent implements OnInit {
       const customError = new HttpErrorResponse({
         error:{
           errorCode:'SPX-0-001', 
-          errorDescription:'Given post has no insights'
+          errorDescription:'Unable to get insights of the given post..'
         }
       });
       throw(customError) 
