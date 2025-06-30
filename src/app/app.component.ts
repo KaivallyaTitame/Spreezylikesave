@@ -16,7 +16,8 @@ export class AppComponent {
   errorDescription:string = '';
 
   constructor(private location: Location){
-
+    // locking the screen on intialisation of the screen
+    this.lockOrientation(); 
   }
   
   showErrorPopup(errorCode: string, errorDescription: string) {
@@ -28,12 +29,6 @@ export class AppComponent {
   onCloseError() {
     this.showError = false;
     this.location.back(); 
-  }
-
-
-  constructor(){
-    // locking the screen on intialisation of the screen
-    this.lockOrientation(); 
   }
 
   async lockOrientation() {
