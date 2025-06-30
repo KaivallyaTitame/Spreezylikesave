@@ -180,7 +180,7 @@ export class BusinessProfileComponent implements OnInit {
       error: (error) => {
         this.loadingUserDetails = false; // Stop skeletons even if there's an error
         this.userDetails = null; // Reset user details on error
-        throw(error);
+         throw(error);
       },
     });
   }
