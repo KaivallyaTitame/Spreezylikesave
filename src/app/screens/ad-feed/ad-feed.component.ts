@@ -29,6 +29,15 @@ export class AdFeedComponent implements OnInit {
     this.authService.logout();
   }
 
+  onFollowStatusChanged(event: { username: string; isFollowing: boolean }): void {
+    const { username, isFollowing } = event;
+    this.ads.forEach(ad => {
+      if (ad.username === username) {
+        ad.following = isFollowing;
+      }
+    });
+  }
+
   ngOnInit(): void {
     this.fetchAds();
   }
@@ -79,6 +88,8 @@ export class AdFeedComponent implements OnInit {
     });
   }
 
+  
+
   onLoadMore(): void {
     if (this.isLoadingMore || !this.hasMoreData) return;
     this.isLoadingMore = true;
@@ -112,4 +123,6 @@ export class AdFeedComponent implements OnInit {
       this.hasMoreData = false;
     }
   }
+
+  
 }

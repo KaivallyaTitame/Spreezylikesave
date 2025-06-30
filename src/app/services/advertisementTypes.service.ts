@@ -138,11 +138,12 @@ export class AdvertisementDetailsService {
     );
   }
 
-  followUser(sourceUsername: string, username: string): Observable<any> {
+  followUser(sourceUsername: string, username: string): Observable<HttpResponse<any>> {
     return this.http.post(
       API_CONFIG.ADVERTISEMENT_EVENTS.FOLLOW(sourceUsername, username),
       {},
-      {
+      { 
+        observe: "response",
         responseType: "json",
         headers: new HttpHeaders({
           Authorization: `Bearer ${this.token}`,
@@ -151,11 +152,11 @@ export class AdvertisementDetailsService {
     );
   }
 
-  unfollowUser(sourceUsername: string, username: string): Observable<any> {
-    return this.http.post(
+  unfollowUser(sourceUsername: string, username: string): Observable<HttpResponse<any>> {
+    return this.http.delete(
       API_CONFIG.ADVERTISEMENT_EVENTS.UNFOLLOW(sourceUsername, username),
-      {},
       {
+        observe: "response",
         responseType: "json",
         headers: new HttpHeaders({
           Authorization: `Bearer ${this.token}`,

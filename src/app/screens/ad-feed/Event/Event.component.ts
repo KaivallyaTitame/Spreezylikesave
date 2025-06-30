@@ -4,8 +4,10 @@ import {
   EventEmitter,
   HostListener,
   Input,
+  OnChanges,
   OnInit,
   Output,
+  SimpleChanges,
   ViewChild,
 } from "@angular/core";
 import { Router } from "@angular/router";
@@ -42,14 +44,14 @@ import { ImageUrlGenerationService } from "src/app/shared/image-url-generation.s
   templateUrl: "./Event.component.html",
   styleUrls: [],
 })
-export class EventComponent implements OnInit {
+export class EventComponent implements OnInit , OnChanges {
   @Input() eventDetails!: AdvertisementDetails;
   @Input() index!: number;
   @Input() activeIndex!: number | undefined;
   @Output() setActiveIndex = new EventEmitter<number>();
   @Output() setInsightScreen = new EventEmitter<Event>();
   @Input() showButton!: boolean;
-
+  @Output() followStatusChanged = new EventEmitter<{ username: string, isFollowing: boolean }>();
   remainingDays: number;
   remainingHours: number;
   isExpired: boolean = false;
@@ -90,7 +92,7 @@ export class EventComponent implements OnInit {
   isFollowing: boolean = false;
   @ViewChild("imageContainer") imageContainer: ElementRef;
   @ViewChild("threeDotsWrapper", { static: false }) threeDotsRef!: ElementRef;
-  
+
   constructor(
     private advertisementDetailsService: AdvertisementDetailsService,
     private router: Router,
@@ -98,7 +100,7 @@ export class EventComponent implements OnInit {
     private jwtDecoderService: JwtDecoderService,
     private imageUrlGeneratorService: ImageUrlGenerationService,
     private engageService: EngageService
-  ) {}
+  ) { }
 
   hasValidImages: boolean = true;
   handleImageError(event: any): void {
@@ -114,6 +116,7 @@ export class EventComponent implements OnInit {
     this.remainingDays = remainingDays;
     this.remainingHours = remainingHours;
     this.isExpired = isExpired;
+    this.checkIfFollowing();
     this.eventDetails.profileImageUrl =
       this.imageUrlGeneratorService.generateImageUrl(
         this.eventDetails.profileImageUrl
@@ -122,6 +125,12 @@ export class EventComponent implements OnInit {
       this.imageUrlGeneratorService.generateImageUrls(
         this.eventDetails.imagePaths
       );
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['eventDetails'] && changes['eventDetails'].currentValue) {
+      this.checkIfFollowing();
+    }
   }
 
   toggleFollow(): void {
@@ -136,7 +145,14 @@ export class EventComponent implements OnInit {
         .subscribe({
           next: (response) => {
             console.log("Unfollowed successfully:", response);
-            this.isFollowing = true;
+            if (response.status === 200) {
+              this.isFollowing = false;
+              this.eventDetails.following = false;
+              this.followStatusChanged.emit({
+                username: targetUsername,
+                isFollowing: false
+              });
+            }
           },
           error: (error) => {
             console.error("Error unfollowing:", error);
@@ -145,28 +161,27 @@ export class EventComponent implements OnInit {
     } else {
       this.advertisementDetailsService
         .followUser(sourceUsername, targetUsername)
-        .subscribe(
-          (response) => {
-            console.log("Followed successfully:", response);
-            this.isFollowing = true;
+        .subscribe({
+          next: (response) => {
+            console.log("Followed successfully:", response.status);
+            if (response.status === 200) {
+              this.isFollowing = true;
+              this.eventDetails.following = true;
+              this.followStatusChanged.emit({
+                username: targetUsername,
+                isFollowing: true
+              });
+            }
           },
-          (error) => {
+          error: (error) => {
             console.error("Error following:", error);
           }
-        );
+        });
     }
   }
 
   checkIfFollowing(): void {
-    let token = localStorage.getItem("token") || "";
-    let userName =
-      this.jwtDecoderService.decodeInfoFromToken(token)["sub"] || "";
-    const sourceUsername = userName || "currentUser";
-    const targetUsername = this.eventDetails.username;
-    // Check if the current user is following the post
-    // This could involve a service method to check follow status.
-    // For simplicity, we're assuming this logic is already in place.
-    this.isFollowing = false; // Replace this with actual check
+    this.isFollowing = this.eventDetails.following;
   }
 
   navigateToProfile() {
@@ -254,36 +269,36 @@ export class EventComponent implements OnInit {
 
   savePost(): void {
     const advertisementId = this.eventDetails.advertisementId;
-  const username = this.eventDetails.username;
-  const previousSavedState = this.isSaved;
-  this.isSaved = !this.isSaved;
-  this.triggerAnimation("save");
-  this.scaleAnimation = true;
-  
-  setTimeout(() => {
-    this.scaleAnimation = false;
-  }, 500);
+    const username = this.eventDetails.username;
+    const previousSavedState = this.isSaved;
+    this.isSaved = !this.isSaved;
+    this.triggerAnimation("save");
+    this.scaleAnimation = true;
 
-  this.advertisementDetailsService
-    .savePost(username, advertisementId)
-    .subscribe({
-      next: (response) => {
-        console.log("Post save/unsave successful:", response);
-        if (this.isSaved) {
-          this.showSavedMessage = true;
-          setTimeout(() => {
-            this.showSavedMessage = false;
-          }, 2000);
-        }
-      },
-      error: (err) => {
-        this.isSaved = previousSavedState;
-        this.showError(
-          "Save Error",
-          "Failed to save/unsave the post. Please try again."
-        );
-      },
-    });
+    setTimeout(() => {
+      this.scaleAnimation = false;
+    }, 500);
+
+    this.advertisementDetailsService
+      .savePost(username, advertisementId)
+      .subscribe({
+        next: (response) => {
+          console.log("Post save/unsave successful:", response);
+          if (this.isSaved) {
+            this.showSavedMessage = true;
+            setTimeout(() => {
+              this.showSavedMessage = false;
+            }, 2000);
+          }
+        },
+        error: (err) => {
+          this.isSaved = previousSavedState;
+          this.showError(
+            "Save Error",
+            "Failed to save/unsave the post. Please try again."
+          );
+        },
+      });
   }
 
   toggleReportButton(): void {

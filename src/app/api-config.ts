@@ -1,7 +1,6 @@
 import { environment } from 'src/environments/environment';
 
 export const API_CONFIG = {
-  // Image Service
   IMAGE_URL: 'https://images.spreezy.in',
 
   REGISTRATION: {
@@ -9,14 +8,12 @@ export const API_CONFIG = {
     BUSINESS: `${environment.apiGateway}/user/register-business`,
   },
 
-  // Auth Service Endpoints
   AUTH_LOGOUT: (userName: string) => `${environment.apiGateway}/auth/${userName}/logout`,
   GENERATE_OTP: `${environment.apiGateway}/auth/generate-otp`,
   RESEND_OTP: `${environment.apiGateway}/auth/resend-otp`,
   VERIFY_OTP: `${environment.apiGateway}/auth/verify-otp`,
   RECYCLE_TOKEN : `${environment.apiGateway}/auth/refreshToken`,
 
-  // Business Service Endpoints
   GET_BUSINESS_DETAILS: (username: string) =>
     `${environment.apiGateway}/user/profile/${username}`,
   GET_PROFILE_POSTS: (username: string) =>
@@ -24,17 +21,14 @@ export const API_CONFIG = {
   GET_SAVED_POSTS: (username: string) =>
     `${environment.apiGateway}/feed-on-profile-page/saved-section/${username}`,
 
-  // Feedback Service Endpoints
   SAVE_FEEDBACK: `${environment.apiGateway}/feedback/saveFeedback`,
 
-  // Search Service Endpoints
   SEARCH_BUSINESSES: (query: string) => `${environment.apiGateway}/user/search/${query}`,
   FOLLOW_BUSINESS: (sourceUsername: string, targetUsername: string) => 
     `${environment.apiGateway}/user/follow/${sourceUsername}/${targetUsername}`,
   UNFOLLOW_BUSINESS: (sourceUsername: string, targetUsername: string) => 
     `${environment.apiGateway}/user/unfollow/${sourceUsername}/${targetUsername}`,
 
-  // Settings Service Endpoints
   SETTINGS: {
     GET_CONSUMER_DETAILS: (username: string) =>
       `${environment.apiGateway}/settings/consumer-details/${username}`,
@@ -47,7 +41,6 @@ export const API_CONFIG = {
       `${environment.apiGateway}/settings/get-image/${imageFileName}`,
   },
 
-  // Post Creation Endpoints
   POST_CREATION: {
     CREATE_COUPON: `${environment.apiGateway}/content/coupon/create`,
     CREATE_POST: `${environment.apiGateway}/content/post/create`,
@@ -63,6 +56,8 @@ export const API_CONFIG = {
     FOLLOW : (sourceUsername: string, targetUsername: string) => 
       `${environment.apiGateway}/user/follow/${sourceUsername}/${targetUsername}`,
     UNFOLLOW : (sourceUsername: string, targetUsername: string) => 
-    `${environment.apiGateway}/user/unfollow/${sourceUsername}/${targetUsername}`
+    `${environment.apiGateway}/user/unfollow/${sourceUsername}/${targetUsername}`,
+    ENGAGE : (advertisementId: number) => 
+    `${environment.apiGateway}/content/advertisement/engage/${advertisementId}`
   }
 };

@@ -4,8 +4,10 @@ import {
   EventEmitter,
   HostListener,
   Input,
+  OnChanges,
   OnInit,
   Output,
+  SimpleChanges,
   ViewChild,
 } from "@angular/core";
 import { Router } from "@angular/router";
@@ -44,12 +46,13 @@ import { ImageUrlGenerationService } from "src/app/shared/image-url-generation.s
   templateUrl: "./Post.component.html",
   styles: [],
 })
-export class PostComponent implements OnInit {
+export class PostComponent implements OnInit , OnChanges {
   @Input() postDetails!: AdvertisementDetails;
   @Input() index!: number;
   @Input() activeIndex!: number | undefined;
   @Output() setActiveIndex = new EventEmitter<number>();
   @Output() setInsightScreen = new EventEmitter<Event>();
+  @Output() followStatusChanged = new EventEmitter<{ username: string; isFollowing: boolean }>();
   @Input() showButton!: boolean;
   remainingDays: number;
   remainingHours: number;
@@ -64,6 +67,7 @@ export class PostComponent implements OnInit {
   showPopup: boolean = false;
   popupTitle: string = "Error";
   popupBody: string = "";
+  
   faBars = faBars;
   faHeartSolid = faHeartSolid;
   faHeartRegular = faHeartRegular;
@@ -81,6 +85,7 @@ export class PostComponent implements OnInit {
   faCircleUser = faCircleUser;
   faThumbsUpOutline = faThumbsUpOutline;
   faThumbsDownOutline = faThumbsDownOutline;
+  
   isLiked: boolean = false;
   isDisliked: boolean = false;
   isFollowing: boolean = false;
@@ -89,6 +94,7 @@ export class PostComponent implements OnInit {
   faChevronRight = faChevronRight;
   currentImageIndex = 0;
   translateX = 0;
+  
   @ViewChild("imageContainer") imageContainer: ElementRef;
   @ViewChild("threeDotsWrapper", { static: false }) threeDotsRef!: ElementRef;
 
@@ -96,13 +102,13 @@ export class PostComponent implements OnInit {
     private advertisementDetailsService: AdvertisementDetailsService,
     private router: Router,
     private jwtDecoderService: JwtDecoderService,
-    private route: Router,
     private shareService: ShareService,
     private imageUrlGeneratorService: ImageUrlGenerationService,
     private engageService: EngageService
   ) { }
 
   hasValidImages: boolean = true;
+  
   handleImageError(event: any): void {
     this.hasValidImages = false;
     event.target.classList.add("min-h-48");
@@ -127,6 +133,12 @@ export class PostComponent implements OnInit {
       );
   }
 
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['postDetails'] && changes['postDetails'].currentValue) {
+      this.checkIfFollowing();
+    }
+  }
+
   navigateToProfile() {
     console.log(this.router.url);
     if (this.router.url == "/business-home/adfeed") {
@@ -148,13 +160,21 @@ export class PostComponent implements OnInit {
       this.jwtDecoderService.decodeInfoFromToken(token)["sub"] || "";
     const sourceUsername = userName || "currentUser";
     const targetUsername = this.postDetails.username;
+    
     if (this.isFollowing) {
       this.advertisementDetailsService
         .unfollowUser(sourceUsername, targetUsername)
         .subscribe({
           next: (response) => {
             console.log("Unfollowed successfully:", response);
-            this.isFollowing = true;
+            if(response.status === 200) {
+              this.isFollowing = false;
+              this.postDetails.following = false;
+              this.followStatusChanged.emit({
+                username: this.postDetails.username,
+                isFollowing: false
+              });
+            }
           },
           error: (error) => {
             console.error("Error unfollowing:", error);
@@ -163,28 +183,27 @@ export class PostComponent implements OnInit {
     } else {
       this.advertisementDetailsService
         .followUser(sourceUsername, targetUsername)
-        .subscribe(
-          (response) => {
-            console.log("Followed successfully:", response);
-            this.isFollowing = true;
+        .subscribe({
+          next: (response) => {
+            console.log("Followed successfully:", response.status);
+            if(response.status === 200) {
+              this.isFollowing = true;
+              this.postDetails.following = true;
+              this.followStatusChanged.emit({
+                username: this.postDetails.username,
+                isFollowing: true
+              });
+            }
           },
-          (error) => {
+          error: (error) => {
             console.error("Error following:", error);
           }
-        );
+        });
     }
   }
 
   checkIfFollowing(): void {
-    let token = localStorage.getItem("token") || "";
-    let userName =
-      this.jwtDecoderService.decodeInfoFromToken(token)["sub"] || "";
-    const sourceUsername = userName || "currentUser";
-    const targetUsername = this.postDetails.username;
-    // Check if the current user is following the post
-    // This could involve a service method to check follow status.
-    // For simplicity, we're assuming this logic is already in place.
-    this.isFollowing = false; // Replace this with actual check
+    this.isFollowing = this.postDetails.following; 
   }
 
   showInsights(event: Event): void {
@@ -323,21 +342,7 @@ export class PostComponent implements OnInit {
   }
 
   reportPost(): void {
-    this.advertisementDetailsService
-      .reportPost(this.postDetails.advertisementId)
-      .subscribe({
-        next: (response) => {
-          console.log("Post reported successfully:", response);
-          this.showReportSuccess = true;
-          this.showReportButton = false;
-        },
-        error: (err) => {
-          this.showError(
-            "Report Error",
-            "Failed to Report the post. Please try again."
-          );
-        },
-      });
+    // Remove duplicate code - there were two identical blocks
     document.body.style.overflow = "hidden";
     this.advertisementDetailsService
       .reportPost(this.postDetails.advertisementId)
@@ -354,12 +359,9 @@ export class PostComponent implements OnInit {
           );
         },
       });
-    document.body.style.overflow = "hidden";
   }
 
   hideReportSuccess(): void {
-    this.showReportSuccess = false;
-    document.body.style.overflow = "auto";
     this.showReportSuccess = false;
     document.body.style.overflow = "auto";
   }
