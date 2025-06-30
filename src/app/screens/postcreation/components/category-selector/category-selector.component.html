@@ -1,12 +1,18 @@
 <div class="category-selector">
-    <div class="title font-sans text-gray-800 text-sm">
-      <label for="selector">Add Category *</label>
-    </div>
-    <select class="select w-[300px] h-[35px] mt-2 border border-gray-300 rounded-md" [(ngModel)]="selectedCategory" (change)="onSelectCategory($event)" id="selector">
+  <div class="flex items-center mb-4">
+      <button class="text-gray-800 mr-4" (click)="goBack()">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+          </svg>
+      </button>
+      <div class="title font-sans text-gray-800 text-sm">
+          <label for="selector">Add Category *</label>
+      </div>
+  </div>
+  <select class="select w-[300px] h-[35px] mt-2 border border-gray-300 rounded-md" [(ngModel)]="selectedCategory" (change)="onSelectCategory($event)" id="selector">
       <option value="" disabled hidden>Select an advertisement category</option>
       <option value="Post">Post</option>
       <option value="Coupon Code">Coupon Code</option>
       <option value="Event">Event</option>
-    </select>
+  </select>
 </div>
-  

@@ -34,4 +34,7 @@ export class CategorySelectorComponent implements OnInit {
         break;
     }
   }
+  goBack(): void {
+    this.router.navigate(['/business-home/adfeed']);
+  }
 }

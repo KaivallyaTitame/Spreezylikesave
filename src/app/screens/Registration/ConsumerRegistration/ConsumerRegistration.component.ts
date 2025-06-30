@@ -159,4 +159,7 @@ export class ConsumerRegistration implements OnInit {
   public get confirmPolicies(): FormControl {
     return this.form.get("confirmPolicies") as FormControl;
   }
+  goBack(): void {
+    this.router.navigate(['/register']);
+  }
 }

@@ -1,7 +1,14 @@
 <div class="bg-white">
-  <span class="flex justify-center font-primary text-primary text-3xl mt-5">Let's get you ready...</span>
-  <form class="flex justify-center" [formGroup]="form" (ngSubmit)="registerUser()">
-    <div class="signup-form w-80 relative">
+  <div class="flex items-center justify-start mt-5 ml-5">
+    <button class="text-gray-800" (click)="goBack()">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+      </svg>
+    </button>
+    <span class="flex justify-center font-primary text-primary text-3xl ml-5">Let's get you ready...</span>
+  </div>
+  <form class="flex justify-center" [formGroup]="form" (ngSubmit)="registerUser()" style="display: flex; visibility: visible;">
+    <div class="signup-form w-80 relative" style="display: block; visibility: visible;">
       
       <div class="aadhar-number mt-3">
         <label class="form-label pb-2 font-secondary">Aadhar Card Number :</label>

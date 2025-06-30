@@ -1,6 +1,15 @@
-<div class="bg-white mx-4 flex flex-col items-center mt-6"> <!-- Added margin-top here -->
-  <!-- Title -->
-  <span class="text-primary font-primary text-3xl text-center mt-10">Tell Us About Your Experience</span>
+<div class="bg-white flex flex-col items-center pt-16 px-4">
+  <!-- Back button and title -->
+  <div class="flex items-center w-full">
+    <button class="text-gray-800 flex-shrink-0" (click)="goBack()">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+      </svg>
+    </button>
+    <span class="font-primary text-primary text-3xl text-center flex-1">
+      Tell Us About Your Experience
+    </span>
+  </div>
 
   <!-- Satisfaction question -->
   <span class="text-black font-secondary text-lg mt-4">Are you satisfied with the service?</span>

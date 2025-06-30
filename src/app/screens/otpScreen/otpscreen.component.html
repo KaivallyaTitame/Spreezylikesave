@@ -1,9 +1,16 @@
-<span class="flex justify-center font-primary text-primary text-3xl mt-5">
-  Verification Code
-</span>
-<app-loader *ngIf="isLoaderVisible"></app-loader>
-
 <div class="bg-white">
+  <div class="flex items-center justify-start mt-5 ml-5">
+    <button class="text-gray-800" (click)="goBack()">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+      </svg>
+    </button>
+    <span class="flex justify-center font-primary text-primary text-3xl ml-5">
+      Verification Code
+    </span>
+  </div>
+  <app-loader *ngIf="isLoaderVisible"></app-loader>
+
   <div class="flex justify-center">
     <div class="logo mt-5 w-60 h-auto">
       <img class="object-fill" src="assets/otpImage.png" />

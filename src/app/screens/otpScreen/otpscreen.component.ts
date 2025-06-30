@@ -165,4 +165,7 @@ export class OtpscreenComponent implements OnInit, OnDestroy {
   handleClosePopUp() {
     this.showPopUp = false;
   }
+  goBack(): void {
+    this.router.navigate(["/login"]);
+  }
 }
