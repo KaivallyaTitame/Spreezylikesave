@@ -4,18 +4,20 @@ import {
   EventEmitter,
   HostListener,
   Input,
+  OnChanges,
   OnInit,
   Output,
+  SimpleChanges,
   ViewChild,
 } from "@angular/core";
 import { Router } from "@angular/router";
-import { IconDefinition } from "@fortawesome/fontawesome-svg-core"; 
+import { IconDefinition } from "@fortawesome/fontawesome-svg-core";
 import {
   faBookmark as faBookmarkRegular,
   faThumbsDown as faThumbsDownOutline,
   faThumbsUp as faThumbsUpOutline,
   faBookmark as regularBookmark
-} from "@fortawesome/free-regular-svg-icons"; 
+} from "@fortawesome/free-regular-svg-icons";
 import {
   faBars,
   faBell,
@@ -46,13 +48,14 @@ import { ImageUrlGenerationService } from "src/app/shared/image-url-generation.s
   templateUrl: "./Coupon.component.html",
   styles: [],
 })
-export class CouponComponent implements OnInit {
+export class CouponComponent implements OnInit , OnChanges{
   @Input() couponDetails!: AdvertisementDetails;
   @Input() index!: number;
   @Input() activeIndex!: number | undefined;
   @Output() setActiveIndex = new EventEmitter<number>();
   @Output() setInsightScreen = new EventEmitter<Event>();
   @Input() showButton!: boolean;
+  @Output() followStatusChanged = new EventEmitter<{ username: string, isFollowing: boolean }>();
   remainingDays: number;
   isExpired: boolean = false;
   reportVisible: boolean = false;
@@ -108,7 +111,7 @@ export class CouponComponent implements OnInit {
       this.showDislikeAnimation = false;
     }, 500);
   }
-  
+
   constructor(
     private advertisementDetailsService: AdvertisementDetailsService,
     private router: Router,
@@ -116,7 +119,7 @@ export class CouponComponent implements OnInit {
     private jwtDecoderService: JwtDecoderService,
     private imageUrlGeneratorService: ImageUrlGenerationService,
     private engageService: EngageService
-  ) {}
+  ) { }
 
   hasValidImages: boolean = true;
   handleImageError(event: any): void {
@@ -133,6 +136,7 @@ export class CouponComponent implements OnInit {
       this.remainingDays = remainingDays;
       this.remainingHours = remainingHours;
       this.isExpired = isExpired;
+      this.checkIfFollowing();
       this.couponDetails.profileImageUrl =
         this.imageUrlGeneratorService.generateImageUrl(
           this.couponDetails.profileImageUrl
@@ -146,6 +150,11 @@ export class CouponComponent implements OnInit {
     }
   }
 
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['couponDetails'] && changes['couponDetails'].currentValue) {
+      this.checkIfFollowing();
+    }
+  }
 
   toggleFollow(): void {
     let token = localStorage.getItem("token") || "";
@@ -159,7 +168,14 @@ export class CouponComponent implements OnInit {
         .subscribe({
           next: (response) => {
             console.log("Unfollowed successfully:", response);
-            this.isFollowing = true;
+            if (response.status === 200) {
+              this.isFollowing = false;
+              this.couponDetails.following = false;
+              this.followStatusChanged.emit({
+                username: targetUsername,
+                isFollowing: false
+              });
+            }
           },
           error: (error) => {
             console.error("Error unfollowing:", error);
@@ -168,28 +184,27 @@ export class CouponComponent implements OnInit {
     } else {
       this.advertisementDetailsService
         .followUser(sourceUsername, targetUsername)
-        .subscribe(
-          (response) => {
-            console.log("Followed successfully:", response);
-            this.isFollowing = true;
+        .subscribe({
+          next: (response) => {
+            console.log("Followed successfully:", response.status);
+            if (response.status === 200) {
+              this.isFollowing = true;
+              this.couponDetails.following = true;
+              this.followStatusChanged.emit({
+                username: targetUsername,
+                isFollowing: true
+              });
+            }
           },
-          (error) => {
+          error: (error) => {
             console.error("Error following:", error);
           }
-        );
+        });
     }
   }
 
   checkIfFollowing(): void {
-    let token = localStorage.getItem("token") || "";
-    let userName =
-      this.jwtDecoderService.decodeInfoFromToken(token)["sub"] || "";
-    const sourceUsername = userName || "currentUser";
-    const targetUsername = this.couponDetails.username;
-    // Check if the current user is following the post
-    // This could involve a service method to check follow status.
-    // For simplicity, we're assuming this logic is already in place.
-    this.isFollowing = false; // Replace this with actual check
+    this.isFollowing = this.couponDetails.following;
   }
 
   sharePost() {
@@ -226,7 +241,7 @@ export class CouponComponent implements OnInit {
   likePost(): void {
     const advertisementId = this.couponDetails.advertisementId;
     this.advertisementDetailsService.updateLikes(advertisementId).subscribe({
-      next: (response : any) => {
+      next: (response: any) => {
         this.triggerAnimation("like");
         const status = response.status;
         if (status == 201) {
@@ -239,7 +254,7 @@ export class CouponComponent implements OnInit {
           this.couponDetails.likes += 1;
           this.couponDetails.dislikes -= 1;
         }
-        
+
       },
       error: (error) => {
         console.log(error.status);
@@ -255,11 +270,10 @@ export class CouponComponent implements OnInit {
     });
   }
 
-
   dislikePost(): void {
     const advertisementId = this.couponDetails.advertisementId;
     this.advertisementDetailsService.updateDislikes(advertisementId).subscribe({
-      next: (response ) => {
+      next: (response) => {
         this.triggerAnimation("dislike");
         const status = response.status;
         if (status === 201) {
@@ -272,7 +286,7 @@ export class CouponComponent implements OnInit {
           this.couponDetails.dislikes += 1;
           this.couponDetails.likes -= 1;
         }
-        
+
       },
       error: (error) => {
         console.log(error.status);
@@ -289,21 +303,22 @@ export class CouponComponent implements OnInit {
     });
   }
 
-  savePost(): void {const advertisementId = this.couponDetails.advertisementId;
+  savePost(): void {
+    const advertisementId = this.couponDetails.advertisementId;
     const username = this.couponDetails.username;
-    
+
     // Store the current state to revert on error
     const previousSavedState = this.isSaved;
-    
+
     // Optimistically update the UI
     this.isSaved = !this.isSaved;
     this.triggerAnimation("save");
     this.scaleAnimation = true;
-    
+
     setTimeout(() => {
       this.scaleAnimation = false;
     }, 500);
-  
+
     this.advertisementDetailsService
       .savePost(username, advertisementId)
       .subscribe({
@@ -345,7 +360,7 @@ export class CouponComponent implements OnInit {
       });
   }
 
-  
+
 
   toggleReportButton(): void {
     this.showReportButton = !this.showReportButton;

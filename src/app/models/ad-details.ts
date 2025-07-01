@@ -21,7 +21,7 @@ export interface AdvertisementDetails {
   bookingLink: string;
   eventDateAndTime: string
   offerSubtitle: string;
-  isFollowing: boolean;  
+  following: boolean;  
   insightDetails:insightDetails; 
   descriptionTitle: string;
   descriptionContent: string;
