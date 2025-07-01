@@ -140,7 +140,6 @@ export class Business3Component implements OnInit {
         setTimeout(() => this.router.navigate(['/login']), 2000);
       }
     } catch (error: any) {
-      console.log(error);
       throw(error);
     } finally {
       this.isSubmitting = false;

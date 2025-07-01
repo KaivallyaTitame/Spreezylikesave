@@ -173,7 +173,6 @@ export class BusinessProfileComponent implements OnInit {
           );
 
         }
-        console.log(data);
         this.userDetails = data;
         this.loadingUserDetails = false; // Hide skeletons after successful fetch
       },
@@ -311,8 +310,6 @@ export class BusinessProfileComponent implements OnInit {
 
     // Switch the selected tab
     this.selectedTab = tab;
-    console.log(this.selectedTab);
-
     // Restore the scroll position for the new tab
     setTimeout(() => {
       const newScrollContainer = document.querySelector(".scroll-container");
