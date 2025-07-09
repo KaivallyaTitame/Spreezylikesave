@@ -1,11 +1,11 @@
-import { Component, ElementRef, EventEmitter, Input, Output, ViewChild, OnInit, OnDestroy } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, Output, ViewChild, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
 
 @Component({
   selector: 'app-pull-to-refresh',
   templateUrl: './pull-to-refresh.component.html',
   styleUrls: ['./pull-to-refresh.component.css']
 })
-export class PullToRefreshComponent implements OnInit, OnDestroy {
+export class PullToRefreshComponent implements OnDestroy, AfterViewInit {
   @Input() isRefreshing: boolean = false;
   @Input() isLoadingMore: boolean = false;
   @Input() hasMoreData: boolean = true;
@@ -27,16 +27,20 @@ export class PullToRefreshComponent implements OnInit, OnDestroy {
   private isAtTop: boolean = false;
   private touchStarted: boolean = false;
   private lastTouchTime: number = 0;
+  private scrollListener: any;
 
-  ngOnInit(): void {
-    if (this.contentWrapper) {
-      this.contentWrapper.nativeElement.addEventListener('scroll', this.onScroll.bind(this));
+  ngAfterViewInit(): void {
+    if (this.contentWrapper && this.contentWrapper.nativeElement) {
+      this.scrollListener = this.onScroll.bind(this);
+      this.contentWrapper.nativeElement.addEventListener('scroll', this.scrollListener);
+    } else {
+      console.error('contentWrapper not found');
     }
   }
 
   ngOnDestroy(): void {
-    if (this.contentWrapper) {
-      this.contentWrapper.nativeElement.removeEventListener('scroll', this.onScroll.bind(this));
+    if (this.contentWrapper && this.contentWrapper.nativeElement && this.scrollListener) {
+      this.contentWrapper.nativeElement.removeEventListener('scroll', this.scrollListener);
     }
   }
 
@@ -131,14 +135,15 @@ export class PullToRefreshComponent implements OnInit, OnDestroy {
   }
 
   private onScroll(event: Event): void {
-    if (this.isLoadingMore || !this.hasMoreData || this.disabled) return;
-
+    if (this.isLoadingMore || !this.hasMoreData || this.disabled) {
+      return;
+    }
     const element = event.target as HTMLElement;
     const scrollTop = element.scrollTop;
     const scrollHeight = element.scrollHeight;
     const clientHeight = element.clientHeight;
-
-    if (scrollHeight - scrollTop - clientHeight < this.infiniteScrollThreshold) {
+    const distanceFromBottom = scrollHeight - scrollTop - clientHeight;
+    if (distanceFromBottom < this.infiniteScrollThreshold) {
       this.loadMore.emit();
     }
   }

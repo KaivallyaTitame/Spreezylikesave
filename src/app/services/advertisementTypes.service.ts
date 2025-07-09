@@ -74,12 +74,11 @@ export class AdvertisementDetailsService {
     });
   }
 
-  getFreshAdvertisements(pageSize: number = 10): Observable<AdvertisementDetails[]> {
+  getFreshAdvertisements(pageSize: number = 5): Observable<AdvertisementDetails[]> {
     return this.getAdvertisementDetails(0, pageSize);
   }
 
-  // Method to load more content (for infinite scroll)
-  loadMoreAdvertisements(page: number, pageSize: number = 10): Observable<AdvertisementDetails[]> {
+  loadMoreAdvertisements(page: number, pageSize: number = 5): Observable<AdvertisementDetails[]> {
     return this.getAdvertisementDetails(page, pageSize);
   }
 

@@ -3,6 +3,8 @@ import { environment } from 'src/environments/environment';
 export const API_CONFIG = {
   IMAGE_URL: 'https://images.spreezy.in',
 
+  PAGE_SIZE : 10,
+
   REGISTRATION: {
     CONSUMER: `${environment.apiGateway}/user/register-consumer`,
     BUSINESS: `${environment.apiGateway}/user/register-business`,

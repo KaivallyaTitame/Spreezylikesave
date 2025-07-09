@@ -2,6 +2,7 @@ import { AuthService } from "src/app/services/auth.service";
 import { Component, OnInit } from '@angular/core';
 import { AdvertisementDetailsService } from 'src/app/services/advertisementTypes.service';
 import { AdvertisementDetails } from 'src/app/models/ad-details';
+import { API_CONFIG } from "src/app/api-config";
 
 @Component({
   selector: "app-ad-feed",
@@ -17,7 +18,7 @@ export class AdFeedComponent implements OnInit {
   isLoadingMore: boolean = false;
   hasMoreData: boolean = true;
   private currentPage: number = 0;
-  private pageSize: number = 10;
+  private pageSize: number = API_CONFIG.PAGE_SIZE;
   private totalPages: number = 0;
 
   constructor(
@@ -54,16 +55,14 @@ export class AdFeedComponent implements OnInit {
     this.hasMoreData = true;
     this.advertisementDetailsService.getAdvertisementDetails(this.currentPage, this.pageSize).subscribe({
       next: (response) => {
-        this.ads = response;
+        this.ads = response || [];
         this.isLoading = false;
-        this.checkIfMoreDataAvailable(response.length);
-        console.log('Initial ads loaded:', response);
+        this.checkIfMoreDataAvailable(response?.length || 0);
       },
       error: (err) => {
         this.errorMessage = 'Failed to load ads. Please try again later.';
         this.showErrorPopup = true;
         this.isLoading = false;
-        console.log(err);
       }
     });
   }
@@ -76,38 +75,38 @@ export class AdFeedComponent implements OnInit {
       next: (response) => {
         this.ads = response;
         this.checkIfMoreDataAvailable(response.length);
-        console.log('Ads refreshed:', response);
         this.completeRefresh();
       },
       error: (err) => {
         this.errorMessage = 'Failed to refresh ads. Please try again later.';
         this.showErrorPopup = true;
-        console.log('Refresh error:', err);
         this.completeRefresh();
       }
     });
   }
 
-  
-
   onLoadMore(): void {
-    if (this.isLoadingMore || !this.hasMoreData) return;
+    if (this.isLoadingMore || !this.hasMoreData) {
+      return;
+    }
     this.isLoadingMore = true;
-    this.advertisementDetailsService.getFreshAdvertisements(this.pageSize).subscribe({
+    this.currentPage++; 
+    this.advertisementDetailsService.getAdvertisementDetails(this.currentPage, this.pageSize).subscribe({
       next: (response) => {
         if (response && response.length > 0) {
+          const previousLength = this.ads.length;
           this.ads = [...this.ads, ...response];
-          console.log('Fresh ads loaded at bottom:', response);
+          this.checkIfMoreDataAvailable(response.length);
         } else {
           this.hasMoreData = false;
         }
         this.isLoadingMore = false;
       },
       error: (err) => {
-        this.errorMessage = 'Failed to load fresh ads. Please try again later.';
+        this.errorMessage = 'Failed to load more ads. Please try again later.';
         this.showErrorPopup = true;
         this.isLoadingMore = false;
-        console.log('Load fresh ads error:', err);
+        this.currentPage--;
       }
     });
   }
@@ -123,6 +122,4 @@ export class AdFeedComponent implements OnInit {
       this.hasMoreData = false;
     }
   }
-
-  
 }
