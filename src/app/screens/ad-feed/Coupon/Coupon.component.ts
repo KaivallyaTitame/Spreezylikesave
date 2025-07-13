@@ -167,7 +167,6 @@ export class CouponComponent implements OnInit , OnChanges{
         .unfollowUser(sourceUsername, targetUsername)
         .subscribe({
           next: (response) => {
-            console.log("Unfollowed successfully:", response);
             if (response.status === 200) {
               this.isFollowing = false;
               this.couponDetails.following = false;
@@ -186,7 +185,7 @@ export class CouponComponent implements OnInit , OnChanges{
         .followUser(sourceUsername, targetUsername)
         .subscribe({
           next: (response) => {
-            console.log("Followed successfully:", response.status);
+            
             if (response.status === 200) {
               this.isFollowing = true;
               this.couponDetails.following = true;
@@ -212,7 +211,6 @@ export class CouponComponent implements OnInit , OnChanges{
   }
 
   navigateToProfile() {
-    console.log(this.router.url);
     if (this.router.url == "/business-home/adfeed") {
       this.router.navigate([
         "/profile-screen/business-profile",
@@ -257,7 +255,6 @@ export class CouponComponent implements OnInit , OnChanges{
 
       },
       error: (error) => {
-        console.log(error.status);
         if (error.status == 409) {
           (this.isLiked = true), (this.isDisliked = false);
         } else {
@@ -289,7 +286,6 @@ export class CouponComponent implements OnInit , OnChanges{
 
       },
       error: (error) => {
-        console.log(error.status);
         if (error.status === 409) {
           this.isDisliked = true;
           this.isLiked = false;
@@ -306,11 +302,7 @@ export class CouponComponent implements OnInit , OnChanges{
   savePost(): void {
     const advertisementId = this.couponDetails.advertisementId;
     const username = this.couponDetails.username;
-
-    // Store the current state to revert on error
     const previousSavedState = this.isSaved;
-
-    // Optimistically update the UI
     this.isSaved = !this.isSaved;
     this.triggerAnimation("save");
     this.scaleAnimation = true;
@@ -323,7 +315,6 @@ export class CouponComponent implements OnInit , OnChanges{
       .savePost(username, advertisementId)
       .subscribe({
         next: (response) => {
-          console.log("Post save/unsave successful:", response);
           if (this.isSaved) {
             this.showSavedMessage = true;
             setTimeout(() => {
@@ -342,8 +333,6 @@ export class CouponComponent implements OnInit , OnChanges{
   }
 
   copyToClipboard(couponCode: string): void {
-    console.log(this.couponDetails);
-    console.log(couponCode);
     navigator.clipboard
       .writeText(couponCode)
       .then(() => {
@@ -396,7 +385,6 @@ export class CouponComponent implements OnInit , OnChanges{
       .reportPost(this.couponDetails.advertisementId)
       .subscribe({
         next: (response) => {
-          console.log("Post reported successfully:", response);
           this.showReportSuccess = true;
           this.showReportButton = false;
         },
@@ -416,14 +404,7 @@ export class CouponComponent implements OnInit , OnChanges{
   }
 
   incrementEngagementCount(advertisementId: number) {
-    this.engageService.incrementEngagementCount(advertisementId).subscribe({
-      next: (response) => {
-        console.log('Engagement count incremented successfully:', response);
-      },
-      error: (error) => {
-        console.error('Error incrementing engagement count:', error);
-      }
-    })
+    this.engageService.incrementEngagementCount(advertisementId)
   }
 
   showDetails(advertisementId: number): void {

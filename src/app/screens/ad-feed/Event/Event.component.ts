@@ -163,7 +163,6 @@ export class EventComponent implements OnInit , OnChanges {
         .followUser(sourceUsername, targetUsername)
         .subscribe({
           next: (response) => {
-            console.log("Followed successfully:", response.status);
             if (response.status === 200) {
               this.isFollowing = true;
               this.eventDetails.following = true;
@@ -185,7 +184,6 @@ export class EventComponent implements OnInit , OnChanges {
   }
 
   navigateToProfile() {
-    console.log(this.router.url);
     if (this.router.url == "/business-home/adfeed") {
       this.router.navigate([
         "/profile-screen/business-profile",
@@ -222,7 +220,6 @@ export class EventComponent implements OnInit , OnChanges {
         }
       },
       error: (error) => {
-        console.log(error.status);
         if (error.status == 409) {
           (this.isLiked = true), (this.isDisliked = false);
         } else {
@@ -253,7 +250,6 @@ export class EventComponent implements OnInit , OnChanges {
         }
       },
       error: (error) => {
-        console.log(error.status);
         if (error.status === 409) {
           this.isDisliked = true;
           this.isLiked = false;
@@ -283,7 +279,6 @@ export class EventComponent implements OnInit , OnChanges {
       .savePost(username, advertisementId)
       .subscribe({
         next: (response) => {
-          console.log("Post save/unsave successful:", response);
           if (this.isSaved) {
             this.showSavedMessage = true;
             setTimeout(() => {
@@ -339,7 +334,6 @@ export class EventComponent implements OnInit , OnChanges {
       .reportPost(this.eventDetails.advertisementId)
       .subscribe({
         next: (response) => {
-          console.log("Post reported successfully:", response);
           this.showReportSuccess = true;
           this.showReportButton = false;
         },
@@ -355,7 +349,6 @@ export class EventComponent implements OnInit , OnChanges {
       .reportPost(this.eventDetails.advertisementId)
       .subscribe({
         next: (response) => {
-          console.log("Post reported successfully:", response);
           this.showReportSuccess = true;
           this.showReportButton = false;
         },
@@ -399,14 +392,7 @@ export class EventComponent implements OnInit , OnChanges {
   }
 
   incrementEngagementCount(advertisementId: number) {
-    this.engageService.incrementEngagementCount(advertisementId).subscribe({
-      next: (response) => {
-        console.log('Engagement count incremented successfully:', response);
-      },
-      error: (error) => {
-        console.error('Error incrementing engagement count:', error);
-      }
-    })
+    this.engageService.incrementEngagementCount(advertisementId)
   }
 
   showDetails(advertisementId: number): void {

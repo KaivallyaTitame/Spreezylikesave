@@ -80,6 +80,10 @@ export class OfferDescriptionComponent implements OnInit {
   faChevronRight = faChevronRight;
   currentImageIndex = 0;
   translateX = 0;
+  copyButtonText: string = "Copy";
+  isCoupon: boolean = false;
+  isEvent: boolean = false;
+  isPost: boolean = false;
   isFollowing: boolean = false;
   @ViewChild("imageContainer") imageContainer: ElementRef;
 
@@ -90,7 +94,7 @@ export class OfferDescriptionComponent implements OnInit {
     private shareService: ShareService,
     private jwtDecoderService: JwtDecoderService,
     private imageUrlGeneratorService: ImageUrlGenerationService
-  ) {}
+  ) { }
 
   hasValidImages: boolean = true;
   handleImageError(event: any): void {
@@ -106,13 +110,43 @@ export class OfferDescriptionComponent implements OnInit {
       }
     });
     if (this.offerData) {
-      const expirationDate = new Date(this.offerData.offerExpiry);
-      const today = new Date();
-      this.remainingDays = Math.ceil(
-        (expirationDate.getTime() - today.getTime()) / (1000 * 3600 * 24)
-      );
-      this.isExpired = this.remainingDays <= 0;
+      if (this.offerData.advertisementType === "Coupon") {
+        this.isCoupon = true;
+      } else if (this.offerData.advertisementType === "Event") {
+        this.isEvent = true;
+      } else {
+        this.isPost = true;
+        this.isFollowing = this.offerData.following;
+        const { remainingDays, remainingHours, isExpired } =
+          this.advertisementDetailsService.calculateExpiry(
+            this.offerData.offerExpiry
+          );
+        this.remainingDays = remainingDays;
+        this.remainingHours = remainingHours;
+        this.isExpired = isExpired;
+      }
     }
+  }
+
+  copyToClipboard(couponCode: string): void {
+    navigator.clipboard
+      .writeText(couponCode)
+      .then(() => {
+        this.copyButtonText = "Copied";
+        setTimeout(() => {
+          this.copyButtonText = "Copy";
+        }, 2000);
+      })
+      .catch((err) => {
+        this.showError(
+          "Copy Error",
+          "Failed to copy coupon code. Please try again."
+        );
+      });
+  }
+
+  bookNow(): void {
+    window.location.href = this.offerData.websiteLink;
   }
 
   toggleFollow(): void {
@@ -126,8 +160,11 @@ export class OfferDescriptionComponent implements OnInit {
         .unfollowUser(sourceUsername, targetUsername)
         .subscribe({
           next: (response) => {
-            console.log("Unfollowed successfully:", response);
-            this.isFollowing = true;
+            if (response.status === 200) {
+              this.isFollowing = false;
+              this.offerData.following = false;
+
+            }
           },
           error: (error) => {
             console.error("Error unfollowing:", error);
@@ -136,28 +173,22 @@ export class OfferDescriptionComponent implements OnInit {
     } else {
       this.advertisementDetailsService
         .followUser(sourceUsername, targetUsername)
-        .subscribe(
-          (response) => {
-            console.log("Followed successfully:", response);
-            this.isFollowing = true;
+        .subscribe({
+          next: (response) => {
+            if (response.status === 200) {
+              this.isFollowing = true;
+              this.offerData.following = true;
+            }
           },
-          (error) => {
+          error: (error) => {
             console.error("Error following:", error);
           }
-        );
+        });
     }
   }
 
   checkIfFollowing(): void {
-    let token = localStorage.getItem("token") || "";
-    let userName =
-      this.jwtDecoderService.decodeInfoFromToken(token)["sub"] || "";
-    const sourceUsername = userName || "currentUser";
-    const targetUsername = this.offerData.username;
-    // Check if the current user is following the post
-    // This could involve a service method to check follow status.
-    // For simplicity, we're assuming this logic is already in place.
-    this.isFollowing = false; // Replace this with actual check
+    this.isFollowing = this.offerData.following;
   }
 
   share() {
@@ -165,7 +196,6 @@ export class OfferDescriptionComponent implements OnInit {
   }
 
   navigateToProfile() {
-    console.log(this.router.url);
     if (this.router.url == "/business-home/adfeed") {
       this.router.navigate([
         "/profile-screen/business-profile",
@@ -214,7 +244,6 @@ export class OfferDescriptionComponent implements OnInit {
         }
       },
       error: (error) => {
-        console.log(error.status);
         if (error.status == 409) {
           (this.isLiked = true), (this.isDisliked = false);
         } else {
@@ -245,7 +274,6 @@ export class OfferDescriptionComponent implements OnInit {
         }
       },
       error: (error) => {
-        console.log(error.status);
         if (error.status === 409) {
           this.isDisliked = true;
           this.isLiked = false;
@@ -272,7 +300,6 @@ export class OfferDescriptionComponent implements OnInit {
       .savePost(username, advertisementId)
       .subscribe({
         next: (response) => {
-          console.log("Post saved successfully:", response);
         },
         error: (err) => {
           this.showError(
@@ -293,7 +320,6 @@ export class OfferDescriptionComponent implements OnInit {
       .reportPost(this.offerData.advertisementId)
       .subscribe({
         next: (response) => {
-          console.log("Post reported successfully:", response);
           this.showReportSuccess = true;
           this.showReportButton = false;
         },
