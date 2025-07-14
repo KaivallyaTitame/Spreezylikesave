@@ -140,7 +140,6 @@ export class PostComponent implements OnInit , OnChanges {
   }
 
   navigateToProfile() {
-    console.log(this.router.url);
     if (this.router.url == "/business-home/adfeed") {
       this.router.navigate([
         "/profile-screen/business-profile",
@@ -166,7 +165,6 @@ export class PostComponent implements OnInit , OnChanges {
         .unfollowUser(sourceUsername, targetUsername)
         .subscribe({
           next: (response) => {
-            console.log("Unfollowed successfully:", response);
             if(response.status === 200) {
               this.isFollowing = false;
               this.postDetails.following = false;
@@ -185,7 +183,6 @@ export class PostComponent implements OnInit , OnChanges {
         .followUser(sourceUsername, targetUsername)
         .subscribe({
           next: (response) => {
-            console.log("Followed successfully:", response.status);
             if(response.status === 200) {
               this.isFollowing = true;
               this.postDetails.following = true;
@@ -229,7 +226,6 @@ export class PostComponent implements OnInit , OnChanges {
         }
       },
       error: (error) => {
-        console.log(error.status);
         if (error.status == 409) {
           (this.isLiked = true), (this.isDisliked = false);
         } else {
@@ -260,7 +256,6 @@ export class PostComponent implements OnInit , OnChanges {
         }
       },
       error: (error) => {
-        console.log(error.status);
         if (error.status === 409) {
           this.isDisliked = true;
           this.isLiked = false;
@@ -290,7 +285,6 @@ export class PostComponent implements OnInit , OnChanges {
       .savePost(username, advertisementId)
       .subscribe({
         next: (response) => {
-          console.log("Post save/unsave successful:", response);
           if (this.isSaved) {
             this.showSavedMessage = true;
             setTimeout(() => {
@@ -342,13 +336,11 @@ export class PostComponent implements OnInit , OnChanges {
   }
 
   reportPost(): void {
-    // Remove duplicate code - there were two identical blocks
     document.body.style.overflow = "hidden";
     this.advertisementDetailsService
       .reportPost(this.postDetails.advertisementId)
       .subscribe({
         next: (response) => {
-          console.log("Post reported successfully:", response);
           this.showReportSuccess = true;
           this.showReportButton = false;
         },
@@ -386,14 +378,7 @@ export class PostComponent implements OnInit , OnChanges {
   }
 
   incrementEngagementCount(advertisementId: number) {
-    this.engageService.incrementEngagementCount(advertisementId).subscribe({
-      next: (response) => {
-        console.log('Engagement count incremented successfully:', response);
-      },
-      error: (error) => {
-        console.error('Error incrementing engagement count:', error);
-      }
-    })
+    this.engageService.incrementEngagementCount(advertisementId)
   }
 
   showDetails(advertisementId: number): void {
