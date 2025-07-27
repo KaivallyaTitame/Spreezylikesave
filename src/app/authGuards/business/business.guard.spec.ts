@@ -1,6 +1,5 @@
 import { TestBed } from '@angular/core/testing';
 import { CanActivateFn } from '@angular/router';
-
 import { businessGuard } from './business.guard';
 
 describe('businessGuard', () => {
@@ -12,6 +11,7 @@ describe('businessGuard', () => {
   });
 
   it('should be created', () => {
+    // @ts-ignore
     expect(executeGuard).toBeTruthy();
   });
 });

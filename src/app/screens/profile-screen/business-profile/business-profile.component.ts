@@ -1,19 +1,20 @@
 import { Component, Input, OnInit } from "@angular/core";
-import { UserService } from "src/app/services/user-profile.service";
+import { ActivatedRoute } from "@angular/router";
+import { faFacebook, faInstagram } from "@fortawesome/free-brands-svg-icons";
 import {
-  faPhone,
-  faEnvelope,
-  faShare,
-  faList,
   faBookmark,
   faCircleUser,
+  faEnvelope,
+  faList,
+  faPhone,
+  faShare,
 } from "@fortawesome/free-solid-svg-icons";
-import { faInstagram, faFacebook } from "@fortawesome/free-brands-svg-icons";
 import { UserDetails } from "src/app/models/UserDetails";
 import { AdvertisementDetails } from "src/app/models/ad-details";
 import { DecodedToken } from "src/app/models/decodedToken";
 import { JwtDecoderService } from "src/app/services/jwtDecoder/jwt-decoder.service";
-import { ActivatedRoute } from "@angular/router";
+import { UserService } from "src/app/services/user-profile.service";
+import { ImageUrlGenerationService } from "src/app/shared/image-url-generation.service";
 
 @Component({
   selector: "app-business-profile",
@@ -21,8 +22,8 @@ import { ActivatedRoute } from "@angular/router";
   styleUrls: ["./business-profile.component.css"],
 })
 export class BusinessProfileComponent implements OnInit {
-  userDetails: UserDetails | null = null; // User details fetched from backend
-  loadingUserDetails: boolean = true; // To show skeletons while data is loading
+  userDetails: UserDetails | null = null;
+  loadingUserDetails: boolean = true; 
   @Input() profilePosts!: AdvertisementDetails[];
   @Input() savedPosts!: AdvertisementDetails[];
   visibleProfilePosts: AdvertisementDetails[] = [];
@@ -40,20 +41,23 @@ export class BusinessProfileComponent implements OnInit {
   faList = faList;
   faBookmark = faBookmark;
   faCircleUser = faCircleUser;
-  selectedTab: string = "posts"; //selected tab by default
+  selectedTab: string = "posts";
   currentUsername: string = "";
   username: string | null = null;
   userType: string;
   showPopup: boolean = false;
   popupTitle: string = "Error";
   popupBody: string = "";
-  hasMoreProfilePosts: boolean = true; // Initially assume there are more posts
-  hasMoreSavedPosts: boolean = true; // Initially assume there are more saved posts
+  hasMoreProfilePosts: boolean = true;
+  hasMoreSavedPosts: boolean = true; 
+  activeIndex: number | undefined = undefined; 
+  showInsightScreen: boolean = false; 
 
   constructor(
     private UserService: UserService,
     private JwtDecoder: JwtDecoderService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private imageService: ImageUrlGenerationService
   ) {}
 
   ngOnInit(): void {
@@ -69,6 +73,53 @@ export class BusinessProfileComponent implements OnInit {
       }
     });
   }
+
+  toggleInsight(index: number | undefined): void {
+    console.log(this.visibleProfilePosts);
+
+    if (
+      index != undefined &&
+      this.visibleProfilePosts[index].insightDetails === undefined
+    ) {
+      this.showError("404", "Please try again later.");
+      return;
+    } else {
+      if (this.activeIndex === index) {
+        this.activeIndex = undefined;
+      } else if (
+        this.activeIndex !== undefined &&
+        this.activeIndex !== index &&
+        index != undefined
+      ) {
+        setTimeout(() => {
+          this.activeIndex = index;
+          this.showInsightScreen = true;
+        }, 1000);
+      } else {
+        this.activeIndex = index;
+      }
+    }
+  }
+
+  setInsightScreen(event: Event): void {
+    event.stopPropagation();
+    if (
+      this.activeIndex != undefined &&
+      this.visibleProfilePosts[this.activeIndex].insightDetails !== undefined
+    ) {
+      this.showInsightScreen = !this.showInsightScreen;
+    } else {
+      this.showInsightScreen = false;
+    }
+  }
+
+  hideInsight(event: Event): void {
+    this.showInsightScreen = false;
+    setTimeout(() => {
+      this.activeIndex = undefined;
+    }, 400);
+  }
+
   fetchCurrentUsername(): string {
     const token = localStorage.getItem("token") || "";
     const decodedToken: DecodedToken =
@@ -79,21 +130,22 @@ export class BusinessProfileComponent implements OnInit {
   }
 
   fetchUserDetails(username: string) {
-    this.loadingUserDetails = true; // Show skeletons during loading
+    this.loadingUserDetails = true;
     this.UserService.getUserDetails(username).subscribe({
       next: (data) => {
         if (data.profileImageUrl) {
-          data.profileImageUrl = this.UserService.getImageUrl(
-            username,
-            data.profileImageUrl
-          );
+          data.profileImageUrl = this.imageService.generateImageUrl(data.profileImageUrl);
+          // data.profileImageUrl = this.UserService.getImageUrl(
+          //   username,
+          //   data.profileImageUrl
+          // );
         }
         this.userDetails = data;
-        this.loadingUserDetails = false; // Hide skeletons after successful fetch
+        this.loadingUserDetails = false;
       },
       error: (error) => {
-        this.userDetails = null; // Reset user details on error
-        this.loadingUserDetails = false; // Stop skeletons even if there's an error
+        this.userDetails = null;
+        this.loadingUserDetails = false;
         this.showError(
           error?.error?.errorCode || "Error fetching profile",
           error?.error?.errorDescription || "Please try again later."
@@ -125,9 +177,9 @@ export class BusinessProfileComponent implements OnInit {
             }
           });
           this.visibleProfilePosts.push(...data);
-          this.profilePostPage++; // Increment page only if data exists
+          this.profilePostPage++; 
         } else {
-          this.hasMoreProfilePosts = false; // No more posts to fetch
+          this.hasMoreProfilePosts = false; 
         }
         this.loadingProfilePosts = false;
       },
@@ -162,9 +214,9 @@ export class BusinessProfileComponent implements OnInit {
               }
             });
             this.visibleSavedPosts.push(...data);
-            this.savedPostPage++; // Increment page only if data exists
+            this.savedPostPage++; 
           } else {
-            this.hasMoreSavedPosts = false; // No more saved posts to fetch
+            this.hasMoreSavedPosts = false; 
           }
           this.loadingSavedPosts = false;
         },
@@ -189,7 +241,7 @@ export class BusinessProfileComponent implements OnInit {
   onScroll(event: any): void {
     const scrollContainer = event.target;
     const scrollPosition =
-      scrollContainer.scrollTop + scrollContainer.clientHeight;
+    scrollContainer.scrollTop + scrollContainer.clientHeight;
     const scrollHeight = scrollContainer.scrollHeight;
 
     if (scrollPosition >= scrollHeight - 100) {
@@ -215,22 +267,18 @@ export class BusinessProfileComponent implements OnInit {
   };
 
   switchTab(tab: string): void {
-    // Save the current scroll position for the active tab
     const scrollContainer = document.querySelector(".scroll-container");
     if (scrollContainer) {
       this.scrollPositions[this.selectedTab] = scrollContainer.scrollTop;
     }
-
-    // Switch the selected tab
     this.selectedTab = tab;
-
-    // Restore the scroll position for the new tab
     setTimeout(() => {
       const newScrollContainer = document.querySelector(".scroll-container");
       if (newScrollContainer) {
         newScrollContainer.scrollTop = this.scrollPositions[tab] || 0;
       }
     }, 0);
+    this.activeIndex = undefined;
   }
 
   defaultProfileImage = "assets/default-pic.png";

@@ -1,9 +1,9 @@
 import { Component, Input, OnInit } from "@angular/core";
-import { UserService } from "src/app/services/user-profile.service";
+import { ActivatedRoute } from "@angular/router";
 import { faBookmark } from "@fortawesome/free-solid-svg-icons";
 import { UserDetails } from "src/app/models/UserDetails";
 import { AdvertisementDetails } from "src/app/models/ad-details";
-import { ActivatedRoute } from "@angular/router";
+import { UserService } from "src/app/services/user-profile.service";
 
 @Component({
   selector: "app-consumer-profile",

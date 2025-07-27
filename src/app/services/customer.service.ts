@@ -1,11 +1,9 @@
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { environment } from "src/environments/environment";
-import { Credentials } from "../models/credentials";
+import { API_CONFIG } from "../api-config";
 import { BusinessDetails } from "../models/BusinessRegistration/BusinessDetails";
-import { AuthService } from "./auth.service";
-import { Observable } from "rxjs";
 import { ConsumerDetails } from "../models/ConsumerRegistration/ConsumerDetails";
+import { AuthService } from "./auth.service";
 @Injectable({
   providedIn: "root",
 })
@@ -15,13 +13,17 @@ export class CustomerService {
   registerNewUser(user: ConsumerDetails) {
     console.log(user);
    
-    return  this.http.post("http://localhost:8083/user/register-consumer", user)
-    
+    return  this.http.post(API_CONFIG.REGISTRATION.CONSUMER, user ,{
+      headers : new HttpHeaders({
+        'Content-Type': 'application/json',
+        responseType: 'text'
+      })
+    })
   }
   registerNewBusiness(user: BusinessDetails) {
     console.log(user);
   
-    return this.http.post("http://localhost:8083/user/register-business", user, { responseType: 'text' })
+    return this.http.post(API_CONFIG.REGISTRATION.BUSINESS, user, { responseType: 'text' })
       .subscribe(response => {
         try {
           const parsedResponse = JSON.parse(response);

@@ -1,9 +1,9 @@
+import { HttpClient } from "@angular/common/http";
 import { Component, OnInit } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { OtpService } from "src/app/services/otp/otp.service";
-import { AuthService } from "src/app/services/auth.service";
 import { Router } from "@angular/router";
-import { HttpClient } from "@angular/common/http";
+import { AuthService } from "src/app/services/auth.service";
+import { OtpService } from "src/app/services/otp/otp.service";
 
 @Component({
   selector: "app-login",
@@ -67,15 +67,14 @@ export class LoginComponent implements OnInit {
       next: (response) => {
         this.isLoaderVisible = false;
         this.otpSent = true;
-        this.showPopup("Success", "OTP sent successfully.");
         this.router.navigate(["/otpscreen", phoneNumber, selectedCountryCode]);
       },
       error: (error) => {
         this.isLoaderVisible = false;
-        const errorCode = error?.error?.errorCode || "Server is down";
+        const errorCode = error?.error?.errorCode || "Service failed";
         const errorDescription =
           error?.error?.errorDescription ||
-          "Failed to send OTP. Please try again later (Internal server Error).";
+          "Unable to send OTP at the moment. Please try again later.";
         this.showPopup(`Error (${errorCode})`, errorDescription);
       },
       complete: () => {
