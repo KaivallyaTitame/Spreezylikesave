@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import 'jasmine';
 import { LoaderComponent } from './loader.component';
 
 describe('LoaderComponent', () => {
@@ -16,6 +15,7 @@ describe('LoaderComponent', () => {
   });
 
   it('should create', () => {
+    // @ts-ignore
     expect(component).toBeTruthy();
   });
 });

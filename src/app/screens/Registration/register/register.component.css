@@ -1,0 +1,25 @@
+.button-up {
+    display: flex;
+    justify-content: center;
+    
+  }
+.btn-container{
+    justify-content: center;
+
+  }
+  .btn-container button{
+    background-color: #ED6A5A;
+    border-radius: 5px;
+
+  }
+
+  .button-down{
+    display: flex;
+    justify-content: center;
+  }
+  .img-up{
+    justify-content: center;
+  }
+  .img-down{
+    justify-content: center;
+  }

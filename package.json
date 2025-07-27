@@ -6,9 +6,11 @@
   ],
   "scripts": {
     "ng": "ng",
-    "start": "ng serve --configuration development",
+    "start": "ng serve --host 0.0.0.0 --port 4200",
     "build": "ng build",
     "buildCss": "npx tailwindcss build src/styles.css",
+    "build-dev": "ng build --configuration development",
+    "build-uat": "ng build --configuration uat",
     "build-prod": "ng build --configuration production",
     "watch": "ng build --watch --configuration development",
     "test": "jest",
@@ -26,29 +28,35 @@
     "@angular/common": "^16.2.4",
     "@angular/compiler": "^16.2.4",
     "@angular/core": "^16.2.4",
-    "@angular/fire": "^7.6.1",
+    "@angular/fire": "^16.0.0",
     "@angular/forms": "^16.2.4",
     "@angular/platform-browser": "^16.2.4",
     "@angular/platform-browser-dynamic": "^16.2.4",
     "@angular/router": "^16.2.4",
     "@auth0/angular-jwt": "^5.2.0",
-    "@capacitor/android": "^5.3.0",
-    "@capacitor/cli": "^6.1.2",
-    "@capacitor/core": "^5.4.2",
-    "@capacitor/ios": "^5.3.0",
+    "@capacitor/android": "^5.7.8",
+    "@capacitor/cli": "^5.7.8",
+    "@capacitor/core": "^5.7.8",
+    "@capacitor/ios": "^5.7.8",
+    "@capacitor/screen-orientation": "^5.0.8",
+    "@capacitor/share": "^5.0.8",
     "@fortawesome/angular-fontawesome": "^0.13.0",
     "@fortawesome/fontawesome-svg-core": "^6.6.0",
     "@fortawesome/free-brands-svg-icons": "^6.4.0",
     "@fortawesome/free-regular-svg-icons": "^6.4.0",
     "@fortawesome/free-solid-svg-icons": "^6.6.0",
     "@mdi/js": "^7.4.47",
-    "@ng-icons/core": "^25.2.0",
+    "@ng-icons/core": "^25.6.1",
     "@ng-icons/ionicons": "^25.2.0",
+    "capacitor": "^0.5.6",
     "capacitor-resources": "^1.2.1",
     "firebase": "^10.4.0",
     "jwt-decode": "^4.0.0",
-    "rippleui": "^1.12.1",
+    "jwt-decoder": "^0.0.0",
+    "ngx-skeleton-loader": "^8.1.0",
+    "remixicon": "^4.3.0",
     "rxjs": "~7.8.0",
+    "sweetalert2": "^11.15.8",
     "tslib": "^2.3.0",
     "zone.js": "~0.13.1"
   },
@@ -59,26 +67,12 @@
     "@types/jest": "^29.5.12",
     "@types/jwt-decode": "^2.2.1",
     "autoprefixer": "^10.4.15",
+    "cypress": "^14.5.0",
     "jest": "^29.7.0",
     "jest-preset-angular": "^14.0.3",
     "postcss": "^8.4.29",
+    "rippleui": "^1.12.1",
     "tailwindcss": "^3.3.3",
     "typescript": "~4.9.4"
-  },
-  "jest": {
-    "preset": "jest-preset-angular",
-    "setupFilesAfterEnv": [
-      "<rootDir>/src/setup.jest.ts"
-    ],
-    "testPathIgnorePatterns": [
-      "<rootDir>/node_modules/",
-      "<rootDir>/dist/"
-    ],
-    "globals": {
-      "ts-jest": {
-        "tsConfig": "<rootDir>/tsconfig.spec.json",
-        "stringifyContentPathRegex": "\\.html$"
-      }
-    }
   }
 }

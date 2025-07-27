@@ -1,0 +1,10 @@
+.bio {
+  width: 320px; /* Maintain the existing width */
+  height: 150px; /* Maintain the existing height */
+  resize: none; /* Disable resizing by user */
+  overflow-y: auto; /* Enable scrollbar if content overflows */
+}
+.buttons{
+  width: 100%;
+  border-radius: 7px;
+}

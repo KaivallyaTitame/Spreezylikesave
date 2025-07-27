@@ -43,6 +43,7 @@
   margin-top: 0.5rem; 
   margin-bottom: 0.5rem; 
 }
+
 .sidebar-footer {
   margin-top: auto; 
   padding: 1rem;
@@ -51,9 +52,35 @@
   margin-bottom: 30px; 
 }
 
-.drawer-toggle:checked ~ .overlay {
-  opacity: 0;
+.menu-item {
+  padding: 0.5rem 1rem;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.menu-item fa-icon,
+.menu-item img {
+  margin-right: 0.8rem;
+}
+
+.drawer-toggle:checked + .overlay {
   visibility: visible;
-  background-color: rgba(0, 0, 0, 0.5);
-  transition: opacity 0.3s ease;
+}
+
+.overlay {
+  display: none;
+}
+
+.overlay:checked {
+  display: block;
+}
+
+.drawer-toggle:checked ~ .overlay {
+  opacity: 0.8;
+  visibility: visible;
+}
+
+.drawer-toggle:checked ~ .drawer {
+  visibility: visible;
 }

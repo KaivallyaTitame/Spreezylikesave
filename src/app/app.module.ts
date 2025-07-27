@@ -11,12 +11,11 @@ import { GlobalErrorHandlerService } from "./services/global-error-handler.servi
 import { BusinessHomeModule } from "./screens/business-home/business-home.module";
 import { ConsumerHomeModule } from "./screens/consumer-home/consumer-home.module";
 import { ReactiveFormsModule } from "@angular/forms";
-import { RegisterModule } from "./screens/register/register.module";
-
+import { registerModule } from "./screens/Registration/register/register.module";
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
   ],
   imports: [
     BrowserModule,
@@ -28,7 +27,7 @@ import { RegisterModule } from "./screens/register/register.module";
     BusinessHomeModule,
     ConsumerHomeModule,
     ReactiveFormsModule,
-    RegisterModule
+    registerModule
   ],
   providers: [
     {

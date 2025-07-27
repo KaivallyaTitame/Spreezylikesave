@@ -1,0 +1,14 @@
+<!-- Report Button -->
+<div *ngIf="reportVisible" class="absolute top-0 left-0 mt-8">
+  <button class="bg-white text-black border border-gray-300 rounded px-4 py-2" (click)="confirmReport()">
+    Report
+  </button>
+</div>
+
+<!-- Report Confirmation Message -->
+<div *ngIf="confirmationVisible" class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white border border-gray-300 rounded-lg p-6 shadow-lg z-50">
+  <h2 class="text-primary font-bold">Post Reported Successfully</h2>
+  <button class="bg-primary text-white font-bold px-4 py-2 rounded mt-4 hover:bg-opacity-90" (click)="done()">
+    Done
+  </button>
+</div>

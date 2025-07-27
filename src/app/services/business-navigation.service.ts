@@ -1,12 +1,13 @@
-import { Injectable } from '@angular/core';
-import { UserProfileDTO } from '../models/UserProfileDTO';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { API_CONFIG } from '../api-config';
 
 @Injectable({
   providedIn: 'root'
 })
 export class BusinessNavigationService {
+  token = localStorage.getItem('token');
   constructor(private http: HttpClient) { }
 
   is_AdFeed:boolean = true;
@@ -14,12 +15,14 @@ export class BusinessNavigationService {
   is_Post:boolean = false;
   is_Notification:boolean = false;
   is_Profile:boolean = false;
+  is_Search:boolean = false;
 
-  getBusinessDetails(): Observable<UserProfileDTO[]> { 
-    return this.http.get<UserProfileDTO[]>('https://dummyjson.com/c/98c2-5f66-47f6-9292', {
+  getBusinessDetails(username: string): Observable<any> { 
+    return this.http.get<any>(API_CONFIG.SETTINGS.GET_BUSINESS_DETAILS(username), {
       responseType: 'json',
       headers: new HttpHeaders({
-        'ngrok-skip-browser-warning': 'true',
+        Authorization: `Bearer ${this.token}`,
+        // 'ngrok-skip-browser-warning': 'true',
       }),
     });
   }

@@ -1,4 +1,55 @@
-<div class="mt-16 mb-16 test1:w-full" style="max-height: 2400px;">
-  <div class="text-center text-xl font-normal ml-5 mr-5 text-black dark:text-black">Ad-Feed screen in Working Stage</div>
+<div class="ad-feed">
+  <div class="feed-wrapper mt-12 relative overflow-hidden">
+    <app-pull-to-refresh
+      [isRefreshing]="isRefreshing"
+      [isLoadingMore]="isLoadingMore"
+      [hasMoreData]="hasMoreData"
+      [maxPullDistance]="120"
+      [refreshThreshold]="60"
+      [resistance]="0.6"
+      [disabled]="isLoading"
+      [infiniteScrollThreshold]="200"
+      (refresh)="onRefresh()"
+      (loadMore)="onLoadMore()">
+      <div class="feed mb-12">
+        <ng-container *ngIf="isLoading && !isRefreshing; else content">
+          <app-skeleton *ngFor="let i of [1, 2, 3, 4, 5]"></app-skeleton>
+        </ng-container>
+        <ng-template #content>
+          <div *ngFor="let ad of ads" class="ad-item">
+            <ng-container *ngIf="ad.advertisementType == 'Post'">
+              <div [ngClass]="{'opacity-50 pointer-events-none': isExpired(ad.offerExpiry)}">
+                <app-Post 
+                  [postDetails]="ad"
+                  (followStatusChanged)="onFollowStatusChanged($event)">
+                </app-Post>
+              </div>
+            </ng-container>
+            <ng-container *ngIf="ad.advertisementType == 'Event'">
+              <div [ngClass]="{'opacity-50 pointer-events-none': isExpired(ad.offerExpiry)}">
+                <app-Event 
+                  [eventDetails]="ad"
+                  (followStatusChanged)="onFollowStatusChanged($event)">
+                </app-Event>
+              </div>
+            </ng-container>
+            <ng-container *ngIf="ad.advertisementType == 'Coupon'">
+              <div [ngClass]="{'opacity-50 pointer-events-none': isExpired(ad.offerExpiry)}">
+                <app-Coupon 
+                  [couponDetails]="ad"
+                  (followStatusChanged)="onFollowStatusChanged($event)">
+                </app-Coupon>
+              </div>
+            </ng-container>
+          </div>
+        </ng-template>
+      </div>
+    </app-pull-to-refresh>
+  </div>
+  <app-pop-up
+    *ngIf="showErrorPopup"
+    [messageTitle]="'Error'"
+    [messageBody]="errorMessage"
+    (close)="showErrorPopup = false">
+  </app-pop-up>
 </div>
-
