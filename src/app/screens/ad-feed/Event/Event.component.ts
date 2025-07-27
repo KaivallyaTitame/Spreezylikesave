@@ -391,18 +391,14 @@ export class EventComponent implements OnInit , OnChanges {
     window.location.href = this.eventDetails.websiteLink;
   }
 
-  incrementEngagementCount(advertisementId: number) {
-    this.engageService.incrementEngagementCount(advertisementId)
-  }
-
   showDetails(advertisementId: number): void {
+    this.engageService.incrementEngagementCount(advertisementId);
     this.router.navigate(
       [`${this.router.url}/offer-description`, advertisementId],
       {
         queryParams: { data: JSON.stringify(this.eventDetails) },
       }
     );
-    this.incrementEngagementCount(advertisementId);
   }
 
   prevImage() {

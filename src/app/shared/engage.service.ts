@@ -14,8 +14,7 @@ export class EngageService {
   incrementEngagementCount(advertisementId: number): Observable<any> {
     const token = localStorage.getItem("token") || "";
     const userName = this.jwtDecoderService.decodeInfoFromToken(token)["sub"] || "";
-    const url = API_CONFIG.ADVERTISEMENT_EVENTS.ENGAGE(1);
-    console.log(token)
+    const url = API_CONFIG.ADVERTISEMENT_EVENTS.ENGAGE(advertisementId);
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${token}`,
       'Content-Type': 'application/json'

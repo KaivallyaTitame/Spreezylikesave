@@ -403,18 +403,14 @@ export class CouponComponent implements OnInit , OnChanges{
     document.body.style.overflow = "auto";
   }
 
-  incrementEngagementCount(advertisementId: number) {
-    this.engageService.incrementEngagementCount(advertisementId)
-  }
-
   showDetails(advertisementId: number): void {
+    this.engageService.incrementEngagementCount(advertisementId);
     this.router.navigate(
       [`${this.router.url}/offer-description`, advertisementId],
       {
         queryParams: { data: JSON.stringify(this.couponDetails) },
       }
     );
-    this.incrementEngagementCount(advertisementId);
   }
 
   prevImage() {
