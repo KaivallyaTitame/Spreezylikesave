@@ -12,12 +12,6 @@ export class UserService {
   private imageUrl = API_CONFIG.IMAGE_URL;
 
   constructor(private http: HttpClient) {}
-
-  getImageUrl(username: string, imageName: string): string {
-    return `${this.imageUrl}/${imageName}`;
-    // return `/${imageName}`;
-    // return `${this.imageUrl}/${username}/${imageName}`;
-  }
   getUserDetails(username: string): Observable<UserDetails> {
     const token = localStorage.getItem("token"); // Retrieve the token from local storage
     return this.http

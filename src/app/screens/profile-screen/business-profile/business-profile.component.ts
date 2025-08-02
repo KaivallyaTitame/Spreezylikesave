@@ -56,10 +56,11 @@ export class BusinessProfileComponent implements OnInit {
   activeIndex: number | undefined = undefined;  // indicates which post insight to be displayed. if it is undefined then it will not shown.
   showInsightScreen:boolean = false;  // this variable decides the visibility of the post insight component.
   noPostTitle:string = ''; 
-  noPostDescription:string = ''; 
+  noPostDescription:string = '';
+  defaultProfileImage = "assets/default-pic.png";
 
   constructor(
-    private UserService: UserService,
+    private userService: UserService,
     private JwtDecoder: JwtDecoderService,
     private route: ActivatedRoute,
     private imageService: ImageUrlGenerationService
@@ -166,7 +167,7 @@ export class BusinessProfileComponent implements OnInit {
       this.noPostDescription = 'Start Posting';
     }
    
-    this.UserService.getUserDetails(username).subscribe({
+    this.userService.getUserDetails(username).subscribe({
       next: (data) => {
         if (data.profileImageUrl) {
           data.profileImageUrl = this.imageService.generateImageUrl(data.profileImageUrl);
@@ -184,27 +185,14 @@ export class BusinessProfileComponent implements OnInit {
 
   fetchProfilePosts(username: string, page: number) {
     this.loadingProfilePosts = true;
-    this.UserService.getProfilePosts(
+    this.userService.getProfilePosts(
       username,
       page,
       this.postsPerPage
     ).subscribe({
       next: (data) => {
         if (data !== null && data.length > 0) {
-          data.forEach((post) => {
-
-            if (post.profileImageUrl) {
-              post.profileImageUrl = this.UserService.getImageUrl(
-                username,
-                post.profileImageUrl
-              );
-            }
-            if (post.imagePaths?.length > 0) {
-              post.imagePaths = post.imagePaths.map((imagePath) =>
-                this.UserService.getImageUrl(username, imagePath)
-              );
-            }
-          });
+          console.log(data);
           this.loadingProfilePosts = false;
           this.visibleProfilePosts.push(...data);
           this.profilePostPage++; // Increment page only if data exists
@@ -228,23 +216,11 @@ export class BusinessProfileComponent implements OnInit {
 
   fetchSavedPosts(username: string, page: number) {
     this.loadingSavedPosts = true;
-    this.UserService.getSavedPosts(username, page, this.postsPerPage).subscribe(
+    this.userService.getSavedPosts(username, page, this.postsPerPage).subscribe(
       {
         next: (data) => {
           if (data !== null && data.length > 0) {
-            data.forEach((post) => {
-              // if (post.profileImageUrl) {
-              //   post.profileImageUrl = this.UserService.getImageUrl(
-              //     username,
-              //     post.profileImageUrl
-              //   );
-              // }
-              // if (post.imagePaths?.length > 0) {
-              //   post.imagePaths = post.imagePaths.map((imagePath) =>
-              //     this.UserService.getImageUrl(username, imagePath)
-              //   );
-              // }
-            });
+            console.log(data);
             this.loadingSavedPosts = false;
             this.visibleSavedPosts.push(...data);
             this.savedPostPage++; 
@@ -314,7 +290,6 @@ export class BusinessProfileComponent implements OnInit {
     this.activeIndex = undefined; 
   }
 
-  defaultProfileImage = "assets/default-pic.png";
   onProfileImageError(event: Event) {
     const target = event.target as HTMLImageElement;
     target.src = this.defaultProfileImage;

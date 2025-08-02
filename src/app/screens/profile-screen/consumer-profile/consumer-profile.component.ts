@@ -4,6 +4,7 @@ import { faBookmark } from "@fortawesome/free-solid-svg-icons";
 import { UserDetails } from "src/app/models/UserDetails";
 import { AdvertisementDetails } from "src/app/models/ad-details";
 import { UserService } from "src/app/services/user-profile.service";
+import { ImageUrlGenerationService } from "src/app/shared/image-url-generation.service";
 
 @Component({
   selector: "app-consumer-profile",
@@ -35,8 +36,9 @@ export class ConsumerProfileComponent implements OnInit {
   };
 
   constructor(
-    private UserService: UserService,
-    private route: ActivatedRoute
+    private userService: UserService,
+    private route: ActivatedRoute,
+    private imageService: ImageUrlGenerationService
   ) {}
 
   ngOnInit(): void {
@@ -51,13 +53,10 @@ export class ConsumerProfileComponent implements OnInit {
 
   fetchUserDetails(username: string) {
     this.loadingUserDetails = true; // Show skeletons during loading
-    this.UserService.getUserDetails(username).subscribe({
+    this.userService.getUserDetails(username).subscribe({
       next: (data) => {
         if (data.profileImageUrl) {
-          data.profileImageUrl = this.UserService.getImageUrl(
-            username,
-            data.profileImageUrl
-          );
+          data.profileImageUrl = this.imageService.generateImageUrl(data.profileImageUrl);
         }
         this.userDetails = data;
         this.loadingUserDetails = false; // Hide skeletons after successful fetch
@@ -72,22 +71,22 @@ export class ConsumerProfileComponent implements OnInit {
 
   fetchSavedPosts(username: string, page: number) {
     this.loadingSavedPosts = true;
-    this.UserService.getSavedPosts(username, page, this.postsPerPage).subscribe(
+    this.userService.getSavedPosts(username, page, this.postsPerPage).subscribe(
       {
         next: (data) => {
           if (data !== null && data.length > 0) {
             data.forEach((post) => {
-              if (post.profileImageUrl) {
-                post.profileImageUrl = this.UserService.getImageUrl(
-                  username,
-                  post.profileImageUrl
-                );
-              }
-              if (post.imagePaths && post.imagePaths.length > 0) {
-                post.imagePaths = post.imagePaths.map((imagePath) =>
-                  this.UserService.getImageUrl(username, imagePath)
-                );
-              }
+              // if (post.profileImageUrl) {
+              //   post.profileImageUrl = this.userService.getImageUrl(
+              //     username,
+              //     post.profileImageUrl
+              //   );
+              // }
+              // if (post.imagePaths && post.imagePaths.length > 0) {
+              //   post.imagePaths = post.imagePaths.map((imagePath) =>
+              //     this.userService.getImageUrl(username, imagePath)
+              //   );
+              // }
             });
             this.visibleSavedPosts.push(...data);
             this.savedPostPage++; // Increment page if there are more posts
