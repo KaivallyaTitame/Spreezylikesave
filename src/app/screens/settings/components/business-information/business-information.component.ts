@@ -1,77 +1,86 @@
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
-import { BusinessInformation } from 'src/app/models/business-information';
-import { JwtDecoderService } from 'src/app/services/jwt-decoder.service';
-import { SettingsService } from 'src/app/services/settings.service';
+import { HttpClient, HttpErrorResponse } from "@angular/common/http";
+import { Component } from "@angular/core";
+import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import { Router } from "@angular/router";
+import { BusinessInformation } from "src/app/models/business-information";
+import { JwtDecoderService } from "src/app/services/jwtDecoder/jwt-decoder.service";
+import { SettingsService } from "src/app/services/settings.service";
 
 interface StateData {
   state: { name: string; cities: string[] }[];
 }
 
 @Component({
-  selector: 'app-business-information',
-  templateUrl: './business-information.component.html',
-  styleUrls: ['./business-information.component.css']
+  selector: "app-business-information",
+  templateUrl: "./business-information.component.html",
+  styleUrls: ["./business-information.component.css"],
 })
 export class BusinessInformationComponent {
-  businessInfo:FormGroup;
-  businessInfoData:BusinessInformation=new BusinessInformation();
+  businessInfo: FormGroup;
+  businessInfoData: BusinessInformation = new BusinessInformation();
   showPopUp: boolean = false;
-  popUpTitle: string = '';
-  popUpBody: string = '';
-  username: string='';
+  popUpTitle: string = "";
+  popUpBody: string = "";
+  username: string = "";
   loading: boolean = true;
-  imageFileName: string = '';
+  imageFileName: string = "";
   stateData: StateData;
   imageNames: string[] = [];
 
-  constructor(private http: HttpClient,private fb:FormBuilder,private router:Router,private jwtDecoder:JwtDecoderService,private settingsService:SettingsService){
-    this.businessInfo=this.fb.group({
-      ownerName:[''],
-      businessUsername:[''],
-      profilePicture:[''],
-      email:[''],
-      phoneNumber:[''],
-      gender:[''],
-      businessName:[''],
-      businessType:[''],
-      bio:[''],
-      state:[''],
-      city:[''],
-      pincode:[''],
+  constructor(
+    private http: HttpClient,
+    private fb: FormBuilder,
+    private router: Router,
+    private jwtDecoder: JwtDecoderService,
+    private settingsService: SettingsService
+  ) {
+    this.businessInfo = this.fb.group({
+      ownerName: [""],
+      businessUsername: [""],
+      profilePicture: [""],
+      email: [""],
+      phoneNumber: [""],
+      gender: [""],
+      businessName: [""],
+      businessType: [""],
+      bio: [""],
+      state: [""],
+      city: [""],
+      pincode: [""],
       whatsApp: [
-        'https://example-whatsapp.com', 
-        [Validators.required, this.urlValidator()]
+        "https://example-whatsapp.com",
+        [Validators.required, this.urlValidator()],
       ],
       instagram: [
-        'https://example-instagram.com', 
-        [Validators.required, this.urlValidator()]
+        "https://example-instagram.com",
+        [Validators.required, this.urlValidator()],
       ],
       facebook: [
-        'https://example-facebook.com', 
-        [Validators.required, this.urlValidator()]
+        "https://example-facebook.com",
+        [Validators.required, this.urlValidator()],
       ],
       kycDetails: this.fb.group({
-        aadharNumber: [''],
-        aadharImage: [''],
-        pancardNumber: [''],
-        pancardImage: ['']
-      })
+        aadharNumber: [""],
+        aadharImage: [""],
+        pancardNumber: [""],
+        pancardImage: [""],
+      }),
     });
 
-    this.http.get<StateData>("assets/Statesandcities.json")
+    this.http
+      .get<StateData>("assets/Statesandcities.json")
       .subscribe((data) => {
         this.stateData = data;
       });
   }
-  
-  ngOnInit():void{
-    const token = localStorage.getItem('token');
 
-    const decodedInfo = token ? this.jwtDecoder.decodeInfoFromToken(token) : this.jwtDecoder.decodeInfoFromToken('');
-    this.username = decodedInfo['sub'];
+  ngOnInit(): void {
+    const token = localStorage.getItem("token");
+
+    const decodedInfo = token
+      ? this.jwtDecoder.decodeInfoFromToken(token)
+      : this.jwtDecoder.decodeInfoFromToken("");
+    this.username = decodedInfo["sub"];
 
     this.settingsService.getBusinessDetails(this.username).subscribe({
       next: (response) => {
@@ -80,8 +89,8 @@ export class BusinessInformationComponent {
           if (userData.length > 0) {
             this.updateFormWithUserData(userData[0]);
           } else {
-            this.popUpTitle = 'Error!';
-            this.popUpBody = 'Data not found';
+            this.popUpTitle = "Error!";
+            this.popUpBody = "Data not found";
             this.showPopUp = true;
           }
         } catch (error) {
@@ -94,16 +103,16 @@ export class BusinessInformationComponent {
         throw(error);  
       },
       complete: () => {
-        this.loading = false; 
-      }
+        this.loading = false;
+      },
     });
   }
-  
+
   private updateFormWithUserData(user: BusinessInformation) {
     this.businessInfo.patchValue({
-      ownerName:user.ownerName,
+      ownerName: user.ownerName,
       businessUsername: user.businessUsername,
-      profilePicture:user.profilePicture,
+      profilePicture: user.profilePicture,
       email: user.email,
       phoneNumber: user.phoneNumber,
       gender: user.gender.toLowerCase(),
@@ -113,102 +122,105 @@ export class BusinessInformationComponent {
       state: user.state,
       city: user.city,
       pincode: user.pincode,
-      whatsApp:user.whatsApp,
-      instagram:user.instagram,
-      facebook:user.facebook,
+      whatsApp: user.whatsApp,
+      instagram: user.instagram,
+      facebook: user.facebook,
       kycDetails: {
         aadharNumber: user.kycDetails?.aadharNumber,
         aadharImage: user.kycDetails?.aadharImage,
         pancardNumber: user.kycDetails?.pancardNumber,
-        pancardImage: user.kycDetails?.pancardImage
-      }
+        pancardImage: user.kycDetails?.pancardImage,
+      },
     });
 
-    this.imageFileName =user.profilePicture;
+    this.imageFileName = user.profilePicture;
   }
 
-  handleSubmit(){
+  handleSubmit() {
     if (this.businessInfo.valid) {
       this.createRequest(this.businessInfo);
       this.businessInfo.reset();
-    }else {
-      this.popUpTitle = 'Error!';
-      this.popUpBody = 'Please fill out form correctly';
+    } else {
+      this.popUpTitle = "Error!";
+      this.popUpBody = "Please fill out form correctly";
       this.showPopUp = true;
     }
   }
 
   patchImageFileName(uploadedFileName: string): void {
-    const profilePicture = uploadedFileName || this.businessInfo.get('profilePicture')?.value;
+    const profilePicture =
+      uploadedFileName || this.businessInfo.get("profilePicture")?.value;
     this.businessInfo.patchValue({
-      profilePicture: profilePicture
+      profilePicture: profilePicture,
     });
   }
 
-  patchAadhar(uploadedFileName:string): void{
-    const aadharImage = uploadedFileName || this.businessInfo.get('aadharImage')?.value;
-    this.businessInfo.patchValue({
-      kycDetails: {
-        aadharImage: aadharImage
-      }
-    });
-  }
-
-  patchPancard(uploadedFileName:string): void{
-    const pancardImage = uploadedFileName || this.businessInfo.get('aadharImage')?.value;
+  patchAadhar(uploadedFileName: string): void {
+    const aadharImage =
+      uploadedFileName || this.businessInfo.get("aadharImage")?.value;
     this.businessInfo.patchValue({
       kycDetails: {
-        pancardImage:pancardImage
-      }
+        aadharImage: aadharImage,
+      },
     });
   }
 
-  createRequest(details:FormGroup){
-    this.businessInfoData.ownerName=details.value['ownerName'];
-    this.businessInfoData.businessUsername=details.value['businessUsername'];
-    this.businessInfoData.businessName=details.value['businessName'];
-    this.businessInfoData.businessType=details.value['businessType'];
-    this.businessInfoData.profilePicture = details.value['profilePicture'];
-    this.businessInfoData.phoneNumber=details.value['phoneNumber'];
-    this.businessInfoData.pincode=details.value['pincode'];
-    this.businessInfoData.city=details.value['city'];
-    this.businessInfoData.email=details.value['email'];
-    this.businessInfoData.gender=details.value['gender'];
-    this.businessInfoData.bio=details.value['bio'];
-    this.businessInfoData.state=details.value['state'];
-    this.businessInfoData.whatsApp=details.value['whatsApp'];
-    this.businessInfoData.instagram=details.value['instagram'];
-    this.businessInfoData.facebook=details.value['facebook'];
+  patchPancard(uploadedFileName: string): void {
+    const pancardImage =
+      uploadedFileName || this.businessInfo.get("aadharImage")?.value;
+    this.businessInfo.patchValue({
+      kycDetails: {
+        pancardImage: pancardImage,
+      },
+    });
+  }
+
+  createRequest(details: FormGroup) {
+    this.businessInfoData.ownerName = details.value["ownerName"];
+    this.businessInfoData.businessUsername = details.value["businessUsername"];
+    this.businessInfoData.businessName = details.value["businessName"];
+    this.businessInfoData.businessType = details.value["businessType"];
+    this.businessInfoData.profilePicture = details.value["profilePicture"];
+    this.businessInfoData.phoneNumber = details.value["phoneNumber"];
+    this.businessInfoData.pincode = details.value["pincode"];
+    this.businessInfoData.city = details.value["city"];
+    this.businessInfoData.email = details.value["email"];
+    this.businessInfoData.gender = details.value["gender"];
+    this.businessInfoData.bio = details.value["bio"];
+    this.businessInfoData.state = details.value["state"];
+    this.businessInfoData.whatsApp = details.value["whatsApp"];
+    this.businessInfoData.instagram = details.value["instagram"];
+    this.businessInfoData.facebook = details.value["facebook"];
     this.businessInfoData.kycDetails = {
-      aadharNumber: details.value.kycDetails['aadharNumber'],
-      aadharImage: details.value.kycDetails['aadharImage'],
-      pancardNumber: details.value.kycDetails['pancardNumber'],
-      pancardImage: details.value.kycDetails['pancardImage']
+      aadharNumber: details.value.kycDetails["aadharNumber"],
+      aadharImage: details.value.kycDetails["aadharImage"],
+      pancardNumber: details.value.kycDetails["pancardNumber"],
+      pancardImage: details.value.kycDetails["pancardImage"],
     };
     this.processRequest(this.businessInfoData);
   }
 
-  processRequest(data:BusinessInformation){
+  processRequest(data: BusinessInformation) {
     this.settingsService.postBusinessDetails(data).subscribe({
       next: () => {
-        this.popUpTitle = 'Success!';
-        this.popUpBody = 'Your business details has been updated successfully.';
+        this.popUpTitle = "Success!";
+        this.popUpBody = "Your business details has been updated successfully.";
         this.showPopUp = true;
       },
       error: (error: HttpErrorResponse) => {
-        this.popUpTitle = 'Error!';
+        this.popUpTitle = "Error!";
         if (error.error && error.error.message) {
           this.popUpBody = `Error: ${error.error.message}`;
         } else {
-          this.popUpBody = 'Something went wrong. Please try again.';
+          this.popUpBody = "Something went wrong. Please try again.";
         }
         this.showPopUp = true;
-      }
+      },
     });
   }
 
   onPopUpClose() {
-    this.showPopUp = false; 
+    this.showPopUp = false;
     window.location.reload();
   }
 
@@ -216,15 +228,17 @@ export class BusinessInformationComponent {
     this.ngOnInit();
   }
 
-  handleClick():void{
-    this.router.navigate(['/settings']);
+  handleClick(): void {
+    this.router.navigate(["/settings"]);
   }
 
   getCitiesByState(selectedState: string): string[] {
     if (!this.stateData || !this.stateData.state) {
       return [];
     }
-    const state = this.stateData.state.find((state) => state.name === selectedState);
+    const state = this.stateData.state.find(
+      (state) => state.name === selectedState
+    );
     return state ? state.cities : [];
   }
 

@@ -1,0 +1,234 @@
+.pull-refresh-container {
+    position: relative;
+    height: 100%;
+    overflow: hidden;
+}
+
+.pull-refresh-indicator {
+    height: 60px;
+    background: transparent;
+    transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    opacity: 0;
+}
+
+.pull-refresh-indicator.visible {
+    opacity: 1;
+}
+
+.pull-refresh-indicator.refreshing {
+    animation: refreshBounce 0.3s ease-out;
+}
+
+@keyframes refreshBounce {
+    0% {
+        transform: translateY(-10px);
+    }
+
+    50% {
+        transform: translateY(25px);
+    }
+
+    100% {
+        transform: translateY(20px);
+    }
+}
+
+.instagram-spinner-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 60px;
+    height: 60px;
+}
+
+.instagram-spinner {
+    position: relative;
+    width: 36px;
+    height: 36px;
+    opacity: 0;
+    transform: scale(0.5);
+    transition: all 0.2s ease-out;
+}
+
+.instagram-spinner.visible {
+    opacity: 0.6;
+    transform: scale(0.8);
+}
+
+.instagram-spinner.ready {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.instagram-spinner.spinning {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.spinner-ring {
+    position: absolute;
+    border-radius: 50%;
+    border: 2px solid transparent;
+}
+
+.outer-ring {
+    width: 36px;
+    height: 36px;
+    top: 0;
+    left: 0;
+    background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+    border-radius: 50%;
+    opacity: 0.8;
+}
+
+.outer-ring::before {
+    content: '';
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    right: 3px;
+    bottom: 3px;
+    background: white;
+    border-radius: 50%;
+}
+
+.inner-ring {
+    width: 24px;
+    height: 24px;
+    top: 6px;
+    left: 6px;
+    background: linear-gradient(225deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+    border-radius: 50%;
+    opacity: 0.6;
+}
+
+.inner-ring::before {
+    content: '';
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    right: 3px;
+    bottom: 3px;
+    background: white;
+    border-radius: 50%;
+}
+
+.spinner-center {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: linear-gradient(45deg, #f09433, #dc2743);
+    border-radius: 50%;
+    opacity: 0.8;
+}
+
+.instagram-spinner.spinning .outer-ring {
+    animation: spinClockwise 1.2s linear infinite;
+}
+
+.instagram-spinner.spinning .inner-ring {
+    animation: spinCounterClockwise 1s linear infinite;
+}
+
+.instagram-spinner.spinning .spinner-center {
+    animation: pulse 1s ease-in-out infinite alternate;
+}
+
+@keyframes spinClockwise {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes spinCounterClockwise {
+    from {
+        transform: rotate(360deg);
+    }
+
+    to {
+        transform: rotate(0deg);
+    }
+}
+
+@keyframes pulse {
+    0% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 0.8;
+    }
+
+    100% {
+        transform: translate(-50%, -50%) scale(1.2);
+        opacity: 1;
+    }
+}
+
+.content-wrapper {
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+    position: relative;
+    background: #fafafa;
+    touch-action: pan-y;
+}
+
+.content-wrapper.pulling {
+    transition: none;
+}
+
+.pull-refresh-container.pulling * {
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+.content-wrapper {
+    overscroll-behavior: contain;
+}
+
+.load-more-indicator {
+    background: #fafafa;
+}
+
+.no-more-data {
+    background: #fafafa;
+}
+
+@media (max-width: 768px) {
+    .pull-refresh-indicator {
+        height: 50px;
+    }
+
+    .instagram-spinner-container {
+        width: 50px;
+        height: 50px;
+    }
+
+    .instagram-spinner {
+        width: 30px;
+        height: 30px;
+    }
+
+    .outer-ring {
+        width: 30px;
+        height: 30px;
+    }
+
+    .inner-ring {
+        width: 18px;
+        height: 18px;
+        top: 6px;
+        left: 6px;
+    }
+
+    .spinner-center {
+        width: 5px;
+        height: 5px;
+    }
+}

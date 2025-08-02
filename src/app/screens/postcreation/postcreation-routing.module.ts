@@ -21,6 +21,7 @@ const routes: Routes = [
     path:'events-form',
     component:EventsFormComponent
   }
+  
 ];
 
 @NgModule({

@@ -1,19 +1,20 @@
 import { Component, Input, OnInit } from "@angular/core";
-import { UserService } from "src/app/services/user-profile.service";
+import { ActivatedRoute } from "@angular/router";
+import { faFacebook, faInstagram } from "@fortawesome/free-brands-svg-icons";
 import {
-  faPhone,
-  faEnvelope,
-  faShare,
-  faList,
   faBookmark,
   faCircleUser,
+  faEnvelope,
+  faList,
+  faPhone,
+  faShare,
 } from "@fortawesome/free-solid-svg-icons";
-import { faInstagram, faFacebook } from "@fortawesome/free-brands-svg-icons";
 import { UserDetails } from "src/app/models/UserDetails";
 import { AdvertisementDetails } from "src/app/models/ad-details";
 import { DecodedToken } from "src/app/models/decodedToken";
 import { JwtDecoderService } from "src/app/services/jwtDecoder/jwt-decoder.service";
-import { ActivatedRoute } from "@angular/router";
+import { UserService } from "src/app/services/user-profile.service";
+import { ImageUrlGenerationService } from "src/app/shared/image-url-generation.service";
 import { HttpErrorResponse } from "@angular/common/http";
 
 @Component({
@@ -22,8 +23,8 @@ import { HttpErrorResponse } from "@angular/common/http";
   styleUrls: ["./business-profile.component.css"],
 })
 export class BusinessProfileComponent implements OnInit {
-  userDetails: UserDetails | null = null; // User details fetched from backend
-  loadingUserDetails: boolean = true; // To show skeletons while data is loading
+  userDetails: UserDetails | null = null;
+  loadingUserDetails: boolean = true; 
   @Input() profilePosts!: AdvertisementDetails[];
   @Input() savedPosts!: AdvertisementDetails[];
   visibleProfilePosts: AdvertisementDetails[] = [];
@@ -41,7 +42,7 @@ export class BusinessProfileComponent implements OnInit {
   faList = faList;
   faBookmark = faBookmark;
   faCircleUser = faCircleUser;
-  selectedTab: string = "posts"; //selected tab by default
+  selectedTab: string = "posts";
   currentUsername: string = "";
   username: string | null = null;
   userType: string;
@@ -60,7 +61,8 @@ export class BusinessProfileComponent implements OnInit {
   constructor(
     private UserService: UserService,
     private JwtDecoder: JwtDecoderService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private imageService: ImageUrlGenerationService
   ) {}
 
   ngOnInit(): void {
@@ -167,14 +169,10 @@ export class BusinessProfileComponent implements OnInit {
     this.UserService.getUserDetails(username).subscribe({
       next: (data) => {
         if (data.profileImageUrl) {
-          data.profileImageUrl = this.UserService.getImageUrl(
-            username,
-            data.profileImageUrl
-          );
-
+          data.profileImageUrl = this.imageService.generateImageUrl(data.profileImageUrl);
         }
         this.userDetails = data;
-        this.loadingUserDetails = false; // Hide skeletons after successful fetch
+        this.loadingUserDetails = false;
       },
       error: (error) => {
         this.loadingUserDetails = false; // Stop skeletons even if there's an error
@@ -249,7 +247,7 @@ export class BusinessProfileComponent implements OnInit {
             });
             this.loadingSavedPosts = false;
             this.visibleSavedPosts.push(...data);
-            this.savedPostPage++; // Increment page only if data exists
+            this.savedPostPage++; 
           } else {
             if(data == null)
             {
@@ -276,7 +274,7 @@ export class BusinessProfileComponent implements OnInit {
   onScroll(event: any): void {
     const scrollContainer = event.target;
     const scrollPosition =
-      scrollContainer.scrollTop + scrollContainer.clientHeight;
+    scrollContainer.scrollTop + scrollContainer.clientHeight;
     const scrollHeight = scrollContainer.scrollHeight;
 
     if (scrollPosition >= scrollHeight - 100) {
@@ -302,15 +300,11 @@ export class BusinessProfileComponent implements OnInit {
   };
 
   switchTab(tab: string): void {
-    // Save the current scroll position for the active tab
     const scrollContainer = document.querySelector(".scroll-container");
     if (scrollContainer) {
       this.scrollPositions[this.selectedTab] = scrollContainer.scrollTop;
     }
-
-    // Switch the selected tab
     this.selectedTab = tab;
-    // Restore the scroll position for the new tab
     setTimeout(() => {
       const newScrollContainer = document.querySelector(".scroll-container");
       if (newScrollContainer) {

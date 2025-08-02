@@ -3,24 +3,27 @@ export class insightDetails{
 }
 
 export interface AdvertisementDetails {
-    advertisementId: number;
-    advertisementType:string;
-    profileImageUrl: string;
-    username: string;
-    offerExpiry: string;
-    offerTitle: string;
-    offerSubtitle: string;
-    likes: number;
-    dislikes: number;
-    insightDetails:insightDetails; 
-    descriptionTitle: string;
-    descriptionContent: string;
-    howToAvailSteps: string[];
-    termsConditions: string[];
-    websiteLink:string;
-    couponCode:string;
-    imagePaths: string[];
-    description: string;
-    eventDateAndTime:string;
-    offerImageUrl:string;
+  advertisementId: number;
+  advertisementType: string;
+  profileImageUrl: string;
+  username: string;
+  offerExpiry: string;
+  promoBadge: string;
+  howToAvailSteps: string[];
+  termsConditions: string[];
+  likes: number;
+  dislikes: number;
+  description: string;
+  imagePaths: string[];
+  couponCode: string;
+  offerTitle: string;
+  websiteLink: string;
+  bookingLink: string;
+  eventDateAndTime: string
+  offerSubtitle: string;
+  following: boolean;  
+  insightDetails:insightDetails; 
+  descriptionTitle: string;
+  descriptionContent: string;
+  offerImageUrl:string;
 }

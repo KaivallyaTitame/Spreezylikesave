@@ -1,16 +1,24 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { customerGuard } from "./authGuards/customer/customer.guard";
 import { businessGuard } from "./authGuards/business/business.guard";
+import { customerGuard } from "./authGuards/customer/customer.guard";
 import { loginGuard } from "./authGuards/login/login.guard";
 
-const routes: Routes = [
-  { path: "", redirectTo: "business-home", pathMatch: "full" },
+import { ProfileScreenModule } from './screens/profile-screen/profile-screen.module';
 
+
+const routes: Routes = [
+  { 
+    path: "", redirectTo: "login", pathMatch: "full" 
+  },
   {
     path: "login",
     loadChildren: () => import("./screens/login/login.module").then(m => m.LoginModule),
     canActivate: [loginGuard]
+  },
+  {
+    path: "profile-screen",
+    loadChildren: () => import("./screens/profile-screen/profile-screen.module").then(m => ProfileScreenModule)
   },
   {
     path: "discover-business-screen",
@@ -21,6 +29,7 @@ const routes: Routes = [
     loadChildren: () => import("./screens/business-home/business-home.module").then(m => m.BusinessHomeModule),
     canActivate: [businessGuard]
   },
+  
   {
     path: "otpscreen/:mobileNumber/:countryCode",
     loadChildren: () => import("./screens/otpScreen/otpscreen.module").then(m => m.OtpScreenModule),
@@ -30,7 +39,9 @@ const routes: Routes = [
     loadChildren: () => import("./screens/consumer-home/consumer-home.module").then(m => m.ConsumerHomeModule),
     canActivate: [customerGuard]
   },
-  { path: 'terms-conditions', loadChildren: () => import('./screens/terms-conditions/terms-conditions.module').then(m => m.TermsConditionsModule) },
+  { 
+    path: 'terms-conditions', loadChildren: () => import('./screens/terms-conditions/terms-conditions.module').then(m => m.TermsConditionsModule) 
+  },
   {
     path: 'register',
     loadChildren: () => import('./screens/Registration/register/register.module').then(m => m.registerModule),
@@ -39,7 +50,7 @@ const routes: Routes = [
     path: 'terms-and-condition',
     loadChildren: () => import('./screens/terms-conditions/terms-conditions.module').then(m => m.TermsConditionsModule),
   },
-  { path: "**", redirectTo: "login"}
+  // { path: "**", redirectTo: "login"}
 ];
 
 @NgModule({

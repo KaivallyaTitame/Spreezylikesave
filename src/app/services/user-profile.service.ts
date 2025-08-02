@@ -1,9 +1,9 @@
-import { throwError, timeout, catchError, Observable } from "rxjs";
-import { AdvertisementDetails } from "src/app/models/ad-details";
-import { Injectable } from "@angular/core";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
-import { UserDetails } from "../models/UserDetails";
+import { Injectable } from "@angular/core";
+import { catchError, Observable, throwError, timeout } from "rxjs";
+import { AdvertisementDetails } from "src/app/models/ad-details";
 import { API_CONFIG } from "../api-config";
+import { UserDetails } from "../models/UserDetails";
 
 @Injectable({
   providedIn: "root",
@@ -15,6 +15,7 @@ export class UserService {
 
   getImageUrl(username: string, imageName: string): string {
     return `${this.imageUrl}/${imageName}`;
+    // return `/${imageName}`;
     // return `${this.imageUrl}/${username}/${imageName}`;
   }
   getUserDetails(username: string): Observable<UserDetails> {

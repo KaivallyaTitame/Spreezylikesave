@@ -1,9 +1,10 @@
 <div class="flex justify-center w-full p-0">
   <div class="border border-white bg-white w-full shadow-lg mt-1 mb-1">
     <div class="flex items-center justify-between p-2">
-      <img [src]="eventDetails.profileImageUrl" alt="Profile" class="w-12 h-12 rounded-full mt-2 ml-1">
+      <img (click)="navigateToProfile()" [src]="eventDetails.profileImageUrl" alt="Profile"
+        class="w-12 h-12 rounded-full mt-2 ml-1">
       <div class="flex-grow ml-2 text-left">
-        <div class="font-bold text-lg mt-2 text-black">{{ eventDetails.username }}</div>
+        <div (click)="navigateToProfile()" class="font-bold text-xl mt-2 text-black">{{ eventDetails.username }}</div>
         <div class="text-sm text-gray-500">
           <ng-container *ngIf="isExpired; else notExpired">
             Expired
@@ -14,39 +15,61 @@
         </div>
       </div>
       <button
-        class="bg-primary text-white font-medium font-system-ui border-none px-3 py-1 rounded mt-2 mr-1 cursor-pointer">
-        FOLLOW
+        class="bg-primary z-10 text-white font-medium font-system-ui border-none px-3 py-1 rounded mt-2 mr-1 cursor-pointer"
+        (click)="toggleFollow()"
+      >
+        {{ isFollowing ? 'Unfollow' : 'Follow' }}
       </button>
     </div>
-
-
     <div>
 
-      <img [src]="eventDetails.offerImageUrl" alt="Event" class="w-full mt-2 object-cover h-96">
+      <div class="relative">
+        <div class="relative overflow-hidden">
+          <div #imageContainer class="flex transition-transform duration-300 ease-in-out"
+            [style.transform]="'translateX(' + translateX + 'px)'">
+            <div *ngFor="let image of eventDetails.imagePaths; let i = index" class="w-full flex-shrink-0">
+              <img [src]="image" [alt]="'Event image ' + (i+1)"
+                class="w-full object-contain max-h-96 min-h-48" (error)="handleImageError($event)">
+            </div>
+          </div>
+
+          <button *ngIf="eventDetails.imagePaths && eventDetails.imagePaths.length > 1 && currentImageIndex > 0"
+            (click)="prevImage()"
+            class="absolute left-2 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-70 rounded-full p-2 cursor-pointer shadow-md">
+            <fa-icon [icon]="faChevronLeft" class="text-black"></fa-icon>
+          </button>
+
+          <button
+            *ngIf="eventDetails.imagePaths && eventDetails.imagePaths.length > 1 && currentImageIndex < eventDetails.imagePaths.length - 1"
+            (click)="nextImage()"
+            class="absolute right-2 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-70 rounded-full p-2 cursor-pointer shadow-md">
+            <fa-icon [icon]="faChevronRight" class="text-black"></fa-icon>
+          </button>
+        </div>
+      </div>
+      <div *ngIf="eventDetails.imagePaths && eventDetails.imagePaths.length > 1"
+        class="absolute mt-2 bottom-4 left-0 right-0 flex justify-center">
+        <div class="flex space-x-1">
+          <div *ngFor="let image of eventDetails.imagePaths; let i = index" class="w-2 h-2 rounded-full cursor-pointer"
+            [ngClass]="currentImageIndex === i ? 'bg-primary' : 'bg-gray-300 bg-opacity-60'" (click)="goToImage(i)">
+          </div>
+        </div>
+      </div>
 
       <div class="w-full px-2 py-1 text-xl font-bold bg-primary text-white border-none cursor-pointer text-center">
         {{ eventDetails.eventDateAndTime | date:'dd MMM hh:mm a' }}
       </div>
-      <div class="m-4 font-bold text-xl text-gray-500 text-center">
-        {{ eventDetails.offerTitle }}-Book Your tickets Now
+      <div class="m-4 font-bold text-xl text-black text-center">
+        {{ eventDetails.offerTitle }}
       </div>
-
-
-
     </div>
-
-    <!-- Book Now Button -->
     <div class="text-center mb-4">
       <button (click)="bookNow()"
         class="mx-auto py-3 px-6 bg-primary text-white font-bold text-lg rounded-full flex items-center justify-center cursor-pointer shadow-md transition duration-150 ease-in-out hover:bg-opacity-90">
         Book Now →
-        
       </button>
     </div>
-
-
-    <div class="flex justify-between items-center m-4 mt-10">
-      <!-- Left side icons -->
+    <div class="flex justify-between items-center m-4 mt-7">
       <div class="flex items-center space-x-4">
         <button (click)="likePost()"
           class="flex items-center cursor-pointer transition-transform duration-500 ease-in-out"
@@ -54,7 +77,6 @@
           <fa-icon [icon]="isLiked ? faThumbsUp : faThumbsUpOutline" class="fa-xl text-[#ff6251]"></fa-icon>
           <span class="text-black ml-1">{{ eventDetails.likes }}</span>
         </button>
-    
         <button (click)="dislikePost()"
           class="flex items-center cursor-pointer transition-transform duration-500 ease-in-out"
           [ngClass]="{'scale-125': showDislikeAnimation}" aria-label="Dislike Post">
@@ -62,47 +84,40 @@
           <span class="text-black ml-1">{{ eventDetails.dislikes }}</span>
         </button>
       </div>
-
-      <!-- Right side icons -->
       <div class="flex items-center space-x-4 ">
-        <button class="bg-none border-none flex items-center cursor-pointer">
-          <fa-icon [icon]="faLocationArrow" class="fa-xl" [ngStyle]="{'color': '#ffb43f'}"></fa-icon>
+        <button (click)="sharePost()" class="group relative flex items-center cursor-pointer">
+          <fa-icon [icon]="faPaperPlane"
+            class="text-[#ffb43f] fa-xl group-hover:rotate-12 transition-transform duration-200">
+          </fa-icon>
         </button>
 
         <div class="relative">
-          <!-- Display Saved Message -->
-          <span *ngIf="showSavedMessage"
-            class="absolute bottom-full left-1/2 transform -translate-x-1/2 text-black font-bold transition-opacity duration-500">
-            Saved!
-          </span>
-
-          <!-- Save Button -->
           <button (click)="savePost()" class="bg-transparent border-none flex items-center cursor-pointer">
-            <fa-icon [icon]="faBookmark" class="fa-xl transition-transform duration-300"
-              [ngStyle]="{'color': '#ffb43f', 'transform': isSaved ? 'scale(1.2)' : 'scale(1)'}">
+            <fa-icon [icon]="isSaved ? solidBookmark : regularBookmark" class="fa-xl transition-all duration-300"
+              [ngClass]="{
+                'text-[#ffb43f]': true,  
+                'scale-125': scaleAnimation,  
+                'scale-100': !scaleAnimation  
+              }">
             </fa-icon>
           </button>
         </div>
-
-
         <div class="flex items-center space-x-4 relative">
-          <button class="bg-none border-none flex items-center cursor-pointer" (click)="toggleReportButton()">
-            <fa-icon [icon]="faEllipsisVertical" class="fa-xl text-black"></fa-icon>
-          </button>
+          <div class="flex items-center space-x-4 relative" #threeDotsWrapper>
+            <button class="bg-none border-none flex items-center cursor-pointer" (click)="toggleReportButton()">
+              <fa-icon [icon]="faEllipsisVertical" class="fa-xl text-black"></fa-icon>
+            </button>
 
-          <!-- Report Button -->
-          <div *ngIf="showReportButton"
-            class="absolute bottom-10 right-0 bg-white border border-gray-300 rounded shadow-lg p-2 z-10">
-            <button (click)="reportPost()" class="text-black font-bold py-2 px-2 rounded">Report</button>
+            <div *ngIf="showReportButton"
+              class="absolute right-0 bg-white border border-gray-300 rounded shadow-lg p-2 z-10"
+              [ngStyle]="getReportPopupStyle()">
+              <button (click)="reportPost()" class="text-black font-bold py-2 px-2 rounded">Report</button>
+            </div>
           </div>
-
-          <!-- Success Message Dialog -->
           <div *ngIf="showReportSuccess" class="fixed inset-0 z-20 flex items-center ">
-            <!-- Overlay to prevent interaction with background -->
             <div class="fixed inset-0 bg-black opacity-50 z-10"></div>
 
-            <!-- Dialog box -->
-            <div class="relative z-20 bg-white rounded-lg shadow-lg w-full max-w-xs ml-2 mr-1 text-center p-3">
+            <div class="relative z-20 bg-white rounded-lg shadow-lg w-full max-w-xs m-auto text-center p-3">
               <p class="text-primary text-xl font-bold mb-3">Post reported successfully!</p>
               <div class="flex justify-center">
                 <button (click)="hideReportSuccess()" class="bg-primary text-white rounded-md px-4 py-2 font-semibold">
@@ -118,26 +133,19 @@
 
 
 
-      <div class="flex flex-col">
-        <div class="flex flex-row">
-          <button
-            class="w-full px-2 py-1 text-lg font-bold bg-primary text-white border-none rounded-b-[0px] cursor-pointer text-center">
-            Show Details →
-          </button>
-          <button
-            *ngIf="showButton === true"
-            (click)="showInsights($event)"
-            id="show-insights-button"
-            class="w-full px-2 py-1 text-lg font-bold bg-primary text-white border-none rounded-b-[0px] cursor-pointer text-center">
-            {{ activeIndex === index ? "Hide Insights →" : "Show Insights →" }}
-          </button>
-        </div>
-      </div>  
-  </div>
-  <app-pop-up
-    *ngIf="showPopup"
-    [messageTitle]="popupTitle"
-    [messageBody]="popupBody"
-    (close)="showPopup = false">
-  </app-pop-up>
-</div>
+    <div class="flex flex-col">
+      <div class="flex flex-row">
+        <button (click)="showDetails(eventDetails.advertisementId)"
+          class="w-full px-2 py-1 text-lg font-bold bg-primary text-white border-none rounded-b-[0px] cursor-pointer text-center">
+          Show Details →
+        </button>
+        <button *ngIf="showButton === true" (click)="showInsights($event)" id="show-insights-button"
+          class="w-full px-2 py-1 text-lg font-bold bg-primary text-white border-none rounded-b-[0px] cursor-pointer text-center">
+          {{ activeIndex === index ? "Hide Insights →" : "Show Insights →" }}
+        </button>
+      </div>
+    </div>
+
+    <app-pop-up *ngIf="showPopup" [messageTitle]="popupTitle" [messageBody]="popupBody" (close)="showPopup = false">
+    </app-pop-up>
+    

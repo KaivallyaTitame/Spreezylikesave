@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { JwtDecoderService } from 'src/app/services/jwt-decoder.service';
+import { JwtDecoderService } from 'src/app/services/jwtDecoder/jwt-decoder.service';
 import { SettingsService } from 'src/app/services/settings.service';
 
 @Component({
