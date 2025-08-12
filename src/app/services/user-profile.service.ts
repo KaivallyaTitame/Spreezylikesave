@@ -9,7 +9,6 @@ import { UserDetails } from "../models/UserDetails";
   providedIn: "root",
 })
 export class UserService {
-  private imageUrl = API_CONFIG.IMAGE_URL;
 
   constructor(private http: HttpClient) {}
   getUserDetails(username: string): Observable<UserDetails> {

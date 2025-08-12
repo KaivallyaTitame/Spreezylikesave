@@ -54,15 +54,11 @@
       <!-- Saved Posts Section -->
       <div class="scroll-container saved-container" (scroll)="onScroll($event)">
         <div class="saved-section grid grid-cols-1 gap-2 py-2">
-          <div *ngFor="let post of visibleSavedPosts" class="ad-item">
-            <ng-container *ngIf="post.advertisementType == 'Post'">
-              <app-Post [postDetails]="post"></app-Post>
-            </ng-container>
-            <ng-container *ngIf="post.advertisementType == 'Event'">
-              <app-Event [eventDetails]="post"></app-Event>
-            </ng-container>
-            <ng-container *ngIf="post.advertisementType == 'Coupon'">
-              <app-Coupon [couponDetails]="post"></app-Coupon>
+          <div *ngFor="let advertisement of visibleSavedAds" class="ad-item">
+            <ng-container [ngSwitch]="advertisement.advertisementType">
+              <app-Post *ngSwitchCase="'Post'" [postDetails]="advertisement"></app-Post>
+              <app-Event *ngSwitchCase="'Event'" [eventDetails]="advertisement"></app-Event>
+              <app-Coupon *ngSwitchCase="'Coupon'" [couponDetails]="advertisement"></app-Coupon>
             </ng-container>
           </div>
           <div *ngIf="loadingSavedPosts" class="text-center py-4">

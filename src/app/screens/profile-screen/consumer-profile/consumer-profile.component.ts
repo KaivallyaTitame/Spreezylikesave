@@ -15,7 +15,7 @@ export class ConsumerProfileComponent implements OnInit {
   userDetails: UserDetails | null = null; // User details fetched from backend
   loadingUserDetails: boolean = true; // To show skeletons while data is loading
   @Input() savedPosts!: AdvertisementDetails[];
-  visibleSavedPosts: AdvertisementDetails[] = [];
+  visibleSavedAds: AdvertisementDetails[] = [];
   savedPostPage: number = 0;
   postsPerPage: number = 10;
   loadingSavedPosts: boolean = false;
@@ -75,20 +75,7 @@ export class ConsumerProfileComponent implements OnInit {
       {
         next: (data) => {
           if (data !== null && data.length > 0) {
-            data.forEach((post) => {
-              // if (post.profileImageUrl) {
-              //   post.profileImageUrl = this.userService.getImageUrl(
-              //     username,
-              //     post.profileImageUrl
-              //   );
-              // }
-              // if (post.imagePaths && post.imagePaths.length > 0) {
-              //   post.imagePaths = post.imagePaths.map((imagePath) =>
-              //     this.userService.getImageUrl(username, imagePath)
-              //   );
-              // }
-            });
-            this.visibleSavedPosts.push(...data);
+            this.visibleSavedAds.push(...data);
             this.savedPostPage++; // Increment page if there are more posts
           } else {
             this.hasZeroSavedPosts = true; 

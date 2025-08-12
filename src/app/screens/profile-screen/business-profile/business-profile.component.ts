@@ -27,8 +27,8 @@ export class BusinessProfileComponent implements OnInit {
   loadingUserDetails: boolean = true; 
   @Input() profilePosts!: AdvertisementDetails[];
   @Input() savedPosts!: AdvertisementDetails[];
-  visibleProfilePosts: AdvertisementDetails[] = [];
-  visibleSavedPosts: AdvertisementDetails[] = [];
+  visibleProfileAds: AdvertisementDetails[] = [];
+  visibleSavedAds: AdvertisementDetails[] = [];
   profilePostPage: number = 0;
   savedPostPage: number = 0;
   postsPerPage: number = 10;
@@ -84,7 +84,7 @@ export class BusinessProfileComponent implements OnInit {
   toggleInsight(index: number | undefined): void {
 
     // first checks the given post data has insightDetails attribute. 
-    if(index != undefined && this.visibleProfilePosts[index].insightDetails === undefined){
+    if(index != undefined && this.visibleProfileAds[index].insightDetails === undefined){
       // if post is selected for showing and post to show has not insightDetails attribute
       // then it throws error.  
       const customError = new HttpErrorResponse({
@@ -123,7 +123,7 @@ export class BusinessProfileComponent implements OnInit {
   setInsightScreen(event:Event): void{
       event.stopPropagation(); 
       // it is used to stop the propagation of parent to child component. 
-      if(this.activeIndex != undefined && this.visibleProfilePosts[this.activeIndex].insightDetails !== undefined){
+      if(this.activeIndex != undefined && this.visibleProfileAds[this.activeIndex].insightDetails !== undefined){
          // it is check for preventing unnecessary opening of component on invalid data.  
          this.showInsightScreen = !this.showInsightScreen;
       }
@@ -191,10 +191,10 @@ export class BusinessProfileComponent implements OnInit {
       this.postsPerPage
     ).subscribe({
       next: (data) => {
+        console.log(data);
         if (data !== null && data.length > 0) {
-          console.log(data);
           this.loadingProfilePosts = false;
-          this.visibleProfilePosts.push(...data);
+          this.visibleProfileAds.push(...data);
           this.profilePostPage++; // Increment page only if data exists
         } 
         else
@@ -222,7 +222,7 @@ export class BusinessProfileComponent implements OnInit {
           if (data !== null && data.length > 0) {
             console.log(data);
             this.loadingSavedPosts = false;
-            this.visibleSavedPosts.push(...data);
+            this.visibleSavedAds.push(...data);
             this.savedPostPage++; 
           } else {
             if(data == null)

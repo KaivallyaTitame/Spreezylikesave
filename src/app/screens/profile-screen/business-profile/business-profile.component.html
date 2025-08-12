@@ -144,27 +144,22 @@
         [class.active-tab]="selectedTab === 'posts'"
       >
         <div class="post-section grid grid-cols-1 gap-2 py-2">
-          <div *ngFor="let post of visibleProfilePosts; let i = index" class="ad-item">
-          <div *ngFor="let post of visibleProfilePosts; let i = index" class="ad-item">
-            <ng-container *ngIf="post.advertisementType == 'Post'">
-              <app-Post (setInsightScreen)="setInsightScreen($event)" [showButton]="currentUsername===username" (setActiveIndex)="toggleInsight(i)" [activeIndex]="activeIndex" [index]="i"  [postDetails]="post"></app-Post>
-            </ng-container>
-            <ng-container *ngIf="post.advertisementType == 'Event'">
-              <app-Event (setInsightScreen)="setInsightScreen($event)" [showButton]="currentUsername===username" (setActiveIndex)="toggleInsight(i)" [activeIndex]="activeIndex" [index]="i"  [eventDetails]="post"></app-Event>
-            </ng-container>
-            <ng-container *ngIf="post.advertisementType == 'Coupon'">
-              <app-Coupon (setInsightScreen)="setInsightScreen($event)" [showButton]="currentUsername===username" (setActiveIndex)="toggleInsight(i)" [activeIndex]="activeIndex" [index]="i"  [couponDetails]="post"></app-Coupon>
+          <div *ngFor="let advertisement of visibleProfileAds; let i = index" class="ad-item">
+            <ng-container [ngSwitch]="advertisement.advertisementType">
+              <app-Post *ngSwitchCase="'Post'" (setInsightScreen)="setInsightScreen($event)" [showButton]="currentUsername===username" (setActiveIndex)="toggleInsight(i)" [activeIndex]="activeIndex" [index]="i"  [postDetails]="advertisement"></app-Post>
+              <app-Event *ngSwitchCase="'Event'" (setInsightScreen)="setInsightScreen($event)" [showButton]="currentUsername===username" (setActiveIndex)="toggleInsight(i)" [activeIndex]="activeIndex" [index]="i"  [eventDetails]="advertisement"></app-Event>
+              <app-Coupon *ngSwitchCase="'Coupon'" (setInsightScreen)="setInsightScreen($event)" [showButton]="currentUsername===username" (setActiveIndex)="toggleInsight(i)" [activeIndex]="activeIndex" [index]="i"  [couponDetails]="advertisement"></app-Coupon>
             </ng-container>
             <app-post-insights 
                 (ClickOut)="hideInsight($event)"  
                 [showInsightScreen]="showInsightScreen" 
-                [feed]="activeIndex !== undefined ? visibleProfilePosts[activeIndex].insightDetails : {}" 
+                [feed]="activeIndex !== undefined ? visibleProfileAds[activeIndex].insightDetails : {}" 
             >
             </app-post-insights>
             <app-post-insights 
                 (ClickOut)="hideInsight($event)"  
                 [showInsightScreen]="showInsightScreen" 
-                [feed]="activeIndex !== undefined ? visibleProfilePosts[activeIndex].insightDetails : {}" 
+                [feed]="activeIndex !== undefined ? visibleProfileAds[activeIndex].insightDetails : {}" 
             >
             </app-post-insights>
           </div>
@@ -187,15 +182,11 @@
         [class.active-tab]="selectedTab === 'saved'"
       >
         <div class="saved-section grid grid-cols-1 gap-2 py-2">
-          <div *ngFor="let post of visibleSavedPosts" class="ad-item">
-            <ng-container *ngIf="post.advertisementType == 'Post'">
-              <app-Post [postDetails]="post"></app-Post>
-            </ng-container>
-            <ng-container *ngIf="post.advertisementType == 'Event'">
-              <app-Event [eventDetails]="post"></app-Event>
-            </ng-container>
-            <ng-container *ngIf="post.advertisementType == 'Coupon'">
-              <app-Coupon [couponDetails]="post"></app-Coupon>
+          <div *ngFor="let advertisement of visibleSavedAds" class="ad-item">
+            <ng-container [ngSwitch]="advertisement.advertisementType">
+              <app-Post *ngSwitchCase="'Post'" [postDetails]="advertisement"></app-Post>
+              <app-Event *ngSwitchCase="'Event'" [eventDetails]="advertisement"></app-Event>
+              <app-Coupon *ngSwitchCase="'Coupon'" [couponDetails]="advertisement"></app-Coupon>
             </ng-container>
           </div>
           <div *ngIf="loadingSavedPosts" class="text-center py-4">
