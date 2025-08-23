@@ -1,4 +1,4 @@
-export class insightDetails{
+export class InsightDetails{
   [key:string]:number; 
 }
 
@@ -22,7 +22,7 @@ export interface AdvertisementDetails {
   eventDateAndTime: string
   offerSubtitle: string;
   following: boolean;  
-  insightDetails:insightDetails; 
+  insightDetails:InsightDetails; 
   descriptionTitle: string;
   descriptionContent: string;
   offerImageUrl:string;

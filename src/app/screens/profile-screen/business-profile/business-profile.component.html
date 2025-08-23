@@ -153,13 +153,13 @@
             <app-post-insights 
                 (ClickOut)="hideInsight($event)"  
                 [showInsightScreen]="showInsightScreen" 
-                [feed]="activeIndex !== undefined ? visibleProfileAds[activeIndex].insightDetails : {}" 
+                [feed]="activeIndex !== undefined ? insightDetails : {}" 
             >
             </app-post-insights>
             <app-post-insights 
                 (ClickOut)="hideInsight($event)"  
                 [showInsightScreen]="showInsightScreen" 
-                [feed]="activeIndex !== undefined ? visibleProfileAds[activeIndex].insightDetails : {}" 
+                [feed]="activeIndex !== undefined ? insightDetails : {}" 
             >
             </app-post-insights>
           </div>

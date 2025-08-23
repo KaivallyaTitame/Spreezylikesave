@@ -10,12 +10,13 @@ import {
   faShare,
 } from "@fortawesome/free-solid-svg-icons";
 import { UserDetails } from "src/app/models/UserDetails";
-import { AdvertisementDetails } from "src/app/models/ad-details";
+import { AdvertisementDetails, InsightDetails } from "src/app/models/ad-details";
 import { DecodedToken } from "src/app/models/decodedToken";
 import { JwtDecoderService } from "src/app/services/jwtDecoder/jwt-decoder.service";
 import { UserService } from "src/app/services/user-profile.service";
 import { ImageUrlGenerationService } from "src/app/shared/image-url-generation.service";
 import { HttpErrorResponse } from "@angular/common/http";
+import { AdvertisementDetailsService } from "src/app/services/advertisementTypes.service";
 
 @Component({
   selector: "app-business-profile",
@@ -29,6 +30,7 @@ export class BusinessProfileComponent implements OnInit {
   @Input() savedPosts!: AdvertisementDetails[];
   visibleProfileAds: AdvertisementDetails[] = [];
   visibleSavedAds: AdvertisementDetails[] = [];
+  insightDetails : InsightDetails;
   profilePostPage: number = 0;
   savedPostPage: number = 0;
   postsPerPage: number = 10;
@@ -61,6 +63,7 @@ export class BusinessProfileComponent implements OnInit {
 
   constructor(
     private userService: UserService,
+    private advertisementService : AdvertisementDetailsService,
     private JwtDecoder: JwtDecoderService,
     private route: ActivatedRoute,
     private imageService: ImageUrlGenerationService
@@ -81,10 +84,10 @@ export class BusinessProfileComponent implements OnInit {
   }
 
   // this method sets the current active index of the post. 
-  toggleInsight(index: number | undefined): void {
+  toggleInsight(index: number | -1): void {
 
     // first checks the given post data has insightDetails attribute. 
-    if(index != undefined && this.visibleProfileAds[index].insightDetails === undefined){
+    if(index != -1 && this.visibleProfileAds[index] === undefined){
       // if post is selected for showing and post to show has not insightDetails attribute
       // then it throws error.  
       const customError = new HttpErrorResponse({
@@ -103,6 +106,16 @@ export class BusinessProfileComponent implements OnInit {
       else if(this.activeIndex !== undefined && this.activeIndex !== index && index != undefined){
         // this case is used to handle when already one post is opened
         // we tried to open insights of other post then it executes. 
+        this.advertisementService.getAdvertisementInsights(this.visibleProfileAds[this.activeIndex].advertisementId)
+        .subscribe({
+          next: (data) =>{
+            this.insightDetails = data;
+          },
+          error: (err) => {
+            console.log(err);
+            // throw(new SpreezyError(SpreezyException.SPEX_0, err));
+          }
+        });
         setTimeout(() => {
             // first it post insight screen disappears(showInsightScreen set to false) as method fired from post.ts file. 
             // secondly it sets the data of the post insight screen. 
@@ -123,7 +136,7 @@ export class BusinessProfileComponent implements OnInit {
   setInsightScreen(event:Event): void{
       event.stopPropagation(); 
       // it is used to stop the propagation of parent to child component. 
-      if(this.activeIndex != undefined && this.visibleProfileAds[this.activeIndex].insightDetails !== undefined){
+      if(this.activeIndex != undefined && this.visibleProfileAds[this.activeIndex] !== undefined){
          // it is check for preventing unnecessary opening of component on invalid data.  
          this.showInsightScreen = !this.showInsightScreen;
       }
@@ -191,7 +204,6 @@ export class BusinessProfileComponent implements OnInit {
       this.postsPerPage
     ).subscribe({
       next: (data) => {
-        console.log(data);
         if (data !== null && data.length > 0) {
           this.loadingProfilePosts = false;
           this.visibleProfileAds.push(...data);
@@ -220,7 +232,6 @@ export class BusinessProfileComponent implements OnInit {
       {
         next: (data) => {
           if (data !== null && data.length > 0) {
-            console.log(data);
             this.loadingSavedPosts = false;
             this.visibleSavedAds.push(...data);
             this.savedPostPage++; 
