@@ -10,11 +10,13 @@ import {
   faShare,
 } from "@fortawesome/free-solid-svg-icons";
 import { UserDetails } from "src/app/models/UserDetails";
-import { AdvertisementDetails } from "src/app/models/ad-details";
+import { AdvertisementDetails, InsightDetails } from "src/app/models/ad-details";
 import { DecodedToken } from "src/app/models/decodedToken";
 import { JwtDecoderService } from "src/app/services/jwtDecoder/jwt-decoder.service";
 import { UserService } from "src/app/services/user-profile.service";
 import { ImageUrlGenerationService } from "src/app/shared/image-url-generation.service";
+import { HttpErrorResponse } from "@angular/common/http";
+import { AdvertisementDetailsService } from "src/app/services/advertisementTypes.service";
 
 @Component({
   selector: "app-business-profile",
@@ -26,8 +28,9 @@ export class BusinessProfileComponent implements OnInit {
   loadingUserDetails: boolean = true; 
   @Input() profilePosts!: AdvertisementDetails[];
   @Input() savedPosts!: AdvertisementDetails[];
-  visibleProfilePosts: AdvertisementDetails[] = [];
-  visibleSavedPosts: AdvertisementDetails[] = [];
+  visibleProfileAds: AdvertisementDetails[] = [];
+  visibleSavedAds: AdvertisementDetails[] = [];
+  insightDetails : InsightDetails;
   profilePostPage: number = 0;
   savedPostPage: number = 0;
   postsPerPage: number = 10;
@@ -48,13 +51,19 @@ export class BusinessProfileComponent implements OnInit {
   showPopup: boolean = false;
   popupTitle: string = "Error";
   popupBody: string = "";
-  hasMoreProfilePosts: boolean = true;
-  hasMoreSavedPosts: boolean = true; 
-  activeIndex: number | undefined = undefined; 
-  showInsightScreen: boolean = false; 
+  hasMoreProfilePosts: boolean = true; // Initially assume there are more posts
+  hasMoreSavedPosts: boolean = true; // Initially assume there are more saved posts
+  hasZeroPosts:boolean = false; 
+  hasZeroSavedPosts:boolean = false;
+  activeIndex: number | undefined = undefined;  // indicates which post insight to be displayed. if it is undefined then it will not shown.
+  showInsightScreen:boolean = false;  // this variable decides the visibility of the post insight component.
+  noPostTitle:string = ''; 
+  noPostDescription:string = '';
+  defaultProfileImage = "assets/default-pic.png";
 
   constructor(
-    private UserService: UserService,
+    private userService: UserService,
+    private advertisementService : AdvertisementDetailsService,
     private JwtDecoder: JwtDecoderService,
     private route: ActivatedRoute,
     private imageService: ImageUrlGenerationService
@@ -74,51 +83,79 @@ export class BusinessProfileComponent implements OnInit {
     });
   }
 
-  toggleInsight(index: number | undefined): void {
-    console.log(this.visibleProfilePosts);
+  // this method sets the current active index of the post. 
+  toggleInsight(index: number | -1): void {
 
-    if (
-      index != undefined &&
-      this.visibleProfilePosts[index].insightDetails === undefined
-    ) {
-      this.showError("404", "Please try again later.");
-      return;
-    } else {
-      if (this.activeIndex === index) {
+    // first checks the given post data has insightDetails attribute. 
+    if(index != -1 && this.visibleProfileAds[index] === undefined){
+      // if post is selected for showing and post to show has not insightDetails attribute
+      // then it throws error.  
+      const customError = new HttpErrorResponse({
+        error:{
+          errorCode:'SPX-0-001', 
+          errorDescription:'Unable to get insights of the given post..'
+        }
+      });
+      throw(customError) 
+    }
+    else{
+      if(this.activeIndex === index){
         this.activeIndex = undefined;
-      } else if (
-        this.activeIndex !== undefined &&
-        this.activeIndex !== index &&
-        index != undefined
-      ) {
+        // when we are closing opened post insight component by clicking on button hide insight.  
+      }
+      else if(this.activeIndex !== undefined && this.activeIndex !== index && index != undefined){
+        // this case is used to handle when already one post is opened
+        // we tried to open insights of other post then it executes. 
+        this.advertisementService.getAdvertisementInsights(this.visibleProfileAds[this.activeIndex].advertisementId)
+        .subscribe({
+          next: (data) =>{
+            this.insightDetails = data;
+          },
+          error: (err) => {
+            console.log(err);
+            // throw(new SpreezyError(SpreezyException.SPEX_0, err));
+          }
+        });
         setTimeout(() => {
-          this.activeIndex = index;
-          this.showInsightScreen = true;
-        }, 1000);
-      } else {
-        this.activeIndex = index;
+            // first it post insight screen disappears(showInsightScreen set to false) as method fired from post.ts file. 
+            // secondly it sets the data of the post insight screen. 
+            this.activeIndex = index; 
+            // it reappears the post insight again. 
+            this.showInsightScreen = true; 
+            // for animation accuracies i have used setTimeout function.
+        },1000);
+      }
+      else{
+        // in another case it executes this scnerios. 
+        this.activeIndex = index; 
       }
     }
   }
 
-  setInsightScreen(event: Event): void {
-    event.stopPropagation();
-    if (
-      this.activeIndex != undefined &&
-      this.visibleProfilePosts[this.activeIndex].insightDetails !== undefined
-    ) {
-      this.showInsightScreen = !this.showInsightScreen;
-    } else {
-      this.showInsightScreen = false;
-    }
+  // it is used to toggle the showInsightScreen value. 
+  setInsightScreen(event:Event): void{
+      event.stopPropagation(); 
+      // it is used to stop the propagation of parent to child component. 
+      if(this.activeIndex != undefined && this.visibleProfileAds[this.activeIndex] !== undefined){
+         // it is check for preventing unnecessary opening of component on invalid data.  
+         this.showInsightScreen = !this.showInsightScreen;
+      }
+      else{
+        // if above condition is not satisfied then component will be closed. 
+        this.showInsightScreen = false; 
+      }
   }
 
-  hideInsight(event: Event): void {
-    this.showInsightScreen = false;
+  // this component specifically designed for hiding the component when clicked outside the post-insight compoenent
+  hideInsight(event:Event):void{
+    // first it sets to false
+    this.showInsightScreen = false; 
+    // in below code delay is added to execut the code when animation is completed. 
     setTimeout(() => {
       this.activeIndex = undefined;
-    }, 400);
+    },400);  
   }
+
 
   fetchCurrentUsername(): string {
     const token = localStorage.getItem("token") || "";
@@ -130,103 +167,86 @@ export class BusinessProfileComponent implements OnInit {
   }
 
   fetchUserDetails(username: string) {
-    this.loadingUserDetails = true;
-    this.UserService.getUserDetails(username).subscribe({
+    this.loadingUserDetails = true; // Show skeletons during loading
+    const loggedInUser:string = ''; 
+    const token = localStorage.getItem("token") || "";
+    const payload = JSON.parse((atob(token.split('.')[1]))); 
+    if(this.username != payload.sub){
+      this.noPostTitle = 'No posts yet !'; 
+      this.noPostDescription = 'Reach out to connect...'; 
+    }
+    else{
+      this.noPostTitle = 'Oops, nothing here yet!'; 
+      this.noPostDescription = 'Start Posting';
+    }
+   
+    this.userService.getUserDetails(username).subscribe({
       next: (data) => {
         if (data.profileImageUrl) {
           data.profileImageUrl = this.imageService.generateImageUrl(data.profileImageUrl);
-          // data.profileImageUrl = this.UserService.getImageUrl(
-          //   username,
-          //   data.profileImageUrl
-          // );
         }
         this.userDetails = data;
         this.loadingUserDetails = false;
       },
       error: (error) => {
-        this.userDetails = null;
-        this.loadingUserDetails = false;
-        this.showError(
-          error?.error?.errorCode || "Error fetching profile",
-          error?.error?.errorDescription || "Please try again later."
-        );
+        this.loadingUserDetails = false; // Stop skeletons even if there's an error
+        this.userDetails = null; // Reset user details on error
+         throw(error);
       },
     });
   }
 
   fetchProfilePosts(username: string, page: number) {
     this.loadingProfilePosts = true;
-    this.UserService.getProfilePosts(
+    this.userService.getProfilePosts(
       username,
       page,
       this.postsPerPage
     ).subscribe({
       next: (data) => {
-        if (data.length > 0) {
-          data.forEach((post) => {
-            if (post.profileImageUrl) {
-              post.profileImageUrl = this.UserService.getImageUrl(
-                username,
-                post.profileImageUrl
-              );
-            }
-            if (post.imagePaths?.length > 0) {
-              post.imagePaths = post.imagePaths.map((imagePath) =>
-                this.UserService.getImageUrl(username, imagePath)
-              );
-            }
-          });
-          this.visibleProfilePosts.push(...data);
-          this.profilePostPage++; 
-        } else {
-          this.hasMoreProfilePosts = false; 
+        if (data !== null && data.length > 0) {
+          this.loadingProfilePosts = false;
+          this.visibleProfileAds.push(...data);
+          this.profilePostPage++; // Increment page only if data exists
+        } 
+        else
+        {
+          if(data == null)
+          {
+            this.hasZeroPosts = true;
+          }
+          this.hasMoreProfilePosts = false; // No more posts to fetch 
         }
         this.loadingProfilePosts = false;
       },
       error: (error) => {
-        this.showError(
-          error?.error?.errorCode || "Error while fetching profile posts",
-          error?.error?.errorDescription ||
-            "Unable to fetch profile post, please try again later"
-        );
-        this.loadingProfilePosts = false;
+        this.loadingProfilePosts = false; 
+        throw(error);
       },
     });
   }
 
   fetchSavedPosts(username: string, page: number) {
     this.loadingSavedPosts = true;
-    this.UserService.getSavedPosts(username, page, this.postsPerPage).subscribe(
+    this.userService.getSavedPosts(username, page, this.postsPerPage).subscribe(
       {
         next: (data) => {
-          if (data.length > 0) {
-            data.forEach((post) => {
-              if (post.profileImageUrl) {
-                post.profileImageUrl = this.UserService.getImageUrl(
-                  username,
-                  post.profileImageUrl
-                );
-              }
-              if (post.imagePaths?.length > 0) {
-                post.imagePaths = post.imagePaths.map((imagePath) =>
-                  this.UserService.getImageUrl(username, imagePath)
-                );
-              }
-            });
-            this.visibleSavedPosts.push(...data);
+          if (data !== null && data.length > 0) {
+            this.loadingSavedPosts = false;
+            this.visibleSavedAds.push(...data);
             this.savedPostPage++; 
           } else {
-            this.hasMoreSavedPosts = false; 
+            if(data == null)
+            {
+              this.hasZeroSavedPosts = true;
+            }
+            this.hasMoreSavedPosts = false; // No more saved posts to fetch
           }
           this.loadingSavedPosts = false;
         },
         error: (error) => {
-          this.showError(
-            error?.error?.errorCode || "Error fetching saved posts",
-            error?.error?.errorDescription ||
-              "Unable to fetch saved post, please try again later"
-          );
           this.loadingSavedPosts = false;
+          throw(error);
         },
       }
     );
@@ -278,10 +298,9 @@ export class BusinessProfileComponent implements OnInit {
         newScrollContainer.scrollTop = this.scrollPositions[tab] || 0;
       }
     }, 0);
-    this.activeIndex = undefined;
+    this.activeIndex = undefined; 
   }
 
-  defaultProfileImage = "assets/default-pic.png";
   onProfileImageError(event: Event) {
     const target = event.target as HTMLImageElement;
     target.src = this.defaultProfileImage;

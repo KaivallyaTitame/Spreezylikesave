@@ -12,6 +12,7 @@ import { BusinessHomeModule } from "./screens/business-home/business-home.module
 import { ConsumerHomeModule } from "./screens/consumer-home/consumer-home.module";
 import { ReactiveFormsModule } from "@angular/forms";
 import { registerModule } from "./screens/Registration/register/register.module";
+import { SharedModule } from "./shared/shared-module/shared-module.module";
 
 @NgModule({
   declarations: [
@@ -27,7 +28,8 @@ import { registerModule } from "./screens/Registration/register/register.module"
     BusinessHomeModule,
     ConsumerHomeModule,
     ReactiveFormsModule,
-    registerModule
+    registerModule,
+    SharedModule
   ],
   providers: [
     {

@@ -9,18 +9,10 @@ import { UserDetails } from "../models/UserDetails";
   providedIn: "root",
 })
 export class UserService {
-  private imageUrl = API_CONFIG.IMAGE_URL;
 
   constructor(private http: HttpClient) {}
-
-  getImageUrl(username: string, imageName: string): string {
-    return `${this.imageUrl}/${imageName}`;
-    // return `/${imageName}`;
-    // return `${this.imageUrl}/${username}/${imageName}`;
-  }
   getUserDetails(username: string): Observable<UserDetails> {
     const token = localStorage.getItem("token"); // Retrieve the token from local storage
-
     return this.http
       .get<UserDetails>(API_CONFIG.GET_BUSINESS_DETAILS(username), {
         headers: new HttpHeaders({
@@ -37,7 +29,7 @@ export class UserService {
               () => new Error("Request timed out while fetching user details.")
             );
           }
-          return throwError(() => new Error("error"));
+          throw(error);
         })
       );
   }
@@ -65,7 +57,7 @@ export class UserService {
               () => new Error("Request timed out while fetching profile posts.")
             );
           }
-          return throwError(() => new Error("Failed to fetch profile posts."));
+          throw(error);
         })
       );
   }
@@ -93,7 +85,7 @@ export class UserService {
               () => new Error("Request timed out while fetching saved posts.")
             );
           }
-          return throwError(() => new Error("Failed to fetch saved posts."));
+          throw(error); 
         })
       );
   }

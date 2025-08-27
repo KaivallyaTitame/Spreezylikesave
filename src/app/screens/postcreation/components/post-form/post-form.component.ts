@@ -124,14 +124,8 @@ export class PostFormComponent implements OnInit {
         this.postFormDetails.reset();
       },
       error: (error: HttpErrorResponse) => {
-        this.popUpTitle = "Error!";
-        if (error.error && error.error.message) {
-          this.popUpBody = `Error: ${error.error.message}`;
-        } else {
-          this.popUpBody = "Something went wrong. Please try again.";
-        }
-        this.showPopUp = true;
-      },
+        throw(error); 
+      }
     });
   }
 

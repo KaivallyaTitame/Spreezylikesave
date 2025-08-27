@@ -17,4 +17,12 @@ export class JwtDecoderService {
       throw new Error("Error while decoding token");
     }
   }
+
+  getToken() : string {
+    return localStorage.getItem("token") || "";
+  }
+
+  getUsername() : string {
+    return this.decodeInfoFromToken(this.getToken())["sub"] || "";
+  }
 }

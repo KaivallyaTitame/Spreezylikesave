@@ -51,6 +51,7 @@ export const API_CONFIG = {
 
   ADVERTISEMENT_EVENTS:{
     GET_ADVERTISEMENT_DETAILS : (username: string) => `${environment.apiGateway}/advertisement-feed/${username}`,
+    GET_ADVERTISEMENT_INSIGHTS : (advertisementId: number) => `${environment.apiGateway}/insights/advertisements/${advertisementId}`,
     UPVOTE_ADVERTISEMENT : (advertisementId: number) =>`${environment.apiGateway}/content/advertisement/upvote/${advertisementId}`,
     DISLIKE_ADVERTISEMENT : (advertisementId: number) =>`${environment.apiGateway}/content/advertisement/downvote/${advertisementId}`,
     SAVE_ADVERTISEMENT : `${environment.apiGateway}/content/advertisement/save`,

@@ -7,7 +7,7 @@ import {
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 import { API_CONFIG } from "../api-config";
-import { AdvertisementDetails } from "../models/ad-details";
+import { AdvertisementDetails, InsightDetails } from "../models/ad-details";
 import { JwtDecoderService } from "./jwtDecoder/jwt-decoder.service";
 
 export interface PaginatedResponse<T> {
@@ -25,7 +25,6 @@ export interface PaginatedResponse<T> {
   providedIn: "root",
 })
 export class AdvertisementDetailsService {
-  private token = localStorage.getItem("token") || "";
 
   constructor(
     private http: HttpClient,
@@ -33,13 +32,11 @@ export class AdvertisementDetailsService {
   ) {}
 
   getAdvertisementDetails(page: number = 0, pageSize: number = 10): Observable<AdvertisementDetails[]> {
-    const token = localStorage.getItem("token") || "";
-    const userName =
-      this.jwtDecoderService.decodeInfoFromToken(token)["sub"] || "";
+    
     const url =
-      API_CONFIG.ADVERTISEMENT_EVENTS.GET_ADVERTISEMENT_DETAILS(userName);
+      API_CONFIG.ADVERTISEMENT_EVENTS.GET_ADVERTISEMENT_DETAILS(this.jwtDecoderService.getUsername());
     const headers = new HttpHeaders({
-      Authorization: `Bearer ${token}`,
+      Authorization: `Bearer ${this.jwtDecoderService.getToken()}`,
       "Content-Type": "application/json",
     });
     const params = new HttpParams()
@@ -54,13 +51,10 @@ export class AdvertisementDetailsService {
   }
 
   getAdvertisementDetailsPaginated(page: number = 0, pageSize: number = 10): Observable<PaginatedResponse<AdvertisementDetails>> {
-    const token = localStorage.getItem("token") || "";
-    const userName =
-      this.jwtDecoderService.decodeInfoFromToken(token)["sub"] || "";
     const url =
-      API_CONFIG.ADVERTISEMENT_EVENTS.GET_ADVERTISEMENT_DETAILS(userName);
+      API_CONFIG.ADVERTISEMENT_EVENTS.GET_ADVERTISEMENT_DETAILS(this.jwtDecoderService.getUsername());
     const headers = new HttpHeaders({
-      Authorization: `Bearer ${token}`,
+      Authorization: `Bearer ${this.jwtDecoderService.getToken()}`,
       "Content-Type": "application/json",
     });
     const params = new HttpParams()
@@ -82,16 +76,28 @@ export class AdvertisementDetailsService {
     return this.getAdvertisementDetails(page, pageSize);
   }
 
+  getAdvertisementInsights(advertisementId: number): Observable<InsightDetails> {
+    const url =
+      API_CONFIG.ADVERTISEMENT_EVENTS.GET_ADVERTISEMENT_INSIGHTS(advertisementId);
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${this.jwtDecoderService.getToken()}`,
+      "Content-Type": "application/json",
+    });
+    
+    return this.http.request<InsightDetails>("GET", url, {
+      headers,
+      responseType: "json",
+    });
+  }
+
   updateLikes(advertisementId: number): Observable<HttpResponse<string>> {
-    const userName =
-      this.jwtDecoderService.decodeInfoFromToken(this.token)["sub"] || "";
     return this.http.post(
       API_CONFIG.ADVERTISEMENT_EVENTS.UPVOTE_ADVERTISEMENT(advertisementId),
       {},
       {
         headers: new HttpHeaders({
-          username: userName,
-          authorization: `Bearer ${this.token}`,
+          username: this.jwtDecoderService.getUsername(),
+          authorization: `Bearer ${this.jwtDecoderService.getToken()}`,
         }),
         observe: "response",
         responseType: "text",
@@ -100,8 +106,6 @@ export class AdvertisementDetailsService {
   }
 
   updateDislikes(advertisementId: number): Observable<HttpResponse<string>> {
-    const userName =
-      this.jwtDecoderService.decodeInfoFromToken(this.token)["sub"] || "";
     return this.http.post(
       API_CONFIG.ADVERTISEMENT_EVENTS.DISLIKE_ADVERTISEMENT(advertisementId),
       {},
@@ -109,8 +113,8 @@ export class AdvertisementDetailsService {
         responseType: "text",
         observe: "response",
         headers: new HttpHeaders({
-          username: userName,
-          Authorization: `Bearer ${this.token}`,
+          username: this.jwtDecoderService.getUsername(),
+          Authorization: `Bearer ${this.jwtDecoderService.getToken()}`,
         }),
       }
     );
@@ -130,7 +134,7 @@ export class AdvertisementDetailsService {
         responseType: "json",
         observe: "response",
         headers: new HttpHeaders({
-          Authorization: `Bearer ${this.token}`,
+          Authorization: `Bearer ${this.jwtDecoderService.getToken()}`,
           "Content-Type": "application/json",
         }),
       }
@@ -145,7 +149,7 @@ export class AdvertisementDetailsService {
         observe: "response",
         responseType: "json",
         headers: new HttpHeaders({
-          Authorization: `Bearer ${this.token}`,
+          Authorization: `Bearer ${this.jwtDecoderService.getToken()}`,
         }),
       }
     );
@@ -158,21 +162,18 @@ export class AdvertisementDetailsService {
         observe: "response",
         responseType: "json",
         headers: new HttpHeaders({
-          Authorization: `Bearer ${this.token}`,
+          Authorization: `Bearer ${this.jwtDecoderService.getToken()}`,
         }),
       }
     );
   }
 
   reportPost(advertisementId: number): Observable<any> {
-    let token = localStorage.getItem("token") || "";
-    let userName =
-      this.jwtDecoderService.decodeInfoFromToken(token)["sub"] || "";
     return this.http.post(
       API_CONFIG.ADVERTISEMENT_EVENTS.REPORT_ADVERTISEMENT,
       {
         advertisementId: advertisementId,
-        usernameOfReporter: userName,
+        usernameOfReporter: this.jwtDecoderService.getUsername(),
       },
       {
         responseType: "json",

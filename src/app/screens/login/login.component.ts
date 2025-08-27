@@ -71,11 +71,7 @@ export class LoginComponent implements OnInit {
       },
       error: (error) => {
         this.isLoaderVisible = false;
-        const errorCode = error?.error?.errorCode || "Service failed";
-        const errorDescription =
-          error?.error?.errorDescription ||
-          "Unable to send OTP at the moment. Please try again later.";
-        this.showPopup(`Error (${errorCode})`, errorDescription);
+        throw(error); 
       },
       complete: () => {
         this.isLoaderVisible = false;
@@ -104,7 +100,7 @@ export class LoginComponent implements OnInit {
   signInWithGoogle() {
     this.authService.signInWithGoogle();
   }
-  
+ 
   signup(){
     this.router.navigate(["/register"])
   }

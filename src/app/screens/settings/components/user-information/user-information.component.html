@@ -26,7 +26,7 @@
         <label for="username">Username</label>
     </div>
     <div class="ml-4">
-        <input formControlName="username" type="text" name="username" required class="username-input w-[330px] h-[28px] mt-1 border border-[#ED6A5A] rounded-md p-2" placeholder="current username" id="username" readonly>
+        <input formControlName="username" type="text" name="username" required class="username-input w-[330px] h-[28px] mt-1 border border-[#ED6A5A] rounded-md p-2 bg-gray-200 text-gray-500 border-gray-300 opacity-70 cursor-not-allowed" placeholder="current username" id="username" [disabled]="true" readonly>
         <div *ngIf="profileInformation.get('username')?.touched && profileInformation.get('username')?.invalid" class="text-red-500">Username is required</div>
     </div>
     

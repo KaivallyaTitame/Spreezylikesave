@@ -45,7 +45,7 @@ export class ConsumerRegistration implements OnInit {
       ]),
       username: new FormControl("", [
         Validators.required,
-        Validators.maxLength(10),
+        Validators.maxLength(20),
       ]),
       email: new FormControl("", [Validators.required, Validators.email]),
       phoneNumber: new FormControl("", [
@@ -91,18 +91,7 @@ export class ConsumerRegistration implements OnInit {
       },
       error: (err: any) => {
         this.isLoading = false;
-
-        if (err.status === 400 || err.status === 500) {
-          let errorMessage = "An unexpected error occurred.";
-          if (err.error?.message) {
-            errorMessage = err.error.message;
-          } else if (err.error?.errorDescription) {
-            errorMessage = err.error.errorDescription;
-          }
-          this.showPopup("Error", errorMessage);
-        } else {
-          this.showPopup("Success", "Registration successful!");
-        }
+        throw (err);
       },
       complete: () => {
         this.isLoading = false;
