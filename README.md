@@ -121,7 +121,7 @@ This module contains all the necessary logic for spreezy frontend application.
 ```
 <application
         ....
-        android:supportsRtl="true"
+        android:usesCleartextTraffic="true"
         ....
         >
 ```
