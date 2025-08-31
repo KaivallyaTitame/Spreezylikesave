@@ -1,5 +1,5 @@
 import { Component, Input,Output, EventEmitter,HostListener,ElementRef, ViewChild} from '@angular/core';
-import { faCoffee,faHeart,faLocationArrow,faBookmark,faUsers, faArrowTrendUp as faArrowTrendUp} from '@fortawesome/free-solid-svg-icons';
+import { faCoffee,faHeart,faThumbsDown, faLocationArrow,faBookmark,faUsers, faArrowTrendUp as faArrowTrendUp} from '@fortawesome/free-solid-svg-icons';
 import { InsightDetails } from 'src/app/models/ad-details';
 
 @Component({
@@ -9,15 +9,14 @@ import { InsightDetails } from 'src/app/models/ad-details';
 })
 
 export class PostInsightsComponent {
-  @Input() showInsightScreen!: boolean; // boolean variable used to show the insights of the post. 
-  @Input() feed !: InsightDetails; // data which will be shown on component.  
-  @Output() ClickOut = new EventEmitter<Event>(); // executed when we clicked on outside of component
+  @Input() showInsightScreen!: boolean;
+  @Input() feed !: InsightDetails;   
+  @Output() ClickOut = new EventEmitter<Event>();
   @ViewChild('childDiv') childDiv!: ElementRef;
  
-  
-  
   faCoffee = faCoffee;
-  faHeart = faHeart; 
+  faHeart = faHeart;
+  faThumbsDown = faThumbsDown;
   faLocationArrow = faLocationArrow;
   faBookmark = faBookmark; 
   faUsers = faUsers; 
