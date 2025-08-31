@@ -8,7 +8,6 @@ const routes: Routes = [
     component: BusinessHomeComponent,
     children: [
       { path: 'adfeed', loadChildren: () => import('../ad-feed/ad-feed.module').then(m => m.AdFeedModule) },
-      { path: 'insights', loadChildren: () => import('../insights/insights.module').then(m => m.InsightsModule) },
       {path: 'settings', loadChildren: ()=> import('../settings/settings.module').then(m => m.SettingsModule)},
       { path: 'addpost',  loadChildren: () => import('../postcreation/postcreation.module').then(m => m.PostcreationModule)},
       { path: 'notification', loadChildren: () => import('../notification-screen/notification-screen.module').then(m => m.NotificationScreenModule) },

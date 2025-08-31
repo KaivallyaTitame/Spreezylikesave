@@ -156,12 +156,6 @@
                 [feed]="activeIndex !== undefined ? insightDetails : {}" 
             >
             </app-post-insights>
-            <app-post-insights 
-                (ClickOut)="hideInsight($event)"  
-                [showInsightScreen]="showInsightScreen" 
-                [feed]="activeIndex !== undefined ? insightDetails : {}" 
-            >
-            </app-post-insights>
           </div>
           <div *ngIf="loadingProfilePosts" class="text-center py-4">
             <app-loader></app-loader>

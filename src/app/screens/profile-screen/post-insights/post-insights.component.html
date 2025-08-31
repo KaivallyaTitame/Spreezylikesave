@@ -13,6 +13,12 @@
         </div>
 
         <div  class="flex flex-col items-center mb-4">
+          <fa-icon [icon]="faThumbsDown" class="fa-2x text-[#ed6a5a]"></fa-icon>
+          <p class="text-textcolor-0">Dislikes</p>
+          <p class="text-textcolor-0">{{feed['dislikes']}}</p>
+        </div>
+
+        <div  class="flex flex-col items-center mb-4">
           <fa-icon [icon]="faLocationArrow" class="fa-2x text-[#ed6a5a]"></fa-icon>
           <p class="text-textcolor-0">Shares</p>
           <p class="text-textcolor-0">{{feed['shares']}}</p>
@@ -21,19 +27,20 @@
         <div  class="flex flex-col items-center mb-4">
           <fa-icon [icon]="faBookmark" class="fa-2x text-[#ed6a5a]"></fa-icon>
           <p class="text-textcolor-0">Saves</p>
-          <p class="text-textcolor-0">{{feed['Saves']}}</p>
+          <p class="text-textcolor-0">{{feed['saves']}}</p>
         </div>
 
         <div class="flex flex-col items-center mb-4">
           <fa-icon [icon]="faUsers" class="fa-2x text-[#ed6a5a]"></fa-icon>
           <p class="text-textcolor-0">Engagement</p>
-          <p class="text-textcolor-0">{{feed['engagement']}}</p>
+          <p class="text-textcolor-0">{{feed['engagementCount']}}</p>
         </div>
 
-        <div class="flex flex-col items-center mb-4">
+        <!-- To be enable when we enable reach count from backend -->
+        <!-- <div class="flex flex-col items-center mb-4">
           <fa-icon [icon]="faHandshake" class="fa-2x text-[#ed6a5a]"></fa-icon>
           <p class="text-textcolor-0">Reach</p>
           <p class="text-textcolor-0">{{feed['reach']}}</p>
-        </div>
+        </div> -->
     </div>
 </div>

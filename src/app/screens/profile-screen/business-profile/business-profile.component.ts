@@ -103,10 +103,10 @@ export class BusinessProfileComponent implements OnInit {
         this.activeIndex = undefined;
         // when we are closing opened post insight component by clicking on button hide insight.  
       }
-      else if(this.activeIndex !== undefined && this.activeIndex !== index && index != undefined){
+      else if(index != undefined){
         // this case is used to handle when already one post is opened
         // we tried to open insights of other post then it executes. 
-        this.advertisementService.getAdvertisementInsights(this.visibleProfileAds[this.activeIndex].advertisementId)
+        this.advertisementService.getAdvertisementInsights(this.visibleProfileAds[index].advertisementId)
         .subscribe({
           next: (data) =>{
             this.insightDetails = data;
