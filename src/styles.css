@@ -41,3 +41,31 @@
 .nav-item.active fa-icon {
   color: theme('colors.primarycolor.0'); 
 }
+
+Input {
+  background-color: white !important; 
+}
+
+select{
+  background-color: white !important;
+  color: black !important;
+}
+
+select option{
+  background-color: white !important;
+  color: black !important;
+}
+
+label{
+  color:black !important; 
+}
+
+::placeholder {
+  color: black !important; 
+}
+
+textarea{
+  background-color: white !important; 
+  color: black !important;
+}
+
