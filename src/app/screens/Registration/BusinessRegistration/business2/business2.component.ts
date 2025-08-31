@@ -143,4 +143,7 @@ export class Business2Component implements OnInit {
   get bio(): FormControl {
     return this.form.get("bio") as FormControl;
   }
+  goBack(): void {
+    this.router.navigate(["/register/business/business1"]);
+  }
 }

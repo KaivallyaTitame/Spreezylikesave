@@ -4,6 +4,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { FeedbackService } from 'src/app/services/feedback.service';
 import { FeedbackRequest } from 'src/app/models/feedbackrequest';
 import { FeedbackResponse } from 'src/app/models/feedback-response';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-feedback-screen',
@@ -35,7 +36,7 @@ export class FeedbackScreenComponent {
     featureRequest: new FormControl('', [Validators.maxLength(200)])
   });
 
-  constructor(private feedbackservice: FeedbackService) {}
+  constructor(private feedbackservice: FeedbackService, private router: Router) {}
 
   setRating(value: number) {
     this.rating = value;
@@ -76,5 +77,8 @@ export class FeedbackScreenComponent {
 
   closePopUp() {
     this.showPopUp = false;
+  }
+  goBack() {
+    this.router.navigate(['/business-home/adfeed']);
   }
 }

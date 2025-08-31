@@ -155,4 +155,7 @@ export class Business3Component implements OnInit {
   handleClosePopUp(): void {
     this.showPopUp = false;
   }
+  goBack(): void {
+    this.router.navigate(["/register/business/business2"]);
+  }
 }

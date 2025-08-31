@@ -113,4 +113,7 @@ export class Business1Component {
   get businessType(): FormControl {
     return this.form.get("businessType") as FormControl;
   }
+  goBack(): void {
+    this.router.navigate(['/register']);
+  }
 }
