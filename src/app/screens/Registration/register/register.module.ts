@@ -4,6 +4,7 @@ import { registerRoutingModule } from './register-routing.module';
 import { registerComponent } from './register.component';
 import { BusinessRegistrationModule } from '../BusinessRegistration/businessRegistration.module';
 import { ConsumerModule } from '../ConsumerRegistration/ConsumerRegistration.module';
+import { SharedModule } from 'src/app/shared/shared-module/shared-module.module';
 
 @NgModule({
   declarations: [
@@ -13,7 +14,8 @@ import { ConsumerModule } from '../ConsumerRegistration/ConsumerRegistration.mod
     CommonModule,
     registerRoutingModule,
     BusinessRegistrationModule,
-    ConsumerModule
+    ConsumerModule, 
+    SharedModule
   ]
 })
 export class registerModule { }

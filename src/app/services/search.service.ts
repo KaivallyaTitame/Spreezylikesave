@@ -1,9 +1,10 @@
-import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable, of, Subject, BehaviorSubject } from 'rxjs';
-import { catchError, debounceTime, distinctUntilChanged, switchMap, map } from 'rxjs/operators';
-import { UserProfileDTO } from '../models/UserProfileDTO';
+import { Injectable } from '@angular/core';
+import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
+import { catchError, debounceTime, distinctUntilChanged, map, switchMap } from 'rxjs/operators';
 import { API_CONFIG } from 'src/app/api-config';
+import { UserProfileDTO } from '../models/UserProfileDTO';
+import { ImageUrlGenerationService } from '../shared/image-url-generation.service';
 
 @Injectable({
   providedIn: 'root'
@@ -15,7 +16,7 @@ export class SearchService {
   
   businesses$ = this.businessesSubject.asObservable();
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, private imageService : ImageUrlGenerationService) {
     this.initSearchSubscription(); 
   }
 
@@ -61,10 +62,12 @@ export class SearchService {
     if (!profilePicture || profilePicture.trim() === '') {
       return 'assets/default-pic.png';
     }
+
     if (profilePicture.startsWith('http://') || profilePicture.startsWith('https://')) {
       return profilePicture;
     }
-    return `${API_CONFIG.IMAGE_URL}/${profilePicture}`;
+    
+    return this.imageService.generateImageUrl(profilePicture);
   }
 
   private getAuthHeaders(): HttpHeaders {

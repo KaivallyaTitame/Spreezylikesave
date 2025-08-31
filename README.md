@@ -111,12 +111,35 @@ This module contains all the necessary logic for spreezy frontend application.
 
 ### **Build & Deployment instructions :-**
 
+- Update the below property in respective environment `environment.<env>.ts` file. 
+```
+  apiGateway: "http://<ip-of-your-machine>:8083"
+``` 
 - To build the application use : (production, development)<pre><code>ng build --configuration `<environment>`</code></pre>
 - Check in your root folder if android and ios folders are present. If not present, use - <pre><code>npx cap add android && npx cap add ios</code></pre>
+- **Only for Local Development** - To allow HTTP traffic on the Android app once it is installed and connect to docker containers on your machine, add below property in ``android/app/src/main/AndroidManifest.xml``
+```
+<application
+        ....
+        android:usesCleartextTraffic="true"
+        ....
+        >
+```
 - Create a a file under newly created android/local.properties. Add this <pre>java.home=/usr/lib/jvm/java-17-openjdk-amd64</pre> and the path to your android CLI SDK <pre>sdk.dir=`<path-to-your-android-cli-directory>`/Android</pre> (inside Android folder, all the tools like build-tools, platform-tools, cmdline-tools, emulator, should be present)<br><br>	
 - Once the build is complete, need to sync the android and ios binaries using capacitor. use - <pre><code>npx cap sync</code></pre>
 - After syncing the android binaries, from root directory execute mentioned cmd to create the APK - <pre><code>cd android && ./gradlew assembleDebug && cd ..</code></pre>
 - The app should be present in the android/app/build/outputs/apk/debug/app-debug.apk
+
+- To control Jenkins pipeline stages, update the .jenkins-config.json file in the root folder.
+- Set values to **true** only at the time of **release**, otherwise keep them **false**:
+
+- To enable the **Codecut** stage:
+  ```json
+  "codecutprofile": true
+
+- To enable **Signed AAB build and upload** stage:
+  ```json
+  "runSignedAab": true
 
 ## Contribution guidelines
 

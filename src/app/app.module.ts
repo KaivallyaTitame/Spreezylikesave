@@ -12,22 +12,24 @@ import { BusinessHomeModule } from "./screens/business-home/business-home.module
 import { ConsumerHomeModule } from "./screens/consumer-home/consumer-home.module";
 import { ReactiveFormsModule } from "@angular/forms";
 import { registerModule } from "./screens/Registration/register/register.module";
-
+import { SharedModule } from "./shared/shared-module/shared-module.module";
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
-    AngularFireModule.initializeApp(environment.firebase),  // THis functionality is disabled for temporary purpose
+    AngularFireModule.initializeApp(environment.firebase),
     LoginModule,
     LogoutModule,
     BusinessHomeModule,
     ConsumerHomeModule,
     ReactiveFormsModule,
+    registerModule,
+    SharedModule
   ],
   providers: [
     {
