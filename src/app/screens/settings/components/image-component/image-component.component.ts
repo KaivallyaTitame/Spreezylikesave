@@ -1,6 +1,6 @@
 import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { PresignedUrl } from 'src/app/models/presigned-url';
-import { JwtDecoderService } from 'src/app/services/jwt-decoder.service';
+import { JwtDecoderService } from 'src/app/services/jwtDecoder/jwt-decoder.service';
 import { SettingsService } from 'src/app/services/settings.service';
 
 @Component({
@@ -39,8 +39,8 @@ export class ImageComponentComponent implements OnInit {
           this.createImagePreviewFromLink(imageLink);
         },
         error: (err) => {
-          console.error('Error fetching image link', err);
           this.setDefaultImage();
+          throw(err);
         }
       });
     } else {

@@ -1,9 +1,10 @@
 import { Component, Input, OnInit } from "@angular/core";
-import { UserService } from "src/app/services/user-profile.service";
+import { ActivatedRoute } from "@angular/router";
 import { faBookmark } from "@fortawesome/free-solid-svg-icons";
 import { UserDetails } from "src/app/models/UserDetails";
 import { AdvertisementDetails } from "src/app/models/ad-details";
-import { ActivatedRoute } from "@angular/router";
+import { UserService } from "src/app/services/user-profile.service";
+import { ImageUrlGenerationService } from "src/app/shared/image-url-generation.service";
 
 @Component({
   selector: "app-consumer-profile",
@@ -14,7 +15,7 @@ export class ConsumerProfileComponent implements OnInit {
   userDetails: UserDetails | null = null; // User details fetched from backend
   loadingUserDetails: boolean = true; // To show skeletons while data is loading
   @Input() savedPosts!: AdvertisementDetails[];
-  visibleSavedPosts: AdvertisementDetails[] = [];
+  visibleSavedAds: AdvertisementDetails[] = [];
   savedPostPage: number = 0;
   postsPerPage: number = 10;
   loadingSavedPosts: boolean = false;
@@ -25,16 +26,19 @@ export class ConsumerProfileComponent implements OnInit {
   showPopup: boolean = false;
   popupTitle: string = "Error";
   popupBody: string = "";
-
+  hasZeroSavedPosts:boolean = false;
+  
   hasMoreSavedPosts: boolean = true; // Initially assume there are more saved posts
-
+  noPostMessages:string = '';
+  
   private scrollPositions: { [key: string]: number } = {
     saved: 0,
   };
 
   constructor(
-    private UserService: UserService,
-    private route: ActivatedRoute
+    private userService: UserService,
+    private route: ActivatedRoute,
+    private imageService: ImageUrlGenerationService
   ) {}
 
   ngOnInit(): void {
@@ -49,13 +53,10 @@ export class ConsumerProfileComponent implements OnInit {
 
   fetchUserDetails(username: string) {
     this.loadingUserDetails = true; // Show skeletons during loading
-    this.UserService.getUserDetails(username).subscribe({
+    this.userService.getUserDetails(username).subscribe({
       next: (data) => {
         if (data.profileImageUrl) {
-          data.profileImageUrl = this.UserService.getImageUrl(
-            username,
-            data.profileImageUrl
-          );
+          data.profileImageUrl = this.imageService.generateImageUrl(data.profileImageUrl);
         }
         this.userDetails = data;
         this.loadingUserDetails = false; // Hide skeletons after successful fetch
@@ -63,46 +64,28 @@ export class ConsumerProfileComponent implements OnInit {
       error: (error) => {
         this.userDetails = null; // Reset user details on error
         this.loadingUserDetails = false; // Stop skeletons even if there's an error
-        this.showError(
-          error?.error?.errorCode || "Error fetching profile",
-          error?.error?.errorDescription || "Please try again later."
-        );
+        throw(error);
       },
     });
   }
 
   fetchSavedPosts(username: string, page: number) {
     this.loadingSavedPosts = true;
-    this.UserService.getSavedPosts(username, page, this.postsPerPage).subscribe(
+    this.userService.getSavedPosts(username, page, this.postsPerPage).subscribe(
       {
         next: (data) => {
-          if (data.length > 0) {
-            data.forEach((post) => {
-              if (post.profileImageUrl) {
-                post.profileImageUrl = this.UserService.getImageUrl(
-                  username,
-                  post.profileImageUrl
-                );
-              }
-              if (post.imagePaths && post.imagePaths.length > 0) {
-                post.imagePaths = post.imagePaths.map((imagePath) =>
-                  this.UserService.getImageUrl(username, imagePath)
-                );
-              }
-            });
-            this.visibleSavedPosts.push(...data);
+          if (data !== null && data.length > 0) {
+            this.visibleSavedAds.push(...data);
             this.savedPostPage++; // Increment page if there are more posts
           } else {
+            this.hasZeroSavedPosts = true; 
             this.hasMoreSavedPosts = false; // No more saved posts to fetch
           }
           this.loadingSavedPosts = false;
         },
         error: (error) => {
           this.loadingSavedPosts = false; // Stop loading spinner on error
-          this.showError(
-            error?.error?.errorCode || "Error while fetching posts",
-            error?.error?.errorDescription || "Please try again later."
-          );
+          throw(error);
         },
       }
     );

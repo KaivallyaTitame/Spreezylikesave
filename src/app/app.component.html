@@ -1,1 +1,8 @@
 <router-outlet></router-outlet>
+<app-pop-up
+    *ngIf="showError"
+    (close)="onCloseError()"
+    [messageTitle]="errorCode"
+    [messageBody]="errorDescription"
+    [showErrorButton]="true"
+></app-pop-up>

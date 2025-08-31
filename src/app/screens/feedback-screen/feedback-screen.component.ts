@@ -60,14 +60,7 @@ export class FeedbackScreenComponent {
           this.showPopUp = true;
         },
         (error) => {
-          if (error.error && error.error.ErrorCode && error.error.ErrorDescription) {
-            this.popUpTitle = `Error ${error.error.ErrorCode}`;
-            this.popUpBody = error.error.ErrorDescription;
-          } else {
-            this.popUpTitle = `Error SPX-4-002`;
-            this.popUpBody = 'We are facing some technical issues at the Server. Please come back soon.';
-          }
-          this.showPopUp = true;
+          throw(error); 
         }
       );
     } else {

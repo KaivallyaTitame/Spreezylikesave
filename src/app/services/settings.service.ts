@@ -48,7 +48,7 @@ export class SettingsService {
     return this.http.get(API_CONFIG.SETTINGS.GET_BUSINESS_DETAILS(username), {
       responseType: 'text',
       headers: new HttpHeaders({
-        Authorization: `Bearer ${this.token}`,
+         Authorization: `Bearer ${this.token}`,
         'Content-Type': 'application/json'
       })
     });
@@ -56,10 +56,10 @@ export class SettingsService {
 
   postBusinessDetails(data: BusinessInformation): Observable<string> {
     return this.http.post(API_CONFIG.SETTINGS.UPDATE_BUSINESS_DETAILS, data, {
-      responseType: 'text',
+       responseType: 'text',
       headers: new HttpHeaders({
-        Authorization: `Bearer ${this.token}`,
-        'Content-Type': 'application/json'
+         Authorization: `Bearer ${this.token}`,
+         'Content-Type': 'application/json'
       })
     });
   }

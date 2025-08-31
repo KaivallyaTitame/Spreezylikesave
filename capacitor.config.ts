@@ -5,7 +5,7 @@ const config: CapacitorConfig = {
   appName: 'Spreezy',
   webDir: 'dist/spreezy-frontend',
   server: {
-    androidScheme: 'https'
+    androidScheme: 'http'
   },
 
 };

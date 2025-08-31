@@ -1,4 +1,4 @@
-import { HttpClient, HttpErrorResponse } from "@angular/common/http";
+import { HttpClient, HttpErrorResponse, HttpHeaders } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable, throwError } from "rxjs";
 import { catchError, map, tap } from "rxjs/operators";
@@ -10,7 +10,7 @@ import { API_CONFIG } from "src/app/api-config";
   providedIn: "root",
 })
 export class OtpService {
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
   isOtpSentToMobile = false;
 
   sendOtp(countrycode: string, mobile: string): Observable<OtpResponse> {
@@ -18,7 +18,12 @@ export class OtpService {
       .post<OtpResponse>(
         API_CONFIG.GENERATE_OTP,
         { phoneNumber: mobile, countryCode: countrycode },
-        { responseType: "json" }
+        {
+          headers: new HttpHeaders({
+            'Content-Type': 'application/json',
+          }),
+          responseType: "json",
+        }
       )
       .pipe(
         tap(() => {
@@ -26,7 +31,7 @@ export class OtpService {
         }),
         catchError((error) => {
           this.isOtpSentToMobile = false;
-          return throwError(() => new HttpErrorResponse(error));
+          throw(error); 
         })
       );
   }
@@ -44,12 +49,7 @@ export class OtpService {
           return { success: true, message: response };
         }),
         catchError((error: HttpErrorResponse) => {
-          let errorMessage = "Failed to send OTP. Please try again later.";
-          const errorBody = JSON.parse(error?.error || "{}");
-          if (errorBody?.errorDescription) {
-            errorMessage = errorBody.errorDescription;
-          }
-          return throwError(() => new Error(errorMessage));
+          throw(error);
         })
       );
   }

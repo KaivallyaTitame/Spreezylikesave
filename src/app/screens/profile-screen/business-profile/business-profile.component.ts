@@ -1,19 +1,22 @@
 import { Component, Input, OnInit } from "@angular/core";
-import { UserService } from "src/app/services/user-profile.service";
+import { ActivatedRoute } from "@angular/router";
+import { faFacebook, faInstagram } from "@fortawesome/free-brands-svg-icons";
 import {
-  faPhone,
-  faEnvelope,
-  faShare,
-  faList,
   faBookmark,
   faCircleUser,
+  faEnvelope,
+  faList,
+  faPhone,
+  faShare,
 } from "@fortawesome/free-solid-svg-icons";
-import { faInstagram, faFacebook } from "@fortawesome/free-brands-svg-icons";
 import { UserDetails } from "src/app/models/UserDetails";
-import { AdvertisementDetails } from "src/app/models/ad-details";
+import { AdvertisementDetails, InsightDetails } from "src/app/models/ad-details";
 import { DecodedToken } from "src/app/models/decodedToken";
 import { JwtDecoderService } from "src/app/services/jwtDecoder/jwt-decoder.service";
-import { ActivatedRoute } from "@angular/router";
+import { UserService } from "src/app/services/user-profile.service";
+import { ImageUrlGenerationService } from "src/app/shared/image-url-generation.service";
+import { HttpErrorResponse } from "@angular/common/http";
+import { AdvertisementDetailsService } from "src/app/services/advertisementTypes.service";
 
 @Component({
   selector: "app-business-profile",
@@ -21,12 +24,13 @@ import { ActivatedRoute } from "@angular/router";
   styleUrls: ["./business-profile.component.css"],
 })
 export class BusinessProfileComponent implements OnInit {
-  userDetails: UserDetails | null = null; // User details fetched from backend
-  loadingUserDetails: boolean = true; // To show skeletons while data is loading
+  userDetails: UserDetails | null = null;
+  loadingUserDetails: boolean = true; 
   @Input() profilePosts!: AdvertisementDetails[];
   @Input() savedPosts!: AdvertisementDetails[];
-  visibleProfilePosts: AdvertisementDetails[] = [];
-  visibleSavedPosts: AdvertisementDetails[] = [];
+  visibleProfileAds: AdvertisementDetails[] = [];
+  visibleSavedAds: AdvertisementDetails[] = [];
+  insightDetails : InsightDetails;
   profilePostPage: number = 0;
   savedPostPage: number = 0;
   postsPerPage: number = 10;
@@ -40,7 +44,7 @@ export class BusinessProfileComponent implements OnInit {
   faList = faList;
   faBookmark = faBookmark;
   faCircleUser = faCircleUser;
-  selectedTab: string = "posts"; //selected tab by default
+  selectedTab: string = "posts";
   currentUsername: string = "";
   username: string | null = null;
   userType: string;
@@ -49,11 +53,20 @@ export class BusinessProfileComponent implements OnInit {
   popupBody: string = "";
   hasMoreProfilePosts: boolean = true; // Initially assume there are more posts
   hasMoreSavedPosts: boolean = true; // Initially assume there are more saved posts
+  hasZeroPosts:boolean = false; 
+  hasZeroSavedPosts:boolean = false;
+  activeIndex: number | undefined = undefined;  // indicates which post insight to be displayed. if it is undefined then it will not shown.
+  showInsightScreen:boolean = false;  // this variable decides the visibility of the post insight component.
+  noPostTitle:string = ''; 
+  noPostDescription:string = '';
+  defaultProfileImage = "assets/default-pic.png";
 
   constructor(
-    private UserService: UserService,
+    private userService: UserService,
+    private advertisementService : AdvertisementDetailsService,
     private JwtDecoder: JwtDecoderService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private imageService: ImageUrlGenerationService
   ) {}
 
   ngOnInit(): void {
@@ -69,6 +82,81 @@ export class BusinessProfileComponent implements OnInit {
       }
     });
   }
+
+  // this method sets the current active index of the post. 
+  toggleInsight(index: number | -1): void {
+
+    // first checks the given post data has insightDetails attribute. 
+    if(index != -1 && this.visibleProfileAds[index] === undefined){
+      // if post is selected for showing and post to show has not insightDetails attribute
+      // then it throws error.  
+      const customError = new HttpErrorResponse({
+        error:{
+          errorCode:'SPX-0-001', 
+          errorDescription:'Unable to get insights of the given post..'
+        }
+      });
+      throw(customError) 
+    }
+    else{
+      if(this.activeIndex === index){
+        this.activeIndex = undefined;
+        // when we are closing opened post insight component by clicking on button hide insight.  
+      }
+      else if(index != undefined){
+        // this case is used to handle when already one post is opened
+        // we tried to open insights of other post then it executes. 
+        this.advertisementService.getAdvertisementInsights(this.visibleProfileAds[index].advertisementId)
+        .subscribe({
+          next: (data) =>{
+            this.insightDetails = data;
+          },
+          error: (err) => {
+            console.log(err);
+            // throw(new SpreezyError(SpreezyException.SPEX_0, err));
+          }
+        });
+        setTimeout(() => {
+            // first it post insight screen disappears(showInsightScreen set to false) as method fired from post.ts file. 
+            // secondly it sets the data of the post insight screen. 
+            this.activeIndex = index; 
+            // it reappears the post insight again. 
+            this.showInsightScreen = true; 
+            // for animation accuracies i have used setTimeout function.
+        },1000);
+      }
+      else{
+        // in another case it executes this scnerios. 
+        this.activeIndex = index; 
+      }
+    }
+  }
+
+  // it is used to toggle the showInsightScreen value. 
+  setInsightScreen(event:Event): void{
+      event.stopPropagation(); 
+      // it is used to stop the propagation of parent to child component. 
+      if(this.activeIndex != undefined && this.visibleProfileAds[this.activeIndex] !== undefined){
+         // it is check for preventing unnecessary opening of component on invalid data.  
+         this.showInsightScreen = !this.showInsightScreen;
+      }
+      else{
+        // if above condition is not satisfied then component will be closed. 
+        this.showInsightScreen = false; 
+      }
+  }
+
+  // this component specifically designed for hiding the component when clicked outside the post-insight compoenent
+  hideInsight(event:Event):void{
+    // first it sets to false
+    this.showInsightScreen = false; 
+    // in below code delay is added to execut the code when animation is completed. 
+    setTimeout(() => {
+      this.activeIndex = undefined;
+    },400);  
+  }
+
+
   fetchCurrentUsername(): string {
     const token = localStorage.getItem("token") || "";
     const decodedToken: DecodedToken =
@@ -80,101 +168,85 @@ export class BusinessProfileComponent implements OnInit {
 
   fetchUserDetails(username: string) {
     this.loadingUserDetails = true; // Show skeletons during loading
-    this.UserService.getUserDetails(username).subscribe({
+    const loggedInUser:string = ''; 
+    const token = localStorage.getItem("token") || "";
+    const payload = JSON.parse((atob(token.split('.')[1]))); 
+    if(this.username != payload.sub){
+      this.noPostTitle = 'No posts yet !'; 
+      this.noPostDescription = 'Reach out to connect...'; 
+    }
+    else{
+      this.noPostTitle = 'Oops, nothing here yet!'; 
+      this.noPostDescription = 'Start Posting';
+    }
+   
+    this.userService.getUserDetails(username).subscribe({
       next: (data) => {
         if (data.profileImageUrl) {
-          data.profileImageUrl = this.UserService.getImageUrl(
-            username,
-            data.profileImageUrl
-          );
+          data.profileImageUrl = this.imageService.generateImageUrl(data.profileImageUrl);
         }
         this.userDetails = data;
-        this.loadingUserDetails = false; // Hide skeletons after successful fetch
+        this.loadingUserDetails = false;
       },
       error: (error) => {
-        this.userDetails = null; // Reset user details on error
         this.loadingUserDetails = false; // Stop skeletons even if there's an error
-        this.showError(
-          error?.error?.errorCode || "Error fetching profile",
-          error?.error?.errorDescription || "Please try again later."
-        );
+        this.userDetails = null; // Reset user details on error
+         throw(error);
       },
     });
   }
 
   fetchProfilePosts(username: string, page: number) {
     this.loadingProfilePosts = true;
-    this.UserService.getProfilePosts(
+    this.userService.getProfilePosts(
       username,
       page,
       this.postsPerPage
     ).subscribe({
       next: (data) => {
-        if (data.length > 0) {
-          data.forEach((post) => {
-            if (post.profileImageUrl) {
-              post.profileImageUrl = this.UserService.getImageUrl(
-                username,
-                post.profileImageUrl
-              );
-            }
-            if (post.imagePaths?.length > 0) {
-              post.imagePaths = post.imagePaths.map((imagePath) =>
-                this.UserService.getImageUrl(username, imagePath)
-              );
-            }
-          });
-          this.visibleProfilePosts.push(...data);
+        if (data !== null && data.length > 0) {
+          this.loadingProfilePosts = false;
+          this.visibleProfileAds.push(...data);
           this.profilePostPage++; // Increment page only if data exists
-        } else {
-          this.hasMoreProfilePosts = false; // No more posts to fetch
+        } 
+        else
+        {
+          if(data == null)
+          {
+            this.hasZeroPosts = true;
+          }
+          this.hasMoreProfilePosts = false; // No more posts to fetch 
         }
         this.loadingProfilePosts = false;
       },
       error: (error) => {
-        this.showError(
-          error?.error?.errorCode || "Error while fetching profile posts",
-          error?.error?.errorDescription ||
-            "Unable to fetch profile post, please try again later"
-        );
-        this.loadingProfilePosts = false;
+        this.loadingProfilePosts = false; 
+        throw(error);
       },
     });
   }
 
   fetchSavedPosts(username: string, page: number) {
     this.loadingSavedPosts = true;
-    this.UserService.getSavedPosts(username, page, this.postsPerPage).subscribe(
+    this.userService.getSavedPosts(username, page, this.postsPerPage).subscribe(
       {
         next: (data) => {
-          if (data.length > 0) {
-            data.forEach((post) => {
-              if (post.profileImageUrl) {
-                post.profileImageUrl = this.UserService.getImageUrl(
-                  username,
-                  post.profileImageUrl
-                );
-              }
-              if (post.imagePaths?.length > 0) {
-                post.imagePaths = post.imagePaths.map((imagePath) =>
-                  this.UserService.getImageUrl(username, imagePath)
-                );
-              }
-            });
-            this.visibleSavedPosts.push(...data);
-            this.savedPostPage++; // Increment page only if data exists
+          if (data !== null && data.length > 0) {
+            this.loadingSavedPosts = false;
+            this.visibleSavedAds.push(...data);
+            this.savedPostPage++; 
           } else {
+            if(data == null)
+            {
+              this.hasZeroSavedPosts = true;
+            }
             this.hasMoreSavedPosts = false; // No more saved posts to fetch
           }
           this.loadingSavedPosts = false;
         },
         error: (error) => {
-          this.showError(
-            error?.error?.errorCode || "Error fetching saved posts",
-            error?.error?.errorDescription ||
-              "Unable to fetch saved post, please try again later"
-          );
           this.loadingSavedPosts = false;
+          throw(error);
         },
       }
     );
@@ -189,7 +261,7 @@ export class BusinessProfileComponent implements OnInit {
   onScroll(event: any): void {
     const scrollContainer = event.target;
     const scrollPosition =
-      scrollContainer.scrollTop + scrollContainer.clientHeight;
+    scrollContainer.scrollTop + scrollContainer.clientHeight;
     const scrollHeight = scrollContainer.scrollHeight;
 
     if (scrollPosition >= scrollHeight - 100) {
@@ -215,25 +287,20 @@ export class BusinessProfileComponent implements OnInit {
   };
 
   switchTab(tab: string): void {
-    // Save the current scroll position for the active tab
     const scrollContainer = document.querySelector(".scroll-container");
     if (scrollContainer) {
       this.scrollPositions[this.selectedTab] = scrollContainer.scrollTop;
     }
-
-    // Switch the selected tab
     this.selectedTab = tab;
-
-    // Restore the scroll position for the new tab
     setTimeout(() => {
       const newScrollContainer = document.querySelector(".scroll-container");
       if (newScrollContainer) {
         newScrollContainer.scrollTop = this.scrollPositions[tab] || 0;
       }
     }, 0);
+    this.activeIndex = undefined; 
   }
 
-  defaultProfileImage = "assets/default-pic.png";
   onProfileImageError(event: Event) {
     const target = event.target as HTMLImageElement;
     target.src = this.defaultProfileImage;

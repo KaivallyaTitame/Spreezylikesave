@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { JwtDecoderService } from 'src/app/services/jwt-decoder.service';
+import { JwtDecoderService } from 'src/app/services/jwtDecoder/jwt-decoder.service';
 
 
 @Component({

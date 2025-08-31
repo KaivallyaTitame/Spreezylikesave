@@ -9,7 +9,7 @@ export class PopUpComponent {
   @Input() messageTitle: string = '';
   @Input() messageBody: string = '';
   @Output() close = new EventEmitter<void>();
-
+  @Input() showErrorButton:boolean = false; 
   closePopUp() {
     this.close.emit();
   }
