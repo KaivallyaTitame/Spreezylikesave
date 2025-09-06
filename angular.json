@@ -43,7 +43,10 @@
               ],
               "outputHashing": "all",
               "fileReplacements": [
-               
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.production.ts"
+                }
               ],
               "optimization": true,
               "sourceMap": false,
@@ -60,7 +63,10 @@
               "sourceMap": true,
               "namedChunks": true,
               "fileReplacements": [
-              
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.development.ts"
+                }
               ]
             },
             "uat": {
@@ -78,7 +84,10 @@
               ],
               "outputHashing": "all",
               "fileReplacements": [
-                
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.uat.ts"
+                }
               ],
               "optimization": true,
               "sourceMap": false,
