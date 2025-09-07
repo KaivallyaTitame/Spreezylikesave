@@ -136,7 +136,7 @@ export class EventComponent implements OnInit , OnChanges {
   toggleFollow(): void {
     let token = localStorage.getItem("token") || "";
     let userName =
-      this.jwtDecoderService.decodeInfoFromToken(token)["sub"] || "";
+      this.jwtDecoderService.getUsername() || "";
     const sourceUsername = userName || "currentUser";
     const targetUsername = this.eventDetails.username;
     if (this.isFollowing) {
@@ -265,7 +265,7 @@ export class EventComponent implements OnInit , OnChanges {
 
   savePost(): void {
     const advertisementId = this.eventDetails.advertisementId;
-    const username = this.eventDetails.username;
+    const username = this.jwtDecoderService.getUsername();
     const previousSavedState = this.isSaved;
     this.isSaved = !this.isSaved;
     this.triggerAnimation("save");
