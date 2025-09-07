@@ -141,7 +141,7 @@
       <div
         class="scroll-container posts-container"
         (scroll)="onScroll($event)"
-        [class.active-tab]="selectedTab === 'posts'"
+        *ngIf="selectedTab === 'posts'"
       >
         <div class="post-section grid grid-cols-1 gap-2 py-2">
           <div *ngFor="let advertisement of visibleProfileAds; let i = index" class="ad-item">
@@ -173,7 +173,7 @@
       <div
         class="scroll-container saved-container"
         (scroll)="onScroll($event)"
-        [class.active-tab]="selectedTab === 'saved'"
+        *ngIf="selectedTab === 'saved'"
       >
         <div class="saved-section grid grid-cols-1 gap-2 py-2">
           <div *ngFor="let advertisement of visibleSavedAds" class="ad-item">

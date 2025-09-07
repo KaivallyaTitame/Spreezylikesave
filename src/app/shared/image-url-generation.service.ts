@@ -10,13 +10,16 @@ export class ImageUrlGenerationService {
   constructor() { }
 
   generateImageUrl(imageUrl : string):string{
-    return this.baseUrl + imageUrl
+    if(!imageUrl.includes(this.baseUrl)) {
+      return this.baseUrl + imageUrl
+    }
+    return imageUrl;
   }
   
   generateImageUrls(imageUrl : string[]) : string[] {
     let generatedImageUrls = []
     for (const url of imageUrl) {
-      generatedImageUrls.push(this.baseUrl + url)
+      generatedImageUrls.push(url.includes(this.baseUrl) ? url : this.baseUrl + url)
     }
     return generatedImageUrls
   }
