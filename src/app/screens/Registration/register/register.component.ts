@@ -17,4 +17,8 @@ export class registerComponent {
   navigateconsumer() {
     this.router.navigate(['/register/consumer']);
   }
+
+  goBack(): void {
+    this.router.navigate(['/login']);
+  }
 }
