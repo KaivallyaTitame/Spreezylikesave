@@ -156,7 +156,7 @@ export class PostComponent implements OnInit , OnChanges {
   toggleFollow(): void {
     let token = localStorage.getItem("token") || "";
     let userName =
-      this.jwtDecoderService.decodeInfoFromToken(token)["sub"] || "";
+      this.jwtDecoderService.getUsername() || "";
     const sourceUsername = userName || "currentUser";
     const targetUsername = this.postDetails.username;
     
@@ -271,7 +271,7 @@ export class PostComponent implements OnInit , OnChanges {
 
   savePost(): void {
     const advertisementId = this.postDetails.advertisementId;
-    const username = this.postDetails.username;
+    const username = this.jwtDecoderService.getUsername();
     const previousSavedState = this.isSaved;
     this.isSaved = !this.isSaved;
     this.triggerAnimation("save");
