@@ -21,7 +21,7 @@ const routes: Routes = [
     loadChildren: () => import("./screens/profile-screen/profile-screen.module").then(m => ProfileScreenModule)
   },
   {
-    path: "discover-business-screen",
+    path: "discover-businesses",
     loadChildren: () => import("./screens/discover-business-screen/discover-business-screen.module").then(m => m.DiscoverBusinessScreenModule),
   },
   {
