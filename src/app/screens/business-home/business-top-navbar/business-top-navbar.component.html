@@ -37,18 +37,18 @@
                   <div class="avatar h-14 w-14 mx-auto">
                     <img
                       *ngIf="business"
-                      [src]="business[0]?.profilePicture || defaultProfileImage"
+                      [src]="business.profilePicture || defaultProfileImage"
                       alt="avatar"
                       class="rounded-full"
                       (error)="onImageError($event)"
                     />
                   </div>
                   <span class="text-xl mt-2 font-sidebar text-primary">{{
-                    business[0]?.ownerName
+                    business.businessName
                   }}</span>
                   <span
                     class="text-lg font-normal font-sidebar text-content2"
-                    >{{ currentUsername }}</span
+                    >{{ business.businessUsername }}</span
                   >
                 </div>
               </section>
@@ -85,7 +85,7 @@
 
                       <li class="menu-item py-2 flex items-center">
                         <a
-                          href="https://www.brandsparktechnologies.in/"
+                          href="https://www.brandsparktechnologies.in/contactus"
                           target="_blank"
                           rel="noopener noreferrer"
                           class="flex items-center w-full"
@@ -99,15 +99,7 @@
                           >
                         </a>
                       </li>
-
-                      <li class="menu-item py-2 flex items-center">
-                        <fa-icon
-                          class="text-lg w-6 h-6 text-primarycolor-0 mr-3 flex-shrink-0"
-                          [icon]="faCircleQuestion"
-                        ></fa-icon>
-                        <span class="text-lg font-normal">Help</span>
-                      </li>
-
+                      
                       <li
                         class="menu-item py-2 flex items-center"
                         (click)="navigateToTermsConditions(drawerLeft)"
