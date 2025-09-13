@@ -5,6 +5,8 @@ import { AuthService } from 'src/app/services/auth.service';
 import { BusinessNavigationService } from 'src/app/services/business-navigation.service';
 import { DecodedToken } from 'src/app/models/decoded-token';
 import { JwtDecoderService } from 'src/app/services/jwtDecoder/jwt-decoder.service';
+import { BusinessInformation } from 'src/app/models/business-information';
+import { ImageUrlGenerationService } from 'src/app/shared/image-url-generation.service';
 
 @Component({
   selector: 'app-business-top-navbar',
@@ -25,7 +27,7 @@ export class BusinessTopNavbarComponent implements OnInit {
   addressBook = faAddressBook
 
   // Variables for business info and token decoding
-  business: any;
+  business : BusinessInformation = new BusinessInformation();
   currentUsername: string = '';
   decodedToken: DecodedToken | null = null;
 
@@ -36,7 +38,9 @@ export class BusinessTopNavbarComponent implements OnInit {
     private router: Router,
     private businessNavigationService: BusinessNavigationService,
     private authServcie: AuthService,
-    private jwtDecoder: JwtDecoderService) { }
+    private jwtDecoder: JwtDecoderService,
+    private imageService : ImageUrlGenerationService
+  ) { }
 
   ngOnInit(): void {
     this.decodeToken();
@@ -83,10 +87,12 @@ export class BusinessTopNavbarComponent implements OnInit {
     if (this.currentUsername) {
       this.businessNavigationService.getBusinessDetails(this.currentUsername).subscribe({
         next: (response) => {
-          this.business = response;
+          this.business = response[0];
+          console.log(this.business);
+          this.business.profilePicture = this.imageService.generateImageUrl(this.business.profilePicture);
         },
         error: () => {
-          this.business = {};
+          throw new Error("Error while loading details");;
         }
       });
     }

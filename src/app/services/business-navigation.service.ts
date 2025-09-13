@@ -2,6 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { API_CONFIG } from '../api-config';
+import { BusinessInformation } from '../models/business-information';
 
 @Injectable({
   providedIn: 'root'
@@ -17,8 +18,8 @@ export class BusinessNavigationService {
   is_Profile:boolean = false;
   is_Search:boolean = false;
 
-  getBusinessDetails(username: string): Observable<any> { 
-    return this.http.get<any>(API_CONFIG.SETTINGS.GET_BUSINESS_DETAILS(username), {
+  getBusinessDetails(username: string): Observable<BusinessInformation[]> { 
+    return this.http.get<BusinessInformation[]>(API_CONFIG.SETTINGS.GET_BUSINESS_DETAILS(username), {
       responseType: 'json',
       headers: new HttpHeaders({
         Authorization: `Bearer ${this.token}`,

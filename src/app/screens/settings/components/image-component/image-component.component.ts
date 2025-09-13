@@ -2,6 +2,7 @@ import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild }
 import { PresignedUrl } from 'src/app/models/presigned-url';
 import { JwtDecoderService } from 'src/app/services/jwtDecoder/jwt-decoder.service';
 import { SettingsService } from 'src/app/services/settings.service';
+import { ImageUrlGenerationService } from 'src/app/shared/image-url-generation.service';
 
 @Component({
   selector: 'app-image-component',
@@ -25,7 +26,7 @@ export class ImageComponentComponent implements OnInit {
   currentProfilePhotoUrl: string | null = null;
   defaultProfileImage: string = 'assets/default-pic.png';
 
-  constructor(private settingsService: SettingsService, private jwtDecoder: JwtDecoderService) {}
+  constructor(private settingsService: SettingsService, private jwtDecoder: JwtDecoderService, private imageService : ImageUrlGenerationService) {}
 
   ngOnInit(): void {
     const token = localStorage.getItem('token');
@@ -33,16 +34,8 @@ export class ImageComponentComponent implements OnInit {
     this.username = decodedInfo['sub'];
 
     if (this.imageFileName) {
-      this.settingsService.getImageLink(this.username, this.imageFileName).subscribe({
-        next: (imageLink: string) => {
-          this.currentProfilePhotoUrl = imageLink;
-          this.createImagePreviewFromLink(imageLink);
-        },
-        error: (err) => {
-          this.setDefaultImage();
-          throw(err);
-        }
-      });
+      this.currentProfilePhotoUrl = this.imageService.generateImageUrl(this.imageFileName);
+      this.createImagePreviewFromLink(this.imageService.generateImageUrl(this.imageFileName));
     } else {
       this.setDefaultImage();
     }

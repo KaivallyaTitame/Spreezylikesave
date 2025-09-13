@@ -5,6 +5,7 @@ import { UserInformation } from '../models/user-information';
 import { BusinessInformation } from '../models/business-information';
 import { PresignedUrl } from '../models/presigned-url';
 import { API_CONFIG } from '../api-config';
+import { JwtDecoderService } from './jwtDecoder/jwt-decoder.service';
 
 @Injectable({
   providedIn: 'root',
@@ -12,9 +13,11 @@ import { API_CONFIG } from '../api-config';
 export class SettingsService {
   private generatedFileNamesSubject = new BehaviorSubject<string[]>([]);
   generatedFileNames$ = this.generatedFileNamesSubject.asObservable();
-  token = localStorage.getItem('token');
+  token : string;
   
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private jwtService : JwtDecoderService) {
+    this.token = this.jwtService.getToken();
+  }
 
   setGeneratedFileNames(fileNames: string[]): void {
     this.generatedFileNamesSubject.next(fileNames);
