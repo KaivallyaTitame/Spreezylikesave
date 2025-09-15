@@ -43,7 +43,8 @@
 }
 
 Input {
-  background-color: white !important; 
+  background-color: white !important;
+  color: black !important; 
 }
 
 select{
@@ -61,7 +62,7 @@ label{
 }
 
 ::placeholder {
-  color: black !important; 
+  color: darkgrey !important; 
 }
 
 textarea{
