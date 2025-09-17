@@ -379,9 +379,12 @@ export class PostComponent implements OnInit , OnChanges {
 
   showDetails(advertisementId: number): void {
     this.engageService.incrementEngagementCount(advertisementId);
-    this.router.navigate([`${this.router.url}/offer-description`, advertisementId], {
-      state: { offerData: this.postDetails }
-    });
+    this.router.navigate(
+      [`${this.router.url}/offer-description`, advertisementId],
+      {
+        queryParams: { data: JSON.stringify(this.postDetails) },
+      }
+    );
   }
 
   prevImage() {

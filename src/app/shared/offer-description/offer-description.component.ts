@@ -2,7 +2,6 @@ import {
   Component,
   ElementRef,
   HostListener,
-  Input,
   OnInit,
   ViewChild,
 } from "@angular/core";
@@ -41,7 +40,7 @@ import { ImageUrlGenerationService } from "../image-url-generation.service";
   styles: [],
 })
 export class OfferDescriptionComponent implements OnInit {
-  @Input() offerData: AdvertisementDetails;
+  offerData: AdvertisementDetails;
   dropdowns: { [key: string]: boolean } = {
     howToAvail: false,
     termsConditions: false,
@@ -104,46 +103,28 @@ export class OfferDescriptionComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // Get data from router state instead of query params
-    const navigation = this.router.getCurrentNavigation();
-    if (navigation?.extras?.state?.['offerData']) {
-      this.offerData = navigation.extras.state['offerData'];
-    } else {
-      // Fallback: try to get from history state
-      const state = history.state;
-      if (state?.offerData) {
-        this.offerData = state.offerData;
+    this.route.queryParams.subscribe((params) => {
+      if (params["data"]) {
+        let details = JSON.parse(params["data"]);
+        this.offerData = details;
       }
-    }
-    
+    });
     if (this.offerData) {
-      // Process image URLs
-      this.offerData.profileImageUrl = this.imageUrlGeneratorService.generateImageUrl(
-        this.offerData.profileImageUrl
-      );
-      this.offerData.imagePaths = this.imageUrlGeneratorService.generateImageUrls(
-        this.offerData.imagePaths
-      );
-      
       if (this.offerData.advertisementType === "Coupon") {
         this.isCoupon = true;
       } else if (this.offerData.advertisementType === "Event") {
         this.isEvent = true;
       } else {
         this.isPost = true;
+        this.isFollowing = this.offerData.following;
+        const { remainingDays, remainingHours, isExpired } =
+          this.advertisementDetailsService.calculateExpiry(
+            this.offerData.offerExpiry
+          );
+        this.remainingDays = remainingDays;
+        this.remainingHours = remainingHours;
+        this.isExpired = isExpired;
       }
-      
-      this.isFollowing = this.offerData.following;
-      const { remainingDays, remainingHours, isExpired } =
-        this.advertisementDetailsService.calculateExpiry(
-          this.offerData.offerExpiry
-        );
-      this.remainingDays = remainingDays;
-      this.remainingHours = remainingHours;
-      this.isExpired = isExpired;
-    } else {
-      // If no data is available, navigate back
-      this.router.navigate(['/']);
     }
   }
 
