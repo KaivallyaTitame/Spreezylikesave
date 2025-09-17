@@ -48,15 +48,15 @@ export class BusinessInformationComponent {
       city: [""],
       pincode: [""],
       whatsApp: [
-        "https://example-whatsapp.com",
+        "https://wa.me/1234567890", 
         [Validators.required, this.urlValidator()],
       ],
       instagram: [
-        "https://example-instagram.com",
+        "https://www.instagram.com/myaccount",
         [Validators.required, this.urlValidator()],
       ],
       facebook: [
-        "https://example-facebook.com",
+        "https://www.facebook.com/myaccount/",
         [Validators.required, this.urlValidator()],
       ],
       kycDetails: this.fb.group({

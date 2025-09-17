@@ -1,13 +1,14 @@
 import { Component, Input, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
-import { faFacebook, faInstagram } from "@fortawesome/free-brands-svg-icons";
+import { faFacebook, faInstagram, faWhatsapp } from "@fortawesome/free-brands-svg-icons";
+
 import {
   faBookmark,
   faCircleUser,
   faEnvelope,
   faList,
   faPhone,
-  faShare,
+  
 } from "@fortawesome/free-solid-svg-icons";
 import { UserDetails } from "src/app/models/UserDetails";
 import { AdvertisementDetails, InsightDetails } from "src/app/models/ad-details";
@@ -40,7 +41,7 @@ export class BusinessProfileComponent implements OnInit {
   faEnvelope = faEnvelope;
   faInstagram = faInstagram;
   faFacebook = faFacebook;
-  faShare = faShare;
+  faWhatsapp = faWhatsapp;
   faList = faList;
   faBookmark = faBookmark;
   faCircleUser = faCircleUser;
@@ -186,6 +187,7 @@ export class BusinessProfileComponent implements OnInit {
           data.profileImageUrl = this.imageService.generateImageUrl(data.profileImageUrl);
         }
         this.userDetails = data;
+        
         this.loadingUserDetails = false;
       },
       error: (error) => {
