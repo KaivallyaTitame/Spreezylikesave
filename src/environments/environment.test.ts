@@ -1,6 +1,6 @@
 export const environment = {
   production: false,
-  apiGateway: "http://10.141.72.134:8083",
+  apiGateway: "http://localhost:8083",
   firebase: {
     apiKey: "test-api-key",
     authDomain: "test-auth-domain",
