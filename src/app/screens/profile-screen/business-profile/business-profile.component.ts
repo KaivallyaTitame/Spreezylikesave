@@ -60,6 +60,7 @@ export class BusinessProfileComponent implements OnInit {
   noPostTitle:string = ''; 
   noPostDescription:string = '';
   defaultProfileImage = "assets/default-pic.png";
+  isFollowing: boolean = false;//Added for follow/unfollow
 
   constructor(
     private userService: UserService,
@@ -81,6 +82,41 @@ export class BusinessProfileComponent implements OnInit {
         }
       }
     });
+  }
+  // Check if already following after details load
+  private checkIfFollowing(): void {
+    if (this.userDetails) {
+      if (this.userDetails) { this.isFollowing = this.userDetails.following==="true"; }
+    }
+  }
+
+  // Toggle follow/unfollow 
+  toggleFollow(): void {
+    if (!this.username || this.currentUsername === this.username) return;
+
+    if (this.isFollowing) {
+      this.advertisementService.unfollowUser(this.currentUsername, this.username).subscribe({
+        next: () => {
+          this.isFollowing = false;
+          if (this.userDetails) {
+            const currentFollowers = Number(this.userDetails.followers) || 0;
+            this.userDetails.followers = String(Math.max(0, currentFollowers - 1));
+          }
+        },
+        error: (error) => console.error("Error unfollowing:", error),
+      });
+    } else {
+      this.advertisementService.followUser(this.currentUsername, this.username).subscribe({
+        next: () => {
+          this.isFollowing = true;
+          if (this.userDetails) {
+            const currentFollowers = Number(this.userDetails.followers) || 0;
+            this.userDetails.followers = String(currentFollowers + 1);
+          }
+        },
+        error: (error) => console.error("Error following:", error),
+      });
+    }
   }
 
   // this method sets the current active index of the post. 
@@ -187,6 +223,7 @@ export class BusinessProfileComponent implements OnInit {
         }
         this.userDetails = data;
         this.loadingUserDetails = false;
+        this.checkIfFollowing();
       },
       error: (error) => {
         this.loadingUserDetails = false; // Stop skeletons even if there's an error

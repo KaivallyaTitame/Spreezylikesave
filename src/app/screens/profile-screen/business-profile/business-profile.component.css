@@ -19,3 +19,18 @@
   .stats.justify-center {
     justify-content: center;
   }
+  .follow-btn-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 7px;
+  }
+  .follow-btn {
+    width: 40%;
+    padding: 10px;
+    border-radius: 7px;
+    color: #fff;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
+  }
