@@ -104,12 +104,10 @@ export class OfferDescriptionComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // Get data from router state instead of query params
     const navigation = this.router.getCurrentNavigation();
     if (navigation?.extras?.state?.['offerData']) {
       this.offerData = navigation.extras.state['offerData'];
     } else {
-      // Fallback: try to get from history state
       const state = history.state;
       if (state?.offerData) {
         this.offerData = state.offerData;
@@ -117,7 +115,6 @@ export class OfferDescriptionComponent implements OnInit {
     }
     
     if (this.offerData) {
-      // Process image URLs
       this.offerData.profileImageUrl = this.imageUrlGeneratorService.generateImageUrl(
         this.offerData.profileImageUrl
       );
@@ -142,7 +139,6 @@ export class OfferDescriptionComponent implements OnInit {
       this.remainingHours = remainingHours;
       this.isExpired = isExpired;
     } else {
-      // If no data is available, navigate back
       this.router.navigate(['/']);
     }
   }
