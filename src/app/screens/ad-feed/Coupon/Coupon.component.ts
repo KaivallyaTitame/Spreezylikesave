@@ -211,17 +211,16 @@ export class CouponComponent implements OnInit , OnChanges{
   }
 
   navigateToProfile() {
-    if (this.router.url == "/business-home/adfeed") {
-      this.router.navigate([
-        "/profile-screen/business-profile",
-        this.couponDetails.username,
-      ]);
-    } else {
-      this.router.navigate([
-        "/profile-screen/consumer-profile",
-        this.couponDetails.username,
-      ]);
+    const currentUser = JSON.parse(localStorage.getItem("user") || "{}");
+    const loggedInUsername = currentUser?.username;
+
+    if (this.couponDetails.username === loggedInUsername) {
+      return;
     }
+    this.router.navigate([
+      "/profile-screen/business-profile",
+      this.couponDetails.username,
+    ]);
   }
 
   showError(title: string, body: string) {
