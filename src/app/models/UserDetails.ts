@@ -9,5 +9,5 @@ export class UserDetails {
     phoneNumber: string = '';
     facebookUrl: string = '';
     instagramUrl: string = '';
-    whatsapp: string = '';
+    whatsApp: string = '';
 }

@@ -1,6 +1,6 @@
 import { HttpClient, HttpErrorResponse } from "@angular/common/http";
 import { Component } from "@angular/core";
-import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
 import { BusinessInformation } from "src/app/models/business-information";
 import { JwtDecoderService } from "src/app/services/jwtDecoder/jwt-decoder.service";
@@ -48,17 +48,11 @@ export class BusinessInformationComponent {
       city: [""],
       pincode: [""],
       whatsApp: [
-        "https://wa.me/1234567890", 
-        [Validators.required, this.urlValidator()],
+        '', 
+        [Validators.required, this.whatsAppValidator()],
       ],
-      instagram: [
-        "https://www.instagram.com/myaccount",
-        [Validators.required, this.urlValidator()],
-      ],
-      facebook: [
-        "https://www.facebook.com/myaccount/",
-        [Validators.required, this.urlValidator()],
-      ],
+      instagram: ['', [Validators.required, this.instagramValidator()]],
+      facebook: ['', [Validators.required, this.facebookValidator()]],
       kycDetails: this.fb.group({
         aadharNumber: [""],
         aadharImage: [""],
@@ -242,10 +236,33 @@ export class BusinessInformationComponent {
     return state ? state.cities : [];
   }
 
-  urlValidator() {
-    return (control: any) => {
-      const urlPattern = /^https:\/\/.+/;
-      return urlPattern.test(control.value) ? null : { invalidUrl: true };
-    };
+  instagramValidator() {
+    return (control: AbstractControl): ValidationErrors | null => {
+      const value = control.value as string;
+      if (!value) return null;
+      
+      const instagramUsernameRegex = /^(?!.*\.\.)(?!\.)(?!.*\.$)[a-zA-Z0-9._]{1,30}$/;
+      return instagramUsernameRegex.test(value) ? null : { invalidInstagram: true };
+    }
+  }
+  
+  facebookValidator() {
+    return (control: AbstractControl): ValidationErrors | null => {
+      const value = control.value as string;
+      if (!value) return null;
+      
+      const facebookUsernameRegex = /^[a-zA-Z][a-zA-Z0-9.]{4,49}$/;
+      return facebookUsernameRegex.test(value) ? null : { invalidFacebook: true };
+    }
+  }
+  
+  whatsAppValidator() {
+    return (control: AbstractControl): ValidationErrors | null => {
+      const value = control.value as string;
+      if (!value) return null;
+      
+      const whatsAppRegex = /^\d{10}$/;
+      return whatsAppRegex.test(value) ? null : { invalidWhatsApp: true };
+    }
   }
 }

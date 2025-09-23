@@ -38,11 +38,7 @@
               &#64;{{ userDetails.username }}
             </p>
             <div class="social-links flex justify-start items-center space-x-3">
-              <a
-                *ngIf="userDetails.phoneNumber"
-                [href]="userDetails.phoneNumber"
-                target="_blank"
-              >
+              <a [href]="userDetails.phoneNumber" target="_blank">
                 <fa-icon
                   [icon]="faPhone"
                   class="text-2xl text-red-500"
@@ -62,7 +58,7 @@
 
               <a
                 *ngIf="userDetails.instagramUrl"
-                [href]="userDetails.instagramUrl"
+                [href]="'https:/instagram.com/' + userDetails.instagramUrl"
                 target="_blank"
               >
                 <fa-icon
@@ -73,7 +69,7 @@
 
               <a
                 *ngIf="userDetails.facebookUrl"
-                [href]="userDetails.facebookUrl"
+                [href]="'https:/facebook.com/' + userDetails.facebookUrl"
                 target="_blank"
               >
                 <fa-icon
@@ -83,8 +79,8 @@
               </a>
 
               <a
-                *ngIf="userDetails.whatsapp"
-                [href]="userDetails.whatsapp"
+                *ngIf="userDetails.whatsApp"
+                [href]="'https://wa.me/+91' + userDetails.whatsApp"
                 target="_blank"
               >
                 <fa-icon
