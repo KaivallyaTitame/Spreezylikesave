@@ -16,7 +16,7 @@ import {
   faBookmark as faBookmarkRegular,
   faThumbsDown as faThumbsDownOutline,
   faThumbsUp as faThumbsUpOutline,
-  faBookmark as regularBookmark
+  faBookmark as regularBookmark,
 } from "@fortawesome/free-regular-svg-icons";
 import {
   faBars,
@@ -34,7 +34,7 @@ import {
   faThumbsDown,
   faThumbsUp,
   faUserGroup,
-  faBookmark as solidBookmark
+  faBookmark as solidBookmark,
 } from "@fortawesome/free-solid-svg-icons";
 import { AdvertisementDetails } from "src/app/models/ad-details";
 import { AdvertisementDetailsService } from "src/app/services/advertisementTypes.service";
@@ -48,14 +48,17 @@ import { ImageUrlGenerationService } from "src/app/shared/image-url-generation.s
   templateUrl: "./Coupon.component.html",
   styles: [],
 })
-export class CouponComponent implements OnInit , OnChanges{
+export class CouponComponent implements OnInit, OnChanges {
   @Input() couponDetails!: AdvertisementDetails;
   @Input() index!: number;
   @Input() activeIndex!: number | undefined;
   @Output() setActiveIndex = new EventEmitter<number>();
   @Output() setInsightScreen = new EventEmitter<Event>();
   @Input() showButton!: boolean;
-  @Output() followStatusChanged = new EventEmitter<{ username: string, isFollowing: boolean }>();
+  @Output() followStatusChanged = new EventEmitter<{
+    username: string;
+    isFollowing: boolean;
+  }>();
   remainingDays: number;
   isExpired: boolean = false;
   reportVisible: boolean = false;
@@ -100,6 +103,8 @@ export class CouponComponent implements OnInit , OnChanges{
   isLiked: boolean = false;
   isDisliked: boolean = false;
 
+  loggedInUsername: string;
+
   private triggerAnimation(type: "like" | "dislike" | "save") {
     if (type === "like") {
       this.showLikeAnimation = true;
@@ -119,7 +124,7 @@ export class CouponComponent implements OnInit , OnChanges{
     private jwtDecoderService: JwtDecoderService,
     private imageUrlGeneratorService: ImageUrlGenerationService,
     private engageService: EngageService
-  ) { }
+  ) {}
 
   hasValidImages: boolean = true;
   handleImageError(event: any): void {
@@ -145,21 +150,21 @@ export class CouponComponent implements OnInit , OnChanges{
         this.imageUrlGeneratorService.generateImageUrls(
           this.couponDetails.imagePaths
         );
+      this.loggedInUsername = this.jwtDecoderService.getUsername();
     } catch (error) {
       console.error("Error calculating expiry:", error);
     }
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['couponDetails'] && changes['couponDetails'].currentValue) {
+    if (changes["couponDetails"] && changes["couponDetails"].currentValue) {
       this.checkIfFollowing();
     }
   }
 
   toggleFollow(): void {
     let token = localStorage.getItem("token") || "";
-    let userName =
-      this.jwtDecoderService.getUsername() || "";
+    let userName = this.jwtDecoderService.getUsername() || "";
     const sourceUsername = userName || "currentUser";
     const targetUsername = this.couponDetails.username;
     if (this.isFollowing) {
@@ -172,7 +177,7 @@ export class CouponComponent implements OnInit , OnChanges{
               this.couponDetails.following = false;
               this.followStatusChanged.emit({
                 username: targetUsername,
-                isFollowing: false
+                isFollowing: false,
               });
             }
           },
@@ -185,19 +190,18 @@ export class CouponComponent implements OnInit , OnChanges{
         .followUser(sourceUsername, targetUsername)
         .subscribe({
           next: (response) => {
-            
             if (response.status === 200) {
               this.isFollowing = true;
               this.couponDetails.following = true;
               this.followStatusChanged.emit({
                 username: targetUsername,
-                isFollowing: true
+                isFollowing: true,
               });
             }
           },
           error: (error) => {
             console.error("Error following:", error);
-          }
+          },
         });
     }
   }
@@ -230,7 +234,6 @@ export class CouponComponent implements OnInit , OnChanges{
     this.showPopup = true;
   }
 
-
   showInsights(event: Event): void {
     this.setActiveIndex.emit(this.index);
     this.setInsightScreen.emit(event);
@@ -252,7 +255,6 @@ export class CouponComponent implements OnInit , OnChanges{
           this.couponDetails.likes += 1;
           this.couponDetails.dislikes -= 1;
         }
-
       },
       error: (error) => {
         if (error.status == 409) {
@@ -283,7 +285,6 @@ export class CouponComponent implements OnInit , OnChanges{
           this.couponDetails.dislikes += 1;
           this.couponDetails.likes -= 1;
         }
-
       },
       error: (error) => {
         if (error.status === 409) {
@@ -348,8 +349,6 @@ export class CouponComponent implements OnInit , OnChanges{
         );
       });
   }
-
-
 
   toggleReportButton(): void {
     this.showReportButton = !this.showReportButton;
@@ -417,7 +416,6 @@ export class CouponComponent implements OnInit , OnChanges{
     }
   }
 
-
   nextImage() {
     if (
       this.couponDetails.imagePaths &&
@@ -427,7 +425,6 @@ export class CouponComponent implements OnInit , OnChanges{
       this.updateTranslateX();
     }
   }
-
 
   goToImage(index: number) {
     if (
@@ -440,7 +437,6 @@ export class CouponComponent implements OnInit , OnChanges{
     }
   }
 
-
   updateTranslateX() {
     const containerWidth = this.imageContainer?.nativeElement?.clientWidth || 0;
     this.translateX = -this.currentImageIndex * containerWidth;
@@ -451,7 +447,6 @@ export class CouponComponent implements OnInit , OnChanges{
     this.updateTranslateX();
   }
 
-
   startX: number;
 
   @HostListener("touchstart", ["$event"])
@@ -459,12 +454,10 @@ export class CouponComponent implements OnInit , OnChanges{
     this.startX = event.touches[0].clientX;
   }
 
-
-  @HostListener('touchend', ['$event'])
+  @HostListener("touchend", ["$event"])
   onTouchEnd(event: TouchEvent) {
     const endX = event.changedTouches[0].clientX;
     const diff = endX - this.startX;
-
 
     if (Math.abs(diff) > 50) {
       if (diff > 0) {
