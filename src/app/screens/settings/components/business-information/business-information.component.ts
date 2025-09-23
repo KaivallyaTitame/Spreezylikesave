@@ -1,6 +1,12 @@
 import { HttpClient, HttpErrorResponse } from "@angular/common/http";
 import { Component } from "@angular/core";
-import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, Validators } from "@angular/forms";
+import {
+  AbstractControl,
+  FormBuilder,
+  FormGroup,
+  ValidationErrors,
+  Validators,
+} from "@angular/forms";
 import { Router } from "@angular/router";
 import { BusinessInformation } from "src/app/models/business-information";
 import { JwtDecoderService } from "src/app/services/jwtDecoder/jwt-decoder.service";
@@ -47,12 +53,9 @@ export class BusinessInformationComponent {
       state: [""],
       city: [""],
       pincode: [""],
-      whatsApp: [
-        '', 
-        [Validators.required, this.whatsAppValidator()],
-      ],
-      instagram: ['', [Validators.required, this.instagramValidator()]],
-      facebook: ['', [Validators.required, this.facebookValidator()]],
+      whatsApp: ["", [Validators.required, this.whatsAppValidator()]],
+      instagram: ["", [Validators.required, this.instagramValidator()]],
+      facebook: ["", [Validators.required, this.facebookValidator()]],
       kycDetails: this.fb.group({
         aadharNumber: [""],
         aadharImage: [""],
@@ -88,13 +91,13 @@ export class BusinessInformationComponent {
             this.showPopUp = true;
           }
         } catch (error) {
-          this.loading = false;  
-          throw(error); 
+          this.loading = false;
+          throw error;
         }
       },
       error: (error: HttpErrorResponse) => {
-        this.loading = false; 
-        throw(error);  
+        this.loading = false;
+        throw error;
       },
       complete: () => {
         this.loading = false;
@@ -240,29 +243,34 @@ export class BusinessInformationComponent {
     return (control: AbstractControl): ValidationErrors | null => {
       const value = control.value as string;
       if (!value) return null;
-      
-      const instagramUsernameRegex = /^(?!.*\.\.)(?!\.)(?!.*\.$)[a-zA-Z0-9._]{1,30}$/;
-      return instagramUsernameRegex.test(value) ? null : { invalidInstagram: true };
-    }
+
+      const instagramUsernameRegex =
+        /^(?!.*\.\.)(?!\.)(?!.*\.$)[a-zA-Z0-9._]{1,30}$/;
+      return instagramUsernameRegex.test(value)
+        ? null
+        : { invalidInstagram: true };
+    };
   }
-  
+
   facebookValidator() {
     return (control: AbstractControl): ValidationErrors | null => {
       const value = control.value as string;
       if (!value) return null;
-      
+
       const facebookUsernameRegex = /^[a-zA-Z][a-zA-Z0-9.]{4,49}$/;
-      return facebookUsernameRegex.test(value) ? null : { invalidFacebook: true };
-    }
+      return facebookUsernameRegex.test(value)
+        ? null
+        : { invalidFacebook: true };
+    };
   }
-  
+
   whatsAppValidator() {
     return (control: AbstractControl): ValidationErrors | null => {
       const value = control.value as string;
       if (!value) return null;
-      
+
       const whatsAppRegex = /^\d{10}$/;
       return whatsAppRegex.test(value) ? null : { invalidWhatsApp: true };
-    }
+    };
   }
 }
