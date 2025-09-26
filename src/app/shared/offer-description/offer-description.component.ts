@@ -34,6 +34,7 @@ import { AdvertisementDetailsService } from "src/app/services/advertisementTypes
 import { JwtDecoderService } from "src/app/services/jwtDecoder/jwt-decoder.service";
 import { ShareService } from "src/app/services/share.service";
 import { ImageUrlGenerationService } from "../image-url-generation.service";
+import { UserInteractionStateService } from "src/app/services/user-interaction-state.service";
 
 @Component({
   selector: "app-offer-description",
@@ -94,7 +95,8 @@ export class OfferDescriptionComponent implements OnInit {
     private router: Router,
     private shareService: ShareService,
     private jwtDecoderService: JwtDecoderService,
-    private imageUrlGeneratorService: ImageUrlGenerationService
+    private imageUrlGeneratorService: ImageUrlGenerationService,
+    private stateService: UserInteractionStateService
   ) { }
 
   hasValidImages: boolean = true;
@@ -138,6 +140,9 @@ export class OfferDescriptionComponent implements OnInit {
       this.remainingDays = remainingDays;
       this.remainingHours = remainingHours;
       this.isExpired = isExpired;
+
+      // Load saved interaction state
+      this.loadSavedState();
     } else {
       this.router.navigate(['/']);
     }
@@ -426,6 +431,17 @@ export class OfferDescriptionComponent implements OnInit {
       } else {
         this.nextImage();
       }
+    }
+  }
+
+  private loadSavedState(): void {
+    const savedState = this.stateService.getState(this.offerData.advertisementId);
+    if (savedState) {
+      this.isLiked = savedState.isLiked;
+      this.isDisliked = savedState.isDisliked;
+      this.isSaved = savedState.isSaved;
+      this.offerData.likes = savedState.likesCount;
+      this.offerData.dislikes = savedState.dislikesCount;
     }
   }
 }

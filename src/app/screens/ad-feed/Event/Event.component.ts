@@ -39,6 +39,7 @@ import { JwtDecoderService } from "src/app/services/jwtDecoder/jwt-decoder.servi
 import { ShareService } from "src/app/services/share.service";
 import { EngageService } from "src/app/shared/engage.service";
 import { ImageUrlGenerationService } from "src/app/shared/image-url-generation.service";
+import { UserInteractionStateService } from "src/app/services/user-interaction-state.service";
 @Component({
   selector: "app-Event",
   templateUrl: "./Event.component.html",
@@ -103,7 +104,8 @@ export class EventComponent implements OnInit, OnChanges {
     private shareService: ShareService,
     private jwtDecoderService: JwtDecoderService,
     private imageUrlGeneratorService: ImageUrlGenerationService,
-    private engageService: EngageService
+    private engageService: EngageService,
+    private stateService: UserInteractionStateService
   ) {}
 
   hasValidImages: boolean = true;
@@ -130,6 +132,10 @@ export class EventComponent implements OnInit, OnChanges {
       this.imageUrlGeneratorService.generateImageUrls(
         this.eventDetails.imagePaths
       );
+
+    // Initialize and load saved state
+    this.initializeInteractionState();
+    this.loadSavedState();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -457,6 +463,28 @@ export class EventComponent implements OnInit, OnChanges {
       } else {
         this.nextImage();
       }
+    }
+  }
+
+  private initializeInteractionState(): void {
+    this.stateService.initializeState(this.eventDetails.advertisementId, {
+      advertisementId: this.eventDetails.advertisementId,
+      isLiked: false,
+      isDisliked: false,
+      isSaved: false,
+      likesCount: this.eventDetails.likes,
+      dislikesCount: this.eventDetails.dislikes
+    });
+  }
+
+  private loadSavedState(): void {
+    const savedState = this.stateService.getState(this.eventDetails.advertisementId);
+    if (savedState) {
+      this.isLiked = savedState.isLiked;
+      this.isDisliked = savedState.isDisliked;
+      this.isSaved = savedState.isSaved;
+      this.eventDetails.likes = savedState.likesCount;
+      this.eventDetails.dislikes = savedState.dislikesCount;
     }
   }
 }

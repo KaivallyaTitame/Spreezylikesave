@@ -5,10 +5,12 @@ import {
   HttpResponse,
 } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { Observable } from "rxjs";
+import { Observable, tap } from "rxjs";
 import { API_CONFIG } from "../api-config";
 import { AdvertisementDetails, InsightDetails } from "../models/ad-details";
 import { JwtDecoderService } from "./jwtDecoder/jwt-decoder.service";
+import { UserInteractionStateService } from "./user-interaction-state.service";
+import { UserInteractionSyncService } from "./user-interaction-sync.service";
 
 export interface PaginatedResponse<T> {
   content: T[];
@@ -28,7 +30,9 @@ export class AdvertisementDetailsService {
 
   constructor(
     private http: HttpClient,
-    private jwtDecoderService: JwtDecoderService
+    private jwtDecoderService: JwtDecoderService,
+    private stateService: UserInteractionStateService,
+    private syncService: UserInteractionSyncService
   ) {}
 
   getAdvertisementDetails(page: number = 0, pageSize: number = 10): Observable<AdvertisementDetails[]> {
@@ -47,7 +51,24 @@ export class AdvertisementDetailsService {
       headers,
       params,
       responseType: "json",
-    });
+    }).pipe(
+      tap(ads => {
+        // Initialize state for each advertisement
+        ads.forEach(ad => {
+          const existingState = this.stateService.getState(ad.advertisementId);
+          if (!existingState) {
+            this.stateService.initializeState(ad.advertisementId, {
+              advertisementId: ad.advertisementId,
+              isLiked: false,
+              isDisliked: false,
+              isSaved: false,
+              likesCount: ad.likes,
+              dislikesCount: ad.dislikes
+            });
+          }
+        });
+      })
+    );
   }
 
   getAdvertisementDetailsPaginated(page: number = 0, pageSize: number = 10): Observable<PaginatedResponse<AdvertisementDetails>> {
@@ -91,7 +112,7 @@ export class AdvertisementDetailsService {
   }
 
   updateLikes(advertisementId: number): Observable<HttpResponse<string>> {
-    return this.http.post(
+    const request = this.http.post(
       API_CONFIG.ADVERTISEMENT_EVENTS.UPVOTE_ADVERTISEMENT(advertisementId),
       {},
       {
@@ -103,10 +124,31 @@ export class AdvertisementDetailsService {
         responseType: "text",
       }
     );
+
+    return request.pipe(
+      tap(response => {
+        if (response.status === 200 || response.status === 201) {
+          const currentState = this.stateService.getState(advertisementId);
+          if (currentState) {
+            this.stateService.updateState(advertisementId, {
+              isLiked: true,
+              isDisliked: false,
+              likesCount: response.status === 201 ? 
+                currentState.likesCount + 1 : 
+                currentState.likesCount + 1,
+              dislikesCount: response.status === 200 ? 
+                currentState.dislikesCount - 1 : 
+                currentState.dislikesCount
+            });
+          }
+          this.syncService.markForSync(advertisementId);
+        }
+      })
+    );
   }
 
   updateDislikes(advertisementId: number): Observable<HttpResponse<string>> {
-    return this.http.post(
+    const request = this.http.post(
       API_CONFIG.ADVERTISEMENT_EVENTS.DISLIKE_ADVERTISEMENT(advertisementId),
       {},
       {
@@ -118,13 +160,34 @@ export class AdvertisementDetailsService {
         }),
       }
     );
+
+    return request.pipe(
+      tap(response => {
+        if (response.status === 200 || response.status === 201) {
+          const currentState = this.stateService.getState(advertisementId);
+          if (currentState) {
+            this.stateService.updateState(advertisementId, {
+              isDisliked: true,
+              isLiked: false,
+              dislikesCount: response.status === 201 ? 
+                currentState.dislikesCount + 1 : 
+                currentState.dislikesCount + 1,
+              likesCount: response.status === 200 ? 
+                currentState.likesCount - 1 : 
+                currentState.likesCount
+            });
+          }
+          this.syncService.markForSync(advertisementId);
+        }
+      })
+    );
   }
 
   savePost(
     username: string,
     advertisementId: number
   ): Observable<HttpResponse<AdvertisementDetails>> {
-    return this.http.post<AdvertisementDetails>(
+    const request = this.http.post<AdvertisementDetails>(
       API_CONFIG.ADVERTISEMENT_EVENTS.SAVE_ADVERTISEMENT,
       {
         username: username,
@@ -138,6 +201,20 @@ export class AdvertisementDetailsService {
           "Content-Type": "application/json",
         }),
       }
+    );
+
+    return request.pipe(
+      tap(response => {
+        if (response.status === 200 || response.status === 201) {
+          const currentState = this.stateService.getState(advertisementId);
+          if (currentState) {
+            this.stateService.updateState(advertisementId, {
+              isSaved: !currentState.isSaved
+            });
+          }
+          this.syncService.markForSync(advertisementId);
+        }
+      })
     );
   }
 

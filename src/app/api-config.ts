@@ -61,6 +61,8 @@ export const API_CONFIG = {
     UNFOLLOW : (sourceUsername: string, targetUsername: string) => 
     `${environment.apiGateway}/user/unfollow/${sourceUsername}/${targetUsername}`,
     ENGAGE : (advertisementId: number) => 
-    `${environment.apiGateway}/content/advertisement/engage/${advertisementId}`
+    `${environment.apiGateway}/content/advertisement/engage/${advertisementId}`,
+    SYNC_USER_INTERACTIONS: `${environment.apiGateway}/user/sync-interactions`,
+    GET_USER_INTERACTIONS: (username: string) => `${environment.apiGateway}/user/interactions/${username}`
   }
 };

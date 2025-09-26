@@ -42,6 +42,7 @@ import { JwtDecoderService } from "src/app/services/jwtDecoder/jwt-decoder.servi
 import { ShareService } from "src/app/services/share.service";
 import { EngageService } from "src/app/shared/engage.service";
 import { ImageUrlGenerationService } from "src/app/shared/image-url-generation.service";
+import { UserInteractionStateService } from "src/app/services/user-interaction-state.service";
 
 @Component({
   selector: "app-Coupon",
@@ -123,7 +124,8 @@ export class CouponComponent implements OnInit, OnChanges {
     private shareService: ShareService,
     private jwtDecoderService: JwtDecoderService,
     private imageUrlGeneratorService: ImageUrlGenerationService,
-    private engageService: EngageService
+    private engageService: EngageService,
+    private stateService: UserInteractionStateService
   ) {}
 
   hasValidImages: boolean = true;
@@ -154,6 +156,10 @@ export class CouponComponent implements OnInit, OnChanges {
     } catch (error) {
       console.error("Error calculating expiry:", error);
     }
+
+    // Initialize and load saved state
+    this.initializeInteractionState();
+    this.loadSavedState();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -465,6 +471,28 @@ export class CouponComponent implements OnInit, OnChanges {
       } else {
         this.nextImage();
       }
+    }
+  }
+
+  private initializeInteractionState(): void {
+    this.stateService.initializeState(this.couponDetails.advertisementId, {
+      advertisementId: this.couponDetails.advertisementId,
+      isLiked: false,
+      isDisliked: false,
+      isSaved: false,
+      likesCount: this.couponDetails.likes,
+      dislikesCount: this.couponDetails.dislikes
+    });
+  }
+
+  private loadSavedState(): void {
+    const savedState = this.stateService.getState(this.couponDetails.advertisementId);
+    if (savedState) {
+      this.isLiked = savedState.isLiked;
+      this.isDisliked = savedState.isDisliked;
+      this.isSaved = savedState.isSaved;
+      this.couponDetails.likes = savedState.likesCount;
+      this.couponDetails.dislikes = savedState.dislikesCount;
     }
   }
 }

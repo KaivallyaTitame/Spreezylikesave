@@ -135,6 +135,10 @@ export class PostComponent implements OnInit, OnChanges {
       this.imageUrlGeneratorService.generateImageUrls(
         this.postDetails.imagePaths
       );
+
+    // Initialize and load saved state
+    this.initializeInteractionState();
+    this.loadSavedState();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -442,6 +446,28 @@ export class PostComponent implements OnInit, OnChanges {
       } else {
         this.nextImage();
       }
+    }
+  }
+
+  private initializeInteractionState(): void {
+    this.stateService.initializeState(this.postDetails.advertisementId, {
+      advertisementId: this.postDetails.advertisementId,
+      isLiked: false,
+      isDisliked: false,
+      isSaved: false,
+      likesCount: this.postDetails.likes,
+      dislikesCount: this.postDetails.dislikes
+    });
+  }
+
+  private loadSavedState(): void {
+    const savedState = this.stateService.getState(this.postDetails.advertisementId);
+    if (savedState) {
+      this.isLiked = savedState.isLiked;
+      this.isDisliked = savedState.isDisliked;
+      this.isSaved = savedState.isSaved;
+      this.postDetails.likes = savedState.likesCount;
+      this.postDetails.dislikes = savedState.dislikesCount;
     }
   }
 }
