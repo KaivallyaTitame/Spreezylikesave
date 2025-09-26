@@ -13,9 +13,6 @@ export class OfferDescriptionService {
   getOfferDescription(): Observable<OfferDescriptionDTO> {
     return this.http.get<OfferDescriptionDTO>('http://192.168.1.35:8082/feed/consumer/advertisement/offer-description', {
       responseType: 'json',
-      headers: new HttpHeaders({
-        //'ngrok-skip-browser-warning': 'true',
-      }),
 
     });
   }

@@ -15,7 +15,6 @@ export class BusinessService {
   getBusinessDetails(username: string): Observable<BusinessDetails[]> {
     return this.http.get<BusinessDetails[]>(API_CONFIG.GET_BUSINESS_DETAILS(username), {
       responseType: 'json',
-      headers: new HttpHeaders({  }),
     });
   }
 

@@ -53,9 +53,9 @@ export class BusinessInformationComponent {
       state: [""],
       city: [""],
       pincode: [""],
-      whatsApp: ["", [Validators.required, this.whatsAppValidator()]],
-      instagram: ["", [Validators.required, this.instagramValidator()]],
-      facebook: ["", [Validators.required, this.facebookValidator()]],
+      whatsApp: ["", [Validators.required, Validators.pattern(/^\d{10}$/)]],
+      instagram: ["", [Validators.required, Validators.pattern(/^(?!.*\.\.)(?!\.)(?!.*\.$)[a-zA-Z0-9._]{1,30}$/)]],
+      facebook: ["", [Validators.required, Validators.pattern(/^[a-zA-Z][a-zA-Z0-9.]{4,49}$/)]],
       kycDetails: this.fb.group({
         aadharNumber: [""],
         aadharImage: [""],
@@ -237,40 +237,5 @@ export class BusinessInformationComponent {
       (state) => state.name === selectedState
     );
     return state ? state.cities : [];
-  }
-
-  instagramValidator() {
-    return (control: AbstractControl): ValidationErrors | null => {
-      const value = control.value as string;
-      if (!value) return null;
-
-      const instagramUsernameRegex =
-        /^(?!.*\.\.)(?!\.)(?!.*\.$)[a-zA-Z0-9._]{1,30}$/;
-      return instagramUsernameRegex.test(value)
-        ? null
-        : { invalidInstagram: true };
-    };
-  }
-
-  facebookValidator() {
-    return (control: AbstractControl): ValidationErrors | null => {
-      const value = control.value as string;
-      if (!value) return null;
-
-      const facebookUsernameRegex = /^[a-zA-Z][a-zA-Z0-9.]{4,49}$/;
-      return facebookUsernameRegex.test(value)
-        ? null
-        : { invalidFacebook: true };
-    };
-  }
-
-  whatsAppValidator() {
-    return (control: AbstractControl): ValidationErrors | null => {
-      const value = control.value as string;
-      if (!value) return null;
-
-      const whatsAppRegex = /^\d{10}$/;
-      return whatsAppRegex.test(value) ? null : { invalidWhatsApp: true };
-    };
   }
 }
