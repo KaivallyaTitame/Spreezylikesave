@@ -40,6 +40,7 @@ import { JwtDecoderService } from "src/app/services/jwtDecoder/jwt-decoder.servi
 import { ShareService } from "src/app/services/share.service";
 import { EngageService } from "src/app/shared/engage.service";
 import { ImageUrlGenerationService } from "src/app/shared/image-url-generation.service";
+import { UserInteractionStateService } from "src/app/services/user-interaction-state.service";
 
 @Component({
   selector: "app-Post",
@@ -107,7 +108,8 @@ export class PostComponent implements OnInit, OnChanges {
     private jwtDecoderService: JwtDecoderService,
     private shareService: ShareService,
     private imageUrlGeneratorService: ImageUrlGenerationService,
-    private engageService: EngageService
+    private engageService: EngageService,
+    private stateService: UserInteractionStateService 
   ) {}
 
   hasValidImages: boolean = true;
