@@ -38,7 +38,7 @@
               &#64;{{ userDetails.username }}
             </p>
             <div class="social-links flex justify-start items-center space-x-3">
-              <a [href]="userDetails.phoneNumber" target="_blank">
+              <a [href]="'tel:' +userDetails.phoneNumber" target="_blank">
                 <fa-icon
                   [icon]="faPhone"
                   class="text-2xl text-red-500"

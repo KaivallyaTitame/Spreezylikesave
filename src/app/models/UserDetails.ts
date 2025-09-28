@@ -6,8 +6,8 @@ export class UserDetails {
     followers: string = '';
     following: string = '';
     email: string = '';
-    phoneNumber?: string = '';
+    phoneNumber: string = '';
     facebookUrl?: string = '';
     instagramUrl?: string = '';
-    whatsApp: string = '';
+    whatsApp?: string = '';
 }
