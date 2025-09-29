@@ -7,18 +7,30 @@
       aria-label="Back"
       (click)="goBack()"
       style="
-        font-size: 1.5rem;
+        width: 2rem;
+        height: 2rem;
         background: none;
         border: none;
-        line-height: 1;
         padding: 0;
         cursor: pointer;
+        display: flex;
+        align-items: center;
         color: #222;
       "
     >
-      &lt;
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+        <path
+          d="M15 6l-6 6 6 6"
+          stroke="#222"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </svg>
     </button>
-    <span class="text-xl font-bold" style="color: #111">Settings</span>
+    <span class="text-xl font-bold" style="color: #111; margin-left: 0.7rem"
+      >Settings</span
+    >
   </header>
 
   <div class="mb-4">
