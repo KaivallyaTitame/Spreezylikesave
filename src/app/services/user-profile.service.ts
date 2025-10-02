@@ -89,4 +89,19 @@ export class UserService {
         })
       );
   }
+  checkIsFollowing(source: string, target: string): Observable<boolean> {
+  const token = localStorage.getItem("token");
+  return this.http
+    .get<boolean>(API_CONFIG.IS_FOLLOWING(source, target), {
+      headers: new HttpHeaders({
+        Authorization: `Bearer ${token}`,
+      }),
+    })
+    .pipe(
+      timeout(15000),
+      catchError((error) => {
+        return throwError(() => error);
+      })
+    );
+}
 }

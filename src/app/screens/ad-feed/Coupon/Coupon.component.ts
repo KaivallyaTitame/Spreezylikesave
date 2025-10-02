@@ -211,8 +211,7 @@ export class CouponComponent implements OnInit , OnChanges{
   }
 
   navigateToProfile() {
-    const currentUser = JSON.parse(localStorage.getItem("user") || "{}");
-    const loggedInUsername = currentUser?.username;
+    const loggedInUsername = this.jwtDecoderService.getUsername();
 
     if (this.couponDetails.username === loggedInUsername) {
       return;

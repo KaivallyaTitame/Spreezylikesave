@@ -61,6 +61,7 @@ export class BusinessProfileComponent implements OnInit {
   noPostDescription:string = '';
   defaultProfileImage = "assets/default-pic.png";
   isFollowing: boolean = false;//Added for follow/unfollow
+  bio: string = "";
 
   constructor(
     private userService: UserService,
@@ -223,7 +224,12 @@ export class BusinessProfileComponent implements OnInit {
         }
         this.userDetails = data;
         this.loadingUserDetails = false;
-        this.checkIfFollowing();
+         if (this.currentUsername && this.username) {
+        this.userService.checkIsFollowing(this.currentUsername, this.username).subscribe({
+          next: (isFollow) => (this.isFollowing = isFollow),
+          error: (err) => console.error("Error fetching follow state", err),
+        });
+      }
       },
       error: (error) => {
         this.loadingUserDetails = false; // Stop skeletons even if there's an error
