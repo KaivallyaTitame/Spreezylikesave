@@ -1,15 +1,47 @@
 <div class="p-4">
-  <header class="flex items-center mb-4">
-    <button class="icon-btn" aria-label="Back">
-      <i class="ri-arrow-left-line"></i>
+  <header
+    class="flex items-center pl-0 pr-4 py-4 mb-2"
+    style="margin-top: 30px"
+  >
+    <button
+      aria-label="Back"
+      (click)="goBack()"
+      style="
+        width: 2rem;
+        height: 2rem;
+        background: none;
+        border: none;
+        padding: 0;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        color: #222;
+      "
+    >
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+        <path
+          d="M15 6l-6 6 6 6"
+          stroke="#222"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </svg>
     </button>
-    <h1 class="font-roboto text-black font-bold text-xl mb-2 ml-2 mt-2">Settings</h1>
+    <span class="text-xl font-bold" style="color: #111; margin-left: 0.7rem"
+      >Settings</span
+    >
   </header>
 
   <div class="mb-4">
-    <h2 class="font-roboto text-gray-500 text-sm font-semi-bold mb-2">General Settings</h2>
+    <h2 class="font-roboto text-gray-500 text-sm font-semi-bold mb-2">
+      General Settings
+    </h2>
     <div class="list-none">
-      <a class="list-item flex justify-between items-center" (click)="navigateToProfileInformation()">
+      <a
+        class="list-item justify-between items-center"
+        (click)="navigateToProfileInformation()"
+      >
         <span class="font-roboto text-black">Profile information</span>
         <i class="ri-arrow-right-s-line text-black ml-2"></i>
       </a>

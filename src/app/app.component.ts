@@ -1,31 +1,51 @@
-import { Component, HostListener} from '@angular/core';
+import { Component } from '@angular/core';
 import { Capacitor } from '@capacitor/core';
-// import { ScreenOrientation } from '@awesome-cordova-plugins/screen-orientation/ngx';
 import { ScreenOrientation } from '@capacitor/screen-orientation';
 import { Location } from '@angular/common';
+import { App as CapacitorApp } from '@capacitor/app'; // For Capacitor v5
 import { UserInteractionSyncService } from './services/user-interaction-sync.service';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.sass']
+  styleUrls: ['./app.component.sass'],
 })
 export class AppComponent {
   title = 'spreezy-frontend';
-  showError:boolean = false; 
-  errorCode:string = ''; 
-  errorDescription:string = '';
+  showError: boolean = false;
+  errorCode: string = '';
+  errorDescription: string = '';
 
   constructor(
     private location: Location,
     private syncService: UserInteractionSyncService
-  ){
-    // locking the screen on intialisation of the screen
+  ) {
     this.lockOrientation();
     // Load user interactions from backend on app start
     this.loadUserInteractions();
+    
+    // Listen for the hardware back button (Capacitor v5 syntax)
+    if (Capacitor.isNativePlatform()) {
+      CapacitorApp.addListener(
+        'backButton',
+        (event: { canGoBack: boolean }) => {
+          // If you have a popup, close it here instead of going back
+          if (this.showError) {
+            this.showError = false;
+            return;
+          }
+          // Otherwise, go back in history
+          if (event.canGoBack) {
+            this.location.back();
+          } else {
+            // Optionally exit the app if at root
+            // CapacitorApp.exitApp();
+          }
+        }
+      );
+    }
   }
-  
+
   showErrorPopup(errorCode: string, errorDescription: string) {
     this.errorCode = errorCode;
     this.errorDescription = errorDescription;
@@ -34,18 +54,17 @@ export class AppComponent {
 
   onCloseError() {
     this.showError = false;
-    this.location.back(); 
+    this.location.back();
   }
 
   async lockOrientation() {
-    if(Capacitor.getPlatform() == 'android'){ // if the given platform is android then only it will execute the methood.
+    if (Capacitor.getPlatform() === 'android') {
       try {
-           await ScreenOrientation.lock({ orientation: 'portrait' });
+        await ScreenOrientation.lock({ orientation: 'portrait' });
       } catch (error) {
-           console.error('Orientation lock failed:', error);
+        console.error('Orientation lock failed:', error);
       }
     }
-
   }
 
   private loadUserInteractions(): void {
