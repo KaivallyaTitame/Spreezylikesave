@@ -20,11 +20,12 @@ export class AppComponent {
     private location: Location,
     private syncService: UserInteractionSyncService
   ) {
+    this.enableNativeBackButton();
     this.lockOrientation();
-    // Load user interactions from backend on app start
     this.loadUserInteractions();
-    
-    // Listen for the hardware back button (Capacitor v5 syntax)
+  }
+
+  enableNativeBackButton(){
     if (Capacitor.isNativePlatform()) {
       CapacitorApp.addListener(
         'backButton',
