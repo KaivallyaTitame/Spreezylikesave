@@ -44,14 +44,17 @@ import { ImageUrlGenerationService } from "src/app/shared/image-url-generation.s
   templateUrl: "./Event.component.html",
   styleUrls: [],
 })
-export class EventComponent implements OnInit , OnChanges {
+export class EventComponent implements OnInit, OnChanges {
   @Input() eventDetails!: AdvertisementDetails;
   @Input() index!: number;
   @Input() activeIndex!: number | undefined;
   @Output() setActiveIndex = new EventEmitter<number>();
   @Output() setInsightScreen = new EventEmitter<Event>();
   @Input() showButton!: boolean;
-  @Output() followStatusChanged = new EventEmitter<{ username: string, isFollowing: boolean }>();
+  @Output() followStatusChanged = new EventEmitter<{
+    username: string;
+    isFollowing: boolean;
+  }>();
   remainingDays: number;
   remainingHours: number;
   isExpired: boolean = false;
@@ -84,6 +87,7 @@ export class EventComponent implements OnInit , OnChanges {
   faThumbsDownOutline = faThumbsDownOutline;
   isLiked: boolean = false;
   isDisliked: boolean = false;
+  loggedInUsername: string;
   showBelow = false;
   faChevronLeft = faChevronLeft;
   faChevronRight = faChevronRight;
@@ -100,7 +104,7 @@ export class EventComponent implements OnInit , OnChanges {
     private jwtDecoderService: JwtDecoderService,
     private imageUrlGeneratorService: ImageUrlGenerationService,
     private engageService: EngageService
-  ) { }
+  ) {}
 
   hasValidImages: boolean = true;
   handleImageError(event: any): void {
@@ -117,6 +121,7 @@ export class EventComponent implements OnInit , OnChanges {
     this.remainingHours = remainingHours;
     this.isExpired = isExpired;
     this.checkIfFollowing();
+    this.loggedInUsername = this.jwtDecoderService.getUsername();
     this.eventDetails.profileImageUrl =
       this.imageUrlGeneratorService.generateImageUrl(
         this.eventDetails.profileImageUrl
@@ -128,15 +133,14 @@ export class EventComponent implements OnInit , OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['eventDetails'] && changes['eventDetails'].currentValue) {
+    if (changes["eventDetails"] && changes["eventDetails"].currentValue) {
       this.checkIfFollowing();
     }
   }
 
   toggleFollow(): void {
     let token = localStorage.getItem("token") || "";
-    let userName =
-      this.jwtDecoderService.getUsername() || "";
+    let userName = this.jwtDecoderService.getUsername() || "";
     const sourceUsername = userName || "currentUser";
     const targetUsername = this.eventDetails.username;
     if (this.isFollowing) {
@@ -150,7 +154,7 @@ export class EventComponent implements OnInit , OnChanges {
               this.eventDetails.following = false;
               this.followStatusChanged.emit({
                 username: targetUsername,
-                isFollowing: false
+                isFollowing: false,
               });
             }
           },
@@ -168,13 +172,13 @@ export class EventComponent implements OnInit , OnChanges {
               this.eventDetails.following = true;
               this.followStatusChanged.emit({
                 username: targetUsername,
-                isFollowing: true
+                isFollowing: true,
               });
             }
           },
           error: (error) => {
             console.error("Error following:", error);
-          }
+          },
         });
     }
   }
@@ -386,12 +390,9 @@ export class EventComponent implements OnInit , OnChanges {
 
   showDetails(advertisementId: number): void {
     this.engageService.incrementEngagementCount(advertisementId);
-    this.router.navigate(
-      [`${this.router.url}/offer-description`, advertisementId],
-      {
-        queryParams: { data: JSON.stringify(this.eventDetails) },
-      }
-    );
+    this.router.navigate([`${this.router.url}/offer-description`, advertisementId], {
+      state: { offerData: this.eventDetails }
+    });
   }
 
   prevImage() {

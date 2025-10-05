@@ -46,13 +46,16 @@ import { ImageUrlGenerationService } from "src/app/shared/image-url-generation.s
   templateUrl: "./Post.component.html",
   styles: [],
 })
-export class PostComponent implements OnInit , OnChanges {
+export class PostComponent implements OnInit, OnChanges {
   @Input() postDetails!: AdvertisementDetails;
   @Input() index!: number;
   @Input() activeIndex!: number | undefined;
   @Output() setActiveIndex = new EventEmitter<number>();
   @Output() setInsightScreen = new EventEmitter<Event>();
-  @Output() followStatusChanged = new EventEmitter<{ username: string; isFollowing: boolean }>();
+  @Output() followStatusChanged = new EventEmitter<{
+    username: string;
+    isFollowing: boolean;
+  }>();
   @Input() showButton!: boolean;
   remainingDays: number;
   remainingHours: number;
@@ -67,7 +70,7 @@ export class PostComponent implements OnInit , OnChanges {
   showPopup: boolean = false;
   popupTitle: string = "Error";
   popupBody: string = "";
-  
+
   faBars = faBars;
   faHeartSolid = faHeartSolid;
   faHeartRegular = faHeartRegular;
@@ -85,7 +88,7 @@ export class PostComponent implements OnInit , OnChanges {
   faCircleUser = faCircleUser;
   faThumbsUpOutline = faThumbsUpOutline;
   faThumbsDownOutline = faThumbsDownOutline;
-  
+  loggedInUsername: string;
   isLiked: boolean = false;
   isDisliked: boolean = false;
   isFollowing: boolean = false;
@@ -94,7 +97,7 @@ export class PostComponent implements OnInit , OnChanges {
   faChevronRight = faChevronRight;
   currentImageIndex = 0;
   translateX = 0;
-  
+
   @ViewChild("imageContainer") imageContainer: ElementRef;
   @ViewChild("threeDotsWrapper", { static: false }) threeDotsRef!: ElementRef;
 
@@ -105,10 +108,10 @@ export class PostComponent implements OnInit , OnChanges {
     private shareService: ShareService,
     private imageUrlGeneratorService: ImageUrlGenerationService,
     private engageService: EngageService
-  ) { }
+  ) {}
 
   hasValidImages: boolean = true;
-  
+
   handleImageError(event: any): void {
     this.hasValidImages = false;
     event.target.classList.add("min-h-48");
@@ -123,6 +126,7 @@ export class PostComponent implements OnInit , OnChanges {
     this.remainingHours = remainingHours;
     this.isExpired = isExpired;
     this.checkIfFollowing();
+    this.loggedInUsername = this.jwtDecoderService.getUsername();
     this.postDetails.profileImageUrl =
       this.imageUrlGeneratorService.generateImageUrl(
         this.postDetails.profileImageUrl
@@ -134,7 +138,7 @@ export class PostComponent implements OnInit , OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['postDetails'] && changes['postDetails'].currentValue) {
+    if (changes["postDetails"] && changes["postDetails"].currentValue) {
       this.checkIfFollowing();
     }
   }
@@ -148,22 +152,21 @@ export class PostComponent implements OnInit , OnChanges {
 
   toggleFollow(): void {
     let token = localStorage.getItem("token") || "";
-    let userName =
-      this.jwtDecoderService.getUsername() || "";
+    let userName = this.jwtDecoderService.getUsername() || "";
     const sourceUsername = userName || "currentUser";
     const targetUsername = this.postDetails.username;
-    
+
     if (this.isFollowing) {
       this.advertisementDetailsService
         .unfollowUser(sourceUsername, targetUsername)
         .subscribe({
           next: (response) => {
-            if(response.status === 200) {
+            if (response.status === 200) {
               this.isFollowing = false;
               this.postDetails.following = false;
               this.followStatusChanged.emit({
                 username: this.postDetails.username,
-                isFollowing: false
+                isFollowing: false,
               });
             }
           },
@@ -176,24 +179,24 @@ export class PostComponent implements OnInit , OnChanges {
         .followUser(sourceUsername, targetUsername)
         .subscribe({
           next: (response) => {
-            if(response.status === 200) {
+            if (response.status === 200) {
               this.isFollowing = true;
               this.postDetails.following = true;
               this.followStatusChanged.emit({
                 username: this.postDetails.username,
-                isFollowing: true
+                isFollowing: true,
               });
             }
           },
           error: (error) => {
             console.error("Error following:", error);
-          }
+          },
         });
     }
   }
 
   checkIfFollowing(): void {
-    this.isFollowing = this.postDetails.following; 
+    this.isFollowing = this.postDetails.following;
   }
 
   showInsights(event: Event): void {
@@ -372,12 +375,9 @@ export class PostComponent implements OnInit , OnChanges {
 
   showDetails(advertisementId: number): void {
     this.engageService.incrementEngagementCount(advertisementId);
-    this.router.navigate(
-      [`${this.router.url}/offer-description`, advertisementId],
-      {
-        queryParams: { data: JSON.stringify(this.postDetails) },
-      }
-    );
+    this.router.navigate([`${this.router.url}/offer-description`, advertisementId], {
+      state: { offerData: this.postDetails }
+    });
   }
 
   prevImage() {

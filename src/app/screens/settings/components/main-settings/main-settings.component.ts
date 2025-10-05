@@ -1,24 +1,28 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { JwtDecoderService } from 'src/app/services/jwtDecoder/jwt-decoder.service';
-
+import { Location } from '@angular/common'; // <-- Add this import
 
 @Component({
   selector: 'app-main-settings',
   templateUrl: './main-settings.component.html',
-  styleUrls: ['./main-settings.component.css']
+  styleUrls: ['./main-settings.component.css'],
 })
 export class MainSettingsComponent {
-  userType:string='';
+  userType: string = '';
 
-  constructor(private router: Router,private jwtDecoder:JwtDecoderService) { }
+  constructor(
+    private router: Router,
+    private jwtDecoder: JwtDecoderService,
+    private location: Location // <-- Inject Location service
+  ) {}
 
   ngOnInit(): void {
     const token = localStorage.getItem('token');
-
-    const decodedInfo = token ? this.jwtDecoder.decodeInfoFromToken(token) : this.jwtDecoder.decodeInfoFromToken('');
-    this.userType=decodedInfo.userType;
-    
+    const decodedInfo = token
+      ? this.jwtDecoder.decodeInfoFromToken(token)
+      : this.jwtDecoder.decodeInfoFromToken('');
+    this.userType = decodedInfo.userType;
   }
 
   navigateToProfileInformation() {
@@ -29,5 +33,9 @@ export class MainSettingsComponent {
     } else {
       console.error('User type is not valid or not found in localStorage');
     }
+  }
+
+  goBack() {
+    this.location.back();
   }
 }
