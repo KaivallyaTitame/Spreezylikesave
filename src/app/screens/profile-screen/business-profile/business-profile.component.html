@@ -111,18 +111,17 @@
         *ngIf="
           !loadingUserDetails &&
           userDetails &&
-          currentUsername !== username &&
-          (userType === 'Business' || userType === 'Consumer')
+          currentUsername !== username
         "
         class="follow-btn-container"
       >
-      <button
-        (click)="toggleFollow()"
-        class="follow-btn"
-        [ngClass]="isFollowing ? 'bg-primary' : 'bg-primary'"
-      >
-      {{ isFollowing ? 'Unfollow' : 'Follow' }}
-      </button>
+        <button
+          (click)="toggleFollow()"
+          class="follow-btn"
+          [ngClass]="isFollowing ? 'bg-primary' : 'bg-primary'"
+        >
+        {{ isFollowing ? 'Unfollow' : 'Follow' }}
+        </button>
       </div>
 
       <!-- Post and Saved Tabs -->
