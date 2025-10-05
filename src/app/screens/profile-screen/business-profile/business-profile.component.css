@@ -41,10 +41,10 @@
   margin-top: 12px;
   font-size: 16px;
   color: #333;
-  text-align: center;
+  text-align: left;
   padding: 0 12px;
   white-space: pre-line; 
-  width: 60%;           
+  width: 100%;           
   margin-left: auto;   
   margin-right: auto;
   }

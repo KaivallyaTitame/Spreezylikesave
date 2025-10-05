@@ -31,7 +31,7 @@ export const API_CONFIG = {
   UNFOLLOW_BUSINESS: (sourceUsername: string, targetUsername: string) => 
     `${environment.apiGateway}/user/unfollow/${sourceUsername}/${targetUsername}`,
   IS_FOLLOWING: (sourceUsername: string, targetUsername: string) =>
-  `${environment.apiGateway}/user/isFollowingBusiness/${sourceUsername}/${targetUsername}`,
+  `${environment.apiGateway}/user/isFollowing/${sourceUsername}/${targetUsername}`,
 
   SETTINGS: {
     GET_CONSUMER_DETAILS: (username: string) =>

@@ -103,6 +103,10 @@
         </ng-container>
       </div>
 
+      <div class="bio-section" *ngIf="userDetails">
+        <p class="bio-text">{{ userDetails.bio }}</p>
+      </div>
+
       <div 
         *ngIf="
           !loadingUserDetails &&
@@ -115,13 +119,10 @@
       <button
         (click)="toggleFollow()"
         class="follow-btn"
-        [ngClass]="isFollowing ? 'bg-red-500' : 'bg-red-500'"
+        [ngClass]="isFollowing ? 'bg-primary' : 'bg-primary'"
       >
       {{ isFollowing ? 'Unfollow' : 'Follow' }}
       </button>
-      </div>
-      <div class="bio-section" *ngIf="userDetails">
-        <p class="bio-text">{{ userDetails.bio }}</p>
       </div>
 
       <!-- Post and Saved Tabs -->

@@ -89,6 +89,7 @@ export class UserService {
         })
       );
   }
+  
   checkIsFollowing(source: string, target: string): Observable<boolean> {
   const token = localStorage.getItem("token");
   return this.http
