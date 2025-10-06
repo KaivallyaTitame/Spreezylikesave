@@ -47,18 +47,16 @@ export class BusinessInformationComponent {
       state: [""],
       city: [""],
       pincode: [""],
-      whatsApp: [
-        "https://example-whatsapp.com",
-        [Validators.required, this.urlValidator()],
-      ],
+      whatsApp: ["", [Validators.pattern(/^$|^\d{10}$/)]],
       instagram: [
-        "https://example-instagram.com",
-        [Validators.required, this.urlValidator()],
+        "",
+        [
+          Validators.pattern(
+            /^$|^(?!.*\.\.)(?!\.)(?!.*\.$)[a-zA-Z0-9._]{1,30}$/
+          ),
+        ],
       ],
-      facebook: [
-        "https://example-facebook.com",
-        [Validators.required, this.urlValidator()],
-      ],
+      facebook: ["", [Validators.pattern(/^$|^[a-zA-Z][a-zA-Z0-9.]{4,49}$/)]],
       kycDetails: this.fb.group({
         aadharNumber: [""],
         aadharImage: [""],
@@ -94,13 +92,13 @@ export class BusinessInformationComponent {
             this.showPopUp = true;
           }
         } catch (error) {
-          this.loading = false;  
-          throw(error); 
+          this.loading = false;
+          throw error;
         }
       },
       error: (error: HttpErrorResponse) => {
-        this.loading = false; 
-        throw(error);  
+        this.loading = false;
+        throw error;
       },
       complete: () => {
         this.loading = false;
@@ -137,6 +135,7 @@ export class BusinessInformationComponent {
   }
 
   handleSubmit() {
+    console.log(this.businessInfo)
     if (this.businessInfo.valid) {
       this.createRequest(this.businessInfo);
       this.businessInfo.reset();
@@ -205,9 +204,11 @@ export class BusinessInformationComponent {
       next: () => {
         this.popUpTitle = "Success!";
         this.popUpBody = "Your business details has been updated successfully.";
+        console.log(data);
         this.showPopUp = true;
       },
       error: (error: HttpErrorResponse) => {
+        console.log(data);
         this.popUpTitle = "Error!";
         if (error.error && error.error.message) {
           this.popUpBody = `Error: ${error.error.message}`;
@@ -240,12 +241,5 @@ export class BusinessInformationComponent {
       (state) => state.name === selectedState
     );
     return state ? state.cities : [];
-  }
-
-  urlValidator() {
-    return (control: any) => {
-      const urlPattern = /^https:\/\/.+/;
-      return urlPattern.test(control.value) ? null : { invalidUrl: true };
-    };
   }
 }
