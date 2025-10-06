@@ -1,12 +1,6 @@
 import { HttpClient, HttpErrorResponse } from "@angular/common/http";
 import { Component } from "@angular/core";
-import {
-  AbstractControl,
-  FormBuilder,
-  FormGroup,
-  ValidationErrors,
-  Validators,
-} from "@angular/forms";
+import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
 import { BusinessInformation } from "src/app/models/business-information";
 import { JwtDecoderService } from "src/app/services/jwtDecoder/jwt-decoder.service";
@@ -53,9 +47,16 @@ export class BusinessInformationComponent {
       state: [""],
       city: [""],
       pincode: [""],
-      whatsApp: ["", [Validators.required, Validators.pattern(/^\d{10}$/)]],
-      instagram: ["", [Validators.required, Validators.pattern(/^(?!.*\.\.)(?!\.)(?!.*\.$)[a-zA-Z0-9._]{1,30}$/)]],
-      facebook: ["", [Validators.required, Validators.pattern(/^[a-zA-Z][a-zA-Z0-9.]{4,49}$/)]],
+      whatsApp: ["", [Validators.pattern(/^$|^\d{10}$/)]],
+      instagram: [
+        "",
+        [
+          Validators.pattern(
+            /^$|^(?!.*\.\.)(?!\.)(?!.*\.$)[a-zA-Z0-9._]{1,30}$/
+          ),
+        ],
+      ],
+      facebook: ["", [Validators.pattern(/^$|^[a-zA-Z][a-zA-Z0-9.]{4,49}$/)]],
       kycDetails: this.fb.group({
         aadharNumber: [""],
         aadharImage: [""],
@@ -134,6 +135,7 @@ export class BusinessInformationComponent {
   }
 
   handleSubmit() {
+    console.log(this.businessInfo)
     if (this.businessInfo.valid) {
       this.createRequest(this.businessInfo);
       this.businessInfo.reset();
@@ -202,9 +204,11 @@ export class BusinessInformationComponent {
       next: () => {
         this.popUpTitle = "Success!";
         this.popUpBody = "Your business details has been updated successfully.";
+        console.log(data);
         this.showPopUp = true;
       },
       error: (error: HttpErrorResponse) => {
+        console.log(data);
         this.popUpTitle = "Error!";
         if (error.error && error.error.message) {
           this.popUpBody = `Error: ${error.error.message}`;
