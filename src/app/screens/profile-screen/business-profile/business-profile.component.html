@@ -118,6 +118,27 @@
         </ng-container>
       </div>
 
+      <div class="bio-section" *ngIf="userDetails">
+        <p class="bio-text">{{ userDetails.bio }}</p>
+      </div>
+
+      <div 
+        *ngIf="
+          !loadingUserDetails &&
+          userDetails &&
+          currentUsername !== username
+        "
+        class="follow-btn-container"
+      >
+        <button
+          (click)="toggleFollow()"
+          class="follow-btn"
+          [ngClass]="isFollowing ? 'bg-primary' : 'bg-primary'"
+        >
+        {{ isFollowing ? 'Unfollow' : 'Follow' }}
+        </button>
+      </div>
+
       <!-- Post and Saved Tabs -->
       <div class="tab-menu mt-4 flex justify-center space-x-0">
         <button

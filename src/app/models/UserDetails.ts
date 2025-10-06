@@ -10,4 +10,5 @@ export class UserDetails {
     facebookUrl?: string = '';
     instagramUrl?: string = '';
     whatsApp?: string = '';
+    bio?: string='';
 }
