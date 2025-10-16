@@ -17,7 +17,10 @@
     "test:coverage": "jest --coverage",
     "test:watch": "jest --watch",
     "resources": "capacitor-resources -p android,ios && node resources.js",
-    "apk-debug": "cd android && ./gradlew assembleDebug && cd .."
+    "apk-debug": "cd android && ./gradlew assembleDebug && cd ..",
+    "clean-mipmap": "rm -f android/app/src/main/res/mipmap-*/ic_launcher_foreground.png 2>/dev/null || true",
+    "sync-mipmap": "cp -r src/assets/logo/mipmap-* android/app/src/main/res/ 2>/dev/null || true",
+    "sync-android": "npm run clean-mipmap && npm run sync-mipmap && npx cap sync android"
   },
   "publishConfig": {
     "registry": "https://nexus.spreezy.in/repository/npm-hosted/"

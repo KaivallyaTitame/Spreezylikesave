@@ -1,0 +1,10 @@
+<!--
+    This file defines the adaptive round launcher icon for Android.
+    It ensures consistent icon appearance on devices that use round icons,
+    preventing fallback to the default icon with a black or inconsistent background.
+-->
+<adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
+    <background android:drawable="@mipmap/ic_launcher_adaptive_back"/>
+    <foreground android:drawable="@mipmap/ic_launcher_adaptive_fore"/>
+</adaptive-icon>
+
