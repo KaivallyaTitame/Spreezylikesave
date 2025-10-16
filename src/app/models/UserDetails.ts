@@ -7,7 +7,8 @@ export class UserDetails {
     following: string = '';
     email: string = '';
     phoneNumber: string = '';
-    facebookUrl: string = '';
-    instagramUrl: string = '';
-    whatsapp: string = '';
+    facebookUrl?: string = '';
+    instagramUrl?: string = '';
+    whatsApp?: string = '';
+    bio?: string='';
 }

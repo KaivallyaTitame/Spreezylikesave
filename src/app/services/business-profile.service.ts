@@ -15,7 +15,6 @@ export class BusinessService {
   getBusinessDetails(username: string): Observable<BusinessDetails[]> {
     return this.http.get<BusinessDetails[]>(API_CONFIG.GET_BUSINESS_DETAILS(username), {
       responseType: 'json',
-      headers: new HttpHeaders({ 'ngrok-skip-browser-warning': 'true' }),
     });
   }
 
@@ -31,7 +30,7 @@ export class BusinessService {
   getSavedPosts(username: string): Observable<AdvertisementDetails[]> {
     return this.http.get<AdvertisementDetails[]>(API_CONFIG.GET_SAVED_POSTS(username), {
       responseType: 'json',
-      headers: new HttpHeaders({ 'ngrok-skip-browser-warning': 'true' }),
+      headers: new HttpHeaders({ }),
     });
   }
 }

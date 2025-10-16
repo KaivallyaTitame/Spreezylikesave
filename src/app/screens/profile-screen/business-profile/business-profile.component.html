@@ -37,41 +37,56 @@
             >
               &#64;{{ userDetails.username }}
             </p>
-            <div class="social-links flex justify-start items-center">
+            <div class="social-links flex justify-start items-center space-x-3">
+              <a [href]="'tel:' +userDetails.phoneNumber" target="_blank">
+                <fa-icon
+                  [icon]="faPhone"
+                  class="text-2xl text-red-500"
+                ></fa-icon>
+              </a>
+
               <a
-                [href]="userDetails.phoneNumber"
-                class="text-red-500"
+                *ngIf="userDetails.email"
+                [href]="'mailto:' + userDetails.email"
                 target="_blank"
               >
-                <fa-icon [icon]="faPhone" class="text-2xl px-1"></fa-icon>
+                <fa-icon
+                  [icon]="faEnvelope"
+                  class="text-2xl text-red-500"
+                ></fa-icon>
               </a>
+
               <a
-                [href]="userDetails.email"
-                class="text-red-500 px-2"
-                target="_blank"
-              >
-                <fa-icon [icon]="faEnvelope" class="text-2xl px-1"></fa-icon>
-              </a>
-              <a
+                *ngIf="userDetails.instagramUrl"
                 [href]="userDetails.instagramUrl"
-                class="text-red-500 px-1"
                 target="_blank"
               >
-                <fa-icon [icon]="faInstagram" class="text-2xl px-1"></fa-icon>
+                <fa-icon
+                  [icon]="faInstagram"
+                  class="text-2xl text-red-500"
+                ></fa-icon>
               </a>
+
               <a
+                *ngIf="userDetails.facebookUrl"
                 [href]="userDetails.facebookUrl"
-                class="text-red-500 px-1"
                 target="_blank"
               >
-                <fa-icon [icon]="faFacebook" class="text-2xl px-1"></fa-icon>
+                <fa-icon
+                  [icon]="faFacebook"
+                  class="text-2xl text-red-500"
+                ></fa-icon>
               </a>
+
               <a
-                [href]="userDetails.facebookUrl"
-                class="text-red-500"
+                *ngIf="userDetails.whatsApp"
+                [href]="userDetails.whatsApp"
                 target="_blank"
               >
-                <fa-icon [icon]="faShare" class="text-2xl px-2"></fa-icon>
+                <fa-icon
+                  [icon]="faWhatsapp"
+                  class="text-2xl text-red-500"
+                ></fa-icon>
               </a>
             </div>
           </div>
@@ -101,6 +116,27 @@
             <p>Following</p>
           </div>
         </ng-container>
+      </div>
+
+      <div class="bio-section" *ngIf="userDetails">
+        <p class="bio-text">{{ userDetails.bio }}</p>
+      </div>
+
+      <div 
+        *ngIf="
+          !loadingUserDetails &&
+          userDetails &&
+          currentUsername !== username
+        "
+        class="follow-btn-container"
+      >
+        <button
+          (click)="toggleFollow()"
+          class="follow-btn"
+          [ngClass]="isFollowing ? 'bg-primary' : 'bg-primary'"
+        >
+        {{ isFollowing ? 'Unfollow' : 'Follow' }}
+        </button>
       </div>
 
       <!-- Post and Saved Tabs -->
@@ -144,16 +180,43 @@
         *ngIf="selectedTab === 'posts'"
       >
         <div class="post-section grid grid-cols-1 gap-2 py-2">
-          <div *ngFor="let advertisement of visibleProfileAds; let i = index" class="ad-item">
+          <div
+            *ngFor="let advertisement of visibleProfileAds; let i = index"
+            class="ad-item"
+          >
             <ng-container [ngSwitch]="advertisement.advertisementType">
-              <app-Post *ngSwitchCase="'Post'" (setInsightScreen)="setInsightScreen($event)" [showButton]="currentUsername===username" (setActiveIndex)="toggleInsight(i)" [activeIndex]="activeIndex" [index]="i"  [postDetails]="advertisement"></app-Post>
-              <app-Event *ngSwitchCase="'Event'" (setInsightScreen)="setInsightScreen($event)" [showButton]="currentUsername===username" (setActiveIndex)="toggleInsight(i)" [activeIndex]="activeIndex" [index]="i"  [eventDetails]="advertisement"></app-Event>
-              <app-Coupon *ngSwitchCase="'Coupon'" (setInsightScreen)="setInsightScreen($event)" [showButton]="currentUsername===username" (setActiveIndex)="toggleInsight(i)" [activeIndex]="activeIndex" [index]="i"  [couponDetails]="advertisement"></app-Coupon>
+              <app-Post
+                *ngSwitchCase="'Post'"
+                (setInsightScreen)="setInsightScreen($event)"
+                [showButton]="currentUsername === username"
+                (setActiveIndex)="toggleInsight(i)"
+                [activeIndex]="activeIndex"
+                [index]="i"
+                [postDetails]="advertisement"
+              ></app-Post>
+              <app-Event
+                *ngSwitchCase="'Event'"
+                (setInsightScreen)="setInsightScreen($event)"
+                [showButton]="currentUsername === username"
+                (setActiveIndex)="toggleInsight(i)"
+                [activeIndex]="activeIndex"
+                [index]="i"
+                [eventDetails]="advertisement"
+              ></app-Event>
+              <app-Coupon
+                *ngSwitchCase="'Coupon'"
+                (setInsightScreen)="setInsightScreen($event)"
+                [showButton]="currentUsername === username"
+                (setActiveIndex)="toggleInsight(i)"
+                [activeIndex]="activeIndex"
+                [index]="i"
+                [couponDetails]="advertisement"
+              ></app-Coupon>
             </ng-container>
-            <app-post-insights 
-                (ClickOut)="hideInsight($event)"  
-                [showInsightScreen]="showInsightScreen" 
-                [feed]="activeIndex !== undefined ? insightDetails : {}" 
+            <app-post-insights
+              (ClickOut)="hideInsight($event)"
+              [showInsightScreen]="showInsightScreen"
+              [feed]="activeIndex !== undefined ? insightDetails : {}"
             >
             </app-post-insights>
           </div>
@@ -161,7 +224,10 @@
             <app-loader></app-loader>
           </div>
           <div>
-            <div *ngIf="hasZeroPosts && !loadingProfilePosts" class="mt-[25%] text-center text-2xl text-gray-500 italic">
+            <div
+              *ngIf="hasZeroPosts && !loadingProfilePosts"
+              class="mt-[25%] text-center text-2xl text-gray-500 italic"
+            >
               <b>{{ noPostTitle }}</b>
               <p>{{ noPostDescription }}</p>
             </div>
@@ -178,16 +244,28 @@
         <div class="saved-section grid grid-cols-1 gap-2 py-2">
           <div *ngFor="let advertisement of visibleSavedAds" class="ad-item">
             <ng-container [ngSwitch]="advertisement.advertisementType">
-              <app-Post *ngSwitchCase="'Post'" [postDetails]="advertisement"></app-Post>
-              <app-Event *ngSwitchCase="'Event'" [eventDetails]="advertisement"></app-Event>
-              <app-Coupon *ngSwitchCase="'Coupon'" [couponDetails]="advertisement"></app-Coupon>
+              <app-Post
+                *ngSwitchCase="'Post'"
+                [postDetails]="advertisement"
+              ></app-Post>
+              <app-Event
+                *ngSwitchCase="'Event'"
+                [eventDetails]="advertisement"
+              ></app-Event>
+              <app-Coupon
+                *ngSwitchCase="'Coupon'"
+                [couponDetails]="advertisement"
+              ></app-Coupon>
             </ng-container>
           </div>
           <div *ngIf="loadingSavedPosts" class="text-center py-4">
             <app-loader></app-loader>
           </div>
           <div>
-            <div *ngIf="hasZeroSavedPosts && !loadingProfilePosts" class="mt-[25%] text-center text-2xl text-gray-500 italic">
+            <div
+              *ngIf="hasZeroSavedPosts && !loadingProfilePosts"
+              class="mt-[25%] text-center text-2xl text-gray-500 italic"
+            >
               <b>See something useful ?</b>
               <p>Tap save</p>
             </div>
