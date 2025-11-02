@@ -23,7 +23,6 @@ export class BusinessNavigationService {
       responseType: 'json',
       headers: new HttpHeaders({
         Authorization: `Bearer ${this.token}`,
-        // 'ngrok-skip-browser-warning': 'true',
       }),
     });
   }

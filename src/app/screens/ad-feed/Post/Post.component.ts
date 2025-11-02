@@ -150,17 +150,10 @@ export class PostComponent implements OnInit, OnChanges {
   }
 
   navigateToProfile() {
-    if (this.router.url == "/business-home/adfeed") {
-      this.router.navigate([
-        "/profile-screen/business-profile",
-        this.postDetails.username,
-      ]);
-    } else {
-      this.router.navigate([
-        "/profile-screen/consumer-profile",
-        this.postDetails.username,
-      ]);
-    }
+    this.router.navigate([
+      "/profile-screen/business-profile",
+      this.postDetails.username,
+    ]);
   }
 
   toggleFollow(): void {
